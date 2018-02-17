@@ -1,0 +1,55 @@
+{% extends "bootstrap/base.html" %}
+{% from "bootstrap/wtf.html" import quick_form %}
+
+{% block title %}OurTube{% endblock %}
+
+
+{% block navbar %}
+<div style="display:none;">
+    {% if reg_form is defined and log_form is defined %}
+    {{ quick_form(reg_form, id="reg_form", button_map={"submit_reg" : "success"}) }}
+    {{ quick_form(log_form, id="log_form", button_map={"submit_log" : "success"}) }}
+    {% endif %}
+</div>
+
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <a class="navbar-brand text-white">OurTube</a>
+    <div class="collapse navbar-collapse">
+
+        {% if user is not none %}
+            <a href="{{ url_for('profile', username=user.login) }}" class="navbar-text">{{ user.login }}</a>
+            <a>&emsp;</a>
+            <a href="/logout" class="btn btn-success">Выйти</a>
+        {% else %}
+            <button id="log" class="btn btn-success">Войти</button>
+            <span class="navbar-text">&emsp; или &emsp;</span>
+            <button id="reg" class="btn btn-success">Регистрация</button>
+        {% endif %}
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<a>&emsp;</a>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<script src="{{ url_for('static', filename='scripts.js') }}"></script>
+    {% if (user is none) and (reg_form is defined) and reg_form.errors %}
+        <script>$("#reg").addClass("post_error");</script>
+    {% endif %}
+    {% if (user is none) and (log_form is defined) and log_form.errors %}
+        <script>$("#log").addClass("post_error");</script>
+    {% endif %}
+{% endblock %}
+
+
+{% block styles %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+<style src="{{ url_for('static', filename='styles.css') }}"></style>
+{% endblock %}
