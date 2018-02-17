@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Rezult</title>
+</head>
+
+<body>
+<img  OnClick="toggleFullScreen();" href="">
+<script>
+function toggleFullScreen() {
+  var doc = window.document;
+  var docEl = doc.documentElement;
+  
+  var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen;
+  var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen;
+  
+  if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement) { 
+    requestFullScreen.call(docEl);
+  }
+  else {
+    cancelFullScreen.call(doc);  
+  }
+  console.log("Captai");
+}
+</script>
+    <style>
+    body, html
+    {
+        top: 0;
+        left: 0;
+        width:100%;
+        height:100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    img {
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+    }
+    </style>
+</body>
+</html>

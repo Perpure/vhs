@@ -9,3 +9,7 @@ def main():
 @app.route('/calibrate', methods=['GET', 'POST'])
 def multicheck():
     return render_template('color.html', color="#FF0000")
+
+@app.route('/rezult', methods=['GET', 'POST'])
+def rezult():
+    return render_template('rezult.html')
