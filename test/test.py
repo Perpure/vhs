@@ -1,8 +1,8 @@
 from PIL import Image, ImageDraw 
 rezolutionx=16
 rezolutiony=9
-source= Image.open('source.jpg')
 
+source= Image.open('source.jpg')
 image = Image.open('test.jpg')
 width = image.size[0]
 height = image.size[1]	
@@ -107,7 +107,7 @@ if w1>h1:
 for i in range(firstx,lastx):
     for j in range(firsty,lasty):
         draw.point((i, j), color2)
-
+cropped = cropped.resize((1080,1920))
 rez.save("rez.png")
 source.save("source2.jpg")
 cropped.save("cropped.jpg")
