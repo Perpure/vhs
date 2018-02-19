@@ -6,7 +6,7 @@
 </head>
 
 <body>
-<img  OnClick="toggleFullScreen();" href="">
+<img  OnClick="toggleFullScreen();" src="{{url_for('get_image', pid=pid)}}">
 <script>
 function toggleFullScreen() {
   var doc = window.document;
