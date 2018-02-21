@@ -4,7 +4,7 @@ import hashlib
 
 class User(db.Model):
     login = db.Column(db.String(20), primary_key=True)
-    password = db.Column(db.String(32), nullable=False)
+    password = db.Column(db.String(32), nullable=False, unique=True,)
 
     def __init__(self, login):
         self.login = login

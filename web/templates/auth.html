@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hoe</title>
+</head>
+<body>
+    <h2>Вход</h2>
+
+    <form action="/" method="POST">
+        <div>{{ form.login_log.label}}</div>
+        <div>{{ form.login_log(rows=5, cols=60) }}</div>
+        {% if form.login_log.errors %}
+            {% for error in form.login_log.errors %}
+            <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+        <div>{{ form.password_log(rows=5, cols=60) }}</div>
+        {% if form.password_log.errors %}
+            {% for error in form.password_log.errors %}
+            <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+        {{ form.submit_log }}
+    </form>
+</body>
+</html>
