@@ -3,45 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Calibrating</title>
+    <script src="{{ url_for('static', filename='jquery.js') }}"></script>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='calibrate.css') }}">
 </head>
 
 <body bgcolor="{{color}}">
-<div  OnClick="toggleFullScreen();"></div>
-<script>
-function toggleFullScreen() {
-  var doc = window.document;
-  var docEl = doc.documentElement;
-  
-  var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen;
-  var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen;
-  
-  if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement) { 
-    requestFullScreen.call(docEl);
-  }
-  else {
-    cancelFullScreen.call(doc);  
-  }
-  console.log("Captai");
-}
-</script>
-    <style>
-    body, html
-    {
-        top: 0;
-        left: 0;
-        width:100%;
-        height:100%;
-        margin: 0;
-        padding: 0;
-    }
-
-    div {
-         position: fixed;
-         top: 0;
-         left: 0;
-         width: 100%;
-         height: 100%;
-    }
-    </style>
+<script src="{{ url_for('static', filename='fullscreen.js') }}"></script>
+<div></div>
 </body>
 </html>

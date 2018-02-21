@@ -1,15 +1,6 @@
 from flask import redirect, render_template, make_response
 from web import app
-import os
-from config import basedir
-
-def read_image(pid):
-    path=basedir + '/images/%s.jpg' % pid
-    with open(path, "rb") as im:
-        f = im.read()
-        b = bytearray(f)
-        return b
-
+from .helper import read_image
 @app.route('/images/<int:pid>.jpg')
 def get_image(pid):
     image_binary = read_image(pid)
