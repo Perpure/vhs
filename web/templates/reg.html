@@ -6,7 +6,7 @@
 <body>
     <h2>Регистрация</h2>
 
-    <form method="POST">
+    <form action="/reg" method="POST">
         <div>{{ form.login_reg.label}}</div>
         <div>{{ form.login_reg(rows=5, cols=60) }}</div>
         {% if form.login_reg.errors %}

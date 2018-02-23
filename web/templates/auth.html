@@ -6,7 +6,7 @@
 <body>
     <h2>Вход</h2>
 
-    <form method="POST">
+    <form action="/auth" method="POST">
         <div>{{ form.login_log.label}}</div>
         <div>{{ form.login_log(rows=5, cols=60) }}</div>
         {% if form.login_log.errors %}
