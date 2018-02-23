@@ -6,7 +6,7 @@
 <body>
     <h2>Регистрация</h2>
 
-    <form action="/" method="POST">
+    <form method="POST">
         <div>{{ form.login_reg.label}}</div>
         <div>{{ form.login_reg(rows=5, cols=60) }}</div>
         {% if form.login_reg.errors %}
@@ -27,6 +27,10 @@
             {% endfor %}
         {% endif %}
         {{ form.submit_reg }}
+    </form>
+    <hr/>
+    <form action="/">
+        {{ form.submit_main }}
     </form>
 </body>
 </html>

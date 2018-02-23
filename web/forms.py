@@ -26,9 +26,11 @@ class RegForm(FlaskForm):
     confirm_reg = PasswordField("Повторите пароль",
                                 validators=[Length(8), EqualTo("password_reg", message="Пароли должны совпадать")])
     submit_reg = SubmitField("Зарегистрироваться")
+    submit_main = SubmitField("На главную")
 
 
 class LogForm(FlaskForm):
     login_log = StringField("Имя пользователя", validators=[Length(5), Exist])
     password_log = PasswordField("Пароль", validators=[Length(8), Match])
     submit_log = SubmitField("Войти")
+    submit_main = SubmitField("На главную")

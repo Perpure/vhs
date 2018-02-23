@@ -20,5 +20,6 @@ class User(db.Model):
 
     @staticmethod
     def get(login=None):
-        if not login: return User.query.all()
+        if not login:
+            return User.query.all()
         return User.query.get(login)

@@ -14,10 +14,10 @@ def reg():
     form = RegForm()
     user = None
 
-    if form.submit_reg.data and form.validate_on_submit():
+    if form.validate_on_submit():
         user = User(form.login_reg.data)
         user.save(form.password_reg.data)
-        session["Login"] = user.login;
+        session["Login"] = user.login
         return redirect(url_for("main"))
 
     return render_template('reg.html', form=form, user=user)
