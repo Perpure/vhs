@@ -10,20 +10,17 @@ class Video(db.Model):
     title = db.Column(db.String(100))
     path = db.Column(db.Column(db.Text(), unique=True, nullable=False))
 
+    def pathgen(self, title):
+        new_path = VIDEO_SAVE_PATH + title + uuid.uuid1()
+        return (new_path)
+
     def save(self):
-        __init__(Video.title)
+        pathgen(Video.title)
         db.session.commit()
 
     @staticmethod
     def get (self):
-        db.Model.query.get()
-
-    def __init__(self, title):
-
-        new_path = VIDEO_SAVE_PATH + title + uuid.uuid1()
-        return (new_path)
-
-
+        Video.query.get(all)
 
 
 
