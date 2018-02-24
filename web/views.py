@@ -4,9 +4,17 @@ from web.forms import RegForm, LogForm
 from web.models import User
 
 
+def cur_user():
+    if 'user_id' in session:
+        return User.query.get(session['user_id'])
+    else:
+        return None
+
+
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    return render_template('main.html')
+
+    return render_template('main.html', user=cur_user())
 
 
 @app.route('/reg', methods=['GET', 'POST'])
