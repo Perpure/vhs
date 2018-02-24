@@ -4,9 +4,10 @@
     <title>Hoe</title>
 </head>
 <body>
+<div class="container">
     <h2>Вход</h2>
+    <form action="" method="post">
     {{form.hidden_tag()}}
-     <form action="" method="post">
         <div>{{ form.login_log.label}}</div>
         <div>{{ form.login_log(rows=5, cols=60) }}</div>
         {% if form.login_log.errors %}
@@ -14,17 +15,22 @@
             <div style="color: red;">{{ error }}</div>
             {% endfor %}
         {% endif %}
+        <div>{{ form.password_log.label}}</div>
         <div >{{ form.password_log(rows=5, cols=60) }}</div>
         {% if form.password_log.errors %}
             {% for error in form.password_log.errors %}
             <div style="color: red;">{{ error }}</div>
             {% endfor %}
         {% endif %}
-        <button type="submit" class="btn btn-primary">Войти</button>
-    </form>
+        {% if msg %}
+            <span style="color: red;">{{msg}}</span>
+        {% endif %}
+        {{ form.submit_log }}
+     </form>
     <hr/>
     <form action="/">
         {{ form.submit_main }}
     </form>
+</div>
 </body>
 </html>
