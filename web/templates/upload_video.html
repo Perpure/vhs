@@ -1,0 +1,14 @@
+<!doctype html>
+    <title>Upload new File</title>
+    <h1>Upload new File</h1>
+    <form method="POST">
+        <div>{{ form.name.label}}</div>
+        <div>{{ form.name(rows=5, cols=60) }}</div>
+        {% if form.name.errors %}
+            {% for error in form.name.errors %}
+            <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+        {{ form.submit }}
+    </form>
+
