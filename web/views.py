@@ -1,7 +1,7 @@
 from flask import redirect, render_template, session, url_for, make_response, request
 from web import app
 from web.forms import RegForm, LogForm, UploadVideoForm
-from web.models import User
+from web.models import User, Video
 from web import ALLOWED_EXTENSIONS
 from .helper import read_image
 from werkzeug.utils import secure_filename
@@ -45,22 +45,18 @@ def multicheck():
 def upload_file():
     form = UploadVideoForm(csrf_enabled=False)
     if request.method == 'POST':
-        print('    ')
-        print(request.files)
-        print(form.name.data)
-        print('    ')
         if 'name' not in request.files:
             #flash('No file part')
-            print('YES')
             return redirect(request.url)
         file = request.files['name']
-        print(file)
         if file.filename == '':
             #flash('No selected file')
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save('videos/' + filename)
+            db_file = Video(form.title.data, 'videos/' + filename)
+            db_file.save()
             return redirect(request.url)
     #os.path.join(app.config['UPLOAD_FOLDER'], filename)
     return render_template('upload_video.html', form=form)

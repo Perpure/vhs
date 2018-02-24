@@ -4,6 +4,12 @@
     <h1>Загрузите видео</h1>
     <form method="POST" enctype = "multipart/form-data">
         <!--<div>{{ form.name.label}}</div><br>-->
+        <div>{{ form.title}}</div>
+        {% if form.title.errors %}
+            {% for error in form.title.errors %}
+            <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
         <div>{{ form.name}}</div>
         {% if form.name.errors %}
             {% for error in form.name.errors %}
