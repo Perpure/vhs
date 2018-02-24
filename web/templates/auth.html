@@ -5,8 +5,8 @@
 </head>
 <body>
     <h2>Вход</h2>
-
-    <form action="/auth" method="POST">
+    {{form.hidden_tag()}}
+     <form action="" method="post">
         <div>{{ form.login_log.label}}</div>
         <div>{{ form.login_log(rows=5, cols=60) }}</div>
         {% if form.login_log.errors %}
@@ -20,7 +20,7 @@
             <div style="color: red;">{{ error }}</div>
             {% endfor %}
         {% endif %}
-        {{ form.submit_log }}
+        <button type="submit" class="btn btn-primary">Войти</button>
     </form>
     <hr/>
     <form action="/">
