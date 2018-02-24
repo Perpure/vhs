@@ -1,5 +1,6 @@
 from web import db
-
+from config import VIDEO_SAVE_PATH
+import uuid
 
 
 
@@ -10,14 +11,20 @@ class Video(db.Model):
     path = db.Column(db.Column(db.Text(), unique=True, nullable=False))
 
     def save(self):
+        __init__(Video.title)
         db.session.commit()
 
+    @staticmethod
     def get (self):
-        return chr(self.id)
+        db.Model.query.get()
+
+    def __init__(self, title):
+
+        new_path = VIDEO_SAVE_PATH + title + uuid.uuid1()
+        return (new_path)
 
 
-def pathgen(name):
-    new_path = 'src/video/' + name
-    return (new_path)
+
+
 
 
