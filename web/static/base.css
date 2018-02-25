@@ -128,5 +128,52 @@ footer
   padding: 1.66%;
   margin: 0 auto;
   background-color: #c8d5e6;
-  /*background: linear-gradient(to bottom, #c8d5e6, #dbe7f0);
+  /*background: linear-gradient(to bottom, #c8d5e6, #dbe7f0);*/
 }
+
+
+
+        .content{
+            width: 424px;
+            margin: auto;
+        }
+        .z1{
+            display: inline-block;
+            background-color: #faebd7;
+            border-radius: 6px; 
+            padding: 2px;
+            cursor: pointer;
+        }
+        .z2{
+            display: inline-block;
+            background-color: yellow;
+            border-radius: 6px;
+            padding: 2px;
+            cursor: pointer;
+        }
+        .con{
+            display: none;
+            padding: 4px;
+        }
+        .con2{
+            display: block;
+            padding: 4px;
+        }    
+        .ava{
+            border-radius: 40px;
+            width: 200px;
+            height: 200px;
+        }
+        .set{
+            margin: 10px 0;
+        }
+        .but{
+          background-color: antiquewhite;
+          border-radius: 6px; 
+        }
+        .info{
+            font-style: italic;
+        }
+        .b{
+            font-weight: 600;
+        }

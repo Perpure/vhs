@@ -11,10 +11,15 @@ def cur_user():
         return None
 
 
+def is_auth():
+    return 'login' in session
+
+
+
 @app.route('/', methods=['GET', 'POST'])
 def main():
 
-    return render_template('main.html', user=cur_user())
+    return render_template('main.html', user=is_auth())
 
 
 @app.route('/reg', methods=['GET', 'POST'])
@@ -43,6 +48,9 @@ def log():
 
     return render_template('auth.html', form=form, user=user)
 
+@app.route('/cabinet', methods=['GET', 'POST'])
+def cabinet():
+    return render_template('Cabinet.html', user=is_auth())
 
 # @app.route("/logout", methods=['GET'])
 # def logout():
