@@ -1,7 +1,7 @@
 from flask import redirect, render_template, request, url_for
 from web import app
 from web.forms import UploadVideoForm
-
+from web.models import Video
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
@@ -11,6 +11,9 @@ def main():
 
 @app.route('/video', methods=['GET', 'POST'])
 def video():
+
+    video=Video.query.id()
+
     return render_template('video.html')
 
 def allowed_file(filename):
