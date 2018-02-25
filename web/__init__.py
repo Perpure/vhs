@@ -8,4 +8,5 @@ app.config.from_object("config")
 db = SQLAlchemy(app)
 import web.views
 
+import web.views
 
