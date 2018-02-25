@@ -5,21 +5,21 @@ from web.models import User
 
 
 def cur_user():
-    if 'user_id' in session:
-        return User.query.get(session['user_id'])
+    if 'Login' in session:
+        return User.query.get(session['Login'])
     else:
         return None
 
 
 def is_auth():
-    return 'login' in session
+    return 'Login' in session
 
 
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
 
-    return render_template('main.html', user=is_auth())
+    return render_template('main.html', user=cur_user())
 
 
 @app.route('/reg', methods=['GET', 'POST'])
@@ -48,11 +48,12 @@ def log():
 
     return render_template('auth.html', form=form, user=user)
 
+
 @app.route('/cabinet', methods=['GET', 'POST'])
 def cabinet():
     return render_template('Cabinet.html', user=is_auth())
 
-# @app.route("/logout", methods=['GET'])
-# def logout():
-#     session.pop("VotesLogin", None)
-#     return redirect(url_for("main"))
+
+@app.route("/logout", methods=['GET']) # FIXME FIXME FIXME FIXME FIXME FIXME
+def logout():
+    return render_template('main.html', user=cur_user())
