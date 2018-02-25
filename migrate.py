@@ -3,3 +3,5 @@ from web.models import Video
 
 db.drop_all()
 db.create_all()
+
+db.session.commit()
