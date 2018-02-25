@@ -1,0 +1,179 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+body
+{
+  font-family: 'Roboto', sans-serif;
+  background-color: #dce7f0;
+}
+
+header
+{
+  margin-bottom: 23px;
+  height: 40px;
+  margin-top: -8px;
+  width: 100%;
+}
+
+.Logo,.midHead,.Menu
+{
+  display: inline-block;
+  background-color: #c8d5e6;
+  height: 100%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  vertical-align: top;
+  font-size: 120%;
+}
+.Logo,.Menu
+{
+  width: 18.5%;
+  padding-left: 1%;
+}
+.Logo
+{
+  margin-right: 0.5%;
+}
+.midHead
+{
+  width: 58%;
+  margin-left: -4px;
+  margin-right: 0.5%;
+  padding-left: 1%;
+  padding-right: 1%;
+}
+.Menu
+{
+  margin-left: -5px;
+  transition: 1s;
+  text-align: center;
+  padding-top: 15px;
+  height: 75%;
+  position: relative;
+}
+.Menu:hover
+{
+  background-color: #97afcf;
+  cursor: pointer;
+}
+
+.Menu:hover .menuBtn
+{
+  display: block;
+}
+
+.inMenu
+{
+  position: absolute;
+  top: 50px;
+  left: 0px;
+  width: 100%;
+  padding-top: 14px;
+}
+
+.menuBtn
+{
+  transition: 0.5s;
+  width: 98%;
+  height: 30px;
+  padding: 1%;
+  text-align: center;
+  background-color: #c8d5e6;
+  display: none;
+  padding-top: 10px;
+}
+
+.menuBtn:hover
+{
+  background-color: #97afcf;
+  cursor: pointer;
+}
+
+.LogoImg,.LogoTxt
+{
+  height: 100%;
+  display: inline-block;
+  vertical-align: top;
+}
+.LogoTxt
+{
+  padding: 10px;
+}
+.LogoTxt:hover
+{
+  cursor: default;
+}
+
+main
+{
+  width: 60%;
+  margin: 0 auto;
+}
+
+.Content
+{
+  width: 96.7%;
+  background-color: #c8d5e6;
+  padding: 1.66%;
+  margin-bottom: 15px;
+}
+
+footer
+{
+  width: 60%;
+  margin: 0 auto;
+}
+
+.Foot{
+  width: 96.7%;
+  padding: 1.66%;
+  margin: 0 auto;
+  background-color: #c8d5e6;
+  /*background: linear-gradient(to bottom, #c8d5e6, #dbe7f0);*/
+}
+
+
+
+        .content{
+            width: 424px;
+            margin: auto;
+        }
+        .z1{
+            display: inline-block;
+            background-color: #faebd7;
+            border-radius: 6px; 
+            padding: 2px;
+            cursor: pointer;
+        }
+        .z2{
+            display: inline-block;
+            background-color: yellow;
+            border-radius: 6px;
+            padding: 2px;
+            cursor: pointer;
+        }
+        .con{
+            display: none;
+            padding: 4px;
+        }
+        .con2{
+            display: block;
+            padding: 4px;
+        }    
+        .ava{
+            border-radius: 40px;
+            width: 200px;
+            height: 200px;
+        }
+        .set{
+            margin: 10px 0;
+        }
+        .but{
+          background-color: antiquewhite;
+          border-radius: 6px; 
+        }
+        .info{
+            font-style: italic;
+        }
+        .b{
+            font-weight: 600;
+        }

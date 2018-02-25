@@ -1,6 +1,6 @@
 import os
 
-CSRF_ENABLED = True
+# CSRF_ENABLED = True
 SECRET_KEY = 'SuperSecretPassword'
 
 basedir = os.path.abspath(os.path.dirname(__name__))
