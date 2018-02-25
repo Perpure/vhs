@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Личный кабинет</title>
-    <link rel="stylesheet" href="../static/base.css">
-</head>
-<body>
+{% extends "base.html" %}
+{% block content %}
     <div class="container">
         <div class="content">
          <div class="z1 z2" onclick="func(this)">Информация о пользователе</div>
@@ -91,5 +85,4 @@
         acon[x].classList.add('con2');
     }
     </script>
-</body>
-</html>
+{% endblock %}
