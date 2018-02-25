@@ -6,13 +6,13 @@ import uuid
 
 
 class Video(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(100))
     path = db.Column(db.Column(db.Text(),  nullable=False))
 
-    def __init__(self, title):
+    def __init__(self, title,path):
         self.title = title
-        self.path  = VIDEO_SAVE_PATH + title + uuid.uuid1()
+        self.path  = path
 
     def save(self):
         db.session.add(self)
