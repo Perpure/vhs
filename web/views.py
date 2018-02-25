@@ -6,6 +6,7 @@ from web import app
 def main():
     return render_template('main.html')
 
+
 @app.route('/video', methods=['GET', 'POST'])
 def video():
     return render_template('video.html')
