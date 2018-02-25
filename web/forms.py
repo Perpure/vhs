@@ -1,8 +1,13 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SelectField, FieldList, BooleanField, RadioField, FileField
 from wtforms.validators import Length, EqualTo, ValidationError, DataRequired
 from web.models import User
+from wtforms.widgets import CheckboxInput, ListWidget
 
+
+class UploadVideoForm(FlaskForm):
+    name = FileField("File", validators=[Length(3)])
+    submit = SubmitField("Upload")
 
 def NotExist(form, field):
     if User.get(login=field.data):
