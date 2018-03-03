@@ -65,9 +65,12 @@ def upload_file():
     #os.path.join(app.config['UPLOAD_FOLDER'], filename)
     return render_template('upload_video.html', form=form)
 
-@app.route('/rezult', methods=['GET', 'POST'])
-def rezult():
-    return render_template('rezult.html', pid=1)
+@app.route('/rezult1', methods=['GET', 'POST'])
+def rezult1():
+    return render_template('rezult.html', pid=1, top=0, left=0, right=0, bottom=0)
+@app.route('/rezult2', methods=['GET', 'POST'])
+def rezult2():
+    return render_template('rezult.html', pid=1, top=0, left=-400, right=0, bottom=0)
 
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():
