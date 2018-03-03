@@ -3,12 +3,10 @@ from config import VIDEO_SAVE_PATH
 import uuid
 import hashlib
 
-
-
 class Video(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(100))
-    path = db.Column(db.Column(db.Text(),  nullable=False))
+    path = db.Column(db.Text(),  nullable=False)
 
     def __init__(self, title,path):
         self.title = title
@@ -22,9 +20,6 @@ class Video(db.Model):
     def get(id=None):
         if id == None: return Video.query.all()
         return Video.query.get(id)
-
-
-
 
 class User(db.Model):
     login = db.Column(db.String(32), nullable=False, primary_key=True)
