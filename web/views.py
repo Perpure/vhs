@@ -1,10 +1,10 @@
-from flask import redirect, render_template, session, url_for, make_response
+from flask import redirect, render_template, session, url_for, make_response, request
 from web import app
 from web.forms import RegForm, LogForm, UploadVideoForm
 from web.models import User
 from web import ALLOWED_EXTENSIONS
 from .helper import read_image
-
+from werkzeug.utils import secure_filename
 
 def cur_user():
     if 'Login' in session:
@@ -101,6 +101,8 @@ def cabinet():
     return render_template('Cabinet.html', user=is_auth())
 
 
-@app.route("/logout", methods=['GET']) # FIXME FIXME FIXME FIXME FIXME FIXME
+@app.route('/logout', methods=['GET', 'POST'])
 def logout():
-    return render_template('main.html', user=cur_user())
+    if 'Login' in session:
+        session.pop('Login')
+    return redirect('/')
