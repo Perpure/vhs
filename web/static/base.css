@@ -61,7 +61,7 @@ header
 .Menu
 {
   margin-left: -5px;
-  transition: 1s;
+  transition: 0.5s;
   text-align: center;
   padding-top: 15px;
   position: relative;
@@ -98,7 +98,7 @@ header
   padding-top: 8px;
 }
 
-.menuBtn:hover
+.menuBtn:hover,.regBtn:hover
 {
   background-color: #ffb366;
   cursor: pointer;
@@ -128,6 +128,7 @@ footer
   width: 100%;
   padding: 1.66%;
   background-color: #ffcc99;
+  font-weight:bold;
   /*background: linear-gradient(to bottom, #c8d5e6, #dbe7f0);*/
 }
 
@@ -135,6 +136,31 @@ a,a:hover
 {
     text-decoration:none;
     color:black;
+}
+
+input
+{
+    border:none;
+    border-bottom:2px solid #ffb366;
+    margin-bottom:10px;
+    padding-left:5px;
+}
+
+.regBtn
+{
+    height:40px;
+    padding:5px;
+    padding-top:8px;
+    background-color:#ffcc99;
+    transition:0.5s;
+    border:none;
+    font-weight:bold;
+}
+
+.INP
+{
+    width:300px;
+    margin:0 auto;
 }
 
         .content{
