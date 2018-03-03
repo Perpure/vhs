@@ -21,6 +21,7 @@
         {%if user %}
         <div class="menuBtn"><a href="{{url_for('logout')}}" class="Link">Выйти</a></div>
         <div class="menuBtn"><a href="{{url_for('cabinet')}}" class="Link">Мой Канал</a></div>
+        <div class="menuBtn"><a href="{{url_for('upload_file')}}" class="Link">Загрузить Видео</a></div>
         {%else%}
         <div class="menuBtn"><a href="{{url_for('log')}}" class="Link">Войти</a></div>
         <div class="menuBtn"><a href="{{url_for('reg')}}" class="Link">Регистрация</a></div>
