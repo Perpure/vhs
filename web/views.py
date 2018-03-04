@@ -65,7 +65,7 @@ def upload():
 
             return redirect(request.url)
 
-    return render_template('upload_video.html', form=form)
+    return render_template('upload_video.html', form=form, user=is_auth())
 
 
 @app.route('/rezult1', methods=['GET', 'POST'])
@@ -102,7 +102,7 @@ def log():
         session["Login"] = user.login
         return redirect(url_for("main"))
 
-    return render_template('auth.html', form=form, user=user)
+    return render_template('auth.html', form=form, user=is_auth())
 
 
 @app.route('/cabinet', methods=['GET', 'POST'])
