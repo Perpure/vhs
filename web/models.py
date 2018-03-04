@@ -1,24 +1,38 @@
 from web import db
+from web import app
 import uuid
 import hashlib
+import os
+from datetime import datetime, date, time
+
+
 
 class Video(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(100))
     path = db.Column(db.Text(),  nullable=False)
+    hash = db.Column(db.Text(), primary_key=True)
+    save_date = db.Column(db.DateTime)
 
-    def __init__(self, title, path):
+    def __init__(self, title):
         self.title = title
-        self.path = path
 
-    def save(self):
+
+    def save(self, hash, ext):
+        self.path = os.path.join(app.config['VIDEO_SAVE_PATH'], hash + '.'+ ext)
+        self.hash = hash
+        self.save_date = datetime.now(tz=None)
         db.session.add(self)
         db.session.commit()
 
+        return self.path
+
     @staticmethod
-    def get(id=None):
-        if id == None: return Video.query.all()
-        return Video.query.get(id)
+    def get(hash=None):
+        if hash == None: return Video.query.all()
+        return Video.query.get(hash)
+
+
+
 
 class User(db.Model):
     login = db.Column(db.String(32), nullable=False, primary_key=True)
