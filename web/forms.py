@@ -35,6 +35,9 @@ class RegForm(FlaskForm):
     submit_reg = SubmitField("Зарегистрироваться")
     submit_main = SubmitField("На главную")
 
+class JoinForm(FlaskForm):
+    token = StringField("Токен")
+    submit = SubmitField("Присоединиться")
 
 class LogForm(FlaskForm):
     login_log = StringField("Имя пользователя", validators=[Length(5), Exist]) #

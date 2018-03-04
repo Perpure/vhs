@@ -1,11 +1,13 @@
 from flask import redirect, render_template, session, url_for, make_response, request
-from web import app
-from web.forms import RegForm, LogForm, UploadVideoForm
-from web.models import User, Video
+from web import app, db
+from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm
+from web.models import User, Video, Room
 from web import ALLOWED_EXTENSIONS
 from .helper import read_image
 from werkzeug.utils import secure_filename
 import os
+from random import choice
+from string import ascii_letters
 
 def cur_user():
     if 'Login' in session:
@@ -31,7 +33,25 @@ def get_image(pid):
 def main():
     return render_template('main.html', user=cur_user())
 
+@app.route('/viewroom', methods=['GET', 'POST'])
+def viewroom():
+    form = JoinForm(csrf_enabled=False)
+    if form.validate_on_submit():
+        if Room.query.filter_by(token=str(form.token.data)):
+            return redirect(url_for('room', token=form.token.data))
+    return render_template('viewroom.html', user=cur_user(), form=form)
 
+@app.route('/addroom', methods=['GET', 'POST'])
+def addroom():
+    token=''.join(choice(ascii_letters) for i in range(24))
+    db.session.add(Room(token=token))
+    db.session.commit()
+    return render_template('addroom.html', user=cur_user(), token=token)
+
+@app.route('/room/<string:token>', methods=['GET', 'POST'])
+def room(token):
+    print (token)
+    return render_template('room.html', user=cur_user())
 
 def allowed_file(filename):
     return '.' in filename and \

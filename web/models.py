@@ -41,3 +41,8 @@ class User(db.Model):
         if not login:
             return User.query.all()
         return User.query.get(login)
+
+class Room(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    token = db.Column(db.String(64), nullable=False)
+
