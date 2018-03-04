@@ -5,7 +5,8 @@ from web.models import User, Video
 from web import ALLOWED_EXTENSIONS
 from .helper import read_image
 from werkzeug.utils import secure_filename
-import os
+import hashlib, os
+
 
 def cur_user():
     if 'Login' in session:
@@ -27,20 +28,21 @@ def get_image(pid):
         'Content-Disposition', 'attachment', filename='%s.jpg' % pid)
     return response
 
+
 @app.route('/', methods=['GET', 'POST'])
 def main():
     return render_template('main.html', user=cur_user())
 
 
-
 def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return ('.' in filename and
+            filename.split('.')[-1].lower() in ALLOWED_EXTENSIONS)
 
 
 @app.route('/calibrate', methods=['GET', 'POST'])
 def multicheck():
     return render_template('color.html', color="#FF0000")
+
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
@@ -55,23 +57,26 @@ def upload():
             return redirect(request.url)
 
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            path = os.path.join(app.config['VIDEO_SAVE_PATH'], filename)
+            ext = secure_filename(file.filename).split('.')[-1]
+            hash = hashlib.md5(file.read()).hexdigest()
             
-            file.save(path)
-            video = Video(form.title.data, path)
-            video.save()
+            video = Video(form.title.data)
+            file.save(video.save(hash, ext))
 
             return redirect(request.url)
 
     return render_template('upload_video.html', form=form)
 
+
 @app.route('/rezult1', methods=['GET', 'POST'])
 def rezult1():
     return render_template('rezult.html', pid=1, top=0, left=0, right=0, bottom=0)
+
+
 @app.route('/rezult2', methods=['GET', 'POST'])
 def rezult2():
     return render_template('rezult.html', pid=1, top=0, left=-400, right=0, bottom=0)
+
 
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():
