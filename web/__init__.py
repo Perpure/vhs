@@ -1,15 +1,14 @@
-import os
 from flask import Flask
-from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
+from flask_bootstrap import Bootstrap
 
-UPLOAD_FOLDER = '/videos'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'mp4'])
 
-app = Flask(__name__)
-app.config.from_object("config")
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-db = SQLAlchemy(app)
-import web.views
 
+app = Flask(__name__, static_url_path="/static")
+app.config.from_object("config")
+db = SQLAlchemy(app)
+Bootstrap(app)
+
+import web.views
 

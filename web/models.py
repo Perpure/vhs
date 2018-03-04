@@ -1,18 +1,15 @@
 from web import db
-from config import VIDEO_SAVE_PATH
 import uuid
-
-
-
+import hashlib
 
 class Video(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(100))
-    path = db.Column(db.Column(db.Text(),  nullable=False))
+    path = db.Column(db.Text(),  nullable=False)
 
-    def __init__(self, title):
+    def __init__(self, title, path):
         self.title = title
-        self.path  = VIDEO_SAVE_PATH + title + uuid.uuid1()
+        self.path = path
 
     def save(self):
         db.session.add(self)
@@ -23,4 +20,24 @@ class Video(db.Model):
         if id == None: return Video.query.all()
         return Video.query.get(id)
 
+class User(db.Model):
+    login = db.Column(db.String(32), nullable=False, primary_key=True)
+    password = db.Column(db.String(64), nullable=False)
 
+    def __init__(self, login):
+        self.login = login
+
+    def save(self, password):
+        self.password = hashlib.sha512(password.encode("utf-8")).hexdigest()
+        db.session.add(self)
+        db.session.commit()
+
+    def check_pass(self, password):
+        temp = User.query.get(self.login)
+        return temp and temp.password == hashlib.sha512(password.encode("utf-8")).hexdigest()
+
+    @staticmethod
+    def get(login=None):
+        if not login:
+            return User.query.all()
+        return User.query.get(login)

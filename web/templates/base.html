@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Hosting of Everything</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+</head>
+<body>
+  <header>
+    <div class="Logo">
+      <img src="static/Logo.png" alt="" class="LogoImg">
+      <div class="LogoTxt">VideoHosting</div>
+    </div>
+    <div class="midHead"></div>
+    <div class="Menu">
+      Меню
+      <div class="inMenu">
+        {%if user %}
+        <div class="menuBtn"><a href="{{url_for('logout')}}" class="Link">Выйти</a></div>
+        <div class="menuBtn"><a href="{{url_for('cabinet')}}" class="Link">Мой Канал</a></div>
+        <div class="menuBtn"><a href="{{url_for('upload')}}" class="Link">Загрузить Видео</a></div>
+        {%else%}
+        <div class="menuBtn"><a href="{{url_for('log')}}" class="Link">Войти</a></div>
+        <div class="menuBtn"><a href="{{url_for('reg')}}" class="Link">Регистрация</a></div>
+        {%endif%}
+        <div class="menuBtn"><a href="{{url_for('main')}}" class="Link">Главная</a></div>
+      </div>
+    </div>
+  </header>
+  <main>
+    <div class="Content">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+  <footer>
+    <div class="Foot">
+      2018, 53rd Group
+    </div>
+  </footer>
+</body>
+</html>
