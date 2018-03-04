@@ -1,7 +1,10 @@
 {% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
+
 {% block content %}
     <title>Upload new File</title>
     <h1>Загрузите видео</h1>
-    {{ wtf.quick_form(form) }}
+    <p>Введите название видео</p>
+    <form action="" method="post">
+        <div> {{ form.video }} </div>
+    </form>
 {% endblock %}
