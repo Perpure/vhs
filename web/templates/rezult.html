@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="{{ url_for('static', filename='jquery.js') }}"></script>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='calibrate.css') }}">
+</head>
+<body>
+<!-- <script src="{{ url_for('static', filename='fullscreen.js') }}"></script> -->
+<img src="{{url_for('get_image', pid=pid)}}" style="top:{{top}}px; left:{{left}}px; right:{{right}}px; bottom:{{bottom}}px">
+</body>
+</html>
