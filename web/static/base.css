@@ -18,7 +18,7 @@ header
 .Logo,.midHead,.Menu
 {
   display: inline-block;
-  background-color: #ffcc99;
+  background-color: #F7E2C0;
   height: 100%;
   padding-bottom: 5px;
   vertical-align: top;
@@ -68,7 +68,7 @@ header
 }
 .Menu:hover
 {
-  background-color: #ffb366;
+  background-color: #ffcc99;
   cursor: pointer;
 }
 
@@ -83,7 +83,7 @@ header
   top: 50px;
   left: 0px;
   width: 100%;
-  padding-top: 14px;
+  padding-top: 23px;
 }
 
 .menuBtn
@@ -93,14 +93,14 @@ header
   height: 40px;
   padding: 1%;
   text-align: center;
-  background-color: #ffcc99;
+  background-color: #F7E2C0;
   display: none;
   padding-top: 8px;
 }
 
 .menuBtn:hover,.regBtn:hover
 {
-  background-color: #ffb366;
+  background-color: #ffcc99;
   cursor: pointer;
 }
 
@@ -113,7 +113,7 @@ main
 .Content
 {
   width: 100%;
-  background-color: #ffcc99;
+  background-color: #F7E2C0;
   padding: 1.66%;
   margin-bottom: 15px;
 }
@@ -127,7 +127,7 @@ footer
 .Foot{
   width: 100%;
   padding: 1.66%;
-  background-color: #ffcc99;
+  background-color: #F7E2C0;
   font-weight:bold;
   /*background: linear-gradient(to bottom, #c8d5e6, #dbe7f0);*/
 }
@@ -151,7 +151,7 @@ input
     height:40px;
     padding:5px;
     padding-top:8px;
-    background-color:#ffcc99;
+    background-color:#F7E2C0;
     transition:0.5s;
     border:none;
     font-weight:bold;
@@ -176,7 +176,7 @@ input
         }
         .z2{
             display: inline-block;
-            background-color: yellow;
+            background-color: #ffcc99;
             border-radius: 6px;
             padding: 2px;
             cursor: pointer;

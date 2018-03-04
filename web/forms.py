@@ -6,8 +6,9 @@ from wtforms.widgets import CheckboxInput, ListWidget
 
 
 class UploadVideoForm(FlaskForm):
-    name = FileField("File", validators=[Length(3)])
-    submit = SubmitField("Upload")
+    title = StringField("Введите название видео", validators=[Length(3)])
+    video = FileField("Выберите файл")
+    submit = SubmitField("Загрузить")
 
 def NotExist(form, field):
     if User.get(login=field.data):
@@ -21,13 +22,13 @@ def Exist(form, field):
 
 
 def Match(form, field):
-    user = User.get(login=form.login_log.data)
+    user = User.query.filter_by(login=field.data).first()
     if user and not user.check_pass(field.data):
         raise ValidationError("Неправильный пароль")
 
 
 class RegForm(FlaskForm):
-    login_reg = StringField("Имя пользователя", validators=[Length(5)])
+    login_reg = StringField("Имя пользователя", validators=[Length(5), NotExist])
     password_reg = PasswordField("Пароль", validators=[Length(8)])
     confirm_reg = PasswordField("Повторите пароль",
                                 validators=[Length(8), EqualTo("password_reg", message="Пароли должны совпадать")])

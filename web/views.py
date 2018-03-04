@@ -1,10 +1,11 @@
 from flask import redirect, render_template, session, url_for, make_response, request
 from web import app
 from web.forms import RegForm, LogForm, UploadVideoForm
-from web.models import User
+from web.models import User, Video
 from web import ALLOWED_EXTENSIONS
 from .helper import read_image
 from werkzeug.utils import secure_filename
+import os
 
 def cur_user():
     if 'Login' in session:
@@ -42,32 +43,35 @@ def multicheck():
     return render_template('color.html', color="#FF0000")
 
 @app.route('/upload', methods=['GET', 'POST'])
-def upload_file():
+def upload():
     form = UploadVideoForm(csrf_enabled=False)
-    if request.method == 'POST':
-        print('    ')
-        print(request.files)
-        print(form.name.data)
-        print('    ')
-        if 'name' not in request.files:
-            #flash('No file part')
-            print('YES')
+    if form.validate_on_submit():
+        if 'video' not in request.files:
             return redirect(request.url)
-        file = request.files['name']
-        print(file)
+
+        file = request.files['video']
+
         if file.filename == '':
-            #flash('No selected file')
             return redirect(request.url)
+
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save('videos/' + filename)
-            return redirect(request.url)
-    #os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    return render_template('upload_video.html', form=form)
+            path = os.path.join(app.config['VIDEO_SAVE_PATH'], filename)
+            
+            file.save(path)
+            video = Video(form.title.data, path)
+            video.save()
 
-@app.route('/rezult', methods=['GET', 'POST'])
-def rezult():
-    return render_template('rezult.html', pid=1)
+            return redirect(request.url)
+
+    return render_template('upload_video.html', form=form, user=is_auth())
+
+@app.route('/rezult1', methods=['GET', 'POST'])
+def rezult1():
+    return render_template('rezult.html', pid=1, top=0, left=0, right=0, bottom=0)
+@app.route('/rezult2', methods=['GET', 'POST'])
+def rezult2():
+    return render_template('rezult.html', pid=1, top=0, left=-400, right=0, bottom=0)
 
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():
@@ -93,7 +97,7 @@ def log():
         session["Login"] = user.login
         return redirect(url_for("main"))
 
-    return render_template('auth.html', form=form, user=user)
+    return render_template('auth.html', form=form, user=is_auth())
 
 
 @app.route('/cabinet', methods=['GET', 'POST'])
