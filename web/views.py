@@ -1,4 +1,4 @@
-from flask import redirect, render_template, session, url_for, make_response, request
+from flask import redirect, render_template, session, url_for, make_response, request, send_file
 from web import app
 from web.forms import UploadVideoForm
 from web.models import Video
@@ -115,9 +115,16 @@ def log():
 def cabinet():
     return render_template('Cabinet.html', user=is_auth())
 
-
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
     if 'Login' in session:
         session.pop('Login')
     return redirect('/')
+
+@app.route('/play', methods=['GET'])
+def video_play():
+    return send_file('/home/mps53/Projects/HoE/video.mp4')
+    
+@app.route('/abcd', methods=['GET'])
+def abcd():
+    return render_template("video_play.html")
