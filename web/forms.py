@@ -7,7 +7,7 @@ from wtforms.widgets import CheckboxInput, ListWidget
 
 class UploadVideoForm(FlaskForm):
     title = StringField("Введите название видео", validators=[Length(3)])
-    name = FileField("Выберите файл")
+    video = FileField("Выберите файл")
     submit = SubmitField("Загрузить")
 
 def NotExist(form, field):

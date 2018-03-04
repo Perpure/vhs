@@ -1,5 +1,4 @@
 from web import db
-from config import VIDEO_SAVE_PATH
 import uuid
 import hashlib
 
