@@ -10,7 +10,7 @@ from datetime import datetime, date, time
 class Video(db.Model):
     title = db.Column(db.String(100))
     path = db.Column(db.Text(),  nullable=False)
-    hash = db.Column(db.Text())
+    hash = db.Column(db.Text(), primary_key=True)
     save_date = db.Column(db.DateTime)
 
     def __init__(self, title):
