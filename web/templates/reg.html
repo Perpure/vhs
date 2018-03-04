@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container">
+<div class="INP">
     <h2>Регистрация</h2>
     <form action="" method="post">
     {{form.hidden_tag()}}
@@ -25,12 +25,8 @@
             <div style="color: red;">{{ error }}</div>
             {% endfor %}
         {% endif %}
-        <!--<button type="submit" class="btn btn-primary">Зарегестрироваться</button>-->
-       {{ form.submit_reg }}
-    </form>
-    <hr/>
-    <form action="/">
-        {{ form.submit_main }}
+        <button type="submit" name="submit_reg" id="submit_reg" value="Зарегестрироваться" class="regBtn">Зарегестрироваться</button>
+       <!--{{ form.submit_reg }}-->
     </form>
 </div>
 {% endblock %}

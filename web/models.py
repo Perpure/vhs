@@ -1,6 +1,24 @@
 from web import db
+import uuid
 import hashlib
 
+class Video(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column(db.String(100))
+    path = db.Column(db.Text(),  nullable=False)
+
+    def __init__(self, title, path):
+        self.title = title
+        self.path = path
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @staticmethod
+    def get(id=None):
+        if id == None: return Video.query.all()
+        return Video.query.get(id)
 
 class User(db.Model):
     login = db.Column(db.String(32), nullable=False, primary_key=True)

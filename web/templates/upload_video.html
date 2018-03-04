@@ -1,14 +1,7 @@
-<!doctype html>
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block content %}
     <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form method="POST" enctype = "multipart/form-data">
-        <div>{{ form.name.label}}</div>
-        <div>{{ form.name}}</div>
-        {% if form.name.errors %}
-            {% for error in form.name.errors %}
-            <div style="color: red;">{{ error }}</div>
-            {% endfor %}
-        {% endif %}
-        {{ form.submit }}
-    </form>
-
+    <h1>Загрузите видео</h1>
+    {{ wtf.quick_form(form) }}
+{% endblock %}
