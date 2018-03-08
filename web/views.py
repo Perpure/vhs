@@ -8,6 +8,7 @@ from werkzeug.utils import secure_filename
 import hashlib, os
 
 
+
 def cur_user():
     if 'Login' in session:
         return User.query.get(session['Login'])
@@ -115,3 +116,19 @@ def logout():
     if 'Login' in session:
         session.pop('Login')
     return redirect('/')
+
+
+@app.errorhandler(403)
+def page_not_found(e):
+    return render_template('403.html'), 403
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def page_not_found(e):
+    return render_template('500.html'), 500
+
