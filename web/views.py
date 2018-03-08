@@ -5,8 +5,9 @@ from web.models import User, Video
 from web import ALLOWED_EXTENSIONS
 from .helper import read_image
 from werkzeug.utils import secure_filename
+from werkzeug.exceptions import Aborter
+from functools import wraps
 import hashlib, os
-
 
 
 def cur_user():
@@ -19,6 +20,17 @@ def cur_user():
 def is_auth():
     return 'Login' in session
 
+
+def requiresauth(): 
+    def wrapper(f):
+        @wraps(f)
+        def wrapped(*args, **kwargs):
+            if cur_user() == None:
+                abort = Aborter()
+                return abort(403)
+            return f(*args, **kwargs)
+        return wrapped
+    return wrapper
 
 @app.route('/images/<int:pid>.jpg')
 def get_image(pid):
@@ -46,6 +58,7 @@ def multicheck():
 
 
 @app.route('/upload', methods=['GET', 'POST'])
+@requiresauth()
 def upload():
     form = UploadVideoForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -107,6 +120,7 @@ def log():
 
 
 @app.route('/cabinet', methods=['GET', 'POST'])
+@requiresauth()
 def cabinet():
     return render_template('Cabinet.html', user=is_auth())
 
