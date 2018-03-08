@@ -7,6 +7,7 @@ from .helper import read_image
 from werkzeug.utils import secure_filename
 import os
 
+
 def cur_user():
     if 'Login' in session:
         return User.query.get(session['Login'])
@@ -27,10 +28,10 @@ def get_image(pid):
         'Content-Disposition', 'attachment', filename='%s.jpg' % pid)
     return response
 
+
 @app.route('/', methods=['GET', 'POST'])
 def main():
     return render_template('main.html', user=cur_user())
-
 
 
 def allowed_file(filename):
@@ -41,6 +42,7 @@ def allowed_file(filename):
 @app.route('/calibrate', methods=['GET', 'POST'])
 def multicheck():
     return render_template('color.html', color="#FF0000")
+
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
@@ -66,12 +68,16 @@ def upload():
 
     return render_template('upload_video.html', form=form, user=is_auth())
 
+
 @app.route('/rezult1', methods=['GET', 'POST'])
 def rezult1():
     return render_template('rezult.html', pid=1, top=0, left=0, right=0, bottom=0)
+
+
 @app.route('/rezult2', methods=['GET', 'POST'])
 def rezult2():
     return render_template('rezult.html', pid=1, top=0, left=-400, right=0, bottom=0)
+
 
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():
@@ -110,3 +116,19 @@ def logout():
     if 'Login' in session:
         session.pop('Login')
     return redirect('/')
+
+
+@app.errorhandler(403)
+def page_not_found(e):
+    return render_template('403.html'), 403
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def page_not_found(e):
+    return render_template('500.html'), 500
+
