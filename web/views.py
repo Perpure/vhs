@@ -60,6 +60,7 @@ def upload():
         if file and allowed_file(file.filename):
             ext = secure_filename(file.filename).split('.')[-1]
             hash = hashlib.md5(file.read()).hexdigest()
+            file.seek(0)
             
             video = Video(form.title.data)
             file.save(video.save(hash, ext))
