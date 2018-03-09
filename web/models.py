@@ -11,16 +11,17 @@ class Video(db.Model):
     title = db.Column(db.String(100))
     path = db.Column(db.Text(),  nullable=False)
     hash = db.Column(db.Text(), primary_key=True)
-    save_date = db.Column(db.DateTime)
+    date = db.Column(db.DateTime)
 
     def __init__(self, title):
         self.title = title
 
 
     def save(self, hash, ext):
-        self.path = os.path.join(app.config['VIDEO_SAVE_PATH'], hash + '.'+ ext)
-        self.hash = hash
-        self.save_date = datetime.now(tz=None)
+        self.date = datetime.now(tz=None)
+        self.hash = hashlib.md5((hash + self.date.isoformat()).encode("utf-8")).hexdigest()
+        self.path = os.path.join(app.config['VIDEO_SAVE_PATH'], self.hash + '.'+ ext)
+        print(self.hash)
         db.session.add(self)
         db.session.commit()
 
