@@ -2,10 +2,11 @@ image: alpine
 
 before_script:
 - apk update
-- apk add py3-pep8
+- apk add py3-pip
+- pip install pycodestyle
 
 test:
   script:
-  - pep8 web
+  - pycodestyle web
   only:
   - develop
