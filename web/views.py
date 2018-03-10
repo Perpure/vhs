@@ -5,8 +5,9 @@ from web.models import User, Video
 from web import ALLOWED_EXTENSIONS
 from .helper import read_image
 from werkzeug.utils import secure_filename
+from werkzeug.exceptions import Aborter
+from functools import wraps
 import hashlib, os
-
 
 
 def cur_user():
@@ -16,8 +17,16 @@ def cur_user():
         return None
 
 
-def is_auth():
-    return 'Login' in session
+def requiresauth():
+    def wrapper(f):
+        @wraps(f)
+        def wrapped(*args, **kwargs):
+            if cur_user() == None:
+                abort = Aborter()
+                return abort(403)
+            return f(*args, **kwargs)
+        return wrapped
+    return wrapper
 
 
 @app.route('/images/<int:pid>.jpg')
@@ -46,6 +55,7 @@ def multicheck():
 
 
 @app.route('/upload', methods=['GET', 'POST'])
+@requiresauth()
 def upload():
     form = UploadVideoForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -67,7 +77,7 @@ def upload():
 
             return redirect(request.url)
 
-    return render_template('upload_video.html', form=form, user=is_auth())
+    return render_template('upload_video.html', form=form, user=cur_user())
 
 
 @app.route('/rezult1', methods=['GET', 'POST'])
@@ -91,7 +101,7 @@ def reg():
         session["Login"] = user.login
         return redirect(url_for("main"))
 
-    return render_template('reg.html', form=form, user=user)
+    return render_template('reg.html', form=form, user=cur_user())
 
 
 @app.route('/auth', methods=['GET', 'POST'])
@@ -104,12 +114,13 @@ def log():
         session["Login"] = user.login
         return redirect(url_for("main"))
 
-    return render_template('auth.html', form=form, user=is_auth())
+    return render_template('auth.html', form=form, user=cur_user())
 
 
 @app.route('/cabinet', methods=['GET', 'POST'])
+@requiresauth()
 def cabinet():
-    return render_template('Cabinet.html', user=is_auth())
+    return render_template('Cabinet.html', user=cur_user())
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -120,7 +131,7 @@ def logout():
 
 
 @app.errorhandler(403)
-def page_not_found(e):
+def forbidden(e):
     return render_template('403.html'), 403
 
 
@@ -130,6 +141,6 @@ def page_not_found(e):
 
 
 @app.errorhandler(500)
-def page_not_found(e):
+def internal_server_error(e):
     return render_template('500.html'), 500
 
