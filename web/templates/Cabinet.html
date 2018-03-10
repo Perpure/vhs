@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block content %}        
+    <div class="container">
+        <div class="content">
+         <div class="z1 z2" onclick="func(this)">Информация о пользователе</div>
+         <div class="z1" onclick="func(this)">Видео пользователя</div>
+         <div class="z1" onclick="func(this)">Настройки</div>
+         <br>
+         <div class="con con2">
+             <div class="content0">
+             <img class="ava" src="../static/a.png">             
+                <div class="ava2">
+             Пользователь (Имя)
+            <br>
+            Информация о канале:
+             <div class="info">
+              Информация не указана.   
+             </div>
+                 </div>
+             </div>
+        </div>
+         <div class="con">
+             (Тут будут видео)            
+        </div>
+         <div class="con">
+             <div class="set">
+             Изменить имя:
+             <input type="text">
+             <br>
+            </div>
+            <div class="set">
+             Изменить пароль:
+             <input type="password">
+             <br>
+            </div>
+            <div class="set">
+             Изменить аватар профиля:
+             (Загрузка картинки)
+             <br>
+            </div>
+            <div class="set">
+             Изменить фон канала:
+             (Загрузка картинки)
+             <br>
+            </div>            
+            <div class="set">
+             Указать информацию о канале
+             <input type="text">
+             <br>
+            </div>
+             <div class="set b">
+             Введите свой текущий пароль для подтверждения изменений:
+             <input type="password">
+             <br>
+            </div>
+            <div class="set">
+             <input type="submit" class="but" value="Сохранить">
+            </div>        
+        </div>
+    </div>
+            </div>
+    <script>
+        'use strict'
+    function func(a){
+        let x;
+        let amas = document.getElementsByClassName('z1'); 
+        for (let i=0; i<amas.length; i++){
+            amas[i].classList.remove('z2');
+            amas[i].classList.add('z1');
+        }
+        a.classList.add('z2');
+        let acon = document.getElementsByClassName('con'); 
+        for (let i=0; i<acon.length; i++){
+            acon[i].classList.remove('con2');
+            acon[i].classList.add('con');
+            if (amas[i].classList.contains('z2')){
+                x = i;
+                }
+        }
+        acon[x].classList.add('con2');
+    }
+    </script>
+ {% endblock %}
