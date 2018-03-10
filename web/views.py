@@ -110,3 +110,7 @@ def logout():
     if 'Login' in session:
         session.pop('Login')
     return redirect('/')
+
+@app.route('/play', methods=['GET', 'POST'])
+def play():
+    return render_template('play.html', user=cur_user())
