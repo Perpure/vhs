@@ -5,6 +5,14 @@
     <h1>Загрузите видео</h1>
     <p>Введите название видео</p>
     <form action="" method="post">
+        <div> {{ form.title }} </div>
+        {% if form.title.errors %}
+            {% for error in form.title.errors %}
+            <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+        <div> {{ form.video.label }} </div>
         <div> {{ form.video }} </div>
+        <div> {{ form.submit }} </div>
     </form>
 {% endblock %}
