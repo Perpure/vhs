@@ -17,11 +17,7 @@ def cur_user():
         return None
 
 
-def is_auth():
-    return 'Login' in session
-
-
-def requiresauth(): 
+def requiresauth():
     def wrapper(f):
         @wraps(f)
         def wrapped(*args, **kwargs):
@@ -31,6 +27,7 @@ def requiresauth():
             return f(*args, **kwargs)
         return wrapped
     return wrapper
+
 
 @app.route('/images/<int:pid>.jpg')
 def get_image(pid):
@@ -79,7 +76,7 @@ def upload():
 
             return redirect(request.url)
 
-    return render_template('upload_video.html', form=form, user=is_auth())
+    return render_template('upload_video.html', form=form, user=cur_user())
 
 
 @app.route('/rezult1', methods=['GET', 'POST'])
@@ -103,7 +100,7 @@ def reg():
         session["Login"] = user.login
         return redirect(url_for("main"))
 
-    return render_template('reg.html', form=form, user=user)
+    return render_template('reg.html', form=form, user=cur_user())
 
 
 @app.route('/auth', methods=['GET', 'POST'])
@@ -116,13 +113,13 @@ def log():
         session["Login"] = user.login
         return redirect(url_for("main"))
 
-    return render_template('auth.html', form=form, user=is_auth())
+    return render_template('auth.html', form=form, user=cur_user())
 
 
 @app.route('/cabinet', methods=['GET', 'POST'])
 @requiresauth()
 def cabinet():
-    return render_template('Cabinet.html', user=is_auth())
+    return render_template('Cabinet.html', user=cur_user())
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -133,7 +130,7 @@ def logout():
 
 
 @app.errorhandler(403)
-def page_not_found(e):
+def forbidden(e):
     return render_template('403.html'), 403
 
 
@@ -143,6 +140,6 @@ def page_not_found(e):
 
 
 @app.errorhandler(500)
-def page_not_found(e):
+def internal_server_error(e):
     return render_template('500.html'), 500
 
