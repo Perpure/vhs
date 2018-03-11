@@ -17,16 +17,14 @@ def cur_user():
         return None
 
 
-def requiresauth():
-    def wrapper(f):
-        @wraps(f)
-        def wrapped(*args, **kwargs):
-            if cur_user() == None:
-                abort = Aborter()
-                return abort(403)
-            return f(*args, **kwargs)
-        return wrapped
-    return wrapper
+def requiresauth(f):
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+        if cur_user() == None:
+            abort = Aborter()
+            return abort(403)
+        return f(*args, **kwargs)
+    return wrapped
 
 
 @app.route('/images/<int:pid>.jpg')
@@ -55,7 +53,7 @@ def multicheck():
 
 
 @app.route('/upload', methods=['GET', 'POST'])
-@requiresauth()
+@requiresauth
 def upload():
     form = UploadVideoForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -118,7 +116,7 @@ def log():
 
 
 @app.route('/cabinet', methods=['GET', 'POST'])
-@requiresauth()
+@requiresauth
 def cabinet():
     return render_template('Cabinet.html', user=cur_user())
 
@@ -143,4 +141,3 @@ def page_not_found(e):
 @app.errorhandler(500)
 def internal_server_error(e):
     return render_template('500.html'), 500
-
