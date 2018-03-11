@@ -2,7 +2,6 @@ from flask import redirect, render_template, session, url_for, make_response, re
 from web import app
 from web.forms import RegForm, LogForm, UploadVideoForm
 from web.models import User, Video
-from web import ALLOWED_EXTENSIONS
 from .helper import read_image
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import Aborter
@@ -44,7 +43,7 @@ def main():
 
 def allowed_file(filename):
     return ('.' in filename and
-            filename.split('.')[-1].lower() in ALLOWED_EXTENSIONS)
+            filename.split('.')[-1].lower() in app.config["ALLOWED_EXTENSIONS"])
 
 
 @app.route('/calibrate', methods=['GET', 'POST'])
@@ -66,12 +65,17 @@ def upload():
             return redirect(request.url)
 
         if file and allowed_file(file.filename):
-            ext = secure_filename(file.filename).split('.')[-1]
-            hash = hashlib.md5(file.read()).hexdigest()
+            video = Video(form.title.data)
+            
+            video_hash = hashlib.md5(file.read()).hexdigest()
             file.seek(0)
             
-            video = Video(form.title.data)
-            file.save(video.save(hash, ext))
+            directory = video.save(video_hash)
+            os.makedirs(directory)
+            
+            ext = secure_filename(file.filename).split('.')[-1]
+            video_path = os.path.join(directory, 'video.' + ext)
+            file.save(video_path)
 
             return redirect(request.url)
 
