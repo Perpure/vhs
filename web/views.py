@@ -128,6 +128,11 @@ def logout():
     return redirect('/')
 
 
+@app.route('/play', methods=['GET', 'POST'])
+def play():
+    return render_template('play.html', user=cur_user())
+
+
 @app.errorhandler(403)
 def forbidden(e):
     return render_template('403.html'), 403
