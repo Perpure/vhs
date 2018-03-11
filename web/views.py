@@ -2,7 +2,6 @@ from flask import redirect, render_template, session, url_for, make_response, re
 from web import app
 from web.forms import RegForm, LogForm, UploadVideoForm
 from web.models import User, Video
-from config import ALLOWED_EXTENSIONS
 from .helper import read_image
 from werkzeug.utils import secure_filename
 import hashlib, os
@@ -37,7 +36,7 @@ def main():
 
 def allowed_file(filename):
     return ('.' in filename and
-            filename.split('.')[-1].lower() in ALLOWED_EXTENSIONS)
+            filename.split('.')[-1].lower() in app.config["ALLOWED_EXTENSIONS"])
 
 
 @app.route('/calibrate', methods=['GET', 'POST'])
