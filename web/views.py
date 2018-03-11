@@ -2,7 +2,6 @@ from flask import redirect, render_template, session, url_for, make_response, re
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm
 from web.models import User, Video, Room
-from web import ALLOWED_EXTENSIONS
 from .helper import read_image
 from werkzeug.utils import secure_filename
 from random import choice
