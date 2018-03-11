@@ -1,9 +1,11 @@
 from flask import redirect, render_template, session, url_for, make_response, request
-from web import app
-from web.forms import RegForm, LogForm, UploadVideoForm
-from web.models import User, Video
+from web import app, db
+from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm
+from web.models import User, Video, Room
 from .helper import read_image
 from werkzeug.utils import secure_filename
+from random import choice
+from string import ascii_letters
 from werkzeug.exceptions import Aborter
 from functools import wraps
 import hashlib, os
@@ -11,7 +13,7 @@ import hashlib, os
 
 def cur_user():
     if 'Login' in session:
-        return User.query.get(session['Login'])
+        return  User.query.filter_by(login=session['Login']).first()
     else:
         return None
 
@@ -40,7 +42,31 @@ def get_image(pid):
 def main():
     return render_template('main.html', user=cur_user())
 
+@app.route('/viewroom', methods=['GET', 'POST'])
+def viewroom():
+    form = JoinForm(csrf_enabled=False)
+    if form.validate_on_submit():
+        if Room.query.filter_by(token=str(form.token.data)):
+            return redirect(url_for('room', token=form.token.data))
+    return render_template('viewroom.html', user=cur_user(), form=form)
 
+@app.route('/addroom', methods=['GET', 'POST'])
+def addroom():
+    token=''.join(choice(ascii_letters) for i in range(24))
+    db.session.add(Room(token=token))
+    db.session.commit()
+    return render_template('addroom.html', user=cur_user(), token=token)
+
+@app.route('/room/<string:token>', methods=['GET', 'POST'])
+def room(token):
+    user=cur_user()
+    if user:
+        room = Room.query.filter_by(token=token).first()
+        if not(room.id in user.Room):
+            user.Room.append(room)
+        db.session.commit()
+    return render_template('room.html', user=cur_user())
+    
 def allowed_file(filename):
     return ('.' in filename and
             filename.split('.')[-1].lower() in app.config["ALLOWED_EXTENSIONS"])
@@ -112,7 +138,7 @@ def log():
     user = None
 
     if form.submit_log.data and form.validate_on_submit():
-        user = User.get(form.login_log.data)
+        user = User.query.filter_by(login=form.login_log.data).first()
         session["Login"] = user.login
         return redirect(url_for("main"))
 
