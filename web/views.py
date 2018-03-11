@@ -138,7 +138,7 @@ def log():
     user = None
 
     if form.submit_log.data and form.validate_on_submit():
-        user = User.query.filter(login=form.login_log.data).first()
+        user = User.query.filter_by(login=form.login_log.data).first()
         session["Login"] = user.login
         return redirect(url_for("main"))
 
