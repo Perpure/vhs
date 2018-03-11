@@ -1,24 +1,53 @@
 from web import db
+from web import app
 import uuid
 import hashlib
+import os
+from datetime import datetime, date, time
+
+
+likes = db.Table('likes',
+                 db.Column('user_login', db.String(32), db.ForeignKey('user.login'), nullable=False, primary_key=True),
+                 db.Column('video_id', db.Text(), db.ForeignKey('video.id'), primary_key=True)
+                 )
+
+dislikes = db.Table('dislikes',
+                    db.Column('user_login', db.String(32), db.ForeignKey('user.login'), nullable=False,
+                              primary_key=True),
+                    db.Column('video_id', db.Text(), db.ForeignKey('video.id'), primary_key=True)
+                    )
+
 
 class Video(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(100))
-    path = db.Column(db.Text(),  nullable=False)
+    path = db.Column(db.Text(), nullable=False)
+    id = db.Column(db.Text(), primary_key=True)
+    date = db.Column(db.DateTime)
 
-    def __init__(self, title, path):
+    likes = db.relationship('User', secondary=likes, lazy=False,
+                            backref=db.backref('liked', lazy=False))
+
+    dislikes = db.relationship('User', secondary=dislikes, lazy=False,
+                               backref=db.backref('disliked', lazy=False))
+
+    def __init__(self, title):
         self.title = title
-        self.path = path
 
-    def save(self):
+    def save(self, hash, ext):
+        self.date = datetime.now(tz=None)
+        self.id = hashlib.md5((hash + self.date.isoformat()).encode("utf-8")).hexdigest()
+        self.path = os.path.join(app.config['VIDEO_SAVE_PATH'], hash + '.' + ext)
+
         db.session.add(self)
         db.session.commit()
 
+        return self.path
+
     @staticmethod
-    def get(id=None):
-        if id == None: return Video.query.all()
-        return Video.query.get(id)
+    def get(hash=None):
+        if hash == None: return Video.query.all()
+        return Video.query.get(hash)
+
 
 class User(db.Model):
     login = db.Column(db.String(32), nullable=False, primary_key=True)

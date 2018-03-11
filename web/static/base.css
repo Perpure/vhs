@@ -68,7 +68,7 @@ header
 }
 .Menu:hover
 {
-  background-color: #ffb366;
+  background-color: #ffcc99;
   cursor: pointer;
 }
 
@@ -83,7 +83,7 @@ header
   top: 50px;
   left: 0px;
   width: 100%;
-  padding-top: 14px;
+  padding-top: 23px;
 }
 
 .menuBtn
@@ -100,7 +100,7 @@ header
 
 .menuBtn:hover,.regBtn:hover
 {
-  background-color: #ffb366;
+  background-color: #ffcc99;
   cursor: pointer;
 }
 
@@ -176,7 +176,7 @@ input
         }
         .z2{
             display: inline-block;
-            background-color: #FBFF98;
+            background-color: #ffcc99;
             border-radius: 6px;
             padding: 2px;
             cursor: pointer;

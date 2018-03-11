@@ -1,0 +1,1 @@
+[![pipeline status](https://gitlab.informatics.ru/pp17-53/HoE/badges/develop/pipeline.svg)](https://gitlab.informatics.ru/pp17-53/HoE/commits/develop)
