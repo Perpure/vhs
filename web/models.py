@@ -16,10 +16,10 @@ class Video(db.Model):
     def __init__(self, title):
         self.title = title
 
-    def save(self, hash, ext):
+    def save(self, hash):
         self.date = datetime.now(tz=None)
         self.id = hashlib.md5((hash + self.date.isoformat()).encode("utf-8")).hexdigest()
-        self.path = os.path.join(app.config['VIDEO_SAVE_PATH'], hash + '.'+ ext)
+        self.path = os.path.join(app.config['VIDEO_SAVE_PATH'], self.id)
 
         db.session.add(self)
         db.session.commit()
@@ -27,9 +27,10 @@ class Video(db.Model):
         return self.path
 
     @staticmethod
-    def get(hash=None):
-        if hash == None: return Video.query.all()
-        return Video.query.get(hash)
+    def get(video_id=None):
+        if video_id is None:
+            return Video.query.all()
+        return Video.query.get(video_id)
 
 
 

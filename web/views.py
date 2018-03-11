@@ -2,7 +2,7 @@ from flask import redirect, render_template, session, url_for, make_response, re
 from web import app
 from web.forms import RegForm, LogForm, UploadVideoForm
 from web.models import User, Video
-from web import ALLOWED_EXTENSIONS
+from config import ALLOWED_EXTENSIONS
 from .helper import read_image
 from werkzeug.utils import secure_filename
 import hashlib, os
@@ -59,11 +59,14 @@ def upload():
 
         if file and allowed_file(file.filename):
             ext = secure_filename(file.filename).split('.')[-1]
-            hash = hashlib.md5(file.read()).hexdigest()
+            video_hash = hashlib.md5(file.read()).hexdigest()
             file.seek(0)
-            
+
             video = Video(form.title.data)
-            file.save(video.save(hash, ext))
+            directory = video.save(video_hash)
+            os.makedirs(directory)
+            video_path = os.path.join(directory, 'video.' + ext)
+            file.save(video_path)
 
             return redirect(request.url)
 
