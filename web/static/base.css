@@ -262,11 +262,11 @@ input
 }
 
         .content{
-            width: 500px;
+            width: 100%;
             margin: auto;
         }
         .content0{
-            width: 500px;
+            width: 100%;
             height: 210px;
             border-radius: 20px;
             margin: auto;
