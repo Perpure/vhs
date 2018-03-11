@@ -97,7 +97,6 @@ font-size: 120%;
   background-color: #F7E2C0;
   display: none;
   padding-top: 8px;
-  border-bottom:1px solid #ffcc99;
   color:black;
 }
 
@@ -107,6 +106,18 @@ font-size: 120%;
   cursor: pointer;
   
   color:black;
+}
+
+.menuImg
+{
+    height:90%;
+    vertical-align:top;
+}
+
+.menuTxt
+{
+    width:90%;
+    display:inline-block;
 }
 
 main
@@ -250,15 +261,23 @@ input
     padding-left:5px;
 }
 
-.regBtn
+button
 {
     height:40px;
-    padding:5px;
+    padding:10px;
     padding-top:8px;
-    background-color:#F7E2C0;
+    background-color:#f0cb8e;
     transition:0.5s;
     border:none;
+    border-bottom:2px solid #ffb366;
+    border-bottom-right-radius:5px;
+    border-bottom-left-radius:5px;
     font-weight:bold;
+}
+
+button:active
+{
+    background-color:#ffb366;
 }
 
 .INP
