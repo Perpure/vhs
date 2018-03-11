@@ -23,6 +23,7 @@ class Video(db.Model):
 class User(db.Model):
     login = db.Column(db.String(32), nullable=False, primary_key=True)
     password = db.Column(db.String(64), nullable=False)
+    rooms = db.Column(db.Text())
 
     def __init__(self, login):
         self.login = login

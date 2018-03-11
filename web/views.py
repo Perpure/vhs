@@ -50,7 +50,15 @@ def addroom():
 
 @app.route('/room/<string:token>', methods=['GET', 'POST'])
 def room(token):
-    print (token)
+    user=cur_user()
+    if user:
+        room = Room.query.filter_by(token=token).first()
+        if user.rooms:
+            if not(str(room.id) in user.rooms.split(',')):
+                user.rooms+=','+str(room.id)
+        else:
+            user.rooms=str(room.id)
+        db.session.commit()
     return render_template('room.html', user=cur_user())
 
 def allowed_file(filename):
