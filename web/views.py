@@ -11,7 +11,7 @@ from string import ascii_letters
 
 def cur_user():
     if 'Login' in session:
-        return User.query.get(session['Login'])
+        return  User.query.filter_by(login=session['Login']).first()
     else:
         return None
 
@@ -53,11 +53,8 @@ def room(token):
     user=cur_user()
     if user:
         room = Room.query.filter_by(token=token).first()
-        if user.rooms:
-            if not(str(room.id) in user.rooms.split(',')):
-                user.rooms+=','+str(room.id)
-        else:
-            user.rooms=str(room.id)
+        if not(room.id in user.Room):
+            user.Room.append(room)
         db.session.commit()
     return render_template('room.html', user=cur_user())
 
@@ -121,7 +118,7 @@ def log():
     user = None
 
     if form.submit_log.data and form.validate_on_submit():
-        user = User.get(form.login_log.data)
+        user = User.query.filter(login=form.login_log.data).first()
         session["Login"] = user.login
         return redirect(url_for("main"))
 

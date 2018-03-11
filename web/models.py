@@ -2,6 +2,11 @@ from web import db
 import uuid
 import hashlib
 
+association_table = db.Table('association', db.Model.metadata,
+    db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
+    db.Column('Room_id', db.Integer, db.ForeignKey('Room.id'))
+)
+
 class Video(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(100))
@@ -21,10 +26,13 @@ class Video(db.Model):
         return Video.query.get(id)
 
 class User(db.Model):
-    login = db.Column(db.String(32), nullable=False, primary_key=True)
+    __tablename__ = 'User'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    login = db.Column(db.String(32), nullable=False)
     password = db.Column(db.String(64), nullable=False)
-    rooms = db.Column(db.Text())
-
+    Room = db.relationship("Room",
+                secondary=association_table,
+                backref="User")
     def __init__(self, login):
         self.login = login
 
@@ -44,6 +52,7 @@ class User(db.Model):
         return User.query.get(login)
 
 class Room(db.Model):
+    __tablename__ = 'Room'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     token = db.Column(db.String(64), nullable=False)
 
