@@ -12,6 +12,7 @@ class Video(db.Model):
     path = db.Column(db.Text(),  nullable=False)
     id = db.Column(db.Text(), primary_key=True)
     date = db.Column(db.DateTime)
+    comments = db.relationship('Comment', backref='video', lazy='joined')
 
     def __init__(self, title):
         self.title = title
@@ -31,12 +32,23 @@ class Video(db.Model):
         if hash == None: return Video.query.all()
         return Video.query.get(hash)
 
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.Text())
+    video_id = db.Column(db.Integer, db.ForeignKey('video.id'),nullable=False)
+    user_login = db.Column(db.Integer, db.ForeignKey('user.login'), nullable=False)
+
+    def __init__(self, text, video_id, user_login):
+        self.text = text
+        self.user_login = user_login
+        self.video_id = video_id
 
 
 
 class User(db.Model):
     login = db.Column(db.String(32), nullable=False, primary_key=True)
     password = db.Column(db.String(64), nullable=False)
+    comments = db.relationship('Comment', backref='user', lazy='joined')
 
     def __init__(self, login):
         self.login = login
