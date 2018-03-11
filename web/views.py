@@ -57,13 +57,15 @@ def upload():
             return redirect(request.url)
 
         if file and allowed_file(file.filename):
-            ext = secure_filename(file.filename).split('.')[-1]
+            video = Video(form.title.data)
+            
             video_hash = hashlib.md5(file.read()).hexdigest()
             file.seek(0)
-
-            video = Video(form.title.data)
+            
             directory = video.save(video_hash)
             os.makedirs(directory)
+            
+            ext = secure_filename(file.filename).split('.')[-1]
             video_path = os.path.join(directory, 'video.' + ext)
             file.save(video_path)
 
