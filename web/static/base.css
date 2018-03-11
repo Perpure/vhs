@@ -22,7 +22,6 @@ header
   height: 100%;
   padding-bottom: 5px;
   vertical-align: top;
-  font-size: 120%;
 }
 .Logo,.Menu
 {
@@ -65,12 +64,12 @@ header
   text-align: center;
   padding-top: 15px;
   position: relative;
+font-size: 120%;
 }
 .Menu:hover
 {
   background-color: #ffcc99;
   cursor: pointer;
-  color:white;
 }
 
 .Menu:hover .menuBtn
@@ -99,14 +98,15 @@ header
   display: none;
   padding-top: 8px;
   border-bottom:1px solid #ffcc99;
+  color:black;
 }
 
 .menuBtn:hover,.regBtn:hover
 {
   background-color: #ffcc99;
   cursor: pointer;
-  color:white;
-  font-weight:bold;
+  
+  color:black;
 }
 
 main
@@ -230,10 +230,16 @@ footer
     margin-right:9px;
 }
 
-a,a:hover
+a
 {
     text-decoration:none;
     color:#a36709;
+}
+
+a:hover
+{
+    text-decoration:none;
+    color:#714707;
 }
 
 input
