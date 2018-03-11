@@ -1,6 +1,11 @@
 from web import db
+from web import app
 import uuid
 import hashlib
+import os
+from datetime import datetime, date, time
+
+
 
 association_table = db.Table('association', db.Model.metadata,
     db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
@@ -8,22 +13,32 @@ association_table = db.Table('association', db.Model.metadata,
 )
 
 class Video(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(100))
     path = db.Column(db.Text(),  nullable=False)
+    id = db.Column(db.Text(), primary_key=True)
+    date = db.Column(db.DateTime)
 
-    def __init__(self, title, path):
+    def __init__(self, title):
         self.title = title
-        self.path = path
 
-    def save(self):
+    def save(self, hash):
+        self.date = datetime.now(tz=None)
+        self.id = hashlib.md5((hash + self.date.isoformat()).encode("utf-8")).hexdigest()
+        self.path = os.path.join(app.config['VIDEO_SAVE_PATH'], self.id)
+
         db.session.add(self)
         db.session.commit()
 
+        return self.path
+
     @staticmethod
-    def get(id=None):
-        if id == None: return Video.query.all()
-        return Video.query.get(id)
+    def get(video_id=None):
+        if video_id is None:
+            return Video.query.all()
+        return Video.query.get(video_id)
+
+
+
 
 class User(db.Model):
     __tablename__ = 'User'
