@@ -1,30 +1,12 @@
-from flask import redirect, render_template, session, url_for, make_response, request
+from flask import redirect, render_template, session, url_for,\
+    make_response, request
 from web import app
 from web.forms import RegForm, LogForm, UploadVideoForm
 from web.models import User, Video
 from web import ALLOWED_EXTENSIONS
-from .helper import read_image
+from .helper import read_image, requiresauth, cur_user
 from werkzeug.utils import secure_filename
-from werkzeug.exceptions import Aborter
-from functools import wraps
-import hashlib, os
-
-
-def cur_user():
-    if 'Login' in session:
-        return User.query.get(session['Login'])
-    else:
-        return None
-
-
-def requiresauth(f):
-    @wraps(f)
-    def wrapped(*args, **kwargs):
-        if cur_user() == None:
-            abort = Aborter()
-            return abort(403)
-        return f(*args, **kwargs)
-    return wrapped
+import hashlib
 
 
 @app.route('/images/<int:pid>.jpg')
@@ -69,7 +51,7 @@ def upload():
             ext = secure_filename(file.filename).split('.')[-1]
             hash = hashlib.md5(file.read()).hexdigest()
             file.seek(0)
-            
+
             video = Video(form.title.data)
             file.save(video.save(hash, ext))
 
@@ -80,12 +62,14 @@ def upload():
 
 @app.route('/rezult1', methods=['GET', 'POST'])
 def rezult1():
-    return render_template('rezult.html', pid=1, top=0, left=0, right=0, bottom=0)
+    return render_template('rezult.html',
+                           pid=1, top=0, left=0, right=0, bottom=0)
 
 
 @app.route('/rezult2', methods=['GET', 'POST'])
 def rezult2():
-    return render_template('rezult.html', pid=1, top=0, left=-400, right=0, bottom=0)
+    return render_template('rezult.html',
+                           pid=1, top=0, left=-400, right=0, bottom=0)
 
 
 @app.route('/reg', methods=['GET', 'POST'])
