@@ -1,3 +1,5 @@
+# coding=utf-8
+"""Файл инициализации Flask-приложения"""
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 

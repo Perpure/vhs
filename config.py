@@ -1,3 +1,5 @@
+# coding=utf-8
+"""Файл начальной инициализации приложения"""
 import os
 
 # CSRF_ENABLED = True
