@@ -18,6 +18,11 @@ dislikes = db.Table('dislikes',
                     )
 
 
+association_table = db.Table('association', db.Model.metadata,
+    db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
+    db.Column('Room_id', db.Integer, db.ForeignKey('Room.id'))
+)
+
 class Video(db.Model):
     title = db.Column(db.String(100))
     path = db.Column(db.Text(), nullable=False)
@@ -33,10 +38,10 @@ class Video(db.Model):
     def __init__(self, title):
         self.title = title
 
-    def save(self, hash, ext):
+    def save(self, hash):
         self.date = datetime.now(tz=None)
         self.id = hashlib.md5((hash + self.date.isoformat()).encode("utf-8")).hexdigest()
-        self.path = os.path.join(app.config['VIDEO_SAVE_PATH'], hash + '.' + ext)
+        self.path = os.path.join(app.config['VIDEO_SAVE_PATH'], self.id)
 
         db.session.add(self)
         db.session.commit()
@@ -44,15 +49,20 @@ class Video(db.Model):
         return self.path
 
     @staticmethod
-    def get(hash=None):
-        if hash == None: return Video.query.all()
-        return Video.query.get(hash)
+    def get(video_id=None):
+        if video_id is None:
+            return Video.query.all()
+        return Video.query.get(video_id)
 
 
 class User(db.Model):
-    login = db.Column(db.String(32), nullable=False, primary_key=True)
+    __tablename__ = 'User'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    login = db.Column(db.String(32), nullable=False)
     password = db.Column(db.String(64), nullable=False)
-
+    Room = db.relationship("Room",
+                secondary=association_table,
+                backref="User")
     def __init__(self, login):
         self.login = login
 
@@ -70,3 +80,8 @@ class User(db.Model):
         if not login:
             return User.query.all()
         return User.query.get(login)
+
+class Room(db.Model):
+    __tablename__ = 'Room'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    token = db.Column(db.String(64), nullable=False)

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block content %}
+{% block content %}        
     <div class="container">
         <div class="content">
          <div class="z1 z2" onclick="func(this)">Информация о пользователе</div>
@@ -7,17 +7,20 @@
          <div class="z1" onclick="func(this)">Настройки</div>
          <br>
          <div class="con con2">
-             <img class="ava" src="../static/a.png">
-             <br>
+             <div class="content0">
+             <img class="ava" src="../static/a.png">             
+                <div class="ava2">
              Пользователь (Имя)
-        </div>
-         <div class="con">
-             (Тут будут видео)
-             <br>
-             Информация о канале:
+            <br>
+            Информация о канале:
              <div class="info">
               Информация не указана.   
              </div>
+                 </div>
+             </div>
+        </div>
+         <div class="con">
+             (Тут будут видео)            
         </div>
          <div class="con">
              <div class="set">
@@ -39,15 +42,7 @@
              Изменить фон канала:
              (Загрузка картинки)
              <br>
-            </div>
-            <div class="set">
-             Изменить тему приложения:
-             <select>
-              <option>Светлая</option>
-              <option>Тёмная</option>
-            </select>
-             <br>
-            </div>
+            </div>            
             <div class="set">
              Указать информацию о канале
              <input type="text">
@@ -60,10 +55,10 @@
             </div>
             <div class="set">
              <input type="submit" class="but" value="Сохранить">
-            </div>
-        </div>
+            </div>        
         </div>
     </div>
+            </div>
     <script>
         'use strict'
     function func(a){
@@ -85,4 +80,4 @@
         acon[x].classList.add('con2');
     }
     </script>
-{% endblock %}
+ {% endblock %}

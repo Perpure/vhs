@@ -1,4 +1,11 @@
 <!DOCTYPE html>
+<!--
+█─█─█──█─███
+█─█─█──█─█
+█─█─████─███
+███─█──█───█
+─█──█──█─███
+-->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -11,22 +18,22 @@
 <body>
   <header>
     <div class="Logo">
-      <img src="static/Logo.png" alt="" class="LogoImg">
-      <div class="LogoTxt">VideoHosting</div>
+      <a href="{{url_for('main')}}" class="Link"><img src="static/vhs4.png" alt="" class="LogoImg"></a>
+      <div class="LogoTxt">VideoHostingService</div>
     </div>
     <div class="midHead"></div>
     <div class="Menu">
       Меню
       <div class="inMenu">
         {%if user %}
-        <div class="menuBtn"><a href="{{url_for('logout')}}" class="Link">Выйти</a></div>
-        <div class="menuBtn"><a href="{{url_for('cabinet')}}" class="Link">Мой Канал</a></div>
-        <div class="menuBtn"><a href="{{url_for('upload')}}" class="Link">Загрузить Видео</a></div>
+        <a href="{{url_for('logout')}}" class="Link"><div class="menuBtn">Выйти</div></a>
+        <a href="{{url_for('cabinet')}}" class="Link"><div class="menuBtn">Мой Канал</div></a>
+        <a href="{{url_for('upload')}}" class="Link"><div class="menuBtn">Загрузить Видео</div></a>
         {%else%}
-        <div class="menuBtn"><a href="{{url_for('log')}}" class="Link">Войти</a></div>
-        <div class="menuBtn"><a href="{{url_for('reg')}}" class="Link">Регистрация</a></div>
+        <a href="{{url_for('log')}}" class="Link"><div class="menuBtn">Войти</div></a>
+        <a href="{{url_for('reg')}}" class="Link"><div class="menuBtn">Регистрация</div></a>
         {%endif%}
-        <div class="menuBtn"><a href="{{url_for('main')}}" class="Link">Главная</a></div>
+        <a href="{{url_for('main')}}" class="Link"><div class="menuBtn">Главная</div></a>
       </div>
     </div>
   </header>
@@ -37,6 +44,7 @@
   </main>
   <footer>
     <div class="Foot">
+      <div class="Contact"><a href="https://vk.com/shpteam" class="Link"><img src="static/vk.png" alt="" class="contImg"></a><img src="static/fb.png" alt="" class="contImg"></div>
       2018, 53rd Group
     </div>
   </footer>
