@@ -6,16 +6,17 @@ import os
 from datetime import datetime, date, time
 
 
-likes = db.Table('likes',
-                 db.Column('user_login', db.String(32), db.ForeignKey('user.login'), nullable=False, primary_key=True),
-                 db.Column('video_id', db.Text(), db.ForeignKey('video.id'), primary_key=True)
-                 )
+likes = db.Table('likes', db.Model.metadata,
+                db.Column('user_login', db.String(32), db.ForeignKey('User.login'), 
+                    nullable=False, primary_key=True),
+                db.Column('video_id', db.Text(), db.ForeignKey('video.id'), 
+                    nullable=False, primary_key=True))
 
-dislikes = db.Table('dislikes',
-                    db.Column('user_login', db.String(32), db.ForeignKey('user.login'), nullable=False,
-                              primary_key=True),
-                    db.Column('video_id', db.Text(), db.ForeignKey('video.id'), primary_key=True)
-                    )
+dislikes = db.Table('dislikes', 
+                db.Column('user_login', db.String(32), db.ForeignKey('User.login'), 
+                    nullable=False, primary_key=True),
+                db.Column('video_id', db.Text(), db.ForeignKey('video.id'), 
+                    nullable=False, primary_key=True))
 
 
 association_table = db.Table('association', db.Model.metadata,
