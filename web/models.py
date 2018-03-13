@@ -43,6 +43,9 @@ class Comment(db.Model):
         self.user_login = user_login
         self.video_id = video_id
 
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
 
 
 class User(db.Model):
