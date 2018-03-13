@@ -5,7 +5,7 @@ from flask import redirect, render_template, session, url_for,\
     make_response, request
 from werkzeug.utils import secure_filename
 from web import app
-from web.forms import RegForm, LogForm, UploadVideoForm
+from web.forms import RegForm, LogForm, UploadVideoForm, UserProfileForm
 from web.models import User, Video
 from .helper import read_image, requiresauth, cur_user, allowed_file
 
@@ -135,7 +135,12 @@ def cabinet():
     Отвечает за вывод страницы личного кабинета
     :return: Страница личного кабинета
     """
-    return render_template('cabinet.html', user=cur_user())
+    form = UserProfileForm()
+
+    if form.validate_on_submit():
+        pass
+
+    return render_template('cabinet.html', form=form, user=cur_user())
 
 
 @app.route('/logout', methods=['GET', 'POST'])
