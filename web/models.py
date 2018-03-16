@@ -50,9 +50,13 @@ class User(db.Model):
     """Класс описывающий модель Пользователя"""
     login = db.Column(db.String(32), nullable=False, primary_key=True)
     password = db.Column(db.String(64), nullable=False)
+    name = db.Column(db.String(32), nullable=False)
+    channel_info = db.Column(db.String(64))
 
     def __init__(self, login):
         self.login = login
+        self.name = login
+        self.channel_info = ""
 
     def save(self, password):
         """
@@ -73,6 +77,16 @@ class User(db.Model):
         temp = User.query.get(self.login)
         return temp and temp.password == hashlib.sha512(
             password.encode("utf-8")).hexdigest()
+
+    def change_name(self, name):
+        self.name = name
+        db.session.add(self)
+        db.session.commit()
+
+    def change_channel_info(self, info):
+        self.channel_info = info
+        db.session.add(self)
+        db.session.commit()
 
     @staticmethod
     def get(login=None):
