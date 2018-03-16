@@ -2,7 +2,7 @@
 """Данный файл описывает формы приложения"""
 from flask_wtf import FlaskForm
 from wtforms import TextAreaField, StringField, PasswordField, SubmitField, FileField
-from wtforms.validators import Length, EqualTo, ValidationError
+from wtforms.validators import Length, EqualTo, ValidationError, Optional
 from web.models import User
 
 
@@ -67,12 +67,12 @@ class UploadVideoForm(FlaskForm):
 
 class UserProfileForm(FlaskForm):
     """Форма редактирования профиля пользователя"""
-    change_name = StringField("Изменить имя:", validators=[Length(3)])
-    change_password = PasswordField("Изменить пароль:", validators=[Length(8)])
+    change_name = StringField("Изменить имя:", validators=[Length(3), Optional()])
+    change_password = PasswordField("Изменить пароль:", validators=[Length(8), Optional()])
     change_avatar = FileField("Изменить аватар профиля:")
     change_background = FileField("Изменить фон канала:")
-    channel_info =StringField("Указать информацию о канале:",
-                                 validators=[Length(8)])
+    channel_info = StringField("Указать информацию о канале:",
+                               validators=[Length(8), Optional()])
     current_password = PasswordField("Введите свой текущий пароль для подтверждения изменений:",
-                                     validators=[Length(8)])
+                                     validators=[Length(8), match])
     submit_changes = SubmitField("Сохранить")

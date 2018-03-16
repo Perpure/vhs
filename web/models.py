@@ -56,7 +56,7 @@ class User(db.Model):
     def __init__(self, login):
         self.login = login
         self.name = login
-        self.channel_info = ""
+        self.channel_info = "channel_info"
 
     def save(self, password):
         """
@@ -79,11 +79,19 @@ class User(db.Model):
             password.encode("utf-8")).hexdigest()
 
     def change_name(self, name):
+        """
+        Метод, изменяющий имя пользователя
+        :param name: Имя пользователя
+        """
         self.name = name
         db.session.add(self)
         db.session.commit()
 
     def change_channel_info(self, info):
+        """
+        Метод, изменяющий информацию о канале пользователя
+        :param info: Информация о канале
+        """
         self.channel_info = info
         db.session.add(self)
         db.session.commit()

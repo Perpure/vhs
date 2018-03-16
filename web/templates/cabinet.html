@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block content %}        
+{% block content %}
     <div class="container">
         <div class="content">
          <div class="z1 z2" onclick="func(this)">Информация о пользователе</div>
@@ -10,11 +10,11 @@
              <div class="content0">
              <img class="ava" src="../static/a.png">             
                 <div class="ava2">
-             Пользователь (Имя)
+             Пользователь {{ user.name }}
             <br>
             Информация о канале:
              <div class="info">
-              Информация не указана.   
+              {{ user.channel_info }}
              </div>
                  </div>
              </div>
@@ -22,7 +22,8 @@
          <div class="con">
              (Тут будут видео)            
         </div>
-        <form>
+        <form action="" method="post">
+             {{form.hidden_tag()}}
              <div class="con">
                  <div class="set">
                  {{ form.change_name.label }}

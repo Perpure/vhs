@@ -136,16 +136,18 @@ def cabinet():
     :return: Страница личного кабинета
     """
     form = UserProfileForm()
-
+    print("start")
     if form.validate_on_submit():
-        user = User.get(session["Login"])
+        print("validate")
+        user = User.query.get(session['Login'])
         if form.change_name.data:
             user.change_name(form.change_name.data)
         if form.change_password.data:
             user.save(form.change_password.data)
         if form.channel_info.data:
             user.change_channel_info(form.channel_info.data)
-
+        return redirect(url_for("cabinet"))
+    print("end")
     return render_template('cabinet.html', form=form, user=cur_user())
 
 
