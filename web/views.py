@@ -3,7 +3,8 @@ from web import app
 from web.forms import RegForm, LogForm, UploadVideoForm
 from web.models import User, Video
 from .helper import read_image
-from web.video_handler import save_video, create_preview, standardize_video_extension
+from werkzeug.utils import secure_filename
+import hashlib, os
 
 
 
@@ -56,7 +57,17 @@ def upload():
             return redirect(request.url)
 
         if file and allowed_file(file.filename):
-            save_video(file, form.title.data)
+            video = Video(form.title.data)
+            
+            video_hash = hashlib.md5(file.read()).hexdigest()
+            file.seek(0)
+            
+            directory = video.save(video_hash)
+            os.makedirs(directory)
+            
+            ext = secure_filename(file.filename).split('.')[-1]
+            video_path = os.path.join(directory, 'video.' + ext)
+            file.save(video_path)
 
             return redirect(request.url)
 
