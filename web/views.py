@@ -3,12 +3,11 @@ from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm
 from web.models import User, Video, Room
 from .helper import read_image
-from werkzeug.utils import secure_filename
 from random import choice
 from string import ascii_letters
 from werkzeug.exceptions import Aborter
 from functools import wraps
-import hashlib, os
+from web.video_handler import save_video
 
 
 def cur_user():
