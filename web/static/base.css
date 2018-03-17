@@ -101,7 +101,7 @@ font-size: 120%;
   color:black;
 }
 
-.menuBtn:hover,.regBtn:hover
+.menuBtn:hover,.regBtn:hover,.tokenBtnMid:hover,.tokenBtnEdge:hover
 {
   background-color: #ffcc99;
   cursor: pointer;
@@ -265,6 +265,42 @@ input
 {
     width:300px;
     margin:0 auto;
+}
+
+.token
+{
+    width:70%;
+    margin:0 auto;
+    height:40px;
+}
+
+.tokenTxt
+{
+    width:50%;
+    height:100%;
+    display:inline-block;
+    background-color:#fff3e6;
+    padding-top:10px;
+    vertical-align:top;
+    text-align:center;
+}
+
+.tokenBtnEdge
+{
+    border-top-right-radius:5px;
+    border-bottom-right-radius:5px;
+    border-left:1px solid black;
+}
+.tokenBtnEdge,.tokenBtnMid
+{
+    display:inline-block;
+    width:24%;
+    background-color:#ffcc99;
+    height:100%;
+    vertical-align:top;
+    margin-left:-5px;
+    text-align:center;
+    padding-top:10px;
 }
 
         .content{
