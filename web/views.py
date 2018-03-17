@@ -1,21 +1,31 @@
 from flask import redirect, render_template, session, url_for, make_response, request
-from web import app
-from web.forms import RegForm, LogForm, UploadVideoForm
-from web.models import User, Video
+from web import app, db
+from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm
+from web.models import User, Video, Room
 from .helper import read_image
-from web.video_handler import save_video
-
+from werkzeug.utils import secure_filename
+from random import choice
+from string import ascii_letters
+from werkzeug.exceptions import Aborter
+from functools import wraps
+import hashlib, os
 
 
 def cur_user():
     if 'Login' in session:
-        return User.query.get(session['Login'])
+        return  User.query.filter_by(login=session['Login']).first()
     else:
         return None
 
 
-def is_auth():
-    return 'Login' in session
+def requiresauth(f):
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+        if cur_user() == None:
+            abort = Aborter()
+            return abort(403)
+        return f(*args, **kwargs)
+    return wrapped
 
 
 @app.route('/images/<int:pid>.jpg')
@@ -32,7 +42,31 @@ def get_image(pid):
 def main():
     return render_template('main.html', user=cur_user())
 
+@app.route('/viewroom', methods=['GET', 'POST'])
+def viewroom():
+    form = JoinForm(csrf_enabled=False)
+    if form.validate_on_submit():
+        if Room.query.filter_by(token=str(form.token.data)):
+            return redirect(url_for('room', token=form.token.data))
+    return render_template('viewroom.html', user=cur_user(), form=form)
 
+@app.route('/addroom', methods=['GET', 'POST'])
+def addroom():
+    token=''.join(choice(ascii_letters) for i in range(24))
+    db.session.add(Room(token=token))
+    db.session.commit()
+    return render_template('addroom.html', user=cur_user(), token=token)
+
+@app.route('/room/<string:token>', methods=['GET', 'POST'])
+def room(token):
+    user=cur_user()
+    if user:
+        room = Room.query.filter_by(token=token).first()
+        if not(room.id in user.Room):
+            user.Room.append(room)
+        db.session.commit()
+    return render_template('room.html', user=cur_user())
+    
 def allowed_file(filename):
     return ('.' in filename and
             filename.split('.')[-1].lower() in app.config["ALLOWED_EXTENSIONS"])
@@ -44,8 +78,10 @@ def multicheck():
 
 
 @app.route('/upload', methods=['GET', 'POST'])
+@requiresauth
 def upload():
     form = UploadVideoForm(csrf_enabled=False)
+
     if form.validate_on_submit():
         if 'video' not in request.files:
             return redirect(request.url)
@@ -60,7 +96,7 @@ def upload():
 
             return redirect(request.url)
 
-    return render_template('upload_video.html', form=form, user=is_auth())
+    return render_template('upload_video.html', form=form, user=cur_user())
 
 
 @app.route('/rezult1', methods=['GET', 'POST'])
@@ -84,7 +120,7 @@ def reg():
         session["Login"] = user.login
         return redirect(url_for("main"))
 
-    return render_template('reg.html', form=form, user=user)
+    return render_template('reg.html', form=form, user=cur_user())
 
 
 @app.route('/auth', methods=['GET', 'POST'])
@@ -93,16 +129,17 @@ def log():
     user = None
 
     if form.submit_log.data and form.validate_on_submit():
-        user = User.get(form.login_log.data)
+        user = User.query.filter_by(login=form.login_log.data).first()
         session["Login"] = user.login
         return redirect(url_for("main"))
 
-    return render_template('auth.html', form=form, user=is_auth())
+    return render_template('auth.html', form=form, user=cur_user())
 
 
 @app.route('/cabinet', methods=['GET', 'POST'])
+@requiresauth
 def cabinet():
-    return render_template('Cabinet.html', user=is_auth())
+    return render_template('Cabinet.html', user=cur_user())
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -112,8 +149,13 @@ def logout():
     return redirect('/')
 
 
+@app.route('/play', methods=['GET', 'POST'])
+def play():
+    return render_template('play.html', user=cur_user())
+
+
 @app.errorhandler(403)
-def page_not_found(e):
+def forbidden(e):
     return render_template('403.html'), 403
 
 
@@ -123,6 +165,5 @@ def page_not_found(e):
 
 
 @app.errorhandler(500)
-def page_not_found(e):
+def internal_server_error(e):
     return render_template('500.html'), 500
-
