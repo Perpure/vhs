@@ -4,7 +4,7 @@
     <title>Upload new File</title>
     <h1>Загрузите видео</h1>
     <p>Введите название видео</p>
-    <form action="" method="post">
+    <form action="" method="post" enctype="multipart/form-data">
         <div> {{ form.title }} </div>
         {% if form.title.errors %}
             {% for error in form.title.errors %}

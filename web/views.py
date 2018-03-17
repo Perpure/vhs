@@ -81,6 +81,7 @@ def multicheck():
 @requiresauth
 def upload():
     form = UploadVideoForm(csrf_enabled=False)
+
     if form.validate_on_submit():
         if 'video' not in request.files:
             return redirect(request.url)
