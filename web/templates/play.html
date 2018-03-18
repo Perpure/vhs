@@ -2,6 +2,16 @@
 {% block content %}
 <div class="videoShow"></div>
 <p class="videoTitle">ШОК! 1991+ ЕЛЬЦИН ОКАЗАЛСЯ...</p>
+<div>
+<form>
+    <input type="hidden" name="type" value="like">
+    <button type="submit" id="like"><img height="20" width="20" src="http://images.clipartpanda.com/like-clipart-noun-project-330.png"></button>
+</form>
+<form>
+    <input type="hidden" name="type" value="dislike">
+    <button type="submit" id="dislike"><img height="20" width="20" src="https://image.freepik.com/free-icon/dislike-on-facebook-thumb-down-symbol-outline_318-37193.jpg"></button>
+</form>
+</div>
 {%if user %}
 
 {%else%}
