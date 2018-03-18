@@ -12,6 +12,11 @@ association_table = db.Table('association', db.Model.metadata,
     db.Column('Room_id', db.Integer, db.ForeignKey('Room.id'))
 )
 
+association_table2 = db.Table('association2', db.Model.metadata,
+    db.Column('Color_id', db.Integer, db.ForeignKey('Color.id')),
+    db.Column('Room_id', db.Integer, db.ForeignKey('Room.id'))
+)
+
 class Video(db.Model):
     title = db.Column(db.String(100))
     path = db.Column(db.Text(),  nullable=False)
@@ -47,7 +52,8 @@ class User(db.Model):
     password = db.Column(db.String(64), nullable=False)
     Room = db.relationship("Room",
                 secondary=association_table,
-                backref="User")
+                backref="User",
+                lazy='dynamic')
     def __init__(self, login):
         self.login = login
 
@@ -70,4 +76,14 @@ class Room(db.Model):
     __tablename__ = 'Room'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     token = db.Column(db.String(64), nullable=False)
+    color_user = db.Column(db.Text())
+    Color = db.relationship("Color",
+                secondary=association_table2,
+                backref="Room",
+                lazy='dynamic')
+
+class Color(db.Model):
+    __tablename__ = 'Color'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    color = db.Column(db.String(64), nullable=False)
 

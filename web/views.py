@@ -1,7 +1,7 @@
 from flask import redirect, render_template, session, url_for, make_response, request
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm
-from web.models import User, Video, Room
+from web.models import User, Video, Room, Color
 from .helper import read_image
 from werkzeug.utils import secure_filename
 from random import choice
@@ -44,17 +44,32 @@ def main():
 
 @app.route('/viewroom', methods=['GET', 'POST'])
 def viewroom():
-    form = JoinForm(csrf_enabled=False)
-    if form.validate_on_submit():
-        if Room.query.filter_by(token=str(form.token.data)):
-            return redirect(url_for('room', token=form.token.data))
-    return render_template('viewroom.html', user=cur_user(), form=form)
+    user=cur_user()
+    if user:
+        form = JoinForm(csrf_enabled=False)
+        if form.validate_on_submit():
+            if Room.query.filter_by(token=str(form.token.data)):
+                return redirect(url_for('room', token=form.token.data))
+        rooms = user.Room.all()
+    else:
+        return redirect(url_for('log'))
+    return render_template('viewroom.html', user=cur_user(), form=form, rooms = rooms)
 
 @app.route('/addroom', methods=['GET', 'POST'])
 def addroom():
-    token=''.join(choice(ascii_letters) for i in range(24))
-    db.session.add(Room(token=token))
-    db.session.commit()
+    user=cur_user()
+    if user:
+        token=''.join(choice(ascii_letters) for i in range(24))
+        room=Room(token=token)
+        for i in range(1,7):
+            room.Color.append(Color.query.filter_by(id=str(i)).first())
+        db.session.add(room)
+        db.session.commit()
+        user.Room.append(room)
+        room.color_user = str(user.id) + ',1'
+        db.session.commit()
+    else:
+        return redirect(url_for('log'))
     return render_template('addroom.html', user=cur_user(), token=token)
 
 @app.route('/room/<string:token>', methods=['GET', 'POST'])
@@ -62,19 +77,30 @@ def room(token):
     user=cur_user()
     if user:
         room = Room.query.filter_by(token=token).first()
-        if not(room.id in user.Room):
+        if not(room in user.Room):
             user.Room.append(room)
-        db.session.commit()
-    return render_template('room.html', user=cur_user())
+            if room.color_user:
+                color_id = len(room.color_user.split(';')) + 1
+                room.color_user += ';' + str(user.id) + ',' + str(color_id)
+            else:
+                room.color_user = str(user.id) + ',1'
+            db.session.commit()
+        colors=room.color_user.split(';')
+        for i in range(len(colors)):
+            if colors[i].split(',')[0] == str(user.id):
+                calibrate_url = url_for('calibrate', color=Color.query.filter_by(id=colors[i].split(',')[1]).first().color)
+                break
+    else:
+        return redirect(url_for('log'))
+    return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url)
     
 def allowed_file(filename):
     return ('.' in filename and
             filename.split('.')[-1].lower() in app.config["ALLOWED_EXTENSIONS"])
 
-
-@app.route('/calibrate', methods=['GET', 'POST'])
-def multicheck():
-    return render_template('color.html', color="#FF0000")
+@app.route('/calibrate/<string:color>', methods=['GET', 'POST'])
+def calibrate(color):
+    return render_template('color.html', color=color)
 
 
 @app.route('/upload', methods=['GET', 'POST'])
