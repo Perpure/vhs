@@ -11,7 +11,7 @@ class UploadVideoForm(FlaskForm):
     submit = SubmitField("Загрузить")
 
 def NotExist(form, field):
-    if User.get(login=field.data):
+    if User.query.filter_by(login=field.data).first():
         raise ValidationError("Такой пользователь уже существует")
 
 
@@ -35,9 +35,11 @@ class RegForm(FlaskForm):
     submit_reg = SubmitField("Зарегистрироваться")
     submit_main = SubmitField("На главную")
 
+
 class JoinForm(FlaskForm):
     token = StringField("Токен")
     submit = SubmitField("Присоединиться")
+
 
 class LogForm(FlaskForm):
     login_log = StringField("Имя пользователя", validators=[Length(5), Exist]) #

@@ -24,6 +24,7 @@ association_table = db.Table('association', db.Model.metadata,
     db.Column('Room_id', db.Integer, db.ForeignKey('Room.id'))
 )
 
+
 class Video(db.Model):
     title = db.Column(db.String(100))
     path = db.Column(db.Text(), nullable=False)
@@ -75,12 +76,12 @@ class Comment(db.Model):
 class User(db.Model):
     __tablename__ = 'User'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    login = db.Column(db.String(32), nullable=False)
+    login = db.Column(db.String(32), unique=True, nullable=False)
     password = db.Column(db.String(64), nullable=False)
     comments = db.relationship('Comment', backref='user', lazy='joined')
     Room = db.relationship("Room",
-                secondary=association_table,
-                backref="User")
+                secondary = association_table,
+                backref = "User")
 
     def __init__(self, login):
         self.login = login
@@ -98,7 +99,8 @@ class User(db.Model):
     def get(login=None):
         if not login:
             return User.query.all()
-        return User.query.get(login)
+        return User.query.filter_by(login).first
+
 
 class Room(db.Model):
     __tablename__ = 'Room'

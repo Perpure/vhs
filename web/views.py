@@ -125,10 +125,13 @@ def reg():
     user = None
 
     if form.validate_on_submit():
-        user = User(form.login_reg.data)
-        user.save(form.password_reg.data)
-        session["Login"] = user.login
-        return redirect(url_for("main"))
+        if User.query.filter_by(login=form.login_reg.data):
+            user = User(login=form.login_reg.data)
+            user.save(form.password_reg.data)
+            session["Login"] = user.login
+            return redirect(url_for("main"))
+        else:
+            pass
 
     return render_template('reg.html', form=form, user=cur_user())
 
