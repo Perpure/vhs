@@ -22,7 +22,6 @@ header
   height: 100%;
   padding-bottom: 5px;
   vertical-align: top;
-  font-size: 120%;
 }
 .Logo,.Menu
 {
@@ -65,6 +64,7 @@ header
   text-align: center;
   padding-top: 15px;
   position: relative;
+font-size: 120%;
 }
 .Menu:hover
 {
@@ -92,16 +92,21 @@ header
   width: 100%;
   height: 40px;
   padding: 1%;
-  text-align: center;
+  padding-left:15px;
+  text-align: left;
   background-color: #F7E2C0;
   display: none;
   padding-top: 8px;
+  border-bottom:1px solid #ffcc99;
+  color:black;
 }
 
 .menuBtn:hover,.regBtn:hover
 {
   background-color: #ffcc99;
   cursor: pointer;
+  
+  color:black;
 }
 
 main
@@ -118,6 +123,78 @@ main
   margin-bottom: 15px;
 }
 
+.video
+{
+    display:inline-block;
+    width:150px;
+    height:200px;
+}
+
+.video:hover
+{
+   cursor: pointer;
+}
+
+.preview
+{
+   display:block;
+   width:100%;
+   height:90px;
+}
+
+.videoName
+{
+    font-weight:bold;
+    font-size:90%;
+    margin-bottom:3px;
+}
+
+.videoAth,.videoView
+{
+    font-style:italic;
+    font-size:80%;
+    margin-bottom:3px;
+}
+
+.videoAth:hover
+{
+    font-weight:bold;
+}
+
+.Comment
+{
+    height:100px;
+    margin-bottom:15px;
+}
+
+.commAva
+{
+    height:100%;
+    margin-right:15px;
+    vertical-align:top;
+}
+
+.commTxt
+{
+    display:inline-block;
+}
+
+.videoShow
+{
+   background-color:black;
+   width:100%;
+   height:400px;
+}
+
+.videoTitle
+{
+    margin-top:10px;
+    margin-bottom:10px;
+    font-size:120%;
+    border-bottom:2px solid #ffcc99;
+}
+
+
 footer
 {
   width: 60%;
@@ -132,10 +209,37 @@ footer
   /*background: linear-gradient(to bottom, #c8d5e6, #dbe7f0);*/
 }
 
-a,a:hover
+.Contact
+{
+   margin-bottom:10px;
+   height:41px;
+}
+
+.contImg
+{
+    height:40px;
+    margin-right:10px;
+    transition: 0.1s;
+    vertical-align:top;
+}
+
+.contImg:hover
+{
+    height:41px;
+    cursor:pointer;
+    margin-right:9px;
+}
+
+a
 {
     text-decoration:none;
     color:black;
+}
+
+a:hover
+{
+    text-decoration:none;
+    color:#714707;
 }
 
 input
@@ -164,11 +268,11 @@ input
 }
 
         .content{
-            width: 500px;
+            width: 100%;
             margin: auto;
         }
         .content0{
-            width: 500px;
+            width: 100%;
             height: 210px;
             border-radius: 20px;
             margin: auto;

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<a href="{{url_for('addroom')}}">Добавить комнату</a>
+<hr>
+<p>Присоединиться к комнате по токену</p>
+    <form action="" method="post">
+    {{form.hidden_tag()}}
+        <div>{{ form.token.label}}</div>
+        <div>{{ form.token }}</div>
+        {% if form.token.errors %}
+            {% for error in form.token.errors %}
+            <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+        {{ form.submit }}
+    </form>
+{% endblock %}
