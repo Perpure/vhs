@@ -2,7 +2,7 @@ from flask import redirect, render_template, session, url_for, make_response, re
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm
 from web.models import User, Video, Room
-from .helper import read_image
+from .helper import read_image, read_video
 from werkzeug.utils import secure_filename
 from random import choice
 from string import ascii_letters
@@ -158,10 +158,20 @@ def logout():
         session.pop('Login')
     return redirect('/')
 
+@app.route('/video/<string:vid>/video.mp4')
+def get_video(vid):
+    video_binary = read_video(vid)
+    response = make_response(video_binary)
+    response.headers.set('Content-Type', 'video/mp4')
+    response.headers.set(
+        'Content-Disposition', 'attachment', filename='video/%s/video.mp4' % vid)
+    return response
 
-@app.route('/play', methods=['GET', 'POST'])
-def play():
-    return render_template('play.html', user=cur_user())
+
+@app.route('/play/<string:vid>', methods=['GET', 'POST'])
+def play(vid):
+    return render_template('play.html', user=cur_user(), vid=vid)
+
 
 
 @app.errorhandler(403)
