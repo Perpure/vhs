@@ -29,6 +29,7 @@ class Video(db.Model):
     path = db.Column(db.Text(), nullable=False)
     id = db.Column(db.Text(), primary_key=True)
     date = db.Column(db.DateTime)
+    comments = db.relationship('Comment', backref='video', lazy='joined')
 
     likes = db.relationship('User', secondary=likes, lazy=False,
                             backref=db.backref('liked', lazy=False))
@@ -55,15 +56,32 @@ class Video(db.Model):
             return Video.query.all()
         return Video.query.get(video_id)
 
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.Text())
+    video_id = db.Column(db.Integer, db.ForeignKey('video.id'),nullable=False)
+    user_login = db.Column(db.Integer, db.ForeignKey('User.login'), nullable=False)
+
+    def __init__(self, text, video_id, user_login):
+        self.text = text
+        self.user_login = user_login
+        self.video_id = video_id
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
 
 class User(db.Model):
     __tablename__ = 'User'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     login = db.Column(db.String(32), nullable=False)
     password = db.Column(db.String(64), nullable=False)
+    comments = db.relationship('Comment', backref='user', lazy='joined')
     Room = db.relationship("Room",
                 secondary=association_table,
                 backref="User")
+
     def __init__(self, login):
         self.login = login
 
