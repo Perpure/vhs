@@ -90,9 +90,10 @@ def room(token):
             if colors[i].split(',')[0] == str(user.id):
                 calibrate_url = url_for('calibrate', color=Color.query.filter_by(id=colors[i].split(',')[1]).first().color)
                 break
+        users=room.User
     else:
         return redirect(url_for('log'))
-    return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url)
+    return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users)
     
 def allowed_file(filename):
     return ('.' in filename and

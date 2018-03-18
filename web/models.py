@@ -54,6 +54,7 @@ class User(db.Model):
                 secondary=association_table,
                 backref="User",
                 lazy='dynamic')
+
     def __init__(self, login):
         self.login = login
 
