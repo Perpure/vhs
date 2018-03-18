@@ -112,11 +112,11 @@ font-size: 120%;
 {
     height:90%;
     vertical-align:top;
+    float:right;
 }
 
 .menuTxt
 {
-    width:90%;
     display:inline-block;
 }
 
@@ -270,8 +270,6 @@ button
     transition:0.5s;
     border:none;
     border-bottom:2px solid #ffb366;
-    border-bottom-right-radius:5px;
-    border-bottom-left-radius:5px;
     font-weight:bold;
 }
 
