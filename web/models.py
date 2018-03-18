@@ -60,11 +60,11 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text())
     video_id = db.Column(db.Integer, db.ForeignKey('video.id'),nullable=False)
-    user_login = db.Column(db.Integer, db.ForeignKey('User.login'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
 
-    def __init__(self, text, video_id, user_login):
+    def __init__(self, text, video_id, user_id):
         self.text = text
-        self.user_login = user_login
+        self.user_id = user_id
         self.video_id = video_id
 
     def save(self):

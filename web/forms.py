@@ -44,3 +44,7 @@ class LogForm(FlaskForm):
     password_log = PasswordField("Пароль", validators=[Length(8), Match])
     submit_log = SubmitField("Войти")
     submit_main = SubmitField("На главную")
+
+class AddCommentForm(FlaskForm):
+    message = TextAreaField("Комментарий", validators=[DataRequired(), Length(255)])
+    submit = SubmitField("Запостить")

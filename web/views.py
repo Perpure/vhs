@@ -1,7 +1,7 @@
 from flask import redirect, render_template, session, url_for, make_response, request
 from web import app, db
-from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm
-from web.models import User, Video, Room
+from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm , AddCommentForm
+from web.models import User, Video, Room , Comment
 from .helper import read_image
 from werkzeug.utils import secure_filename
 from random import choice
@@ -161,6 +161,14 @@ def logout():
 
 @app.route('/play', methods=['GET', 'POST'])
 def play():
+    def index():
+        if 'user_id' in session:
+            user_id = session['user_id']
+            return(user_id)
+    form = AddCommentForm(csrf_enabled=False)
+    if form.validate_on_submit():
+        comment = Comment(form.message.data,video_id,index())
+        comment.save()
     return render_template('play.html', user=cur_user())
 
 
