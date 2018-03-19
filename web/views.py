@@ -2,20 +2,13 @@ from flask import redirect, render_template, session, url_for, make_response, re
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, UserProfileForm
 from web.models import User, Video, Room, Color
-from .helper import read_image, read_video
+from .helper import read_image, read_video, cur_user
 from werkzeug.utils import secure_filename
 from random import choice
 from string import ascii_letters
 from werkzeug.exceptions import Aborter
 from functools import wraps
 import hashlib, os
-
-
-def cur_user():
-    if 'Login' in session:
-        return User.query.filter_by(login=session['Login']).first()
-    else:
-        return None
 
 
 def requiresauth(f):

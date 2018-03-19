@@ -1,6 +1,7 @@
 # coding=utf-8
 """Данный файл описывает формы приложения"""
 from flask_wtf import FlaskForm
+from .helper import cur_user
 from wtforms import TextAreaField, StringField, PasswordField, SubmitField, FileField
 from wtforms.validators import Length, EqualTo, ValidationError, Optional
 from web.models import User
@@ -31,9 +32,12 @@ def match(form, field):
     """
     Функция проверяющая правильность пароля пользователя
     :param form: форма
-    :param field: поке
+    :param field: поле
     """
-    user = User.query.filter_by(login=field.data).first()
+    if cur_user():
+        user = cur_user()
+    else:
+        user = User.query.filter_by(login=form.login_log.data).first()
     if user and not user.check_pass(field.data):
         raise ValidationError("Неправильный пароль")
 

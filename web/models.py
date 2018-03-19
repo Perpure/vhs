@@ -114,8 +114,7 @@ class User(db.Model):
         :param password: Введённый пароль
         :return: True если соответствует, иначе False
         """
-        temp = User.query.get(self.login)
-        return temp and temp.password == hashlib.sha512(
+        return self and self.password == hashlib.sha512(
             password.encode("utf-8")).hexdigest()
 
     def change_name(self, name):
