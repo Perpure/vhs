@@ -12,7 +12,7 @@ def not_exist(form, field):
     :param form: форма
     :param field: поле
     """
-    if User.get(login=field.data):
+    if User.query.filter_by(login=field.data).first():
         raise ValidationError("Такой пользователь уже существует")
 
 
@@ -39,15 +39,17 @@ def match(form, field):
 
 
 class RegForm(FlaskForm):
-    """Форма регистрации"""
-    login_reg = StringField("Имя пользователя",
-                            validators=[Length(5), not_exist])
+    login_reg = StringField("Имя пользователя", validators=[Length(5), not_exist])
     password_reg = PasswordField("Пароль", validators=[Length(8)])
-    confirm_reg = PasswordField(
-        "Повторите пароль", validators=[Length(8), EqualTo(
-            "password_reg", message="Пароли должны совпадать")])
+    confirm_reg = PasswordField("Повторите пароль",
+                                validators=[Length(8), EqualTo("password_reg", message="Пароли должны совпадать")])
     submit_reg = SubmitField("Зарегистрироваться")
     submit_main = SubmitField("На главную")
+
+
+class JoinForm(FlaskForm):
+    token = StringField("Токен")
+    submit = SubmitField("Присоединиться")
 
 
 class LogForm(FlaskForm):
@@ -76,3 +78,4 @@ class UserProfileForm(FlaskForm):
     current_password = PasswordField("Введите свой текущий пароль для подтверждения изменений:",
                                      validators=[Length(8), match])
     submit_changes = SubmitField("Сохранить")
+

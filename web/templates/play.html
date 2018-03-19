@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="videoShow"></div>
+<div class="videoShow">
+    <video height="400" controls="controls">
+         <source src="{{url_for('get_video', vid=vid)}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+    </video>
+
+</div>
 <p class="videoTitle">ШОК! 1991+ ЕЛЬЦИН ОКАЗАЛСЯ...</p>
 {%if user %}
 

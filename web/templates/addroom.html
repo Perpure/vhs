@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="token">
+<div class="tokenTxt" id="Token">{{token}}</div>
+<div class="tokenBtnMid" id="copyToken">Копировать токен</div>
+<div class="tokenBtnEdge" id="copyLink">Копировать ссылку</div>
+</div>
+<script>
+   token=document.getElementById("Token");
+   btnCopyT=document.getElementById("copyToken");
+   btnCopyL=document.getElementById("copyLink");
+
+   btnCopyT.addEventListener('click',function(){
+        let range=document.createRange();
+        window.getSelection().removeAllRanges();
+        range.selectNode(token);
+        window.getSelection().addRange(range);
+        try { 
+            document.execCommand('copy'); 
+        } catch(err) { 
+            console.log('Can`t copy, boss'); 
+        } 
+        window.getSelection().removeAllRanges();
+    });
+
+    btnCopyL.addEventListener('click',function(){
+        let range=document.createRange();
+        let link=token.innerHTML;
+        token.innerHTML=document.location.host+"/room/"+link;
+        window.getSelection().removeAllRanges();
+        range.selectNode(token);
+        window.getSelection().addRange(range);
+        try { 
+            document.execCommand('copy'); 
+        } catch(err) { 
+            console.log('Can`t copy, boss'); 
+        } 
+        window.getSelection().removeAllRanges();
+        token.innerHTML=link;
+    });
+</script>
+{% endblock %}

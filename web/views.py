@@ -1,13 +1,31 @@
-# coding=utf-8
-"""Контроллер"""
-import hashlib
-from flask import redirect, render_template, session, url_for,\
-    make_response, request
+from flask import redirect, render_template, session, url_for, make_response, request
+from web import app, db
+from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, UserProfileForm
+from web.models import User, Video, Room, Color
+from .helper import read_image, read_video
 from werkzeug.utils import secure_filename
-from web import app
-from web.forms import RegForm, LogForm, UploadVideoForm, UserProfileForm
-from web.models import User, Video
-from .helper import read_image, requiresauth, cur_user, allowed_file
+from random import choice
+from string import ascii_letters
+from werkzeug.exceptions import Aborter
+from functools import wraps
+import hashlib, os
+
+
+def cur_user():
+    if 'Login' in session:
+        return User.query.filter_by(login=session['Login']).first()
+    else:
+        return None
+
+
+def requiresauth(f):
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+        if cur_user() is None:
+            abort = Aborter()
+            return abort(403)
+        return f(*args, **kwargs)
+    return wrapped
 
 
 @app.route('/images/<int:pid>.jpg')
@@ -34,13 +52,70 @@ def main():
     return render_template('main.html', user=cur_user())
 
 
-@app.route('/calibrate', methods=['GET', 'POST'])
-def multicheck():
-    """
-    Отвечает за вывод страницы калибровки
-    :return: Страница калибровки
-    """
-    return render_template('color.html', color="#FF0000")
+@app.route('/viewroom', methods=['GET', 'POST'])
+def viewroom():
+    user=cur_user()
+    if user:
+        form = JoinForm(csrf_enabled=False)
+        if form.validate_on_submit():
+            if Room.query.filter_by(token=str(form.token.data)):
+                return redirect(url_for('room', token=form.token.data))
+        rooms = user.Room.all()
+    else:
+        return redirect(url_for('log'))
+    return render_template('viewroom.html', user=cur_user(), form=form, rooms = rooms)
+
+
+@app.route('/addroom', methods=['GET', 'POST'])
+def addroom():
+    user=cur_user()
+    if user:
+        token=''.join(choice(ascii_letters) for i in range(24))
+        room=Room(token=token)
+        for i in range(1,7):
+            room.Color.append(Color.query.filter_by(id=str(i)).first())
+        db.session.add(room)
+        db.session.commit()
+        user.Room.append(room)
+        room.color_user = str(user.id) + ',1'
+        db.session.commit()
+    else:
+        return redirect(url_for('log'))
+    return render_template('addroom.html', user=cur_user(), token=token)
+
+
+@app.route('/room/<string:token>', methods=['GET', 'POST'])
+def room(token):
+    user=cur_user()
+    if user:
+        room = Room.query.filter_by(token=token).first()
+        if not(room in user.Room):
+            user.Room.append(room)
+            if room.color_user:
+                color_id = len(room.color_user.split(';')) + 1
+                room.color_user += ';' + str(user.id) + ',' + str(color_id)
+            else:
+                room.color_user = str(user.id) + ',1'
+            db.session.commit()
+        colors=room.color_user.split(';')
+        for i in range(len(colors)):
+            if colors[i].split(',')[0] == str(user.id):
+                calibrate_url = url_for('calibrate', color=Color.query.filter_by(id=colors[i].split(',')[1]).first().color)
+                break
+        users=room.User
+    else:
+        return redirect(url_for('log'))
+    return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users)
+
+
+def allowed_file(filename):
+    return ('.' in filename and
+            filename.split('.')[-1].lower() in app.config["ALLOWED_EXTENSIONS"])
+
+
+@app.route('/calibrate/<string:color>', methods=['GET', 'POST'])
+def calibrate(color):
+    return render_template('color.html', color=color)
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -51,6 +126,7 @@ def upload():
     :return: Страница загрузки
     """
     form = UploadVideoForm(csrf_enabled=False)
+
     if form.validate_on_submit():
         if 'video' not in request.files:
             return redirect(request.url)
@@ -61,12 +137,17 @@ def upload():
             return redirect(request.url)
 
         if file and allowed_file(file.filename):
-            ext = secure_filename(file.filename).split('.')[-1]
+            video = Video(form.title.data)
+            
             video_hash = hashlib.md5(file.read()).hexdigest()
             file.seek(0)
-
-            video = Video(form.title.data)
-            file.save(video.save(video_hash, ext))
+            
+            directory = video.save(video_hash)
+            os.makedirs(directory)
+            
+            ext = secure_filename(file.filename).split('.')[-1]
+            video_path = os.path.join(directory, 'video.' + ext)
+            file.save(video_path)
 
             return redirect(request.url)
 
@@ -103,10 +184,13 @@ def reg():
     user = None
 
     if form.validate_on_submit():
-        user = User(form.login_reg.data)
-        user.save(form.password_reg.data)
-        session["Login"] = user.login
-        return redirect(url_for("main"))
+        if User.query.filter_by(login=form.login_reg.data):
+            user = User(login=form.login_reg.data)
+            user.save(form.password_reg.data)
+            session["Login"] = user.login
+            return redirect(url_for("main"))
+        else:
+            pass
 
     return render_template('reg.html', form=form, user=cur_user())
 
@@ -121,7 +205,7 @@ def log():
     user = None
 
     if form.submit_log.data and form.validate_on_submit():
-        user = User.get(form.login_log.data)
+        user = User.query.filter_by(login=form.login_log.data).first()
         session["Login"] = user.login
         return redirect(url_for("main"))
 
@@ -139,7 +223,7 @@ def cabinet():
     print("start")
     if form.validate_on_submit():
         print("validate")
-        user = User.query.get(session['Login'])
+        user = cur_user()
         if form.change_name.data:
             user.change_name(form.change_name.data)
         if form.change_password.data:
@@ -162,13 +246,19 @@ def logout():
     return redirect('/')
 
 
-@app.route('/play', methods=['GET', 'POST'])
-def play():
-    """
-    Отвечает за вывод страницы плеера и комментариев
-    :return: Страница проигрывания видео
-    """
-    return render_template('play.html', user=cur_user())
+@app.route('/video/<string:vid>/video.mp4')
+def get_video(vid):
+    video_binary = read_video(vid)
+    response = make_response(video_binary)
+    response.headers.set('Content-Type', 'video/mp4')
+    response.headers.set(
+        'Content-Disposition', 'attachment', filename='video/%s/video.mp4' % vid)
+    return response
+
+
+@app.route('/play/<string:vid>', methods=['GET', 'POST'])
+def play(vid):
+    return render_template('play.html', user=cur_user(), vid=vid)
 
 
 @app.errorhandler(403)
