@@ -1,5 +1,12 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
+@keyframes Butn
+{
+    0%{}
+    50%{left: 0%;top:0%;height:100%;width: 100%;background-color:rgba(240, 203, 142,0);}
+    100%{left: 50%;top:50%;height:0%;width: 0%;}
+}
+
 body
 {
   font-family: 'Roboto', sans-serif;
@@ -102,7 +109,7 @@ font-size: 120%;
 
 .menuBtn:hover,.regBtn:hover
 {
-  background-color: #ffcc99;
+  
   cursor: pointer;
   
   color:black;
@@ -266,17 +273,35 @@ button
     height:40px;
     padding:10px;
     padding-top:8px;
-    background-color:#f0cb8e;
-    transition:0.5s;
+    background-color:#F7E2C0;
+    transition:1.25s;
     border:none;
-    border-bottom:2px solid #ffb366;
+    border:2px solid #ffb366;
     font-weight:bold;
+    position:relative;
 }
 
 button:active
 {
     background-color:#ffb366;
 }
+
+button:hover
+{
+background-color:rgba(240, 203, 142,0.5);
+}
+
+.animator
+{
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:0%;
+    height:0%;
+    animation: Butn 1s;
+    background-color:rgba(240, 203, 142,0.5);
+}
+
 
 .INP
 {
