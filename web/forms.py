@@ -47,4 +47,4 @@ class LogForm(FlaskForm):
 
 class AddCommentForm(FlaskForm):
     message = TextAreaField("Комментарий", validators=[DataRequired(), Length(255)])
-    submit = SubmitField("Запостить")
+    submit_com = SubmitField("Запостить")

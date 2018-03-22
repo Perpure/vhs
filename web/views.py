@@ -161,13 +161,18 @@ def logout():
 
 @app.route('/play', methods=['GET', 'POST'])
 def play():
-    def index():
+    def username():
         if 'user_id' in session:
             user_id = session['user_id']
             return(user_id)
+
+    def videoid():
+        if 'video_id' in session:
+            video_id = session['video_id']
+            return (video_id)
     form = AddCommentForm(csrf_enabled=False)
     if form.validate_on_submit():
-        comment = Comment(form.message.data,video_id,index())
+        comment = Comment(form.message.data, videoid(),username())
         comment.save()
     return render_template('play.html', user=cur_user())
 
