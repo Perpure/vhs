@@ -5,3 +5,11 @@ def read_image(pid):
         f = im.read()
         b = bytearray(f)
         return b
+
+def read_video(vid):
+    path = basedir + '/video/%s/video.mp4' % vid
+    with open(path, "rb") as im:
+        f = im.read()
+        b = bytearray(f)
+        return b
+
