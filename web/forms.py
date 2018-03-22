@@ -16,14 +16,12 @@ def NotExist(form, field):
 
 
 def Exist(form, field):
-    user = User.query.filter_by(login=field.data).first()
-    if not user:
+    if not User.get(login=field.data):
         raise ValidationError("Такого пользователя не существует")
 
 
 def Match(form, field):
-    user = User.query.filter_by(login=field.data).first()
-    if user and not user.check_pass(field.data):
+    if not User.get(login=form.login_log.data).check_pass(field.data):
         raise ValidationError("Неправильный пароль")
 
 
@@ -35,9 +33,11 @@ class RegForm(FlaskForm):
     submit_reg = SubmitField("Зарегистрироваться")
     submit_main = SubmitField("На главную")
 
+
 class JoinForm(FlaskForm):
     token = StringField("Токен")
     submit = SubmitField("Присоединиться")
+
 
 class LogForm(FlaskForm):
     login_log = StringField("Имя пользователя", validators=[Length(5), Exist]) #
