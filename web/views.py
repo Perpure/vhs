@@ -8,7 +8,7 @@ from random import choice
 from string import ascii_letters
 from werkzeug.exceptions import Aborter
 from functools import wraps
-import hashlib, os
+from web.video_handler import save_video
 
 
 def cur_user():
@@ -119,17 +119,7 @@ def upload():
             return redirect(request.url)
 
         if file and allowed_file(file.filename):
-            video = Video(form.title.data)
-            
-            video_hash = hashlib.md5(file.read()).hexdigest()
-            file.seek(0)
-            
-            directory = video.save(video_hash)
-            os.makedirs(directory)
-            
-            ext = secure_filename(file.filename).split('.')[-1]
-            video_path = os.path.join(directory, 'video.' + ext)
-            file.save(video_path)
+            save_video(file, form.title.data)
 
             return redirect(request.url)
 
