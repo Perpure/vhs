@@ -149,16 +149,12 @@ def rezult2():
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():
     form = RegForm()
-    user = None
 
     if form.validate_on_submit():
-        if User.query.filter_by(login=form.login_reg.data):
-            user = User(login=form.login_reg.data)
-            user.save(form.password_reg.data)
-            session["Login"] = user.login
-            return redirect(url_for("main"))
-        else:
-            pass
+        user = User(form.login_reg.data)
+        user.save(form.password_reg.data)
+        session["Login"] = user.login
+        return redirect(url_for("main"))
 
     return render_template('reg.html', form=form, user=cur_user())
 
@@ -166,11 +162,9 @@ def reg():
 @app.route('/auth', methods=['GET', 'POST'])
 def log():
     form = LogForm()
-    user = None
 
-    if form.submit_log.data and form.validate_on_submit():
-        user = User.query.filter_by(login=form.login_log.data).first()
-        session["Login"] = user.login
+    if form.validate_on_submit():
+        session["Login"] = form.login_log.data
         return redirect(url_for("main"))
 
     return render_template('auth.html', form=form, user=cur_user())

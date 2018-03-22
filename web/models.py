@@ -97,14 +97,16 @@ class User(db.Model):
         db.session.commit()
 
     def check_pass(self, password):
-        temp = User.query.get(self.login)
-        return temp and temp.password == hashlib.sha512(password.encode("utf-8")).hexdigest()
+        hash = hashlib.sha512(password.encode("utf-8")).hexdigest()
+        return self.password == hash
 
     @staticmethod
-    def get(login=None):
-        if not login:
-            return User.query.all()
-        return User.query.filter_by(login).first
+    def get(id=None, login=None):
+        if login:
+            return User.query.filter_by(login=login).first()
+        if id:
+            return User.query.get(id)
+        return User.query.all()
 
 
 class Room(db.Model):

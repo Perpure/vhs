@@ -11,19 +11,17 @@ class UploadVideoForm(FlaskForm):
     submit = SubmitField("Загрузить")
 
 def NotExist(form, field):
-    if User.query.filter_by(login=field.data).first():
+    if User.get(login=field.data):
         raise ValidationError("Такой пользователь уже существует")
 
 
 def Exist(form, field):
-    user = User.query.filter_by(login=field.data).first()
-    if not user:
+    if not User.get(login=field.data):
         raise ValidationError("Такого пользователя не существует")
 
 
 def Match(form, field):
-    user = User.query.filter_by(login=field.data).first()
-    if user and not user.check_pass(field.data):
+    if not User.get(login=form.login_log.data).check_pass(field.data):
         raise ValidationError("Неправильный пароль")
 
 
