@@ -116,6 +116,11 @@ class Room(db.Model):
                 backref="Room",
                 lazy='dynamic')
 
+class Actions(db.Model):
+    __tablename__ = 'Actions'
+    id = db.Column(db.Integer, primary_key=True)
+    action = db.Column(db.String(64))
+
 class Color(db.Model):
     __tablename__ = 'Color'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
