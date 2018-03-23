@@ -92,10 +92,7 @@ class User(db.Model):
                 secondary=association_table,
                 backref="User",
                 lazy='dynamic')
-    Action = db.relationship("Actions",
-                secondary=association_table3,
-                backref="User",
-                lazy='dynamic')
+    Action = db.Column(db.String(64))
     def __init__(self, login):
         self.login = login
 
@@ -123,11 +120,6 @@ class Room(db.Model):
                 secondary=association_table2,
                 backref="Room",
                 lazy='dynamic')
-
-class Actions(db.Model):
-    __tablename__ = 'Actions'
-    id = db.Column(db.Integer, primary_key=True)
-    action = db.Column(db.String(64))
 
 class Color(db.Model):
     __tablename__ = 'Color'

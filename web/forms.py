@@ -4,6 +4,8 @@ from wtforms.validators import Length, EqualTo, ValidationError, DataRequired
 from web.models import User
 from wtforms.widgets import CheckboxInput, ListWidget
 
+class RoomForm(FlaskForm):
+    submit = SubmitField("Калибровка")
 
 class UploadVideoForm(FlaskForm):
     title = StringField("Введите название видео", validators=[Length(3)])

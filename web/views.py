@@ -1,7 +1,7 @@
 from flask import redirect, render_template, session, url_for, make_response, request
 from web import app, db
-from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm
-from web.models import User, Video, Room, Color, Actions
+from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm
+from web.models import User, Video, Room, Color
 from .helper import read_image
 from werkzeug.utils import secure_filename
 from random import choice
@@ -43,14 +43,12 @@ def main():
     return render_template('main.html', user=cur_user())
 
 @app.route('/viewroom', methods=['GET', 'POST'])
-def viewroom():
+def viewroom(): 
     user=cur_user()
+    
     if user:
         form = JoinForm(csrf_enabled=False)
-        act=Actions(action="")
-        db.session.add(act)
-        db.session.commit()
-        user.Action.append(act)
+        user.Action=""
         db.session.commit()
         if form.validate_on_submit():
             if Room.query.filter_by(token=str(form.token.data)):
@@ -62,6 +60,8 @@ def viewroom():
 
 @app.route('/addroom', methods=['GET', 'POST'])
 def addroom():
+    
+    
     user=cur_user()
     if user:
         token=''.join(choice(ascii_letters) for i in range(24))
@@ -73,6 +73,8 @@ def addroom():
         user.Room.append(room)
         room.color_user = str(user.id) + ',1'
         db.session.commit()
+
+        
     else:
         return redirect(url_for('log'))
     return render_template('addroom.html', user=cur_user(), token=token)
@@ -80,8 +82,17 @@ def addroom():
 @app.route('/room/<string:token>', methods=['GET', 'POST'])
 def room(token):
     user=cur_user()
+    form=RoomForm()
+    
     if user:
         room = Room.query.filter_by(token=token).first()
+
+        if form.validate_on_submit():
+            for i in range(len(room.color_user.split(';'))):
+                ID=room.color_user.split(';')[i].split(',')[0]
+                User.query.filter_by(id=ID).first().Action="calibrate"
+            db.session.commit()
+
         if not(room in user.Room):
             user.Room.append(room)
             if room.color_user:
@@ -98,7 +109,7 @@ def room(token):
         users=room.User
     else:
         return redirect(url_for('log'))
-    return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users)
+    return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,form=form)
     
 def allowed_file(filename):
     return ('.' in filename and
@@ -193,7 +204,7 @@ def logout():
 @app.route('/askAct', methods=['GET', 'POST'])
 def askAct():
     user=cur_user()
-    action=user.Action[0].action
+    action=user.Action
     return action
 
 @app.route('/play', methods=['GET', 'POST'])

@@ -1,26 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
-<a href="{{calibrate_url}}">calibrate</a>
+<form action="" method="post">
+    {{form.hidden_tag()}}
+<a href="{{calibrate_url}}">{{ form.submit }}</a>
+</form>
 <hr>
 {% for i in users %}
 <p>{{i.login}}</p>
 {% endfor %}
-<div id="super">aaaaaaaaaaaa</div>
 <script>
-    jQuery(function($){      
-            $("#super").click(function(){
-                $.ajax({
+    let speed=3000;
+    setTimeout(function step(){
+        $.ajax({
                    url:"/askAct",
                    type:"GET",
                    dataType:"text",
                    success:function(response)
                    {
-                        if(response=="colibrate")alert("gogo");
-                        else alert("hollow");
+                        if(response=="calibrate")window.location ="{{calibrate_url}}";
                    },
-                   error:function(){alert("NOOooooo");}
-                });          
-            });    
-        });
+                   error:function(){}
+                });  
+        setTimeout(step,speed);
+    },speed);
 </script>
 {% endblock %}
