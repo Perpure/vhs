@@ -1,7 +1,7 @@
 from flask import redirect, render_template, session, url_for, make_response, request
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm
-from web.models import User, Video, Room, Color
+from web.models import User, Video, Room, Color, Actions
 from .helper import read_image
 from werkzeug.utils import secure_filename
 from random import choice
@@ -47,6 +47,11 @@ def viewroom():
     user=cur_user()
     if user:
         form = JoinForm(csrf_enabled=False)
+        act=Actions(action="")
+        db.session.add(act)
+        db.session.commit()
+        user.Action.append(act)
+        db.session.commit()
         if form.validate_on_submit():
             if Room.query.filter_by(token=str(form.token.data)):
                 return redirect(url_for('room', token=form.token.data))
@@ -185,6 +190,11 @@ def logout():
         session.pop('Login')
     return redirect('/')
 
+@app.route('/askAct', methods=['GET', 'POST'])
+def askAct():
+    user=cur_user()
+    action=user.Action[0].action
+    return action
 
 @app.route('/play', methods=['GET', 'POST'])
 def play():

@@ -3,6 +3,24 @@
 <a href="{{calibrate_url}}">calibrate</a>
 <hr>
 {% for i in users %}
-<p>{{i.login}}
+<p>{{i.login}}</p>
 {% endfor %}
+<div id="super">aaaaaaaaaaaa</div>
+<script>
+    jQuery(function($){      
+            $("#super").click(function(){
+                $.ajax({
+                   url:"/askAct",
+                   type:"GET",
+                   dataType:"text",
+                   success:function(response)
+                   {
+                        if(response=="colibrate")alert("gogo");
+                        else alert("hollow");
+                   },
+                   error:function(){alert("NOOooooo");}
+                });          
+            });    
+        });
+</script>
 {% endblock %}
