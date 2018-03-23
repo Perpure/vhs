@@ -21,6 +21,5 @@ def read_video(vid):
 
 def cur_user():
     if 'Login' in session:
-        return User.query.filter_by(login=session['Login']).first()
-    else:
-        return None
+        return User.get(login=session['Login'])
+    return None

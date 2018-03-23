@@ -1,43 +1,33 @@
 # coding=utf-8
 """Данный файл описывает формы приложения"""
 from flask_wtf import FlaskForm
-from .helper import cur_user
-from wtforms import TextAreaField, StringField, PasswordField, SubmitField, FileField
-from wtforms.validators import Length, EqualTo, ValidationError, Optional
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SelectField, FieldList, BooleanField, RadioField, FileField
+from wtforms.validators import Length, EqualTo, ValidationError, DataRequired, Optional
 from web.models import User
+from .helper import cur_user
+from wtforms.widgets import CheckboxInput, ListWidget
 
+
+class UploadVideoForm(FlaskForm):
+    title = StringField("Введите название видео", validators=[Length(3)])
+    video = FileField("Выберите файл")
+    submit = SubmitField("Загрузить")
 
 def not_exist(form, field):
-    """
-    Функция проверяющая уникальность пользователя
-    :param form: форма
-    :param field: поле
-    """
-    if User.query.filter_by(login=field.data).first():
+    if User.get(login=field.data):
         raise ValidationError("Такой пользователь уже существует")
 
 
 def exist(form, field):
-    """
-    Функция проверяющая уникальность пользователя
-    :param form: форма
-    :param field: поле
-    """
-    user = User.query.filter_by(login=field.data).first()
-    if not user:
+    if User.get(login=field.data) is None:
         raise ValidationError("Такого пользователя не существует")
 
 
 def match(form, field):
-    """
-    Функция проверяющая правильность пароля пользователя
-    :param form: форма
-    :param field: поле
-    """
     if cur_user():
         user = cur_user()
     else:
-        user = User.query.filter_by(login=form.login_log.data).first()
+        user = User.get(login=form.login_log.data)
     if user and not user.check_pass(field.data):
         raise ValidationError("Неправильный пароль")
 

@@ -109,13 +109,8 @@ class User(db.Model):
         db.session.commit()
 
     def check_pass(self, password):
-        """
-        Функция проверяющая соответствие пароля введённого пользователем
-        :param password: Введённый пароль
-        :return: True если соответствует, иначе False
-        """
-        return self and self.password == hashlib.sha512(
-            password.encode("utf-8")).hexdigest()
+        hash = hashlib.sha512(password.encode("utf-8")).hexdigest()
+        return self.password == hash
 
     def change_name(self, name):
         """
@@ -136,15 +131,12 @@ class User(db.Model):
         db.session.commit()
 
     @staticmethod
-    def get(login=None):
-        """
-        Метод, возвращающий пользователя по логину
-        :param login: Логин пользователя
-        :return: Пользователь
-        """
-        if not login:
-            return User.query.all()
-        return User.query.filter_by(login).first
+    def get(id=None, login=None):
+        if login:
+            return User.query.filter_by(login=login).first()
+        if id:
+            return User.query.get(id)
+        return User.query.all()
 
 
 class Room(db.Model):

@@ -8,7 +8,7 @@ from random import choice
 from string import ascii_letters
 from werkzeug.exceptions import Aborter
 from functools import wraps
-import hashlib, os
+from web.video_handler import save_video
 
 
 def requiresauth(f):
@@ -23,11 +23,6 @@ def requiresauth(f):
 
 @app.route('/images/<int:pid>.jpg')
 def get_image(pid):
-    """
-
-    :param pid:
-    :return:
-    """
     image_binary = read_image(pid)
     response = make_response(image_binary)
     response.headers.set('Content-Type', 'image/jpeg')
@@ -38,10 +33,6 @@ def get_image(pid):
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    """
-    Отвечает за вывод шаблона главной страницы
-    :return: Шаблон главной страницы
-    """
     return render_template('main.html', user=cur_user())
 
 
@@ -130,17 +121,7 @@ def upload():
             return redirect(request.url)
 
         if file and allowed_file(file.filename):
-            video = Video(form.title.data)
-            
-            video_hash = hashlib.md5(file.read()).hexdigest()
-            file.seek(0)
-            
-            directory = video.save(video_hash)
-            os.makedirs(directory)
-            
-            ext = secure_filename(file.filename).split('.')[-1]
-            video_path = os.path.join(directory, 'video.' + ext)
-            file.save(video_path)
+            save_video(file, form.title.data)
 
             return redirect(request.url)
 
@@ -149,20 +130,12 @@ def upload():
 
 @app.route('/rezult1', methods=['GET', 'POST'])
 def rezult1():
-    """
-    Выводит rezult.html с заданными параметрами
-    :return: Выводит rezult.html
-    """
     return render_template('rezult.html',
                            pid=1, top=0, left=0, right=0, bottom=0)
 
 
 @app.route('/rezult2', methods=['GET', 'POST'])
 def rezult2():
-    """
-    Выводит rezult.html с заданными параметрами
-    :return: Выводит rezult.html
-    """
     return render_template('rezult.html',
                            pid=1, top=0, left=-400, right=0, bottom=0)
 
@@ -174,16 +147,12 @@ def reg():
     :return: Страница регистрации
     """
     form = RegForm()
-    user = None
 
     if form.validate_on_submit():
-        if User.query.filter_by(login=form.login_reg.data):
-            user = User(login=form.login_reg.data)
-            user.save(form.password_reg.data)
-            session["Login"] = user.login
-            return redirect(url_for("main"))
-        else:
-            pass
+        user = User(form.login_reg.data)
+        user.save(form.password_reg.data)
+        session["Login"] = user.login
+        return redirect(url_for("main"))
 
     return render_template('reg.html', form=form, user=cur_user())
 
@@ -195,11 +164,9 @@ def log():
     :return: Страница входа
     """
     form = LogForm()
-    user = None
 
-    if form.submit_log.data and form.validate_on_submit():
-        user = User.query.filter_by(login=form.login_log.data).first()
-        session["Login"] = user.login
+    if form.validate_on_submit():
+        session["Login"] = form.login_log.data
         return redirect(url_for("main"))
 
     return render_template('auth.html', form=form, user=cur_user())
@@ -230,10 +197,6 @@ def cabinet():
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
-    """
-    Отвечает за выход пользователя
-    :return: Редирект /
-    """
     if 'Login' in session:
         session.pop('Login')
     return redirect('/')
@@ -251,34 +214,19 @@ def get_video(vid):
 
 @app.route('/play/<string:vid>', methods=['GET', 'POST'])
 def play(vid):
-    return render_template('play.html', user=cur_user(), vid=vid)
+    return render_template('play.html', user=cur_user(), vid=vid, video=Video.get(vid))
 
 
 @app.errorhandler(403)
 def forbidden(e):
-    """
-    Обрабатывает ошибку 403
-    :param e:
-    :return: Страница ошибки 403
-    """
     return render_template('403.html'), 403
 
 
 @app.errorhandler(404)
 def page_not_found(e):
-    """
-    Обрабатывает ошибку 404
-    :param e:
-    :return: Страница ошибки 404
-    """
     return render_template('404.html'), 404
 
 
 @app.errorhandler(500)
 def internal_server_error(e):
-    """
-    Обрабатывает ошибку 500
-    :param e:
-    :return: Страница ошибки 500
-    """
     return render_template('500.html'), 500
