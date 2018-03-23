@@ -43,9 +43,11 @@ class Video(db.Model):
 
     dislikes = db.relationship('User', secondary=dislikes, lazy=False,
                                backref=db.backref('disliked', lazy=False))
+    views = db.Column(db.Integer())
 
     def __init__(self, title):
         self.title = title
+        self.views = 0
 
     def save(self, hash):
         self.date = datetime.now(tz=None)
@@ -56,6 +58,11 @@ class Video(db.Model):
         db.session.commit()
 
         return self.path
+
+    def add_view(self):
+        self.views += 1
+        db.session.add(self.views)
+        db.session.commit()
 
     @staticmethod
     def get(video_id=None):

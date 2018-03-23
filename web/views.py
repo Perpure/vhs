@@ -214,7 +214,14 @@ def get_video(vid):
 
 @app.route('/play/<string:vid>', methods=['GET', 'POST'])
 def play(vid):
-    return render_template('play.html', user=cur_user(), vid=vid, video=Video.get(vid))
+    video = Video.get(vid)
+    user = cur_user()
+    if (not user.is_viewed) and (video is not None) and (user is not None):
+        video.views += 1
+        db.session.add(video)
+        db.session.commit()
+        user.is_viewed = True
+    return render_template('play.html', user=cur_user(), vid=vid, video=Video.get(vid), video_views=video.views)
 
 
 @app.errorhandler(403)
