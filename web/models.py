@@ -59,10 +59,10 @@ class Video(db.Model):
 
         return self.path
 
-    def add_view(self):
-        self.views += 1
-        db.session.add(self.views)
-        db.session.commit()
+    # def add_view(self):
+    #     self.views += 1
+    #     db.session.add(self)
+    #     db.session.commit()
 
     @staticmethod
     def get(video_id=None):
@@ -99,6 +99,7 @@ class User(db.Model):
                 lazy = 'dynamic')
     name = db.Column(db.String(32), nullable=False)
     channel_info = db.Column(db.String(64))
+    views_limit = 0
 
     def __init__(self, login):
         self.login = login

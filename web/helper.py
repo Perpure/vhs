@@ -23,3 +23,7 @@ def cur_user():
     if 'Login' in session:
         return User.get(login=session['Login'])
     return None
+
+
+class IsVideoViewed:
+    is_viewed = False

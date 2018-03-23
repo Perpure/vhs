@@ -2,7 +2,7 @@ from flask import redirect, render_template, session, url_for, make_response, re
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, UserProfileForm
 from web.models import User, Video, Room, Color
-from .helper import read_image, read_video, cur_user
+from .helper import read_image, read_video, cur_user, IsVideoViewed
 from werkzeug.utils import secure_filename
 from random import choice
 from string import ascii_letters
@@ -199,6 +199,7 @@ def cabinet():
 def logout():
     if 'Login' in session:
         session.pop('Login')
+        IsVideoViewed.is_viewed = False
     return redirect('/')
 
 
@@ -216,11 +217,12 @@ def get_video(vid):
 def play(vid):
     video = Video.get(vid)
     user = cur_user()
-    if (not user.is_viewed) and (video is not None) and (user is not None):
+    is_viewed = IsVideoViewed.is_viewed
+    if (not is_viewed) and (video is not None) and (user is not None):
+        IsVideoViewed.is_viewed = True
         video.views += 1
         db.session.add(video)
         db.session.commit()
-        user.is_viewed = True
     return render_template('play.html', user=cur_user(), vid=vid, video=Video.get(vid), video_views=video.views)
 
 
