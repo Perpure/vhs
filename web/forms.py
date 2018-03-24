@@ -10,6 +10,10 @@ class UploadVideoForm(FlaskForm):
     video = FileField("Выберите файл")
     submit = SubmitField("Загрузить")
 
+class UploadImageForm(FlaskForm):
+    image = FileField("Выберите файл")
+    submit = SubmitField("Загрузить")
+
 def NotExist(form, field):
     if User.get(login=field.data):
         raise ValidationError("Такой пользователь уже существует")

@@ -1,15 +1,17 @@
 from flask import redirect, render_template, session, url_for, make_response, request
 from web import app, db
-from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm
+from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, UploadImageForm
 from web.models import User, Video, Room, Color
-from .helper import read_image, read_video
+from .helper import read_image, read_video, is_true_pixel
+from config import basedir
 from werkzeug.utils import secure_filename
 from random import choice
 from string import ascii_letters
 from werkzeug.exceptions import Aborter
 from functools import wraps
 from web.video_handler import save_video
-
+from PIL import Image, ImageDraw
+import os
 
 def cur_user():
     if 'Login' in session:
@@ -27,7 +29,7 @@ def requiresauth(f):
     return wrapped
 
 
-@app.route('/images/<int:pid>.jpg')
+@app.route('/images/<string:pid>.jpg')
 def get_image(pid):
     image_binary = read_image(pid)
     response = make_response(image_binary)
@@ -87,12 +89,32 @@ def room(token):
         colors=room.color_user.split(';')
         for i in range(len(colors)):
             if colors[i].split(',')[0] == str(user.id):
-                calibrate_url = url_for('calibrate', color=Color.query.filter_by(id=colors[i].split(',')[1]).first().color)
+                color = Color.query.filter_by(id=colors[i].split(',')[1]).first().color
+                calibrate_url = url_for('calibrate', color=color)
+                result_url = url_for('result', token=token, color=color)
                 break
         users=room.User
+
+        image_form = UploadImageForm(csrf_enabled=False)
+        if image_form.validate_on_submit():
+            if 'image' not in request.files:
+                return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,
+                                       image_form=UploadImageForm(csrf_enabled=False), result_url=result_url)
+
+            file = request.files['image']
+            if file.filename == '':
+                return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,
+                                       image_form=UploadImageForm(csrf_enabled=False), result_url=result_url)
+    
+            if file and allowed_file(file.filename):
+                file.save(basedir+'/images/'+room.token+'.'+file.filename.split('.')[-1].lower())
+                return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,
+                                       image_form=image_form, result_url=result_url)
+
     else:
         return redirect(url_for('log'))
-    return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users)
+    return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,
+                           image_form=image_form, result_url=result_url)
     
 def allowed_file(filename):
     return ('.' in filename and
@@ -125,15 +147,32 @@ def upload():
     return render_template('upload_video.html', form=form, user=cur_user())
 
 
-@app.route('/rezult1', methods=['GET', 'POST'])
-def rezult1():
-    return render_template('rezult.html', pid=1, top=0, left=0, right=0, bottom=0)
-
-
-@app.route('/rezult2', methods=['GET', 'POST'])
-def rezult2():
-    return render_template('rezult.html', pid=1, top=0, left=-400, right=0, bottom=0)
-
+@app.route('/result/<string:token>/<string:color>', methods=['GET', 'POST'])
+def result(token,color):
+    room = Room.query.filter_by(token=token).first()
+    user=cur_user()
+    colors=room.color_user.split(';')
+    for i in range(len(colors)):
+        if colors[i].split(',')[0] == str(user.id):
+            color=Color.query.filter_by(id=colors[i].split(',')[1]).first().color
+            break
+    sourcex=800
+    sourcey=600
+    R = int(color[1:3],16)
+    G = int(color[3:5],16)
+    B = int(color[5:7],16)
+    print(basedir)
+    image = Image.open(basedir+url_for('get_image', pid=token))
+    width = image.size[0]
+    height = image.size[1]	
+    pix = image.load()
+    for i in range(width):
+        for j in range(height):
+            r = pix[i, j][0]
+            g = pix[i, j][1]
+            b = pix[i, j][2]
+            if (is_true_pixel(r,g,b,R,G,B)):
+                return render_template('rezult.html', pid='1', top=-(j/height)*sourcey, left=-(i/width)*sourcex)
 
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():
