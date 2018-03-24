@@ -25,6 +25,16 @@ def requiresauth(f):
     return wrapped
 
 
+@app.route('/images/<string:pid>.jpg')
+def get_multi(pid):
+    image_binary = read_multi(pid)
+    response = make_response(image_binary)
+    response.headers.set('Content-Type', 'image/jpeg')
+    response.headers.set(
+        'Content-Disposition', 'attachment', filename='%s.jpg' % pid)
+    return response
+
+
 @app.route('/images/<string:pid>/preview.png')
 def get_image(pid):
     image_binary = read_image(pid)
@@ -182,7 +192,7 @@ def result(token,color):
     G = int(color[3:5],16)
     B = int(color[5:7],16)
     print(basedir)
-    image = Image.open(basedir+url_for('get_image', pid=token))
+    image = Image.open(basedir+url_for('get_multi', pid=token))
     width = image.size[0]
     height = image.size[1]	
     pix = image.load()
