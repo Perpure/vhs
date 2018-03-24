@@ -94,13 +94,20 @@ class User(db.Model):
     password = db.Column(db.String(64), nullable=False)
     comments = db.relationship('Comment', backref='user', lazy='joined')
     Room = db.relationship("Room",
+<<<<<<< HEAD
+                secondary=association_table,
+                backref="User",
+                lazy='dynamic')
+    Action = db.Column(db.String(64))
+=======
                 secondary = association_table,
                 backref = "User",
                 lazy = 'dynamic')
     name = db.Column(db.String(32), nullable=False)
     channel_info = db.Column(db.String(64))
     views_limit = 0
-    Action = db.Column(db.String(64))
+
+>>>>>>> develop
     def __init__(self, login):
         self.login = login
         self.name = login
