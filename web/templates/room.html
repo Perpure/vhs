@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
+<h1>Upload calibrating image</h1>
+    <form action="" method="post" enctype="multipart/form-data">
+        <div> {{ image_form.image }} </div>
+        <div> {{ image_form.submit }} </div>
+    </form>
 <a href="{{calibrate_url}}">calibrate</a>
+<p><a href="{{result_url}}">result</a>
 <hr>
 {% for i in users %}
 <p>{{i.login}}
