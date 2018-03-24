@@ -18,8 +18,10 @@ def read_video(vid):
         b = bytearray(f)
         return b
 
+
 def is_true_pixel(r,g,b,R,G,B):
     return (r in range(R-50,R+50))and(g in range(G-50,G+50))and(b in range(B-50,B+50))
+
 
 def cur_user():
     if 'Login' in session:
@@ -29,4 +31,4 @@ def cur_user():
 
 class IsVideoViewed:
     # костыль для просмотров, этот класс лучше не трогать
-    is_viewed = False
+    is_viewed = []

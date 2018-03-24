@@ -235,7 +235,7 @@ def cabinet():
 def logout():
     if 'Login' in session:
         session.pop('Login')
-        IsVideoViewed.is_viewed = False
+        IsVideoViewed.is_viewed = []
     return redirect('/')
 
 
@@ -254,8 +254,8 @@ def play(vid):
     video = Video.get(vid)
     user = cur_user()
     is_viewed = IsVideoViewed.is_viewed
-    if (not is_viewed) and (video is not None) and (user is not None):
-        IsVideoViewed.is_viewed = True
+    if (video.id not in is_viewed) and (video is not None) and (user is not None):
+        IsVideoViewed.is_viewed.append(video.id)
         video.views += 1
         db.session.add(video)
         db.session.commit()
