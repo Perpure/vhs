@@ -17,7 +17,7 @@ class UploadImageForm(FlaskForm):
     image = FileField("Выберите файл")
     submit = SubmitField("Загрузить")
 
-def NotExist(form, field):
+def not_exist(form, field):
     if User.get(login=field.data):
         raise ValidationError("Такой пользователь уже существует")
 
