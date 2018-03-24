@@ -1,3 +1,5 @@
+# coding=utf-8
+"""Файл миграции приложения"""
 from web import db
 from web.models import *
 

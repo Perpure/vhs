@@ -1,8 +1,8 @@
 from flask import redirect, render_template, session, url_for, make_response, request
 from web import app, db
-from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm
+from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, UserProfileForm
 from web.models import User, Video, Room, Color
-from .helper import read_image, read_video
+from .helper import read_image, read_video, cur_user, IsVideoViewed
 from werkzeug.utils import secure_filename
 from random import choice
 from string import ascii_letters
@@ -11,16 +11,10 @@ from functools import wraps
 from web.video_handler import save_video
 
 
-def cur_user():
-    if 'Login' in session:
-        return  User.get(login=session['Login'])
-    return None
-
-
 def requiresauth(f):
     @wraps(f)
     def wrapped(*args, **kwargs):
-        if cur_user() == None:
+        if cur_user() is None:
             abort = Aborter()
             return abort(403)
         return f(*args, **kwargs)
@@ -41,6 +35,7 @@ def get_image(pid):
 def main():
     return render_template('main.html', user=cur_user())
 
+
 @app.route('/viewroom', methods=['GET', 'POST'])
 def viewroom():
     user=cur_user()
@@ -53,6 +48,7 @@ def viewroom():
     else:
         return redirect(url_for('log'))
     return render_template('viewroom.html', user=cur_user(), form=form, rooms = rooms)
+
 
 @app.route('/addroom', methods=['GET', 'POST'])
 def addroom():
@@ -70,6 +66,7 @@ def addroom():
     else:
         return redirect(url_for('log'))
     return render_template('addroom.html', user=cur_user(), token=token)
+
 
 @app.route('/room/<string:token>', methods=['GET', 'POST'])
 def room(token):
@@ -93,10 +90,12 @@ def room(token):
     else:
         return redirect(url_for('log'))
     return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users)
-    
+
+
 def allowed_file(filename):
     return ('.' in filename and
             filename.split('.')[-1].lower() in app.config["ALLOWED_EXTENSIONS"])
+
 
 @app.route('/calibrate/<string:color>', methods=['GET', 'POST'])
 def calibrate(color):
@@ -106,6 +105,10 @@ def calibrate(color):
 @app.route('/upload', methods=['GET', 'POST'])
 @requiresauth
 def upload():
+    """
+    Отвечает за вывод страницы загрузки и загрузку файлов
+    :return: Страница загрузки
+    """
     form = UploadVideoForm(csrf_enabled=False)
 
     if form.validate_on_submit():
@@ -127,16 +130,22 @@ def upload():
 
 @app.route('/rezult1', methods=['GET', 'POST'])
 def rezult1():
-    return render_template('rezult.html', pid=1, top=0, left=0, right=0, bottom=0)
+    return render_template('rezult.html',
+                           pid=1, top=0, left=0, right=0, bottom=0)
 
 
 @app.route('/rezult2', methods=['GET', 'POST'])
 def rezult2():
-    return render_template('rezult.html', pid=1, top=0, left=-400, right=0, bottom=0)
+    return render_template('rezult.html',
+                           pid=1, top=0, left=-400, right=0, bottom=0)
 
 
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():
+    """
+    Отвечает за вывод страницы регистрации и регистрацию
+    :return: Страница регистрации
+    """
     form = RegForm()
 
     if form.validate_on_submit():
@@ -150,6 +159,10 @@ def reg():
 
 @app.route('/auth', methods=['GET', 'POST'])
 def log():
+    """
+    Отвечает за вывод страницы входа и вход
+    :return: Страница входа
+    """
     form = LogForm()
 
     if form.validate_on_submit():
@@ -162,14 +175,33 @@ def log():
 @app.route('/cabinet', methods=['GET', 'POST'])
 @requiresauth
 def cabinet():
-    return render_template('Cabinet.html', user=cur_user())
+    """
+    Отвечает за вывод страницы личного кабинета
+    :return: Страница личного кабинета
+    """
+    form = UserProfileForm()
+    print("start")
+    if form.validate_on_submit():
+        print("validate")
+        user = cur_user()
+        if form.change_name.data:
+            user.change_name(form.change_name.data)
+        if form.change_password.data:
+            user.save(form.change_password.data)
+        if form.channel_info.data:
+            user.change_channel_info(form.channel_info.data)
+        return redirect(url_for("cabinet"))
+    print("end")
+    return render_template('cabinet.html', form=form, user=cur_user())
 
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
     if 'Login' in session:
         session.pop('Login')
+        IsVideoViewed.is_viewed = False
     return redirect('/')
+
 
 @app.route('/video/<string:vid>/video.mp4')
 def get_video(vid):
@@ -180,10 +212,18 @@ def get_video(vid):
         'Content-Disposition', 'attachment', filename='video/%s/video.mp4' % vid)
     return response
 
+
 @app.route('/play/<string:vid>', methods=['GET', 'POST'])
 def play(vid):
-    return render_template('play.html', user=cur_user(), vid=vid)
-
+    video = Video.get(vid)
+    user = cur_user()
+    is_viewed = IsVideoViewed.is_viewed
+    if (not is_viewed) and (video is not None) and (user is not None):
+        IsVideoViewed.is_viewed = True
+        video.views += 1
+        db.session.add(video)
+        db.session.commit()
+    return render_template('play.html', user=cur_user(), vid=vid, video=Video.get(vid), video_views=video.views)
 
 
 @app.errorhandler(403)
