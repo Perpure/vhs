@@ -43,8 +43,9 @@ def main():
     return render_template('main.html', user=cur_user())
 
 @app.route('/viewroom', methods=['GET', 'POST'])
-def viewroom():
+def viewroom(): 
     user=cur_user()
+    
     if user:
         form = JoinForm(csrf_enabled=False)
         user.Action=""
@@ -59,6 +60,8 @@ def viewroom():
 
 @app.route('/addroom', methods=['GET', 'POST'])
 def addroom():
+    
+    
     user=cur_user()
     if user:
         token=''.join(choice(ascii_letters) for i in range(24))
@@ -70,6 +73,8 @@ def addroom():
         user.Room.append(room)
         room.color_user = str(user.id) + ',1'
         db.session.commit()
+
+        
     else:
         return redirect(url_for('log'))
     return render_template('addroom.html', user=cur_user(), token=token)
@@ -112,6 +117,9 @@ def allowed_file(filename):
 
 @app.route('/calibrate/<string:color>', methods=['GET', 'POST'])
 def calibrate(color):
+    user=cur_user()
+    db.session.commit()
+    print(user.Action)
     return render_template('color.html', color=color)
 
 
@@ -183,6 +191,13 @@ def logout():
         session.pop('Login')
     return redirect('/')
 
+<<<<<<< HEAD
+@app.route('/askAct', methods=['GET', 'POST'])
+def askAct():
+    user=cur_user()
+    action=user.Action
+    return action
+=======
 @app.route('/video/<string:vid>/video.mp4')
 def get_video(vid):
     video_binary = read_video(vid)
@@ -192,15 +207,10 @@ def get_video(vid):
         'Content-Disposition', 'attachment', filename='video/%s/video.mp4' % vid)
     return response
 
-@app.route('/askAct', methods=['GET', 'POST'])
-def askAct():
-    user=cur_user()
-    action=user.Action
-    return action
-
 @app.route('/play/<string:vid>', methods=['GET', 'POST'])
 def play(vid):
     return render_template('play.html', user=cur_user(), vid=vid)
+>>>>>>> develop
 
 
 

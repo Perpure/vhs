@@ -80,7 +80,7 @@ class Comment(db.Model):
 class User(db.Model):
     __tablename__ = 'User'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    login = db.Column(db.String(32), nullable=False)
+    login = db.Column(db.String(32), unique=True, nullable=False)
     password = db.Column(db.String(64), nullable=False)
     comments = db.relationship('Comment', backref='user', lazy='joined')
     Room = db.relationship("Room",
@@ -97,14 +97,17 @@ class User(db.Model):
         db.session.commit()
 
     def check_pass(self, password):
-        temp = User.query.get(self.login)
-        return temp and temp.password == hashlib.sha512(password.encode("utf-8")).hexdigest()
+        hash = hashlib.sha512(password.encode("utf-8")).hexdigest()
+        return self.password == hash
 
     @staticmethod
-    def get(login=None):
-        if not login:
-            return User.query.all()
-        return User.query.get(login)
+    def get(id=None, login=None):
+        if login:
+            return User.query.filter_by(login=login).first()
+        if id:
+            return User.query.get(id)
+        return User.query.all()
+
 
 class Room(db.Model):
     __tablename__ = 'Room'

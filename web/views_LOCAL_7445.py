@@ -2,13 +2,13 @@ from flask import redirect, render_template, session, url_for, make_response, re
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm
 from web.models import User, Video, Room, Color
-from .helper import read_image, read_video
+from .helper import read_image
 from werkzeug.utils import secure_filename
 from random import choice
 from string import ascii_letters
 from werkzeug.exceptions import Aborter
 from functools import wraps
-from web.video_handler import save_video
+import hashlib, os
 
 
 def cur_user():
@@ -43,8 +43,9 @@ def main():
     return render_template('main.html', user=cur_user())
 
 @app.route('/viewroom', methods=['GET', 'POST'])
-def viewroom():
+def viewroom(): 
     user=cur_user()
+    
     if user:
         form = JoinForm(csrf_enabled=False)
         user.Action=""
@@ -59,6 +60,8 @@ def viewroom():
 
 @app.route('/addroom', methods=['GET', 'POST'])
 def addroom():
+    
+    
     user=cur_user()
     if user:
         token=''.join(choice(ascii_letters) for i in range(24))
@@ -70,6 +73,8 @@ def addroom():
         user.Room.append(room)
         room.color_user = str(user.id) + ',1'
         db.session.commit()
+
+        
     else:
         return redirect(url_for('log'))
     return render_template('addroom.html', user=cur_user(), token=token)
@@ -112,6 +117,9 @@ def allowed_file(filename):
 
 @app.route('/calibrate/<string:color>', methods=['GET', 'POST'])
 def calibrate(color):
+    user=cur_user()
+    db.session.commit()
+    print(user.Action)
     return render_template('color.html', color=color)
 
 
@@ -130,7 +138,17 @@ def upload():
             return redirect(request.url)
 
         if file and allowed_file(file.filename):
-            save_video(file, form.title.data)
+            video = Video(form.title.data)
+            
+            video_hash = hashlib.md5(file.read()).hexdigest()
+            file.seek(0)
+            
+            directory = video.save(video_hash)
+            os.makedirs(directory)
+            
+            ext = secure_filename(file.filename).split('.')[-1]
+            video_path = os.path.join(directory, 'video.' + ext)
+            file.save(video_path)
 
             return redirect(request.url)
 
@@ -150,6 +168,7 @@ def rezult2():
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():
     form = RegForm()
+    user = None
 
     if form.validate_on_submit():
         user = User(form.login_reg.data)
@@ -163,9 +182,11 @@ def reg():
 @app.route('/auth', methods=['GET', 'POST'])
 def log():
     form = LogForm()
+    user = None
 
-    if form.validate_on_submit():
-        session["Login"] = form.login_log.data
+    if form.submit_log.data and form.validate_on_submit():
+        user = User.query.filter_by(login=form.login_log.data).first()
+        session["Login"] = user.login
         return redirect(url_for("main"))
 
     return render_template('auth.html', form=form, user=cur_user())
@@ -183,25 +204,15 @@ def logout():
         session.pop('Login')
     return redirect('/')
 
-@app.route('/video/<string:vid>/video.mp4')
-def get_video(vid):
-    video_binary = read_video(vid)
-    response = make_response(video_binary)
-    response.headers.set('Content-Type', 'video/mp4')
-    response.headers.set(
-        'Content-Disposition', 'attachment', filename='video/%s/video.mp4' % vid)
-    return response
-
 @app.route('/askAct', methods=['GET', 'POST'])
 def askAct():
     user=cur_user()
     action=user.Action
     return action
 
-@app.route('/play/<string:vid>', methods=['GET', 'POST'])
-def play(vid):
-    return render_template('play.html', user=cur_user(), vid=vid)
-
+@app.route('/play', methods=['GET', 'POST'])
+def play():
+    return render_template('play.html', user=cur_user())
 
 
 @app.errorhandler(403)

@@ -1,6 +1,6 @@
 from flask import redirect, render_template, session, url_for, make_response, request
 from web import app, db
-from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm
+from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm
 from web.models import User, Video, Room, Color
 from .helper import read_image, read_video
 from werkzeug.utils import secure_filename
@@ -47,8 +47,6 @@ def viewroom():
     user=cur_user()
     if user:
         form = JoinForm(csrf_enabled=False)
-        user.Action=""
-        db.session.commit()
         if form.validate_on_submit():
             if Room.query.filter_by(token=str(form.token.data)):
                 return redirect(url_for('room', token=form.token.data))
@@ -77,17 +75,8 @@ def addroom():
 @app.route('/room/<string:token>', methods=['GET', 'POST'])
 def room(token):
     user=cur_user()
-    form=RoomForm()
-    
     if user:
         room = Room.query.filter_by(token=token).first()
-
-        if form.validate_on_submit():
-            for i in range(len(room.color_user.split(';'))):
-                ID=room.color_user.split(';')[i].split(',')[0]
-                User.query.filter_by(id=ID).first().Action="calibrate"
-            db.session.commit()
-
         if not(room in user.Room):
             user.Room.append(room)
             if room.color_user:
@@ -104,7 +93,7 @@ def room(token):
         users=room.User
     else:
         return redirect(url_for('log'))
-    return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,form=form)
+    return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users)
     
 def allowed_file(filename):
     return ('.' in filename and
@@ -191,12 +180,6 @@ def get_video(vid):
     response.headers.set(
         'Content-Disposition', 'attachment', filename='video/%s/video.mp4' % vid)
     return response
-
-@app.route('/askAct', methods=['GET', 'POST'])
-def askAct():
-    user=cur_user()
-    action=user.Action
-    return action
 
 @app.route('/play/<string:vid>', methods=['GET', 'POST'])
 def play(vid):
