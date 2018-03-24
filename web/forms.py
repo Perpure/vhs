@@ -7,6 +7,8 @@ from web.models import User
 from .helper import cur_user
 from wtforms.widgets import CheckboxInput, ListWidget
 
+class RoomForm(FlaskForm):
+    submit = SubmitField("Калибровка")
 
 class UploadVideoForm(FlaskForm):
     title = StringField("Введите название видео", validators=[Length(3)])
@@ -32,12 +34,13 @@ def match(form, field):
         user = cur_user()
     else:
         user = User.get(login=form.login_log.data)
-    if user and not user.check_pass(field.data):
+    if (user is None) and (not user.check_pass(field.data)):
         raise ValidationError("Неправильный пароль")
 
+            
 
 class RegForm(FlaskForm):
-    login_reg = StringField("Имя пользователя", validators=[Length(5), not_exist])
+    login_reg = StringField("Имя пользователя", validators=[Length(5), NotExist])
     password_reg = PasswordField("Пароль", validators=[Length(8)])
     confirm_reg = PasswordField("Повторите пароль",
                                 validators=[Length(8), EqualTo("password_reg", message="Пароли должны совпадать")])
