@@ -117,6 +117,9 @@ def allowed_file(filename):
 
 @app.route('/calibrate/<string:color>', methods=['GET', 'POST'])
 def calibrate(color):
+    user=cur_user()
+    db.session.commit()
+    print(user.Action)
     return render_template('color.html', color=color)
 
 

@@ -29,11 +29,6 @@ association_table2 = db.Table('association2', db.Model.metadata,
     db.Column('Room_id', db.Integer, db.ForeignKey('Room.id'))
 )
 
-association_table3 = db.Table('association3', db.Model.metadata,
-    db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
-    db.Column('Actions_id', db.Integer, db.ForeignKey('Actions.id'))
-)
-
 class Video(db.Model):
     title = db.Column(db.String(100))
     path = db.Column(db.Text(), nullable=False)
