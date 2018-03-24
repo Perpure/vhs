@@ -29,7 +29,9 @@ association_table2 = db.Table('association2', db.Model.metadata,
     db.Column('Room_id', db.Integer, db.ForeignKey('Room.id'))
 )
 
+
 class Video(db.Model):
+    """Класс описывающий модель Видео"""
     title = db.Column(db.String(100))
     path = db.Column(db.Text(), nullable=False)
     id = db.Column(db.Text(), primary_key=True)
@@ -41,9 +43,11 @@ class Video(db.Model):
 
     dislikes = db.relationship('User', secondary=dislikes, lazy=False,
                                backref=db.backref('disliked', lazy=False))
+    views = db.Column(db.Integer())
 
     def __init__(self, title):
         self.title = title
+        self.views = 0
 
     def save(self, hash):
         self.date = datetime.now(tz=None)
@@ -55,11 +59,17 @@ class Video(db.Model):
 
         return self.path
 
+    # def add_view(self):
+    #     self.views += 1
+    #     db.session.add(self)
+    #     db.session.commit()
+
     @staticmethod
     def get(video_id=None):
         if video_id is None:
             return Video.query.all()
         return Video.query.get(video_id)
+
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -84,21 +94,49 @@ class User(db.Model):
     password = db.Column(db.String(64), nullable=False)
     comments = db.relationship('Comment', backref='user', lazy='joined')
     Room = db.relationship("Room",
-                secondary=association_table,
-                backref="User",
-                lazy='dynamic')
+                secondary = association_table,
+                backref = "User",
+                lazy = 'dynamic')
+    name = db.Column(db.String(32), nullable=False)
+    channel_info = db.Column(db.String(64))
+    views_limit = 0
 
     def __init__(self, login):
         self.login = login
+        self.name = login
+        self.channel_info = "channel_info"
 
     def save(self, password):
-        self.password = hashlib.sha512(password.encode("utf-8")).hexdigest()
+        """
+        Функция сохранения нового пользователя в базе данных
+        :param password: Пароль
+        """
+        self.password = hashlib.sha512(
+            password.encode("utf-8")).hexdigest()
         db.session.add(self)
         db.session.commit()
 
     def check_pass(self, password):
         hash = hashlib.sha512(password.encode("utf-8")).hexdigest()
         return self.password == hash
+
+    def change_name(self, name):
+        """
+        Метод, изменяющий имя пользователя
+        :param name: Имя пользователя
+        """
+        self.name = name
+        db.session.add(self)
+        db.session.commit()
+
+    def change_channel_info(self, info):
+        """
+        Метод, изменяющий информацию о канале пользователя
+        :param info: Информация о канале
+        """
+        self.channel_info = info
+        db.session.add(self)
+        db.session.commit()
 
     @staticmethod
     def get(id=None, login=None):
@@ -118,6 +156,7 @@ class Room(db.Model):
                 secondary=association_table2,
                 backref="Room",
                 lazy='dynamic')
+
 
 class Color(db.Model):
     __tablename__ = 'Color'
