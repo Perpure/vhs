@@ -14,6 +14,7 @@
   <title>Hosting of Everything</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+  <script src="{{ url_for('static', filename='jquery.js') }}"></script>
 </head>
 <body>
   <header>
@@ -25,15 +26,16 @@
     <div class="Menu">
       Меню
       <div class="inMenu">
+        <a href="{{url_for('main')}}" class="Link"><div class="menuBtn"><div class="menuTxt">Главная</div><img src="static/main.png" class="menuImg"></div></a>
         {%if user %}
-        <a href="{{url_for('logout')}}" class="Link"><div class="menuBtn">Выйти</div></a>
-        <a href="{{url_for('cabinet')}}" class="Link"><div class="menuBtn">Мой Канал</div></a>
-        <a href="{{url_for('upload')}}" class="Link"><div class="menuBtn">Загрузить Видео</div></a>
+        <a href="{{url_for('cabinet')}}" class="Link"><div class="menuBtn"><div class="menuTxt">Мой Канал</div><img src="static/channel.png" class="menuImg"></div></a>
+        <a href="{{url_for('viewroom')}}" class="Link"><div class="menuBtn"><div class="menuTxt">Мультискрин</div><img src="static/channel.png" class="menuImg"></div></a>
+        <a href="{{url_for('upload')}}" class="Link"><div class="menuBtn"><div class="menuTxt">Загрузить Видео</div><img src="static/load.png" class="menuImg"></div></a>
+        <a href="{{url_for('logout')}}" class="Link"><div class="menuBtn"><div class="menuTxt">Выйти</div><img src="static/out.png" class="menuImg"></div></a>
         {%else%}
-        <a href="{{url_for('log')}}" class="Link"><div class="menuBtn">Войти</div></a>
-        <a href="{{url_for('reg')}}" class="Link"><div class="menuBtn">Регистрация</div></a>
+        <a href="{{url_for('log')}}" class="Link"><div class="menuBtn"><div class="menuTxt">Войти</div><img src="static/log.png" class="menuImg"></div></a>
+        <a href="{{url_for('reg')}}" class="Link"><div class="menuBtn"><div class="menuTxt">Регистрация</div><img src="static/reg.png" class="menuImg"></div></a>
         {%endif%}
-        <a href="{{url_for('main')}}" class="Link"><div class="menuBtn">Главная</div></a>
       </div>
     </div>
   </header>
