@@ -1,6 +1,6 @@
 from flask import redirect, render_template, session, url_for, make_response, request
 from web import app, db
-from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, UploadImageForm
+from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, UploadImageForm, UserProfileForm
 from web.models import User, Video, Room, Color
 from config import basedir
 from .helper import read_image, read_video, cur_user, IsVideoViewed, is_true_pixel

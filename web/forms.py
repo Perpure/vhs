@@ -17,7 +17,7 @@ class UploadImageForm(FlaskForm):
     image = FileField("Выберите файл")
     submit = SubmitField("Загрузить")
 
-def NotExist(form, field):
+def not_exist(form, field):
     if User.get(login=field.data):
         raise ValidationError("Такой пользователь уже существует")
 
@@ -32,9 +32,10 @@ def match(form, field):
         user = cur_user()
     else:
         user = User.get(login=form.login_log.data)
-    if user and not user.check_pass(field.data):
+    if (user is None) and (not user.check_pass(field.data)):
         raise ValidationError("Неправильный пароль")
 
+            
 
 class RegForm(FlaskForm):
     login_reg = StringField("Имя пользователя", validators=[Length(5), not_exist])
