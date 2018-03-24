@@ -39,7 +39,7 @@ def match(form, field):
 
 
 class RegForm(FlaskForm):
-    login_reg = StringField("Имя пользователя", validators=[Length(5), not_exist])
+    login_reg = StringField("Имя пользователя", validators=[Length(5), NotExist])
     password_reg = PasswordField("Пароль", validators=[Length(8)])
     confirm_reg = PasswordField("Повторите пароль",
                                 validators=[Length(8), EqualTo("password_reg", message="Пароли должны совпадать")])

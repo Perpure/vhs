@@ -1,6 +1,6 @@
 from flask import redirect, render_template, session, url_for, make_response, request
 from web import app, db
-from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm,RoomForm
+from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm,RoomForm, UploadImageForm
 from web.models import User, Video, Room, Color
 from config import basedir
 from .helper import read_image, read_video, cur_user, IsVideoViewed, is_true_pixel
@@ -12,12 +12,6 @@ from functools import wraps
 from web.video_handler import save_video
 from PIL import Image, ImageDraw
 import os
-
-def cur_user():
-    if 'Login' in session:
-        return  User.query.filter_by(login=session['Login']).first()
-    else:
-        return None
 
 
 def requiresauth(f):
@@ -82,12 +76,13 @@ def addroom():
 @app.route('/room/<string:token>', methods=['GET', 'POST'])
 def room(token):
     user=cur_user()
-    form=RoomForm()
+    Room_Form=RoomForm()
     
     if user:
         room = Room.query.filter_by(token=token).first()
 
-        if form.validate_on_submit():
+        if Room_Form.validate_on_submit():
+            print("nice")
             for i in range(len(room.color_user.split(';'))):
                 ID=room.color_user.split(';')[i].split(',')[0]
                 User.query.filter_by(id=ID).first().Action="calibrate"
@@ -114,22 +109,22 @@ def room(token):
         if image_form.validate_on_submit():
             if 'image' not in request.files:
                 return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,
-                                       image_form=UploadImageForm(csrf_enabled=False), result_url=result_url)
+                                       image_form=UploadImageForm(csrf_enabled=False), result_url=result_url,Room_Form=Room_Form)
 
             file = request.files['image']
             if file.filename == '':
                 return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,
-                                       image_form=UploadImageForm(csrf_enabled=False), result_url=result_url)
+                                       image_form=UploadImageForm(csrf_enabled=False), result_url=result_url,Room_Form=Room_Form)
     
             if file and allowed_file(file.filename):
                 file.save(basedir+'/images/'+room.token+'.'+file.filename.split('.')[-1].lower())
                 return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,
-                                       image_form=image_form, result_url=result_url)
+                                       image_form=image_form, result_url=result_url,Room_Form=Room_Form)
 
     else:
         return redirect(url_for('log'))
     return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,
-                           image_form=image_form, result_url=result_url,form=form)
+                           image_form=image_form, result_url=result_url,Room_Form=Room_Form)
     
 def allowed_file(filename):
     return ('.' in filename and
@@ -138,6 +133,9 @@ def allowed_file(filename):
 
 @app.route('/calibrate/<string:color>', methods=['GET', 'POST'])
 def calibrate(color):
+    user=cur_user()
+    user.Action=""
+    db.session.commit()
     return render_template('color.html', color=color)
 
 
@@ -268,8 +266,10 @@ def get_video(vid):
 
 @app.route('/askAct', methods=['GET', 'POST'])
 def askAct():
-    user=cur_user()
-    action=user.Action
+    action=""
+    if cur_user():
+        user=cur_user()
+        action=user.Action
     return action
 
 @app.route('/play/<string:vid>', methods=['GET', 'POST'])
