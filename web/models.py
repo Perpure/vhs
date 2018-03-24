@@ -6,29 +6,27 @@ import os
 from datetime import datetime, date, time
 
 
-likes = db.Table('likes', db.Model.metadata,
-                db.Column('user_login', db.String(32), db.ForeignKey('User.login'), 
-                    nullable=False, primary_key=True),
-                db.Column('video_id', db.Text(), db.ForeignKey('video.id'), 
-                    nullable=False, primary_key=True))
+class Marks(db.Model):
+    id = db.Column(db.Text(), primary_key=True)
+    video_id = db.Column(db.Integer, db.ForeignKey('video.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    is_like = db.Column(db.Boolean, nullable=False)
 
-dislikes = db.Table('dislikes', 
-                db.Column('user_login', db.String(32), db.ForeignKey('User.login'), 
-                    nullable=False, primary_key=True),
-                db.Column('video_id', db.Text(), db.ForeignKey('video.id'), 
-                    nullable=False, primary_key=True))
-
+    def save(self,is_like):
+        self.is_like = is_like
+        db.session.add(self)
+        db.session.commit()
 
 association_table = db.Table('association', db.Model.metadata,
     db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
     db.Column('Room_id', db.Integer, db.ForeignKey('Room.id'))
 )
 
+
 association_table2 = db.Table('association2', db.Model.metadata,
     db.Column('Color_id', db.Integer, db.ForeignKey('Color.id')),
     db.Column('Room_id', db.Integer, db.ForeignKey('Room.id'))
 )
-
 
 class Video(db.Model):
     """Класс описывающий модель Видео"""
@@ -36,14 +34,10 @@ class Video(db.Model):
     path = db.Column(db.Text(), nullable=False)
     id = db.Column(db.Text(), primary_key=True)
     date = db.Column(db.DateTime)
-    comments = db.relationship('Comment', backref='video', lazy='joined')
-
-    likes = db.relationship('User', secondary=likes, lazy=False,
-                            backref=db.backref('liked', lazy=False))
-
-    dislikes = db.relationship('User', secondary=dislikes, lazy=False,
-                               backref=db.backref('disliked', lazy=False))
     views = db.Column(db.Integer())
+
+    marks = db.relationship('Marks', backref='video', lazy=True)
+    comments = db.relationship('Comment', backref='video', lazy='joined')
 
     def __init__(self, title):
         self.title = title
@@ -92,15 +86,18 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     login = db.Column(db.String(32), unique=True, nullable=False)
     password = db.Column(db.String(64), nullable=False)
+    name = db.Column(db.String(32), nullable=False)
+    channel_info = db.Column(db.String(64))
+    Action = db.Column(db.String(64))
+    views_limit = 0
+
+    marks = db.relationship('Marks', backref='user', lazy=True)
     comments = db.relationship('Comment', backref='user', lazy='joined')
     Room = db.relationship("Room",
                 secondary = association_table,
                 backref = "User",
                 lazy = 'dynamic')
-    name = db.Column(db.String(32), nullable=False)
-    channel_info = db.Column(db.String(64))
-    views_limit = 0
-    Action = db.Column(db.String(64))
+    
     def __init__(self, login):
         self.login = login
         self.name = login
