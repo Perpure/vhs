@@ -1,4 +1,4 @@
-from web import db
+﻿from web import db
 from web import app
 import uuid
 import hashlib
@@ -9,7 +9,7 @@ from datetime import datetime, date, time
 class Marks(db.Model):
     id = db.Column(db.Text(), primary_key=True)
     video_id = db.Column(db.Integer, db.ForeignKey('video.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
     is_like = db.Column(db.Boolean, nullable=False)
 
     def save(self,is_like):

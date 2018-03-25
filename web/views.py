@@ -286,9 +286,9 @@ def play(vid):
     is_viewed = IsVideoViewed.is_viewed
     form = AddCommentForm(csrf_enabled=False)
     if form.validate_on_submit():
-        comment = Comment(form.message.data,video,user)
+        comment = Comment(form.message.data, video, user)
         comment.save()
-
+    comments = Comment.query.all
     if (video.id not in is_viewed) and (video is not None) and (user is not None):
         IsVideoViewed.is_viewed.append(video.id)
         video.views += 1

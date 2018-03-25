@@ -33,7 +33,7 @@ def match(form, field):
     user = None
     if cur_user():
         user = cur_user()
-    elif field.data is not '':
+    elif form.login_log.data is not '':
         user = User.get(login=form.login_log.data)
     if user and not user.check_pass(field.data):
         raise ValidationError("Неправильный пароль")
