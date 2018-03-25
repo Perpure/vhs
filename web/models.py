@@ -1,4 +1,4 @@
-from web import db
+﻿from web import db
 from web import app
 import uuid
 import hashlib
