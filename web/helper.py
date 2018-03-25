@@ -4,7 +4,7 @@ from web.models import User
 
 
 def read_image(pid):
-    path=basedir + '/video/%s/preview.png' % pid
+    path=basedir + '/images/%s.jpg' % pid
     with open(path, "rb") as im:
         f = im.read()
         b = bytearray(f)
