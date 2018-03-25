@@ -125,6 +125,12 @@ font-size: 120%;
 .menuTxt
 {
     display:inline-block;
+    transition:0.5s;
+}
+
+.menuBtn:hover > .menuTxt
+{
+    margin-left:10px;
 }
 
 main
