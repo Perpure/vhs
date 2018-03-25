@@ -46,7 +46,7 @@ def get_image(pid):
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    return render_template('main.html', user=cur_user())
+    return render_template('main.html', user=cur_user(), items=Video.get())
 
 
 @app.route('/viewroom', methods=['GET', 'POST'])
