@@ -1,3 +1,4 @@
+# coding=utf-8
 from flask import redirect, render_template, session, url_for, make_response, request
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, UserProfileForm
@@ -24,19 +25,19 @@ def requiresauth(f):
     return wrapped
 
 
-@app.route('/images/<string:pid>.jpg')
+@app.route('/images/<string:pid>/preview.png')
 def get_image(pid):
     image_binary = read_image(pid)
     response = make_response(image_binary)
-    response.headers.set('Content-Type', 'image/jpeg')
+    response.headers.set('Content-Type', 'image/png')
     response.headers.set(
-        'Content-Disposition', 'attachment', filename='%s.jpg' % pid)
+        'Content-Disposition', 'attachment', filename='%s.png' % pid)
     return response
 
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    return render_template('main.html', user=cur_user())
+    return render_template('main.html', user=cur_user(), items=Video.get())
 
 
 @app.route('/viewroom', methods=['GET', 'POST'])
@@ -125,7 +126,8 @@ def room(token):
         return redirect(url_for('log'))
     return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,
                            image_form=image_form, result_url=result_url,Room_Form=Room_Form)
-    
+
+
 def allowed_file(filename):
     return ('.' in filename and
             filename.split('.')[-1].lower() in app.config["ALLOWED_EXTENSIONS"])
@@ -143,8 +145,8 @@ def calibrate(color):
 @requiresauth
 def upload():
     """
-    Отвечает за вывод страницы загрузки и загрузку файлов
-    :return: Страница загрузки
+    РћС‚РІРµС‡Р°РµС‚ Р·Р° РІС‹РІРѕРґ СЃС‚СЂР°РЅРёС†С‹ Р·Р°РіСЂСѓР·РєРё Рё Р·Р°РіСЂСѓР·РєСѓ С„Р°Р№Р»РѕРІ
+    :return: РЎС‚СЂР°РЅРёС†Р° Р·Р°РіСЂСѓР·РєРё
     """
     form = UploadVideoForm(csrf_enabled=False)
 
@@ -195,8 +197,8 @@ def result(token,color):
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():
     """
-    Отвечает за вывод страницы регистрации и регистрацию
-    :return: Страница регистрации
+    РћС‚РІРµС‡Р°РµС‚ Р·Р° РІС‹РІРѕРґ СЃС‚СЂР°РЅРёС†С‹ СЂРµРіРёСЃС‚СЂР°С†РёРё Рё СЂРµРіРёСЃС‚СЂР°С†РёСЋ
+    :return: РЎС‚СЂР°РЅРёС†Р° СЂРµРіРёСЃС‚СЂР°С†РёРё
     """
     form = RegForm()
 
@@ -212,8 +214,8 @@ def reg():
 @app.route('/auth', methods=['GET', 'POST'])
 def log():
     """
-    Отвечает за вывод страницы входа и вход
-    :return: Страница входа
+    РћС‚РІРµС‡Р°РµС‚ Р·Р° РІС‹РІРѕРґ СЃС‚СЂР°РЅРёС†С‹ РІС…РѕРґР° Рё РІС…РѕРґ
+    :return: РЎС‚СЂР°РЅРёС†Р° РІС…РѕРґР°
     """
     form = LogForm()
 
@@ -228,8 +230,8 @@ def log():
 @requiresauth
 def cabinet():
     """
-    Отвечает за вывод страницы личного кабинета
-    :return: Страница личного кабинета
+    РћС‚РІРµС‡Р°РµС‚ Р·Р° РІС‹РІРѕРґ СЃС‚СЂР°РЅРёС†С‹ Р»РёС‡РЅРѕРіРѕ РєР°Р±РёРЅРµС‚Р°
+    :return: РЎС‚СЂР°РЅРёС†Р° Р»РёС‡РЅРѕРіРѕ РєР°Р±РёРЅРµС‚Р°
     """
     form = UserProfileForm()
     print("start")
@@ -264,6 +266,7 @@ def get_video(vid):
         'Content-Disposition', 'attachment', filename='video/%s/video.mp4' % vid)
     return response
 
+
 @app.route('/askAct', methods=['GET', 'POST'])
 def askAct():
     action=""
@@ -271,6 +274,7 @@ def askAct():
         user=cur_user()
         action=user.Action
     return action
+
 
 @app.route('/play/<string:vid>', methods=['GET', 'POST'])
 def play(vid):
