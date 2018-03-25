@@ -68,7 +68,7 @@ class Video(db.Model):
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text())
-    video_id = db.Column(db.Integer, db.ForeignKey('video.id'),nullable=False)
+    video_id = db.Column(db.Text(), db.ForeignKey('video.id'),nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
 
     def __init__(self, text, video_id, user_id):

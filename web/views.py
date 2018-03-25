@@ -294,7 +294,7 @@ def play(vid):
         video.views += 1
         db.session.add(video)
         db.session.commit()
-    return render_template('play.html', user=cur_user(), vid=vid, video=Video.get(vid), video_views=video.views)
+    return render_template('play.html', user=cur_user(), vid=vid, video=Video.get(vid), video_views=video.views, form=form)
 
 
 @app.errorhandler(403)

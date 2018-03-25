@@ -82,5 +82,5 @@ class UserProfileForm(FlaskForm):
 
 
 class AddCommentForm(FlaskForm):
-    message = TextAreaField("Комментарий", validators=[DataRequired(), Length(255)])
-    submit_com = SubmitField("Запостить")
+    message = TextAreaField("Комментарий", validators=[DataRequired(), Length(1)])
+    submit = SubmitField("Запостить")

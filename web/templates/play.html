@@ -9,8 +9,8 @@
 <p class="videoTitle">{{video.title}}</p>
 <p class="videoDate">Добавлено {{video.date}}</p>
 {%if user %}
-<form action="/" method="POST">
-  <div>{{ form.message.label}}</div>
+<form action="" method="post">
+        <div>{{ form.message.label}}</div>
         <div>{{ form.message(rows=5, cols=60) }}</div>
         {% if form.message.errors %}
             {% for error in form.message.errors %}
@@ -18,14 +18,13 @@
             {% endfor %}
         {% endif %}
         {{ form.submit }}
-    </form>
+</form>
 
 {%else%}
 <a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы комментировать
 {%endif%}
 <p>Просмотры: {{video_views}}</p>
 <p>Комментарии</p>
-
 <div class="Comment">
     <img src="../static/a.png" alt="" class="commAva">
     <div class="commTxt">
