@@ -3,7 +3,7 @@ from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, UserProfileForm
 from web.models import User, Video, Room, Color
 from config import basedir
-from .helper import read_image, read_video, cur_user, IsVideoViewed, is_true_pixel
+from .helper import read_image, read_multi, read_video, cur_user, IsVideoViewed, is_true_pixel
 from werkzeug.utils import secure_filename
 from random import choice
 from string import ascii_letters
