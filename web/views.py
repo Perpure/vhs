@@ -1,6 +1,6 @@
 from flask import redirect, render_template, session, url_for, make_response, request
 from web import app, db
-from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, UploadImageForm, UserProfileForm
+from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, UserProfileForm
 from web.models import User, Video, Room, Color
 from config import basedir
 from .helper import read_image, read_video, cur_user, IsVideoViewed, is_true_pixel
@@ -13,6 +13,7 @@ from web.video_handler import save_video
 from PIL import Image, ImageDraw
 import os
 
+
 def requiresauth(f):
     @wraps(f)
     def wrapped(*args, **kwargs):
@@ -24,6 +25,16 @@ def requiresauth(f):
 
 
 @app.route('/images/<string:pid>.jpg')
+def get_multi(pid):
+    image_binary = read_multi(pid)
+    response = make_response(image_binary)
+    response.headers.set('Content-Type', 'image/jpeg')
+    response.headers.set(
+        'Content-Disposition', 'attachment', filename='%s.jpg' % pid)
+    return response
+
+
+@app.route('/images/<string:pid>/preview.png')
 def get_image(pid):
     image_binary = read_image(pid)
     response = make_response(image_binary)
@@ -35,7 +46,7 @@ def get_image(pid):
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    return render_template('main.html', user=cur_user())
+    return render_template('main.html', user=cur_user(), items=Video.get())
 
 
 @app.route('/viewroom', methods=['GET', 'POST'])
@@ -43,6 +54,8 @@ def viewroom():
     user=cur_user()
     if user:
         form = JoinForm(csrf_enabled=False)
+        user.Action=""
+        db.session.commit()
         if form.validate_on_submit():
             if Room.query.filter_by(token=str(form.token.data)):
                 return redirect(url_for('room', token=form.token.data))
@@ -73,8 +86,18 @@ def addroom():
 @app.route('/room/<string:token>', methods=['GET', 'POST'])
 def room(token):
     user=cur_user()
+    Room_Form=RoomForm()
+    
     if user:
         room = Room.query.filter_by(token=token).first()
+
+        if Room_Form.validate_on_submit():
+            print("nice")
+            for i in range(len(room.color_user.split(';'))):
+                ID=room.color_user.split(';')[i].split(',')[0]
+                User.query.filter_by(id=ID).first().Action="calibrate"
+            db.session.commit()
+
         if not(room in user.Room):
             user.Room.append(room)
             if room.color_user:
@@ -96,22 +119,22 @@ def room(token):
         if image_form.validate_on_submit():
             if 'image' not in request.files:
                 return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,
-                                       image_form=UploadImageForm(csrf_enabled=False), result_url=result_url)
+                                       image_form=UploadImageForm(csrf_enabled=False), result_url=result_url,Room_Form=Room_Form)
 
             file = request.files['image']
             if file.filename == '':
                 return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,
-                                       image_form=UploadImageForm(csrf_enabled=False), result_url=result_url)
+                                       image_form=UploadImageForm(csrf_enabled=False), result_url=result_url,Room_Form=Room_Form)
     
             if file and allowed_file(file.filename):
                 file.save(basedir+'/images/'+room.token+'.'+file.filename.split('.')[-1].lower())
                 return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,
-                                       image_form=image_form, result_url=result_url)
+                                       image_form=image_form, result_url=result_url,Room_Form=Room_Form)
 
     else:
         return redirect(url_for('log'))
     return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,
-                           image_form=image_form, result_url=result_url)
+                           image_form=image_form, result_url=result_url,Room_Form=Room_Form)
     
 def allowed_file(filename):
     return ('.' in filename and
@@ -120,6 +143,9 @@ def allowed_file(filename):
 
 @app.route('/calibrate/<string:color>', methods=['GET', 'POST'])
 def calibrate(color):
+    user=cur_user()
+    user.Action=""
+    db.session.commit()
     return render_template('color.html', color=color)
 
 
@@ -164,7 +190,7 @@ def result(token,color):
     G = int(color[3:5],16)
     B = int(color[5:7],16)
     print(basedir)
-    image = Image.open(basedir+url_for('get_image', pid=token))
+    image = Image.open(basedir+url_for('get_multi', pid=token))
     width = image.size[0]
     height = image.size[1]	
     pix = image.load()
@@ -235,7 +261,7 @@ def cabinet():
 def logout():
     if 'Login' in session:
         session.pop('Login')
-        IsVideoViewed.is_viewed = False
+        IsVideoViewed.is_viewed = []
     return redirect('/')
 
 
@@ -248,14 +274,21 @@ def get_video(vid):
         'Content-Disposition', 'attachment', filename='video/%s/video.mp4' % vid)
     return response
 
+@app.route('/askAct', methods=['GET', 'POST'])
+def askAct():
+    action=""
+    if cur_user():
+        user=cur_user()
+        action=user.Action
+    return action
 
 @app.route('/play/<string:vid>', methods=['GET', 'POST'])
 def play(vid):
     video = Video.get(vid)
     user = cur_user()
     is_viewed = IsVideoViewed.is_viewed
-    if (not is_viewed) and (video is not None) and (user is not None):
-        IsVideoViewed.is_viewed = True
+    if (video.id not in is_viewed) and (video is not None) and (user is not None):
+        IsVideoViewed.is_viewed.append(video.id)
         video.views += 1
         db.session.add(video)
         db.session.commit()
