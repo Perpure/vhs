@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Upload calibrating image</h1>
+<h4>Upload calibrating image</h4>
 <form action="" method="post" enctype="multipart/form-data">
-    <div> {{ image_form.image }} </div>
+    <div class="Loader"><div> {{ image_form.image }} </div></div>
     <div> {{ image_form.submit }} </div>
 </form>
 <form action="" method="post">

@@ -1,12 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
-@keyframes Butn
-{
-    0%{}
-    50%{left: 0%;top:0%;height:100%;width: 100%;background-color:rgba(240, 203, 142,0);}
-    100%{left: 50%;top:50%;height:0%;width: 0%;}
-}
-
 body
 {
   font-family: 'Roboto', sans-serif;
@@ -22,6 +15,58 @@ header
   width: 100%;
 }
 
+a
+{
+    text-decoration:none;
+    color:black;
+}
+
+a:hover
+{
+    text-decoration:none;
+    color:#714707;
+}
+
+input
+{
+    border:none;
+    border-bottom:2px solid #ffb366;
+    margin-bottom:10px;
+    padding-left:5px;
+}
+
+input[type="submit"]
+{
+    height:40px;
+    padding:10px;
+    padding-top:8px;
+    background-color:#f0cb8e;
+    transition:0.5s;
+    border:none;
+    border-bottom:2px solid #ffb366;
+    font-weight:bold;
+}
+
+input[type="file"]
+{
+    opacity:0;
+    width:300px;
+    height:150px;
+}
+
+.Loader
+{
+    width:300px;
+    height:150px;
+    background-image:url("Loader.png");
+    margin-bottom:10px;
+}
+
+input[type="file"]:hover
+{
+    cursor:pointer;
+}
+
 .Logo,.midHead,.Menu
 {
   display: inline-block;
@@ -35,6 +80,7 @@ header
   width: 19.5%;
   padding-left: 1%;
 }
+
 .Logo
 {
   margin-right: 0.5%;
@@ -71,7 +117,7 @@ header
   text-align: center;
   padding-top: 15px;
   position: relative;
-font-size: 120%;
+  font-size: 120%;
 }
 .Menu:hover
 {
@@ -107,11 +153,10 @@ font-size: 120%;
   color:black;
 }
 
-.menuBtn:hover,.regBtn:hover,.tokenBtnMid:hover,.tokenBtnEdge:hover
+.menuBtn:hover,.tokenBtnMid:hover,.tokenBtnEdge:hover,input[type="submit"]:hover
 {
-  
+  background-color:rgba(240, 203, 142,0.5);
   cursor: pointer;
-  
   color:black;
 }
 
@@ -253,61 +298,6 @@ footer
     cursor:pointer;
     margin-right:9px;
 }
-
-a
-{
-    text-decoration:none;
-    color:black;
-}
-
-a:hover
-{
-    text-decoration:none;
-    color:#714707;
-}
-
-input
-{
-    border:none;
-    border-bottom:2px solid #ffb366;
-    margin-bottom:10px;
-    padding-left:5px;
-}
-
-button
-{
-    height:40px;
-    padding:10px;
-    padding-top:8px;
-    background-color:#F7E2C0;
-    transition:1.25s;
-    border:none;
-    border:2px solid #ffb366;
-    font-weight:bold;
-    position:relative;
-}
-
-button:active
-{
-    background-color:#ffb366;
-}
-
-button:hover
-{
-background-color:rgba(240, 203, 142,0.5);
-}
-
-.animator
-{
-    position:absolute;
-    top:50%;
-    left:50%;
-    width:0%;
-    height:0%;
-    animation: Butn 1s;
-    background-color:rgba(240, 203, 142,0.5);
-}
-
 
 .INP
 {
