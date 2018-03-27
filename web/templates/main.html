@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
+
+<form action="/search_video">
+    {{form.hidden_tag()}}
+    <div>{{ form.user_input }}<button type="submit" name="submit_search" value="Поиск">Поиск</button></div>
+</form>
+
 {% for item in items %}
     <div class="video"><img src="{{url_for('get_image', pid=item.id)}}" alt="" class="preview"><div class="videoTxt"> <a href="play/{{item.id}}" class="Link"><p class="videoName">{{item.title}}</p></a> <p class="videoView">{{item.views}} просмотров</p></div> </div>
 {% endfor %}

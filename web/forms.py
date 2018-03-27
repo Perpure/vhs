@@ -80,3 +80,10 @@ class UserProfileForm(FlaskForm):
                                      validators=[Length(8), match])
     submit_changes = SubmitField("Сохранить")
 
+
+class SearchingVideoForm(FlaskForm):
+    """Форма поиска видео"""
+    user_input = StringField("", validators=[Length(1)])
+    submit_search = SubmitField("Поиск")
+
+
