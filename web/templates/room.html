@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+{% if room.capitan_id == user.id %}
 <h1>Upload calibrating image</h1>
 <form action="" method="post" enctype="multipart/form-data">
     <div> {{ image_form.image }} </div>
@@ -11,23 +12,28 @@
 </form>
 <p><a href="{{result_url}}">result</a>
 <hr>
+{% else %}
+<h1>Комната</h1>
+{% endif %}
 {% for i in users %}
 <p>{{i.login}}</p>
 {% endfor %}
-<script>
-    let speed=3000;
-    setTimeout(function step(){
-        $.ajax({
-                   url:"/askAct",
-                   type:"GET",
-                   dataType:"text",
-                   success:function(response)
-                   {
-                        if(response=="calibrate")window.location ="{{calibrate_url}}";
-                   },
-                   error:function(){}
-                });  
-        setTimeout(step,speed);
-    },speed);
-</script>
+{% if room.capitan_id != user.id %}
+    <script>
+        let speed=3000;
+        setTimeout(function step(){
+            $.ajax({
+                       url:"/askAct",
+                       type:"GET",
+                       dataType:"text",
+                       success:function(response)
+                       {
+                            if(response=="calibrate")window.location ="{{calibrate_url}}";
+                       },
+                       error:function(){}
+                    });
+            setTimeout(step,speed);
+        },speed);
+    </script>
+{% endif %}
 {% endblock %}

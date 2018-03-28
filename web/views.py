@@ -70,14 +70,15 @@ def addroom():
     user=cur_user()
     if user:
         token=''.join(choice(ascii_letters) for i in range(24))
-        room=Room(token=token)
+        room=Room(token=token, capitan_id=user.id)
         for i in range(1,7):
             room.Color.append(Color.query.filter_by(id=str(i)).first())
         db.session.add(room)
         db.session.commit()
         user.Room.append(room)
-        room.color_user = str(user.id) + ',1'
+        # room.color_user = str(user.id) + ',1'
         db.session.commit()
+        print(user.room_capitan)
     else:
         return redirect(url_for('log'))
     return render_template('addroom.html', user=cur_user(), token=token)
@@ -85,20 +86,23 @@ def addroom():
 
 @app.route('/room/<string:token>', methods=['GET', 'POST'])
 def room(token):
-    user=cur_user()
-    Room_Form=RoomForm()
-    
+    user = cur_user()
+    Room_Form = RoomForm()
+    calibrate_url = None
+    result_url = None
+
     if user:
         room = Room.query.filter_by(token=token).first()
 
         if Room_Form.validate_on_submit():
             print("nice")
             for i in range(len(room.color_user.split(';'))):
-                ID=room.color_user.split(';')[i].split(',')[0]
-                User.query.filter_by(id=ID).first().Action="calibrate"
+                ID = room.color_user.split(';')[i].split(',')[0]
+                User.query.filter_by(id=ID).first().Action = "calibrate"
             db.session.commit()
 
-        if not(room in user.Room):
+        if not ((room in user.Room) and (room in user.room_capitan)):
+            print("nice2")
             user.Room.append(room)
             if room.color_user:
                 color_id = len(room.color_user.split(';')) + 1
@@ -106,35 +110,35 @@ def room(token):
             else:
                 room.color_user = str(user.id) + ',1'
             db.session.commit()
-        colors=room.color_user.split(';')
+        colors = room.color_user.split(';')
         for i in range(len(colors)):
             if colors[i].split(',')[0] == str(user.id):
                 color = Color.query.filter_by(id=colors[i].split(',')[1]).first().color
                 calibrate_url = url_for('calibrate', color=color)
                 result_url = url_for('result', token=token, color=color)
                 break
-        users=room.User
+        users = room.User
 
         image_form = UploadImageForm(csrf_enabled=False)
         if image_form.validate_on_submit():
             if 'image' not in request.files:
-                return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,
-                                       image_form=UploadImageForm(csrf_enabled=False), result_url=result_url,Room_Form=Room_Form)
+                return render_template('room.html', room=room, user=cur_user(), calibrate_url=calibrate_url, users=users,
+                                       image_form=UploadImageForm(csrf_enabled=False), result_url=result_url, Room_Form=Room_Form)
 
             file = request.files['image']
             if file.filename == '':
-                return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,
-                                       image_form=UploadImageForm(csrf_enabled=False), result_url=result_url,Room_Form=Room_Form)
+                return render_template('room.html', room=room, user=cur_user(), calibrate_url=calibrate_url, users=users,
+                                       image_form=UploadImageForm(csrf_enabled=False), result_url=result_url, Room_Form=Room_Form)
     
             if file and allowed_file(file.filename):
                 file.save(basedir+'/images/'+room.token+'.'+file.filename.split('.')[-1].lower())
-                return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,
-                                       image_form=image_form, result_url=result_url,Room_Form=Room_Form)
+                return render_template('room.html', room=room, user=cur_user(), calibrate_url=calibrate_url, users=users,
+                                       image_form=image_form, result_url=result_url, Room_Form=Room_Form)
 
     else:
         return redirect(url_for('log'))
-    return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,
-                           image_form=image_form, result_url=result_url,Room_Form=Room_Form)
+    return render_template('room.html', room=room, user=cur_user(), calibrate_url=calibrate_url, users=users,
+                           image_form=image_form, result_url=result_url, Room_Form=Room_Form)
     
 def allowed_file(filename):
     return ('.' in filename and
@@ -192,7 +196,7 @@ def result(token,color):
     print(basedir)
     image = Image.open(basedir+url_for('get_multi', pid=token))
     width = image.size[0]
-    height = image.size[1]	
+    height = image.size[1]
     pix = image.load()
     for i in range(width):
         for j in range(height):

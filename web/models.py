@@ -97,7 +97,8 @@ class User(db.Model):
                 secondary = association_table,
                 backref = "User",
                 lazy = 'dynamic')
-    
+    room_capitan = db.relationship("Room", backref='User2')
+
     def __init__(self, login):
         self.login = login
         self.name = login
@@ -147,6 +148,7 @@ class User(db.Model):
 class Room(db.Model):
     __tablename__ = 'Room'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    capitan_id = db.Column(db.Integer, db.ForeignKey('User.id'))
     token = db.Column(db.String(64), nullable=False)
     color_user = db.Column(db.Text())
     Color = db.relationship("Color",
