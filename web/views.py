@@ -194,7 +194,7 @@ def result(token, color):
     G = int(color[3:5], 16)
     B = int(color[5:7], 16)
     print(basedir)
-    image = Image.open(basedir + url_for('get_multi', pid=token))
+    image = Image.open(basedir+url_for('get_multi', pid=token))
     width = image.size[0]
     height = image.size[1]
     pix = image.load()
