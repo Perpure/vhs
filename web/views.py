@@ -1,9 +1,9 @@
 from flask import redirect, render_template, session, url_for, make_response, request
 from web import app, db
-from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, UserProfileForm,AddCommentForm
-from web.models import User, Video, Room, Color,Comment
+from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, UserProfileForm, AddCommentForm
+from web.models import User, Video, Room, Color , Comment
 from config import basedir
-from .helper import read_image, read_video, cur_user, IsVideoViewed, is_true_pixel
+from .helper import read_image, read_multi, read_video, cur_user, IsVideoViewed, is_true_pixel
 from werkzeug.utils import secure_filename
 from random import choice
 from string import ascii_letters
@@ -26,6 +26,16 @@ def requiresauth(f):
 
 
 @app.route('/images/<string:pid>.jpg')
+def get_multi(pid):
+    image_binary = read_multi(pid)
+    response = make_response(image_binary)
+    response.headers.set('Content-Type', 'image/jpeg')
+    response.headers.set(
+        'Content-Disposition', 'attachment', filename='%s.jpg' % pid)
+    return response
+
+
+@app.route('/images/<string:pid>/preview.png')
 def get_image(pid):
     image_binary = read_image(pid)
     response = make_response(image_binary)
@@ -37,7 +47,7 @@ def get_image(pid):
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    return render_template('main.html', user=cur_user())
+    return render_template('main.html', user=cur_user(), items=Video.get())
 
 
 @app.route('/viewroom', methods=['GET', 'POST'])
@@ -184,7 +194,7 @@ def result(token, color):
     G = int(color[3:5], 16)
     B = int(color[5:7], 16)
     print(basedir)
-    image = Image.open(basedir + url_for('get_image', pid=token))
+    image = Image.open(basedir + url_for('get_multi', pid=token))
     width = image.size[0]
     height = image.size[1]
     pix = image.load()
@@ -294,7 +304,7 @@ def play(vid):
         video.views += 1
         db.session.add(video)
         db.session.commit()
-    return render_template('play.html', user=cur_user(), vid=vid, video=Video.get(vid), video_views=video.views, form=form)
+    return render_template('play.html', user=cur_user(), vid=vid, video=Video.get(vid), video_views=video.views)
 
 
 @app.errorhandler(403)
