@@ -49,6 +49,7 @@ def main():
     form = SearchingVideoForm()
     if form.validate_on_submit():
         IsVideoViewed.request = str(form.user_input.data)
+        return redirect(url_for('search_video'))
     return render_template('main.html', form=form, user=cur_user(), items=Video.get())
 
 

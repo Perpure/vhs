@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<form action="/search_video">
+<form action="" method="post">
     {{form.hidden_tag()}}
     <div>{{ form.user_input }}<button type="submit" name="submit_search" value="Поиск">Поиск</button></div>
 </form>
