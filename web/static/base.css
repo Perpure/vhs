@@ -86,6 +86,8 @@ input[type="file"]:hover
   margin-right: 0.5%;
 }
 
+
+
 .LogoImg,.LogoTxt
 {
   height: 100%;
@@ -177,6 +179,8 @@ input[type="file"]:hover
 {
     margin-left:10px;
 }
+
+
 
 main
 {
@@ -305,76 +309,8 @@ footer
     margin:0 auto;
 }
 
-<<<<<<< HEAD
-.content{
-    width: 100%;
-    margin: auto;
-}
 
-.content0{
-    width: 100%;
-    height: 210px;
-    border-radius: 20px;
-    margin: auto;
-    background-color: #faebd7;
-}
 
-.z1{
-    display: inline-block;
-    background-color: #faebd7;
-    border-radius: 6px; 
-    padding: 2px;
-    cursor: pointer;
-}
-
-.z2{
-    display: inline-block;
-    background-color: #ffcc99;
-    border-radius: 6px;
-    padding: 2px;
-    cursor: pointer;
-}
-
-.con{
-    display: none;
-    padding: 4px;
-}
-
-.con2{
-    display: block;
-    padding: 4px;
-} 
-
-.ava{
-    border-radius: 40px;
-    padding-left: 5px;
-    padding-top: 5px;
-    width: 200px;
-    height: 200px;
-    display: inline-block;
-}
-
-.ava2{           
-    display: inline-block;
-}
-
-.set{
-    margin: 10px 0;
-}
-
-.but{
-  background-color: #ffcc99;
-  border-radius: 6px; 
-}  
-
-.info{
-    font-style: italic;
-}
-
-.b{
-    font-weight: 600;
-}
-=======
 .token
 {
     width:70%;
@@ -410,6 +346,49 @@ footer
     text-align:center;
     padding-top:10px;
 }
+
+@media (max-width:1050px)
+{
+    .Logo,.midHead,.Menu
+    {
+      width:100%;
+      margin-bottom:10px;
+      height:50px;
+      margin-right:0%;
+      margin-left:0%;
+    }
+    
+    .Logo
+    {
+      text-align:center;
+    }
+
+    header
+    {
+      height:180px;
+    }
+    
+    main,footer
+    {
+      width:100%;
+    }
+    .inMenu
+    {
+      background-color:rgba(0, 0, 0,0.5);
+      padding-bottom:10px;
+      display: none;
+    }
+    .Menu:hover > .inMenu
+    {
+      display: block;
+    }
+    .menuBtn:hover
+    {
+      background-color:rgba(240, 203, 142,1);
+    }
+}
+
+=======
 
 .content{
     width: 100%;

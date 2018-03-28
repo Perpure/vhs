@@ -16,11 +16,11 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
   <script src="{{ url_for('static', filename='jquery.js') }}"></script>
 </head>
-<body>
+<body id="Body">
   <header>
     <div class="Logo">
       <a href="{{url_for('main')}}" class="Link"><img src="{{ url_for('static', filename='vhs4.png') }}" alt="" class="LogoImg"></a>
-      <div class="LogoTxt">VideoHostingService</div>
+      <div class="LogoTxt" id="logoTxt">VideoHostingService</div>
     </div>
     <div class="midHead"></div>
     <div class="Menu">
@@ -51,5 +51,5 @@
     </div>
   </footer>
 </body>
-<!--<script src="{{ url_for('static', filename='global.js') }}"></script>-->
+<script src="{{ url_for('static', filename='global.js') }}"></script>
 </html>
