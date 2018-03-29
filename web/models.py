@@ -35,6 +35,7 @@ class Video(db.Model):
     id = db.Column(db.Text(), primary_key=True)
     date = db.Column(db.DateTime)
     views = db.Column(db.Integer())
+    user = db.Column(db.Integer())
 
     marks = db.relationship('Marks', backref='video', lazy=True)
     comments = db.relationship('Comment', backref='video', lazy='joined')
@@ -43,10 +44,11 @@ class Video(db.Model):
         self.title = title
         self.views = 0
 
-    def save(self, hash):
+    def save(self, hash, user):
         self.date = datetime.now(tz=None)
         self.id = hashlib.md5((hash + self.date.isoformat()).encode("utf-8")).hexdigest()
         self.path = os.path.join(app.config['VIDEO_SAVE_PATH'], self.id)
+        self.user = user
 
         db.session.add(self)
         db.session.commit()

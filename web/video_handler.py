@@ -5,6 +5,7 @@ from os import makedirs
 from random import random
 from werkzeug.utils import secure_filename
 from hashlib import md5
+from web.helper import cur_user
 
 
 def standardize_video_extension(video_id, ext):
@@ -32,7 +33,7 @@ def save_video(video_file, title):
     video_file.seek(0)
 
     video = Video(title)
-    directory = video.save(video_hash)
+    directory = video.save(video_hash, cur_user().id)
     makedirs(directory)
     video_path = join_path(directory, 'video.' + ext)
     video_file.save(video_path)
