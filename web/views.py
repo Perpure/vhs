@@ -243,6 +243,14 @@ def cabinet():
     Отвечает за вывод страницы личного кабинета
     :return: Страница личного кабинета
     """
+
+    video_list = Video.get()
+    items = []
+    user = cur_user()
+    for item in video_list:
+        if item.user == user.id:
+            items.append(item)
+
     form = UserProfileForm()
     print("start")
     if form.validate_on_submit():
@@ -256,7 +264,7 @@ def cabinet():
             user.change_channel_info(form.channel_info.data)
         return redirect(url_for("cabinet"))
     print("end")
-    return render_template('cabinet.html', form=form, user=cur_user())
+    return render_template('cabinet.html', form=form, user=cur_user(), items=items)
 
 
 @app.route('/logout', methods=['GET', 'POST'])
