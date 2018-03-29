@@ -1,6 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="token">
+    <form action="" method="post">
+        <div>{{ form.token.label}}</div>
+        <div>{{ form.token(rows=2, cols=30) }}</div>
+        {% if form.token.errors %}
+            {% for error in form.token.errors %}
+            <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+        {{ form.submit }}
+</form>
 <div class="tokenTxt" id="Token">{{token}}</div>
 <div class="tokenBtnMid" id="copyToken">Копировать токен</div>
 <div class="tokenBtnEdge" id="copyLink">Копировать ссылку</div>
@@ -15,11 +25,11 @@
         window.getSelection().removeAllRanges();
         range.selectNode(token);
         window.getSelection().addRange(range);
-        try { 
-            document.execCommand('copy'); 
-        } catch(err) { 
-            console.log('Can`t copy, boss'); 
-        } 
+        try {
+            document.execCommand('copy');
+        } catch(err) {
+            console.log('Can`t copy, boss');
+        }
         window.getSelection().removeAllRanges();
     });
 
@@ -30,11 +40,11 @@
         window.getSelection().removeAllRanges();
         range.selectNode(token);
         window.getSelection().addRange(range);
-        try { 
-            document.execCommand('copy'); 
-        } catch(err) { 
-            console.log('Can`t copy, boss'); 
-        } 
+        try {
+            document.execCommand('copy');
+        } catch(err) {
+            console.log('Can`t copy, boss');
+        }
         window.getSelection().removeAllRanges();
         token.innerHTML=link;
     });

@@ -1,6 +1,6 @@
 from flask import redirect, render_template, session, url_for, make_response, request
 from web import app, db
-from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, UserProfileForm
+from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, UserProfileForm , AddRoomForm
 from web.models import User, Video, Room, Color
 from config import basedir
 from .helper import read_image, read_multi, read_video, cur_user, IsVideoViewed, is_true_pixel
@@ -69,18 +69,20 @@ def viewroom():
 def addroom():
     user=cur_user()
     if user:
-        token=''.join(choice(ascii_letters) for i in range(24))
+        form = AddRoomForm(csrf_enabled=False)
+        token=form.token.data
         room=Room(token=token)
-        for i in range(1,7):
-            room.Color.append(Color.query.filter_by(id=str(i)).first())
-        db.session.add(room)
-        db.session.commit()
-        user.Room.append(room)
-        room.color_user = str(user.id) + ',1'
-        db.session.commit()
+        if form.validate_on_submit():
+            for i in range(1, 7):
+                room.Color.append(Color.query.filter_by(id=str(i)).first())
+            db.session.add(room)
+            db.session.commit()
+            user.Room.append(room)
+            room.color_user = str(user.id) + ',1'
+            db.session.commit()
     else:
         return redirect(url_for('log'))
-    return render_template('addroom.html', user=cur_user(), token=token)
+    return render_template('addroom.html', user=cur_user(), token=token, form=form)
 
 
 @app.route('/room/<string:token>', methods=['GET', 'POST'])

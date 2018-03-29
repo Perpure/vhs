@@ -80,3 +80,6 @@ class UserProfileForm(FlaskForm):
                                      validators=[Length(8), match])
     submit_changes = SubmitField("Сохранить")
 
+class AddRoomForm(FlaskForm):
+    token = TextAreaField("Название комнаты", validators=[DataRequired(), Length(5)])
+    submit = SubmitField("Создать")
