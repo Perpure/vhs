@@ -10,7 +10,7 @@ import os
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, UserProfileForm, AddCommentForm, AddRoomForm
 from web.models import User, Video, Room, Color, Comment
-from web.helper import read_image, read_multi, read_video, cur_user, IsVideoViewed, is_true_pixel
+from web.helper import read_image, read_multi, read_video, cur_user, is_true_pixel
 from web.video_handler import save_video
 from config import basedir
 
@@ -61,7 +61,7 @@ def viewroom():
         if form.validate_on_submit():
             if Room.query.filter_by(token=str(form.token.data)):
                 return redirect(url_for('room', token=form.token.data))
-        rooms = user.Room.all()
+        rooms = user.rooms
     else:
         return redirect(url_for('log'))
     return render_template('viewroom.html', user=cur_user(), form=form, rooms=rooms)
@@ -79,7 +79,7 @@ def addroom():
                 room.Color.append(Color.query.filter_by(id=str(i)).first())
             db.session.add(room)
             db.session.commit()
-            user.Room.append(room)
+            user.rooms.append(room)
             room.color_user = str(user.id) + ',1'
             db.session.commit()
     else:
@@ -96,14 +96,13 @@ def room(token):
         room = Room.query.filter_by(token=token).first()
 
         if Room_Form.validate_on_submit():
-            print("nice")
             for i in range(len(room.color_user.split(';'))):
                 ID = room.color_user.split(';')[i].split(',')[0]
                 User.query.filter_by(id=ID).first().Action = "calibrate"
             db.session.commit()
 
-        if not (room in user.Room):
-            user.Room.append(room)
+        if not (room in user.rooms):
+            user.rooms.append(room)
             if room.color_user:
                 color_id = len(room.color_user.split(';')) + 1
                 room.color_user += ';' + str(user.id) + ',' + str(color_id)
@@ -258,9 +257,7 @@ def cabinet():
             items.append(item)
 
     form = UserProfileForm()
-    print("start")
     if form.validate_on_submit():
-        print("validate")
         user = cur_user()
         if form.change_name.data:
             user.change_name(form.change_name.data)
@@ -269,7 +266,6 @@ def cabinet():
         if form.channel_info.data:
             user.change_channel_info(form.channel_info.data)
         return redirect(url_for("cabinet"))
-    print("end")
     return render_template('cabinet.html', form=form, user=cur_user(), items=items)
 
 
@@ -277,7 +273,6 @@ def cabinet():
 def logout():
     if 'Login' in session:
         session.pop('Login')
-        IsVideoViewed.is_viewed = []
     return redirect('/')
 
 
@@ -302,21 +297,22 @@ def askAct():
 
 @app.route('/play/<string:vid>', methods=['GET', 'POST'])
 def play(vid):
-    video = Video.get(vid)
+    video = Video.get(video_id=vid)
+    if not video:
+        abort = Aborter() 
+        return abort(404)
+
     user = cur_user()
-    is_viewed = IsVideoViewed.is_viewed
     form = AddCommentForm(csrf_enabled=False)
 
+    if user and user not in video.viewers:
+        video.add_viewer(user)
+    
     if form.validate_on_submit():
         comment = Comment(form.message.data, video.id, user.id)
         comment.save()
 
-    if (video.id not in is_viewed) and (video is not None) and (user is not None):
-        IsVideoViewed.is_viewed.append(video.id)
-        video.views += 1
-        db.session.add(video)
-        db.session.commit()
-    return render_template('play.html', user=user, vid=vid, video=video, video_views=video.views, form=form)
+    return render_template('play.html', user=user, vid=vid, video=video, form=form)
 
 
 @app.errorhandler(403)

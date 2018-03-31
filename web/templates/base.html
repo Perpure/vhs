@@ -19,22 +19,22 @@
 <body>
   <header>
     <div class="Logo">
-      <a href="{{url_for('main')}}" class="Link"><img src="static/vhs4.png" alt="" class="LogoImg"></a>
+      <a href="{{url_for('main')}}" class="Link"><img src="/static/vhs4.png" alt="" class="LogoImg"></a>
       <div class="LogoTxt">VideoHostingService</div>
     </div>
     <div class="midHead"></div>
     <div class="Menu">
       Меню
       <div class="inMenu">
-        <a href="{{url_for('main')}}" class="Link"><div class="menuBtn"><div class="menuTxt">Главная</div><img src="static/main.png" class="menuImg"></div></a>
+        <a href="{{url_for('main')}}" class="Link"><div class="menuBtn"><div class="menuTxt">Главная</div><img src="/static/main.png" class="menuImg"></div></a>
         {%if user %}
-        <a href="{{url_for('cabinet')}}" class="Link"><div class="menuBtn"><div class="menuTxt">Мой Канал</div><img src="static/channel.png" class="menuImg"></div></a>
-        <a href="{{url_for('viewroom')}}" class="Link"><div class="menuBtn"><div class="menuTxt">Мультискрин</div><img src="static/multi.png" class="menuImg"></div></a>
-        <a href="{{url_for('upload')}}" class="Link"><div class="menuBtn"><div class="menuTxt">Загрузить Видео</div><img src="static/load.png" class="menuImg"></div></a>
-        <a href="{{url_for('logout')}}" class="Link"><div class="menuBtn"><div class="menuTxt">Выйти</div><img src="static/out.png" class="menuImg"></div></a>
+        <a href="{{url_for('cabinet')}}" class="Link"><div class="menuBtn"><div class="menuTxt">Мой Канал</div><img src="/static/channel.png" class="menuImg"></div></a>
+        <a href="{{url_for('viewroom')}}" class="Link"><div class="menuBtn"><div class="menuTxt">Мультискрин</div><img src="/static/multi.png" class="menuImg"></div></a>
+        <a href="{{url_for('upload')}}" class="Link"><div class="menuBtn"><div class="menuTxt">Загрузить Видео</div><img src="/static/load.png" class="menuImg"></div></a>
+        <a href="{{url_for('logout')}}" class="Link"><div class="menuBtn"><div class="menuTxt">Выйти</div><img src="/static/out.png" class="menuImg"></div></a>
         {%else%}
-        <a href="{{url_for('log')}}" class="Link"><div class="menuBtn"><div class="menuTxt">Войти</div><img src="static/log.png" class="menuImg"></div></a>
-        <a href="{{url_for('reg')}}" class="Link"><div class="menuBtn"><div class="menuTxt">Регистрация</div><img src="static/reg.png" class="menuImg"></div></a>
+        <a href="{{url_for('log')}}" class="Link"><div class="menuBtn"><div class="menuTxt">Войти</div><img src="/static/log.png" class="menuImg"></div></a>
+        <a href="{{url_for('reg')}}" class="Link"><div class="menuBtn"><div class="menuTxt">Регистрация</div><img src="/static/reg.png" class="menuImg"></div></a>
         {%endif%}
       </div>
     </div>
@@ -46,7 +46,7 @@
   </main>
   <footer>
     <div class="Foot">
-      <div class="Contact"><a href="https://vk.com/shpteam" class="Link"><img src="static/vk.png" alt="" class="contImg"></a><img src="static/fb.png" alt="" class="contImg"></div>
+      <div class="Contact"><a href="https://vk.com/shpteam" class="Link"><img src="/static/vk.png" alt="" class="contImg"></a><img src="/static/fb.png" alt="" class="contImg"></div>
       2018, 53rd Group
     </div>
   </footer>
