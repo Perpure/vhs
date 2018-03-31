@@ -1,8 +1,8 @@
 from flask import redirect, render_template, session, url_for, make_response, request
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
-    UserProfileForm, AddRoomForm
-from web.models import User, Video, Room, Color
+    UserProfileForm, AddRoomForm, AddCommentForm
+from web.models import User, Video, Room, Color, Comment
 from config import basedir
 from .helper import read_image, read_multi, read_video, cur_user, IsVideoViewed, is_true_pixel
 from werkzeug.utils import secure_filename
@@ -314,13 +314,19 @@ def play(vid):
     video = Video.get(vid)
     user = cur_user()
     is_viewed = IsVideoViewed.is_viewed
+    form = AddCommentForm(csrf_enabled=False)
+
+    if form.validate_on_submit():
+        comment = Comment(form.message.data, video.id, user.id)
+        comment.save()
+
     if (video.id not in is_viewed) and (video is not None) and (user is not None):
         IsVideoViewed.is_viewed.append(video.id)
         video.views += 1
         db.session.add(video)
         db.session.commit()
     return render_template('play.html', user=cur_user(), vid=vid,
-                           video=Video.get(vid), video_views=video.views)
+                           video=Video.get(vid), video_views=video.views, form=form)
 
 
 @app.errorhandler(403)
