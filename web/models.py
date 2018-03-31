@@ -1,9 +1,8 @@
 ﻿from web import db
 from web import app
-import uuid
 import hashlib
 import os
-from datetime import datetime, date, time
+from datetime import datetime
 
 
 UserToRoom = db.Table('UserToRoom', db.Model.metadata,
@@ -112,13 +111,13 @@ class User(db.Model):
     channel_info = db.Column(db.String(64))
     Action = db.Column(db.String(64))
 
-    marks = db.relationship('Mark', 
-                backref='user', 
-                lazy="joined")
+    marks = db.relationship('Mark',
+                            backref='user',
+                            lazy="joined")
 
-    comments = db.relationship('Comment', 
-                backref='user', 
-                lazy='joined')
+    comments = db.relationship('Comment',
+                               backref='user',
+                               lazy='joined')
 
     rooms = db.relationship("Room",
                 secondary = UserToRoom,
@@ -177,9 +176,9 @@ class Room(db.Model):
     token = db.Column(db.String(64), nullable=False)
     color_user = db.Column(db.Text())
     Color = db.relationship("Color",
-                secondary=ColorToRoom,
-                backref="Room",
-                lazy="joined")
+                            secondary=ColorToRoom,
+                            backref="Room",
+                            lazy="joined")
 
 
 class Color(db.Model):

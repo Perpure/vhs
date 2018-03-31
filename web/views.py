@@ -116,7 +116,7 @@ def room(token):
                 calibrate_url = url_for('calibrate', color=color)
                 result_url = url_for('result', token=token, color=color)
                 break
-        users = room.User
+        users = room.user
 
         image_form = UploadImageForm(csrf_enabled=False)
         if image_form.validate_on_submit():
