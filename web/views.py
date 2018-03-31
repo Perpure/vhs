@@ -1,18 +1,18 @@
 from flask import redirect, render_template, session, url_for, make_response, request
+from web import app, db
+from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
+    UserProfileForm, AddRoomForm, AddCommentForm
+from web.models import User, Video, Room, Color, Comment
+from config import basedir
+from .helper import read_image, read_multi, read_video, cur_user, IsVideoViewed, is_true_pixel
 from werkzeug.utils import secure_filename
 from random import choice
 from string import ascii_letters
 from werkzeug.exceptions import Aborter
 from functools import wraps
+from web.video_handler import save_video
 from PIL import Image, ImageDraw
 import os
-
-from web import app, db
-from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, UserProfileForm, AddCommentForm, AddRoomForm
-from web.models import User, Video, Room, Color, Comment
-from web.helper import read_image, read_multi, read_video, cur_user, IsVideoViewed, is_true_pixel
-from web.video_handler import save_video
-from config import basedir
 
 
 def requiresauth(f):
@@ -73,14 +73,14 @@ def addroom():
     if user:
         form = AddRoomForm(csrf_enabled=False)
         token = form.token.data
-        room = Room(token=token)
+        room = Room(token=token, capitan_id=user.id)
         if form.validate_on_submit():
             for i in range(1, 7):
                 room.Color.append(Color.query.filter_by(id=str(i)).first())
             db.session.add(room)
             db.session.commit()
             user.Room.append(room)
-            room.color_user = str(user.id) + ',1'
+            # room.color_user = str(user.id) + ',1'
             db.session.commit()
     else:
         return redirect(url_for('log'))
@@ -91,6 +91,8 @@ def addroom():
 def room(token):
     user = cur_user()
     Room_Form = RoomForm()
+    calibrate_url = None
+    result_url = None
 
     if user:
         room = Room.query.filter_by(token=token).first()
@@ -102,7 +104,7 @@ def room(token):
                 User.query.filter_by(id=ID).first().Action = "calibrate"
             db.session.commit()
 
-        if not (room in user.Room):
+        if not ((room in user.Room) and (room in user.room_capitan)):
             user.Room.append(room)
             if room.color_user:
                 color_id = len(room.color_user.split(';')) + 1
@@ -110,36 +112,42 @@ def room(token):
             else:
                 room.color_user = str(user.id) + ',1'
             db.session.commit()
-        colors = room.color_user.split(';')
-        for i in range(len(colors)):
-            if colors[i].split(',')[0] == str(user.id):
-                color = Color.query.filter_by(id=colors[i].split(',')[1]).first().color
-                calibrate_url = url_for('calibrate', color=color)
-                result_url = url_for('result', token=token, color=color)
-                break
+        if room.color_user is not None:
+            colors = room.color_user.split(';')
+            for i in range(len(colors)):
+                if colors[i].split(',')[0] == str(user.id):
+                    color = Color.query.filter_by(id=colors[i].split(',')[1]).first().color
+                    calibrate_url = url_for('calibrate', color=color)
+                    result_url = url_for('result', token=token, color=color)
+                    break
         users = room.User
 
         image_form = UploadImageForm(csrf_enabled=False)
         if image_form.validate_on_submit():
             if 'image' not in request.files:
-                return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,
-                                       image_form=UploadImageForm(csrf_enabled=False), result_url=result_url,
-                                       Room_Form=Room_Form)
+                return render_template('room.html', room=room, user=cur_user(),
+                                       calibrate_url=calibrate_url, users=users,
+                                       image_form=UploadImageForm(csrf_enabled=False),
+                                       result_url=result_url, Room_Form=Room_Form)
 
             file = request.files['image']
             if file.filename == '':
-                return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,
-                                       image_form=UploadImageForm(csrf_enabled=False), result_url=result_url,
-                                       Room_Form=Room_Form)
+                return render_template('room.html', room=room, user=cur_user(),
+                                       calibrate_url=calibrate_url, users=users,
+                                       image_form=UploadImageForm(csrf_enabled=False),
+                                       result_url=result_url, Room_Form=Room_Form)
 
             if file and allowed_file(file.filename):
                 file.save(basedir + '/images/' + room.token + '.' + file.filename.split('.')[-1].lower())
-                return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,
-                                       image_form=image_form, result_url=result_url, Room_Form=Room_Form)
+                return render_template('room.html', room=room, user=cur_user(),
+                                       calibrate_url=calibrate_url, users=users,
+                                       image_form=image_form, result_url=result_url,
+                                       Room_Form=Room_Form)
 
     else:
         return redirect(url_for('log'))
-    return render_template('room.html', user=cur_user(), calibrate_url=calibrate_url, users=users,
+    return render_template('room.html', room=room, user=cur_user(),
+                           calibrate_url=calibrate_url, users=users,
                            image_form=image_form, result_url=result_url, Room_Form=Room_Form)
 
 
@@ -197,7 +205,7 @@ def result(token, color):
     G = int(color[3:5], 16)
     B = int(color[5:7], 16)
     print(basedir)
-    image = Image.open(basedir+url_for('get_multi', pid=token))
+    image = Image.open(basedir + url_for('get_multi', pid=token))
     width = image.size[0]
     height = image.size[1]
     pix = image.load()
@@ -206,8 +214,9 @@ def result(token, color):
             r = pix[i, j][0]
             g = pix[i, j][1]
             b = pix[i, j][2]
-            if (is_true_pixel(r, g, b, R, G, B)):
-                return render_template('rezult.html', pid='1', top=-(j / height) * sourcey, left=-(i / width) * sourcex)
+            if is_true_pixel(r, g, b, R, G, B):
+                return render_template('rezult.html', pid='1',
+                                       top=-(j / height) * sourcey, left=-(i / width) * sourcex)
 
 
 @app.route('/reg', methods=['GET', 'POST'])
@@ -316,7 +325,8 @@ def play(vid):
         video.views += 1
         db.session.add(video)
         db.session.commit()
-    return render_template('play.html', user=user, vid=vid, video=video, video_views=video.views, form=form)
+    return render_template('play.html', user=cur_user(), vid=vid,
+                           video=Video.get(vid), video_views=video.views, form=form)
 
 
 @app.errorhandler(403)
