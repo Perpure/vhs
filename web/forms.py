@@ -81,7 +81,11 @@ class UserProfileForm(FlaskForm):
     submit_changes = SubmitField("Сохранить")
 
 
-
 class AddCommentForm(FlaskForm):
     message = TextAreaField("Комментарий", validators=[DataRequired(), Length(1)])
     submit = SubmitField("Запостить")
+
+
+class AddRoomForm(FlaskForm):
+    token = TextAreaField("Название комнаты", validators=[DataRequired(), Length(5)])
+    submit = SubmitField("Создать")

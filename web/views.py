@@ -1,17 +1,18 @@
 from flask import redirect, render_template, session, url_for, make_response, request
-from web import app, db
-from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, UserProfileForm, AddCommentForm
-from web.models import User, Video, Room, Color , Comment
-from config import basedir
-from .helper import read_image, read_multi, read_video, cur_user, IsVideoViewed, is_true_pixel
 from werkzeug.utils import secure_filename
 from random import choice
 from string import ascii_letters
 from werkzeug.exceptions import Aborter
 from functools import wraps
-from web.video_handler import save_video
 from PIL import Image, ImageDraw
 import os
+
+from web import app, db
+from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, UserProfileForm, AddCommentForm, AddRoomForm
+from web.models import User, Video, Room, Color, Comment
+from web.helper import read_image, read_multi, read_video, cur_user, IsVideoViewed, is_true_pixel
+from web.video_handler import save_video
+from config import basedir
 
 
 def requiresauth(f):
@@ -70,18 +71,20 @@ def viewroom():
 def addroom():
     user = cur_user()
     if user:
-        token = ''.join(choice(ascii_letters) for i in range(24))
+        form = AddRoomForm(csrf_enabled=False)
+        token = form.token.data
         room = Room(token=token)
-        for i in range(1, 7):
-            room.Color.append(Color.query.filter_by(id=str(i)).first())
-        db.session.add(room)
-        db.session.commit()
-        user.Room.append(room)
-        room.color_user = str(user.id) + ',1'
-        db.session.commit()
+        if form.validate_on_submit():
+            for i in range(1, 7):
+                room.Color.append(Color.query.filter_by(id=str(i)).first())
+            db.session.add(room)
+            db.session.commit()
+            user.Room.append(room)
+            room.color_user = str(user.id) + ',1'
+            db.session.commit()
     else:
         return redirect(url_for('log'))
-    return render_template('addroom.html', user=cur_user(), token=token)
+    return render_template('addroom.html', user=cur_user(), token=token, form=form)
 
 
 @app.route('/room/<string:token>', methods=['GET', 'POST'])
@@ -246,6 +249,14 @@ def cabinet():
     Отвечает за вывод страницы личного кабинета
     :return: Страница личного кабинета
     """
+
+    video_list = Video.get()
+    items = []
+    user = cur_user()
+    for item in video_list:
+        if item.user == user.id:
+            items.append(item)
+
     form = UserProfileForm()
     print("start")
     if form.validate_on_submit():
@@ -259,7 +270,7 @@ def cabinet():
             user.change_channel_info(form.channel_info.data)
         return redirect(url_for("cabinet"))
     print("end")
-    return render_template('cabinet.html', form=form, user=cur_user())
+    return render_template('cabinet.html', form=form, user=cur_user(), items=items)
 
 
 @app.route('/logout', methods=['GET', 'POST'])
