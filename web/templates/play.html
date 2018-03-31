@@ -9,31 +9,29 @@
 <p class="videoTitle">{{video.title}}</p>
 <p class="videoDate">Добавлено {{video.date}}</p>
 {%if user %}
+<form action="" method="post">
+        <div>{{ form.message.label }}</div>
+        <div>{{ form.message(rows=5, cols=60) }}</div>
+        {% if form.message.errors %}
+            {% for error in form.message.errors %}
+            <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+        {{ form.submit }}
+</form>
 
-{%else%}
+{% else %}
 <a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы комментировать
 {%endif%}
-<p>Просмотры: {{video_views}}</p>
+<p>Просмотры: {{ video_views }}</p>
 <p>Комментарии</p>
+{% for comment in video.comments %}
 <div class="Comment">
     <img src="../static/a.png" alt="" class="commAva">
     <div class="commTxt">
-        <p>KoolBoi</p>
-        <p>Ничего сибеее</p>
+        <p>{{ comment.user.login }}</p>
+        <p>{{ comment.text }}</p>
     </div>
 </div>
-<div class="Comment">
-    <img src="../static/a.png" alt="" class="commAva">
-    <div class="commTxt">
-        <p>MLG_QuickScoper</p>
-        <p>Так и зналл!</p>
-    </div>
-</div>
-<div class="Comment">
-    <img src="../static/a.png" alt="" class="commAva">
-    <div class="commTxt">
-        <p>NazBoll</p>
-        <p>нет слофф</p>
-    </div>
-</div>
+{% endfor %}
 {% endblock %}
