@@ -181,6 +181,11 @@ def upload():
         if file.filename == '':
             return redirect(request.url)
 
+        if form.geotag_data.data != "":
+            coords = form.geotag_data.data.split(',')
+        else:
+            coords = None
+
         if file and allowed_file(file.filename):
             save_video(file, form.title.data)
 

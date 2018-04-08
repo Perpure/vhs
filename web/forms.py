@@ -1,7 +1,7 @@
 # coding=utf-8
 """Данный файл описывает формы приложения"""
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField, FileField
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SelectField, FieldList, BooleanField, RadioField, FileField, HiddenField
 from wtforms.validators import Length, EqualTo, ValidationError, DataRequired, Optional
 from web.models import User
 from .helper import cur_user
@@ -63,6 +63,8 @@ class UploadVideoForm(FlaskForm):
     """Форма загрузки видео"""
     title = StringField("Введите название видео", validators=[Length(3)])
     video = FileField("Выберите файл")
+    geotag_is_needed = BooleanField('Прикрепить геотег?')
+    geotag_data = HiddenField()
     submit = SubmitField("Загрузить")
 
 
