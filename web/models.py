@@ -60,6 +60,7 @@ class Video(db.Model):
     path = db.Column(db.String(256), nullable=False)
     date = db.Column(db.DateTime)
     user = db.Column(db.Integer())
+    views = db.Column(db.Integer())
 
     marks = db.relationship('Mark', 
                     backref='video', 
@@ -91,6 +92,7 @@ class Video(db.Model):
 
     def add_viewer(self, user):
         self.viewers.append(user)
+        self.views += 1
         
         db.session.add(self)
         db.session.commit()
