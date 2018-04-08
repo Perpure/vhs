@@ -31,7 +31,6 @@ ymaps.ready(function () {
             $('#geotag_data').val(geotag.geometry.getCoordinates());
         }
         else {
-            console.log('None')
             $('#geotag_data').value = '';
         }
     });
