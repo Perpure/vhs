@@ -96,17 +96,25 @@ class Video(db.Model):
         db.session.commit()
 
     @staticmethod
-    def get(sort=None, video_id=None):
+    def get(search=None, sort=None, video_id=None):
         if video_id:
             return Video.query.get(video_id)
 
         videos = Video.query.all()
+            
         if sort:
             sort = sort.lower()
             if "date" in sort: 
-                videos.sort(key=lambda x: x.date, reverse=True)
+                videos.sort(key=lambda video: video.date, reverse=True)
             if "views" in sort:
-                videos.sort(key=lambda x: x.views, reverse=True)
+                videos.sort(key=lambda video: len(video.viewers), reverse=True)
+
+        if search:
+            temp = [(video, len([word for word in search.lower().split() if word in video.title.lower()])) for video in videos]
+            temp = [item for item in temp if item[1] > 0]
+            temp.sort(key=lambda item: item[1], reverse=True)
+            videos = [item[0] for item in temp]
+
         return videos
 
 
