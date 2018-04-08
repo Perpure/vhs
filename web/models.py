@@ -35,6 +35,7 @@ class Video(db.Model):
     id = db.Column(db.Text(), primary_key=True)
     date = db.Column(db.DateTime)
     views = db.Column(db.Integer())
+    user = db.Column(db.Integer())
 
     marks = db.relationship('Marks', backref='video', lazy=True)
     comments = db.relationship('Comment', backref='video', lazy='joined')
@@ -43,10 +44,11 @@ class Video(db.Model):
         self.title = title
         self.views = 0
 
-    def save(self, hash):
+    def save(self, hash, user):
         self.date = datetime.now(tz=None)
         self.id = hashlib.md5((hash + self.date.isoformat()).encode("utf-8")).hexdigest()
         self.path = os.path.join(app.config['VIDEO_SAVE_PATH'], self.id)
+        self.user = user
 
         db.session.add(self)
         db.session.commit()
@@ -68,12 +70,12 @@ class Video(db.Model):
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text())
-    video_id = db.Column(db.Integer, db.ForeignKey('video.id'),nullable=False)
-    user_login = db.Column(db.Integer, db.ForeignKey('User.login'), nullable=False)
+    video_id = db.Column(db.Text(), db.ForeignKey('video.id'),nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
 
-    def __init__(self, text, video_id, user_login):
+    def __init__(self, text, video_id, user_id):
         self.text = text
-        self.user_login = user_login
+        self.user_id = user_id
         self.video_id = video_id
 
     def save(self):
@@ -97,7 +99,8 @@ class User(db.Model):
                 secondary = association_table,
                 backref = "User",
                 lazy = 'dynamic')
-    
+    room_capitan = db.relationship("Room", backref='User2')
+
     def __init__(self, login):
         self.login = login
         self.name = login
@@ -147,6 +150,7 @@ class User(db.Model):
 class Room(db.Model):
     __tablename__ = 'Room'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    capitan_id = db.Column(db.Integer, db.ForeignKey('User.id'))
     token = db.Column(db.String(64), nullable=False)
     color_user = db.Column(db.Text())
     Color = db.relationship("Color",
