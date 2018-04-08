@@ -102,7 +102,7 @@ class Video(db.Model):
 
         videos = Video.query.all()
         if sort:
-            sort = s.lower()
+            sort = sort.lower()
             if "date" in sort: 
                 videos.sort(key=lambda x: x.date, reverse=True)
             if "views" in sort:
