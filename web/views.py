@@ -1,4 +1,10 @@
 from flask import redirect, render_template, session, url_for, make_response, request
+from web import app, db
+from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
+    UserProfileForm, AddRoomForm, AddCommentForm
+from web.models import User, Video, Room, Color, Comment
+from config import basedir
+from .helper import read_image, read_video, cur_user, IsVideoViewed, is_true_pixel, read_multi, calibrate_params
 from werkzeug.utils import secure_filename
 from random import choice
 from string import ascii_letters
@@ -203,25 +209,37 @@ def result(token, color):
         if colors[i].split(',')[0] == str(user.id):
             color = Color.query.filter_by(id=colors[i].split(',')[1]).first().color
             break
-    sourcex = 800
-    sourcey = 600
-    R = int(color[1:3], 16)
-    G = int(color[3:5], 16)
-    B = int(color[5:7], 16)
+    rezolutionx=400
+    rezolutiony=887
+    sourcex=800
+    sourcey=600
+    R = int(color[1:3],16)
+    G = int(color[3:5],16)
+    B = int(color[5:7],16)
     print(basedir)
     image = Image.open(basedir + url_for('get_multi', pid=token))
     width = image.size[0]
     height = image.size[1]
+    firstx=0
+    lasty=0
+    lastx=0
     pix = image.load()
     for i in range(width):
         for j in range(height):
             r = pix[i, j][0]
             g = pix[i, j][1]
             b = pix[i, j][2]
-            if is_true_pixel(r, g, b, R, G, B):
-                return render_template('rezult.html', pid='1',
-                                       top=-(j / height) * sourcey, left=-(i / width) * sourcex)
-
+            if (is_true_pixel(r,g,b,R,G,B)):
+                if not (firstx):
+                    firstx = i
+                    firsty = j
+                if lastx < i:
+                    lastx = i
+                if lasty < j:
+                    lasty = j
+    w, h = calibrate_params(firstx, firsty, lastx, lasty, rezolutionx, rezolutiony)
+    k=int((width/w)/(sourcex/rezolutionx)*100)
+    return render_template('rezult.html', pid='1', top=-(firsty/height)*sourcey, left=-(firstx/width)*sourcex, width=k)
 
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():
