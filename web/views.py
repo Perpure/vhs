@@ -54,6 +54,17 @@ def main():
 def viewroom():
     user = cur_user()
     if user:
+        add_room_form = AddRoomForm(csrf_enabled=False)
+        if add_room_form.validate_on_submit():
+            token = add_room_form.token.data
+            room = Room(token=token, capitan_id=user.id)
+            for i in range(1, 7):
+                room.Color.append(Color.query.filter_by(id=str(i)).first())
+            db.session.add(room)
+            db.session.commit()
+            user.rooms.append(room)
+            #room.color_user = str(user.id) + ',1'
+            db.session.commit()
         form = JoinForm(csrf_enabled=False)
         user.Action = ""
         db.session.commit()
@@ -63,7 +74,7 @@ def viewroom():
         rooms = user.rooms
     else:
         return redirect(url_for('log'))
-    return render_template('viewroom.html', user=cur_user(), form=form, rooms=rooms)
+    return render_template('viewroom.html', user=cur_user(), form=form,add_room_form=form, rooms=rooms)
 
 
 @app.route('/addroom', methods=['GET', 'POST'])
