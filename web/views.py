@@ -5,6 +5,7 @@ from string import ascii_letters
 from werkzeug.exceptions import Aborter
 from functools import wraps
 from PIL import Image, ImageDraw
+from config import ALLOWED_EXTENSIONS
 import os
 
 from web import app, db
@@ -186,7 +187,7 @@ def upload():
 
             return redirect(request.url)
 
-    return render_template('upload_video.html', form=form, user=cur_user())
+    return render_template('upload_video.html', form=form, user=cur_user(), formats = ALLOWED_EXTENSIONS)
 
 
 @app.route('/result/<string:token>/<string:color>', methods=['GET', 'POST'])
