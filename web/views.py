@@ -4,7 +4,7 @@ from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, Upl
     UserProfileForm, AddRoomForm, AddCommentForm
 from web.models import User, Video, Room, Color, Comment
 from config import basedir
-from .helper import read_image, read_video, cur_user, IsVideoViewed, is_true_pixel, read_multi, calibrate_params
+from .helper import read_image, read_video, cur_user, is_true_pixel, read_multi, calibrate_params
 from werkzeug.utils import secure_filename
 from random import choice
 from string import ascii_letters
