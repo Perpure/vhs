@@ -1,23 +1,21 @@
 # coding=utf-8
 """Данный файл описывает формы приложения"""
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SelectField, FieldList, BooleanField, RadioField, FileField
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SelectField, FieldList, BooleanField, RadioField, FileField, HiddenField
 from wtforms.validators import Length, EqualTo, ValidationError, DataRequired, Optional
 from web.models import User
 from .helper import cur_user
 from wtforms.widgets import CheckboxInput, ListWidget
 
+
 class RoomForm(FlaskForm):
     submit = SubmitField("Калибровка")
 
-class UploadVideoForm(FlaskForm):
-    title = StringField("Введите название видео", validators=[Length(3)])
-    video = FileField("Выберите файл")
-    submit = SubmitField("Загрузить")
 
 class UploadImageForm(FlaskForm):
     image = FileField("Выберите файл")
     submit = SubmitField("Загрузить")
+
 
 def not_exist(form, field):
     if User.get(login=field.data):
@@ -65,6 +63,8 @@ class UploadVideoForm(FlaskForm):
     """Форма загрузки видео"""
     title = StringField("Введите название видео", validators=[Length(3)])
     video = FileField("Выберите файл")
+    geotag_is_needed = BooleanField('Прикрепить геотег?')
+    geotag_data = HiddenField()
     submit = SubmitField("Загрузить")
 
 
