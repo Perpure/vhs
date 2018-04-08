@@ -6,7 +6,7 @@
     </video>
 
 </div>
-<p class="videoTitle">{{video.title}}</p>
+<p class="videoTitle">{{ video.title }}</p>
 <p class="videoDate">Добавлено {{video.date}}</p>
 {%if user %}
 <form action="" method="post">
@@ -23,7 +23,7 @@
 {% else %}
 <a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы комментировать
 {%endif%}
-<p>Просмотры: {{ video_views }}</p>
+<p>Просмотры: {{ video.viewers | length }}</p>
 <p>Комментарии</p>
 {% for comment in video.comments %}
 <div class="Comment">
