@@ -96,10 +96,18 @@ class Video(db.Model):
         db.session.commit()
 
     @staticmethod
-    def get(video_id=None):
-        if video_id is None:
-            return Video.query.all()
-        return Video.query.get(video_id)
+    def get(sort=None, video_id=None):
+        if video_id:
+            return Video.query.get(video_id)
+
+        videos = Video.query.all()
+        if sort:
+            sort = s.lower()
+            if "date" in sort: 
+                videos.sort(key=lambda x: x.date, reverse=True)
+            if "views" in sort:
+                videos.sort(key=lambda x: x.views, reverse=True)
+        return videos
 
 
 class User(db.Model):
@@ -124,6 +132,8 @@ class User(db.Model):
                 backref = "user",
                 lazy = 'joined')
     
+    room_capitan = db.relationship("Room", backref='captain')
+
     def __init__(self, login):
         self.login = login
         self.name = login
@@ -173,6 +183,7 @@ class User(db.Model):
 class Room(db.Model):
     __tablename__ = 'Room'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    capitan_id = db.Column(db.Integer, db.ForeignKey('User.id'))
     token = db.Column(db.String(64), nullable=False)
     color_user = db.Column(db.Text())
     Color = db.relationship("Color",
