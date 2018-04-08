@@ -61,6 +61,10 @@ class Video(db.Model):
     date = db.Column(db.DateTime)
     user = db.Column(db.Integer())
 
+    longitude = db.Column(db.Float(), nullable=True)
+    latitude = db.Column(db.Float(), nullable=True)
+    
+
     marks = db.relationship('Mark', 
                     backref='video', 
                     lazy=True)
@@ -76,7 +80,6 @@ class Video(db.Model):
 
     def __init__(self, title):
         self.title = title
-        self.views = 0
 
     def save(self, hash, user):
         self.date = datetime.now(tz=None)
