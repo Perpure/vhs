@@ -329,6 +329,17 @@ def play(vid):
     return render_template('play.html', user=user, vid=vid, video=video, form=form)
 
 
+@app.route('/video/map', methods=["GET"])
+def videos_map():
+    videos_with_coords = []
+
+    for video in Video.get():
+        if video.latitude:
+            videos_with_coords.append(video)
+
+    return render_template('videos_map.html', videos=videos_with_coords)
+
+
 @app.errorhandler(403)
 def forbidden(e):
     return render_template('403.html'), 403
