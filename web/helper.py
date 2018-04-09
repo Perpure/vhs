@@ -4,7 +4,7 @@ from web.models import User
 
 
 def read_multi(pid):
-    path=basedir + '/images/%s.jpg' % pid
+    path = basedir + '/images/%s.jpg' % pid
     with open(path, "rb") as im:
         f = im.read()
         b = bytearray(f)
@@ -12,7 +12,7 @@ def read_multi(pid):
 
 
 def read_image(pid):
-    path=basedir + '/video/%s/preview.png' % pid
+    path = basedir + '/video/%s/preview.png' % pid
     with open(path, "rb") as im:
         f = im.read()
         b = bytearray(f)
@@ -29,6 +29,7 @@ def read_video(vid):
 
 def is_true_pixel(r, g, b, R, G, B):
     return (r in range(R-50, R+50))and(g in range(G-50, G+50))and(b in range(B-50, B+50))
+
 
 def calibrate_params(firstx, firsty, lastx, lasty, rezolutionx, rezolutiony):
     x = lastx - firstx + 1
@@ -102,6 +103,7 @@ def calibrate_params(firstx, firsty, lastx, lasty, rezolutionx, rezolutiony):
                         h1 = h + 1
                     break
     return w1, h1
+
 
 def cur_user():
     if 'Login' in session:

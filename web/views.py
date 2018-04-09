@@ -85,7 +85,7 @@ def addroom():
             db.session.add(room)
             db.session.commit()
             user.rooms.append(room)
-            #room.color_user = str(user.id) + ',1'
+            # room.color_user = str(user.id) + ',1'
             db.session.commit()
     else:
         return redirect(url_for('log'))
@@ -209,27 +209,27 @@ def result(token, color):
         if colors[i].split(',')[0] == str(user.id):
             color = Color.query.filter_by(id=colors[i].split(',')[1]).first().color
             break
-    rezolutionx=400
-    rezolutiony=887
-    sourcex=800
-    sourcey=600
-    R = int(color[1:3],16)
-    G = int(color[3:5],16)
-    B = int(color[5:7],16)
+    rezolutionx = 400
+    rezolutiony = 887
+    sourcex = 800
+    sourcey = 600
+    R = int(color[1:3], 16)
+    G = int(color[3:5], 16)
+    B = int(color[5:7], 16)
     print(basedir)
     image = Image.open(basedir + url_for('get_multi', pid=token))
     width = image.size[0]
     height = image.size[1]
-    firstx=0
-    lasty=0
-    lastx=0
+    firstx = 0
+    lasty = 0
+    lastx = 0
     pix = image.load()
     for i in range(width):
         for j in range(height):
             r = pix[i, j][0]
             g = pix[i, j][1]
             b = pix[i, j][2]
-            if (is_true_pixel(r,g,b,R,G,B)):
+            if is_true_pixel(r,g,b,R,G,B):
                 if not (firstx):
                     firstx = i
                     firsty = j
@@ -238,8 +238,9 @@ def result(token, color):
                 if lasty < j:
                     lasty = j
     w, h = calibrate_params(firstx, firsty, lastx, lasty, rezolutionx, rezolutiony)
-    k=int((width/w)/(sourcex/rezolutionx)*100)
+    k = int((width/w)/(sourcex/rezolutionx)*100)
     return render_template('rezult.html', pid='1', top=-(firsty/height)*sourcey, left=-(firstx/width)*sourcex, width=k)
+
 
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():
