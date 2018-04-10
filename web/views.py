@@ -61,7 +61,7 @@ def viewroom():
     user = cur_user()
     if user:
         form = JoinForm(csrf_enabled=False)
-        user.Action = ""
+        user.action = ""
         db.session.commit()
         if form.validate_on_submit():
             if Room.query.filter_by(token=str(form.token.data)):
@@ -105,7 +105,7 @@ def room(token):
         if Room_Form.validate_on_submit():
             for i in range(len(room.color_user.split(';'))):
                 ID = room.color_user.split(';')[i].split(',')[0]
-                User.query.filter_by(id=ID).first().Action = "calibrate"
+                User.query.filter_by(id=ID).first().action = "calibrate"
             db.session.commit()
 
         if not ((room in user.rooms) and (room in user.room_capitan)):
@@ -164,7 +164,7 @@ def allowed_file(filename):
 @app.route('/calibrate/<string:color>', methods=['GET', 'POST'])
 def calibrate(color):
     user = cur_user()
-    user.Action = ""
+    user.action = ""
     db.session.commit()
     return render_template('color.html', color=color)
 
@@ -323,7 +323,7 @@ def askAct():
     action = ""
     if cur_user():
         user = cur_user()
-        action = user.Action
+        action = user.action
     return action
 
 
