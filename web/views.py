@@ -336,7 +336,7 @@ def play(vid):
         return abort(404)
 
     user = cur_user()
-    form = AddCommentForm(csrf_enabled=False)
+    form = AddCommentForm()
 
     if user and user not in video.viewers:
         video.add_viewer(user)

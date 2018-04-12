@@ -82,6 +82,9 @@ class UserProfileForm(FlaskForm):
 
 
 class AddCommentForm(FlaskForm):
+    class Meta:
+        csrf = False
+
     message = TextAreaField("Комментарий", validators=[DataRequired(), Length(1)])
     submit = SubmitField("Запостить")
 

@@ -20,7 +20,7 @@ class TestModelUser(unittest.TestCase):
         self.user = User('TestUser')
         self.user.save('testpassword')
         self.video = Video('TestVideo')
-        self.video.save()
+        self.video.save(hash='Teststring', user=self.user.id)
 
     def tearDown(self):
         db.session.remove()
