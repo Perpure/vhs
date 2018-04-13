@@ -128,6 +128,8 @@ class User(db.Model):
     name = db.Column(db.String(32), nullable=False)
     channel_info = db.Column(db.String(64))
     Action = db.Column(db.String(64))
+    device_width = db.Column(db.Integer)
+    device_height = db.Column(db.Integer)
 
     marks = db.relationship('Mark',
                             backref='user',
@@ -178,6 +180,14 @@ class User(db.Model):
         :param info: Информация о канале
         """
         self.channel_info = info
+        db.session.add(self)
+        db.session.commit()
+
+    def update_resolution(self, width, height):
+        if self.device_width == width and self.device_height == height:
+            return()
+        self.device_height = height
+        self.device_width = width
         db.session.add(self)
         db.session.commit()
 

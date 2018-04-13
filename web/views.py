@@ -1,4 +1,4 @@
-from flask import redirect, render_template, session, url_for, make_response, request
+from flask import redirect, render_template, session, url_for, make_response, request, jsonify
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
     UserProfileForm, AddRoomForm, AddCommentForm
@@ -317,6 +317,16 @@ def get_video(vid):
         'Content-Disposition', 'attachment', filename='video/%s/video.mp4' % vid)
     return response
 
+
+@app.route('/tellRes', methods=['GET', 'POST'])
+def tellRes():
+    if cur_user():
+        user = cur_user()
+        if request.method == 'POST':
+            width = request.json['width']
+            height = request.json['height']
+            user.update_resolution(width=width, height=height)
+            return jsonify(width=width, height=height)
 
 @app.route('/askAct', methods=['GET', 'POST'])
 def askAct():

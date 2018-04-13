@@ -38,6 +38,22 @@
                     });
             setTimeout(step,speed);
         },speed);
+
+        $(function() {
+            $(document).ready(function() {
+            var width = screen.width;
+            var height = screen.height;
+                $.ajax({
+                  url: '/tellRes',
+                  contentType: "application/json; charset=utf-8",
+                  type: "POST",
+                  data: JSON.stringify({ "width": width, "height" : height }),
+                  success: function () {
+                    console.log(JSON.stringify({ "width": width, "height" : height }));},
+                  });
+                  dataType:"json"
+            });
+        });
     </script>
 {% endif %}
 {% endblock %}
