@@ -24,7 +24,7 @@ user.save("11111111")
 room = Room(token='test')
 db.session.commit()
 
-for i in range(1,7):
+for i in range(1, 7):
     room.Color.append(Color.query.filter_by(id=str(i)).first())
 db.session.add(room)
 db.session.commit()

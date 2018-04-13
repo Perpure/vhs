@@ -38,10 +38,12 @@ def match(form, field):
 
 
 class RegForm(FlaskForm):
-    login_reg = StringField("Имя пользователя", validators=[Length(5), not_exist])
-    password_reg = PasswordField("Пароль", validators=[Length(8)])
+    login_reg = StringField("Имя пользователя", validators=[Length(5, message='Логин слишком короткий'),
+                                                            not_exist])
+    password_reg = PasswordField("Пароль", validators=[Length(8, message='Пароль слишком короткий')])
     confirm_reg = PasswordField("Повторите пароль",
-                                validators=[Length(8), EqualTo("password_reg", message="Пароли должны совпадать")])
+                                validators=[Length(8, message='Пароль слишком короткий'),
+                                            EqualTo("password_reg", message="Пароли должны совпадать")])
     submit_reg = SubmitField("Зарегистрироваться")
     submit_main = SubmitField("На главную")
 
@@ -53,15 +55,16 @@ class JoinForm(FlaskForm):
 
 class LogForm(FlaskForm):
     """Форма авторизации"""
-    login_log = StringField("Имя пользователя", validators=[Length(5), exist])
-    password_log = PasswordField("Пароль", validators=[Length(8), match])
+    login_log = StringField("Имя пользователя", validators=[Length(5, message='Логин слишком короткий'), exist])
+    password_log = PasswordField("Пароль", validators=[Length(8, message='Пароль слишком короткий'),
+                                                       match])
     submit_log = SubmitField("Войти")
     submit_main = SubmitField("На главную")
 
 
 class UploadVideoForm(FlaskForm):
     """Форма загрузки видео"""
-    title = StringField("Введите название видео", validators=[Length(3)])
+    title = StringField("Введите название видео", validators=[Length(3, message='Название слишком короткое')])
     video = FileField("Выберите файл")
     geotag_is_needed = BooleanField('Прикрепить геотег?')
     geotag_data = HiddenField()
@@ -70,22 +73,28 @@ class UploadVideoForm(FlaskForm):
 
 class UserProfileForm(FlaskForm):
     """Форма редактирования профиля пользователя"""
-    change_name = StringField("Изменить имя:", validators=[Length(3), Optional()])
-    change_password = PasswordField("Изменить пароль:", validators=[Length(8), Optional()])
+    change_name = StringField("Изменить имя:", validators=[Length(3, message='Имя слишком короткое'), Optional()])
+    change_password = PasswordField("Изменить пароль:", validators=[Length(8, message='Пароль слишком короткий'),
+                                                                    Optional()])
     change_avatar = FileField("Изменить аватар профиля:")
     change_background = FileField("Изменить фон канала:")
     channel_info = StringField("Указать информацию о канале:",
-                               validators=[Length(8), Optional()])
+                               validators=[Length(8, message='Текст слишком короткий'), Optional()])
     current_password = PasswordField("Введите свой текущий пароль для подтверждения изменений:",
-                                     validators=[Length(8), match])
+                                     validators=[Length(8, message='Пароль слишком короткий'), match])
     submit_changes = SubmitField("Сохранить")
 
 
 class AddCommentForm(FlaskForm):
-    message = TextAreaField("Комментарий", validators=[DataRequired(), Length(1)])
+    class Meta:
+        csrf = False
+
+    message = TextAreaField("Комментарий", validators=[DataRequired(message='Введите текст'),
+                                                       Length(1, message='Текст слишком короткий')])
     submit = SubmitField("Запостить")
 
 
 class AddRoomForm(FlaskForm):
-    token = TextAreaField("Название комнаты", validators=[DataRequired(), Length(5)])
+    token = TextAreaField("Название комнаты", validators=[DataRequired(message='Введите название'),
+                                                          Length(5, message='Токен слишком короткий')])
     submit = SubmitField("Создать")
