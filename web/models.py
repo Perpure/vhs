@@ -211,6 +211,14 @@ class Room(db.Model):
                             backref="Room",
                             lazy="joined")
 
+    @staticmethod
+    def get(id=None, token=None):
+        if token:
+            return Room.query.filter_by(token=token).first()
+        if id:
+            return Room.query.get(id)
+        return Room.query.all()
+
 
 class Color(db.Model):
     __tablename__ = 'Color'

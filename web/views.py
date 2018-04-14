@@ -59,37 +59,43 @@ def main():
 @app.route('/viewroom', methods=['GET', 'POST'])
 def viewroom():
     user = cur_user()
+
     if user:
-        form = JoinForm(csrf_enabled=False)
+        join_form = JoinForm(csrf_enabled=False)
         user.Action = ""
         db.session.commit()
-        if form.validate_on_submit():
-            if Room.query.filter_by(token=str(form.token.data)):
-                return redirect(url_for('room', token=form.token.data))
-        rooms = user.rooms
-    else:
-        return redirect(url_for('log'))
-    return render_template('viewroom.html', user=cur_user(), form=form, rooms=rooms)
-
-
-@app.route('/addroom', methods=['GET', 'POST'])
-def addroom():
-    user = cur_user()
-    if user:
-        form = AddRoomForm(csrf_enabled=False)
-        token = form.token.data
-        room = Room(token=token, capitan_id=user.id)
-        if form.validate_on_submit():
+        add_room_form = AddRoomForm(csrf_enabled=False)
+        if add_room_form.validate_on_submit():
+            token = add_room_form.token.data
+            room = Room(token=token, capitan_id=user.id)
             for i in range(1, 7):
                 room.Color.append(Color.query.filter_by(id=str(i)).first())
+                room.color_user = str(user.id) + ',1'
             db.session.add(room)
             db.session.commit()
             user.rooms.append(room)
-            # room.color_user = str(user.id) + ',1'
             db.session.commit()
+            return redirect(url_for('addroom',  token=add_room_form.token.data))
+
+
+        if join_form.validate_on_submit():
+            if Room.query.filter_by(token=str(join_form.token.data)):
+                return redirect(url_for('room', token=join_form.token.data))
+        rooms = user.rooms
     else:
         return redirect(url_for('log'))
-    return render_template('addroom.html', user=cur_user(), token=token, form=form)
+    return render_template('viewroom.html', user=cur_user(), join_form=join_form,add_room_form=add_room_form, rooms=rooms)
+
+
+@app.route('/addroom/<string:token>', methods=['GET', 'POST'])
+def addroom(token):
+    user = cur_user()
+    if user:
+        pass
+    else:
+        return redirect(url_for('log'))
+
+    return render_template('addroom.html', user=cur_user(), token=token)
 
 
 @app.route('/room/<string:token>', methods=['GET', 'POST'])
@@ -133,27 +139,27 @@ def room(token):
                 return render_template('room.html', room=room, user=cur_user(),
                                        calibrate_url=calibrate_url, users=users,
                                        image_form=UploadImageForm(csrf_enabled=False),
-                                       result_url=result_url, Room_Form=Room_Form)
+                                       result_url=result_url, Room_Form=Room_Form, loaded=False)
 
             file = request.files['image']
             if file.filename == '':
                 return render_template('room.html', room=room, user=cur_user(),
                                        calibrate_url=calibrate_url, users=users,
                                        image_form=UploadImageForm(csrf_enabled=False),
-                                       result_url=result_url, Room_Form=Room_Form)
+                                       result_url=result_url, Room_Form=Room_Form, loaded=False)
 
             if file and allowed_file(file.filename):
                 file.save(basedir + '/images/' + room.token + '.' + file.filename.split('.')[-1].lower())
                 return render_template('room.html', room=room, user=cur_user(),
                                        calibrate_url=calibrate_url, users=users,
                                        image_form=image_form, result_url=result_url,
-                                       Room_Form=Room_Form)
+                                       Room_Form=Room_Form, loaded=True)
 
     else:
         return redirect(url_for('log'))
     return render_template('room.html', room=room, user=cur_user(),
                            calibrate_url=calibrate_url, users=users,
-                           image_form=image_form, result_url=result_url, Room_Form=Room_Form)
+                           image_form=image_form, result_url=result_url, Room_Form=Room_Form, loaded=False)
 
 
 def allowed_file(filename):

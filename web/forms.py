@@ -3,7 +3,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SelectField, FieldList, BooleanField, RadioField, FileField, HiddenField
 from wtforms.validators import Length, EqualTo, ValidationError, DataRequired, Optional
-from web.models import User
+from web.models import User , Room
 from .helper import cur_user
 from wtforms.widgets import CheckboxInput, ListWidget
 
@@ -26,6 +26,9 @@ def exist(form, field):
     if User.get(login=field.data) is None:
         raise ValidationError("Такого пользователя не существует")
 
+def exist_token(form,field):
+    if Room.get(token=field.data):
+        raise ValidationError("Такая комната уже существует")
 
 def match(form, field):
     user = None
@@ -95,6 +98,5 @@ class AddCommentForm(FlaskForm):
 
 
 class AddRoomForm(FlaskForm):
-    token = TextAreaField("Название комнаты", validators=[DataRequired(message='Введите название'),
-                                                          Length(5, message='Токен слишком короткий')])
+    token = StringField("Название комнаты", validators=[DataRequired(), Length(5),exist_token])
     submit = SubmitField("Создать")
