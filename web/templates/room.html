@@ -8,7 +8,7 @@
 </form>
 <h5>Загрузите калибровочное фото</h5>
 <form action="" method="post" enctype="multipart/form-data">
-    <div class="Loader"><div> {{ image_form.image }} </div></div>
+    <div class="Loader"><div> <input id="image" name="image" type="file" accept="image/*" capture> > </div></div>
     <div id="Calibr"> {{ image_form.submit }} </div>
 </form>
 {% if room.color_user %}
@@ -41,8 +41,9 @@
 
         $(function() {
             $(document).ready(function() {
-            var width = screen.width;
-            var height = screen.height;
+            var ratio = window.devicePixelRatio || 1;
+            var width = screen.width * ratio;
+            var height = screen.height * ratio;
                 $.ajax({
                   url: '/tellRes',
                   contentType: "application/json; charset=utf-8",
@@ -57,3 +58,4 @@
     </script>
 {% endif %}
 {% endblock %}
+
