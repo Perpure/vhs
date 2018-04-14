@@ -82,7 +82,6 @@ def viewroom():
             room = Room(token=token, capitan_id=user.id)
             for i in range(1, 7):
                 room.Color.append(Color.query.filter_by(id=str(i)).first())
-                room.color_user = str(user.id) + ',1'
             db.session.add(room)
             db.session.commit()
             user.rooms.append(room)
@@ -116,7 +115,7 @@ def room(token):
     Room_Form = RoomForm()
     calibrate_url = None
     result_url = None
-
+    print(token)
     if user:
         room = Room.query.filter_by(token=token).first()
 
