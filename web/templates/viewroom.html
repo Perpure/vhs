@@ -1,18 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
-<a href="{{url_for('addroom')}}">Добавить комнату</a>
-<hr>
-<p>Присоединиться к комнате по токену</p>
-    <form action="" method="post">
-    {{form.hidden_tag()}}
-        <div>{{ form.token.label}}</div>
-        <div>{{ form.token }}</div>
-        {% if form.token.errors %}
-            {% for error in form.token.errors %}
+<form action="" method="post">
+        <div>{{ add_room_form.token.label}}</div>
+        <div>{{ add_room_form.token(rows=2, cols=30) }}</div>
+        {% if add_room_form.token.errors %}
+            {% for error in add_room_form.token.errors %}
             <div style="color: red;">{{ error }}</div>
             {% endfor %}
         {% endif %}
-        {{ form.submit }}
+        {{ add_room_form.submit }}
+</form>
+<hr>
+<p>Присоединиться к комнате по токену</p>
+    <form action="" method="post">
+    {{join_form.hidden_tag()}}
+        <div>{{ join_form.token.label}}</div>
+        <div>{{ join_form.token }}</div>
+        {% if join_form.token.errors %}
+            {% for error in join_form.token.errors %}
+            <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+        {{ join_form.submit }}
     </form>
     {% if rooms %}
     <p>Ваши комнаты

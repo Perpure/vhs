@@ -1,21 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="roomName">
-    <form action="" method="post">
-        <div>{{ form.token.label}}</div>
-        <div>{{ form.token}}</div>
-        {% if form.token.errors %}
-            {% for error in form.token.errors %}
-            <div style="color: red;">{{ error }}</div>
-            {% endfor %}
-        {% endif %}
-        {{ form.submit }}
-    </form>
-</div>
 <div class="token">
-    <div class="tokenTxt" id="Token">{{token}}</div>
-    <div class="tokenBtnMid" id="copyToken">Копировать токен</div>
-    <div class="tokenBtnEdge" id="copyLink">Копировать ссылку</div>
+<div class="tokenTxt" id="Token">{{token}}</div>
+<div class="tokenBtnMid" id="copyToken">Копировать токен</div>
+<div class="tokenBtnEdge" id="copyLink">Копировать ссылку</div>
 </div>
 <script>
    token=document.getElementById("Token");
