@@ -350,12 +350,13 @@ def play(vid):
 @app.route('/video/map', methods=["GET"])
 def videos_map():
     videos_with_coords = []
+    user = cur_user()
 
     for video in Video.get():
         if video.latitude:
             videos_with_coords.append(video)
 
-    return render_template('videos_map.html', videos=videos_with_coords)
+    return render_template('videos_map.html', user=user, videos=videos_with_coords)
 
 
 @app.errorhandler(403)
