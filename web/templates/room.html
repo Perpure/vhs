@@ -3,22 +3,26 @@
 <h1>Комната {{room.token}}</h1>
 {% if room.capitan_id == user.id %}
 {% if room.color_user %}
-<h4>Upload calibrating image</h4>
-<form action="" method="post" enctype="multipart/form-data">
-    <div class="Loader"><div> {{ image_form.image }} </div></div>
-    <div> {{ image_form.submit }} </div>
-</form>
+{% if loaded == False %}
 <form action="" method="post">
     {{Room_Form.hidden_tag()}}
     <a href="{{calibrate_url}}">{{ Room_Form.submit }}</a>
 </form>
-<p><a href="{{result_url}}">result</a>
-<hr>
+<h5>Загрузите калибровочное фото</h5>
+<form action="" method="post" enctype="multipart/form-data">
+    <div class="Loader"><div> {{ image_form.image }} </div></div>
+    <div id="Calibr"> {{ image_form.submit }} </div>
+</form>
 {%else%}
-<p>Пригласите участников в комнату
+<p><a href="{{result_url}}">result</a>
+{%endif%}
+{%else%}
+<p>Пригласите участников в комнату</p>
+{% endif %}
+{% endif %}
+
 <hr>
-{% endif %}
-{% endif %}
+<h5>Участники</h5>
 {% for i in users %}
 <p>{{i.login}}</p>
 {% endfor %}
@@ -38,6 +42,22 @@
                     });
             setTimeout(step,speed);
         },speed);
+
+        $(function() {
+            $(document).ready(function() {
+            var width = screen.width;
+            var height = screen.height;
+                $.ajax({
+                  url: '/tellRes',
+                  contentType: "application/json; charset=utf-8",
+                  type: "POST",
+                  data: JSON.stringify({ "width": width, "height" : height }),
+                  success: function () {
+                    console.log(JSON.stringify({ "width": width, "height" : height }));},
+                  });
+                  dataType:"json"
+            });
+        });
     </script>
 {% endif %}
 {% endblock %}

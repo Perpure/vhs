@@ -24,15 +24,10 @@ user.save("11111111")
 room = Room(token='test')
 db.session.commit()
 
-for i in range(1,7):
-    room.Color.append(Color.query.filter_by(id=str(i)).first())
-db.session.add(room)
-db.session.commit()
-user.rooms.append(room)
-room.color_user = str(user.id) + ',1'
+
 
 user = User("22222")
 user.save("22222222")
 
 
-db.session.commit()
+
