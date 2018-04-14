@@ -2,23 +2,19 @@
 {% block content %}
 <h1>Комната {{room.token}}</h1>
 {% if room.capitan_id == user.id %}
-{% if room.color_user %}
-{% if loaded == False %}
 <form action="" method="post">
     {{Room_Form.hidden_tag()}}
     <a href="{{calibrate_url}}">{{ Room_Form.submit }}</a>
 </form>
 <h5>Загрузите калибровочное фото</h5>
 <form action="" method="post" enctype="multipart/form-data">
-    <div class="Loader"><div> {{ image_form.image }} </div></div>
+    <div class="Loader"><div> <input id="image" name="image" type="file" accept="image/*" capture> > </div></div>
     <div id="Calibr"> {{ image_form.submit }} </div>
 </form>
-{%else%}
+{% if room.color_user %}
 <p><a href="{{result_url}}">result</a>
-{%endif%}
-{%else%}
-<p>Пригласите участников в комнату</p>
 {% endif %}
+<p>Пригласите участников в комнату</p>
 {% endif %}
 
 <hr>
@@ -45,8 +41,9 @@
 
         $(function() {
             $(document).ready(function() {
-            var width = screen.width;
-            var height = screen.height;
+            var ratio = window.devicePixelRatio || 1;
+            var width = screen.width * ratio;
+            var height = screen.height * ratio;
                 $.ajax({
                   url: '/tellRes',
                   contentType: "application/json; charset=utf-8",
@@ -61,3 +58,4 @@
     </script>
 {% endif %}
 {% endblock %}
+

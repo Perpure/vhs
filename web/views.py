@@ -11,6 +11,7 @@ from string import ascii_letters
 from werkzeug.exceptions import Aborter
 from functools import wraps
 from PIL import Image, ImageDraw
+from config import ALLOWED_EXTENSIONS
 import os
 
 from web import app, db
@@ -183,25 +184,31 @@ def upload():
     :return: Страница загрузки
     """
     form = UploadVideoForm(csrf_enabled=False)
+    error = ""
 
     if form.validate_on_submit():
-        if 'video' not in request.files:
-            return redirect(request.url)
+        try:
+            if 'video' not in request.files:
+                return redirect(request.url)
 
-        file = request.files['video']
+            file = request.files['video']
 
-        if file.filename == '':
-            return redirect(request.url)
+            if file.filename == '':
+                return redirect(request.url)
 
-        if file and allowed_file(file.filename):
-            video = save_video(file, form.title.data)
+            if file and allowed_file(file.filename):
+                video = save_video(file, form.title.data)
 
-            if form.geotag_is_needed.data:
-                coords = form.geotag_data.data.split(',')
-                video.add_geotag(coords)
-            return redirect(request.url)
+                if form.geotag_is_needed.data:
+                    coords = form.geotag_data.data.split(',')
+                    video.add_geotag(coords)
+                return redirect(request.url)
+        except:
+            error = "Произошла ошибка при загрузке видео. Пожалуйста, повторите попытку"
+        finally:
+            return redirect(url_for("main"))
 
-    return render_template('upload_video.html', form=form, user=cur_user())
+    return render_template('upload_video.html', form=form, user=cur_user(), error=error, formats=ALLOWED_EXTENSIONS)
 
 
 @app.route('/result/<string:token>/<string:color>', methods=['GET', 'POST'])
