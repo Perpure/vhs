@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
+<h1>Комната {{room.token}}</h1>
 {% if room.capitan_id == user.id %}
+{% if room.color_user %}
 <h4>Upload calibrating image</h4>
 <form action="" method="post" enctype="multipart/form-data">
     <div class="Loader"><div> {{ image_form.image }} </div></div>
@@ -12,8 +14,10 @@
 </form>
 <p><a href="{{result_url}}">result</a>
 <hr>
-{% else %}
-<h1>Комната</h1>
+{%else%}
+<p>Пригласите участников в комнату
+<hr>
+{% endif %}
 {% endif %}
 {% for i in users %}
 <p>{{i.login}}</p>
@@ -34,6 +38,22 @@
                     });
             setTimeout(step,speed);
         },speed);
+
+        $(function() {
+            $(document).ready(function() {
+            var width = screen.width;
+            var height = screen.height;
+                $.ajax({
+                  url: '/tellRes',
+                  contentType: "application/json; charset=utf-8",
+                  type: "POST",
+                  data: JSON.stringify({ "width": width, "height" : height }),
+                  success: function () {
+                    console.log(JSON.stringify({ "width": width, "height" : height }));},
+                  });
+                  dataType:"json"
+            });
+        });
     </script>
 {% endif %}
 {% endblock %}
