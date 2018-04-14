@@ -124,6 +124,13 @@ class Video(db.Model):
 
         return videos
 
+    def add_geotag(self, coords):
+        self.latitude = coords[0]
+        self.longitude = coords[1]
+
+        db.session.add(self)
+        db.session.commit()
+
 
 class Geotag(db.Model):
     __tablename__ = "Geotag"
