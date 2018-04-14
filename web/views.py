@@ -133,27 +133,27 @@ def room(token):
                 return render_template('room.html', room=room, user=cur_user(),
                                        calibrate_url=calibrate_url, users=users,
                                        image_form=UploadImageForm(csrf_enabled=False),
-                                       result_url=result_url, Room_Form=Room_Form)
+                                       result_url=result_url, Room_Form=Room_Form, loaded=False)
 
             file = request.files['image']
             if file.filename == '':
                 return render_template('room.html', room=room, user=cur_user(),
                                        calibrate_url=calibrate_url, users=users,
                                        image_form=UploadImageForm(csrf_enabled=False),
-                                       result_url=result_url, Room_Form=Room_Form)
+                                       result_url=result_url, Room_Form=Room_Form, loaded=False)
 
             if file and allowed_file(file.filename):
                 file.save(basedir + '/images/' + room.token + '.' + file.filename.split('.')[-1].lower())
                 return render_template('room.html', room=room, user=cur_user(),
                                        calibrate_url=calibrate_url, users=users,
                                        image_form=image_form, result_url=result_url,
-                                       Room_Form=Room_Form)
+                                       Room_Form=Room_Form, loaded=True)
 
     else:
         return redirect(url_for('log'))
     return render_template('room.html', room=room, user=cur_user(),
                            calibrate_url=calibrate_url, users=users,
-                           image_form=image_form, result_url=result_url, Room_Form=Room_Form)
+                           image_form=image_form, result_url=result_url, Room_Form=Room_Form, loaded=False)
 
 
 def allowed_file(filename):
