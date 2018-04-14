@@ -11,11 +11,6 @@
     <div class="Loader"><div> <input id="image" name="image" type="file" accept="image/*" capture> > </div></div>
     <div id="Calibr"> {{ image_form.submit }} </div>
 </form>
-
-<!--<form action="" method="post" enctype="multipart/form-data">-->
-    <!--<div class="Loader"><div> <input id="image" name="image "type="file" accept="image/*;capture=camera" > </div></div>-->
-     <!--<div id="Calibr"> {{ image_form.submit }} </div>-->
-<!--</form>-->
 {% if room.color_user %}
 <p><a href="{{result_url}}">result</a>
 {% endif %}
@@ -46,8 +41,9 @@
 
         $(function() {
             $(document).ready(function() {
-            var width = screen.width;
-            var height = screen.height;
+            var ratio = window.devicePixelRatio || 1;
+            var width = screen.width * ratio;
+            var height = screen.height * ratio;
                 $.ajax({
                   url: '/tellRes',
                   contentType: "application/json; charset=utf-8",
