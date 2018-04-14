@@ -183,27 +183,33 @@ def upload():
     :return: Страница загрузки
     """
     form = UploadVideoForm(csrf_enabled=False)
+    error = ""
 
     if form.validate_on_submit():
-        if 'video' not in request.files:
-            return redirect(request.url)
+        try:
+            if 'video' not in request.files:
+                return redirect(request.url)
 
-        file = request.files['video']
+            file = request.files['video']
 
-        if file.filename == '':
-            return redirect(request.url)
+            if file.filename == '':
+                return redirect(request.url)
 
-        if form.geotag_data.data != "":
-            coords = form.geotag_data.data.split(',')
-        else:
-            coords = None
+            if form.geotag_data.data != "":
+                coords = form.geotag_data.data.split(',')
+            else:
+                coords = None
 
-        if file and allowed_file(file.filename):
-            save_video(file, form.title.data)
+            if file and allowed_file(file.filename):
+                save_video(file, form.title.data)
 
-            return redirect(request.url)
+                return redirect(request.url)
+        except:
+            error = "Произошла ошибка при загрузке видео. Пожалуйста, повторите попытку"
+        finally:
+            return redirect(url_for("main"))
 
-    return render_template('upload_video.html', form=form, user=cur_user())
+    return render_template('upload_video.html', form=form, user=cur_user(), error=error)
 
 
 @app.route('/result/<string:token>/<string:color>', methods=['GET', 'POST'])
