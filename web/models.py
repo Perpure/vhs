@@ -60,6 +60,7 @@ class Video(db.Model):
     path = db.Column(db.String(256), nullable=False)
     date = db.Column(db.DateTime)
     user = db.Column(db.Integer())
+    views = db.Column(db.Integer())
 
     marks = db.relationship('Mark', 
                     backref='video', 
@@ -91,6 +92,7 @@ class Video(db.Model):
 
     def add_viewer(self, user):
         self.viewers.append(user)
+        self.views += 1
         
         db.session.add(self)
         db.session.commit()
@@ -126,6 +128,8 @@ class User(db.Model):
     name = db.Column(db.String(32), nullable=False)
     channel_info = db.Column(db.String(64))
     Action = db.Column(db.String(64))
+    device_width = db.Column(db.Integer)
+    device_height = db.Column(db.Integer)
 
     marks = db.relationship('Mark',
                             backref='user',
@@ -179,6 +183,14 @@ class User(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def update_resolution(self, width, height):
+        if self.device_width == width and self.device_height == height:
+            return()
+        self.device_height = height
+        self.device_width = width
+        db.session.add(self)
+        db.session.commit()
+
     @staticmethod
     def get(id=None, login=None):
         if login:
@@ -198,6 +210,14 @@ class Room(db.Model):
                             secondary=ColorToRoom,
                             backref="Room",
                             lazy="joined")
+
+    @staticmethod
+    def get(id=None, token=None):
+        if token:
+            return Room.query.filter_by(token=token).first()
+        if id:
+            return Room.query.get(id)
+        return Room.query.all()
 
 
 class Color(db.Model):
