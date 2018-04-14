@@ -8,9 +8,14 @@
 </form>
 <h5>Загрузите калибровочное фото</h5>
 <form action="" method="post" enctype="multipart/form-data">
-    <div class="Loader"><div> <input id="image" name="image "type="file" accept="image/*;capture=camera" > </div></div>
-     <div id="Calibr"> {{ image_form.submit }} </div>
+    <div class="Loader"><div> <input id="image" name="image" type="file" accept="image/*" capture> > </div></div>
+    <div id="Calibr"> {{ image_form.submit }} </div>
 </form>
+
+<!--<form action="" method="post" enctype="multipart/form-data">-->
+    <!--<div class="Loader"><div> <input id="image" name="image "type="file" accept="image/*;capture=camera" > </div></div>-->
+     <!--<div id="Calibr"> {{ image_form.submit }} </div>-->
+<!--</form>-->
 {% if room.color_user %}
 <p><a href="{{result_url}}">result</a>
 {% endif %}
