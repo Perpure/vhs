@@ -2,23 +2,23 @@
 {% block content %}
 <h1>Комната {{room.token}}</h1>
 {% if room.capitan_id == user.id %}
-{% if room.color_user %}
-<h4>Upload calibrating image</h4>
-<form action="" method="post" enctype="multipart/form-data">
-    <div class="Loader"><div> {{ image_form.image }} </div></div>
-    <div> {{ image_form.submit }} </div>
-</form>
 <form action="" method="post">
     {{Room_Form.hidden_tag()}}
     <a href="{{calibrate_url}}">{{ Room_Form.submit }}</a>
 </form>
+<h5>Загрузите калибровочное фото</h5>
+<form action="" method="post" enctype="multipart/form-data">
+    <div class="Loader"><div> <input id="image" name="image "type="file" accept="image/*;capture=camera" > </div></div>
+     <div id="Calibr"> {{ image_form.submit }} </div>
+</form>
+{% if room.color_user %}
 <p><a href="{{result_url}}">result</a>
-<hr>
-{%else%}
-<p>Пригласите участников в комнату
-<hr>
 {% endif %}
+<p>Пригласите участников в комнату</p>
 {% endif %}
+
+<hr>
+<h5>Участники</h5>
 {% for i in users %}
 <p>{{i.login}}</p>
 {% endfor %}
@@ -57,3 +57,4 @@
     </script>
 {% endif %}
 {% endblock %}
+
