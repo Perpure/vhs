@@ -14,11 +14,11 @@
     <div id="Calibr"> {{ image_form.submit }} </div>
 </form>
 {% if room.color_user %}
-<p><a href="{{result_url}}"><button class="result">Начать демонстрацию</button></a></p>
 {% else %}
 <p>Пригласите участников в комнату</p>
 {% endif %}
 {% endif %}
+<p><a href="{{result_url}}"><button class="result">Начать демонстрацию</button></a></p>
 <hr>
 <h5>Участники</h5>
 {% for i in users %}
