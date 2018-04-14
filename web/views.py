@@ -53,48 +53,43 @@ def main():
 @app.route('/viewroom', methods=['GET', 'POST'])
 def viewroom():
     user = cur_user()
+
     if user:
+        join_form = JoinForm(csrf_enabled=False)
+        user.Action = ""
+        db.session.commit()
         add_room_form = AddRoomForm(csrf_enabled=False)
         if add_room_form.validate_on_submit():
             token = add_room_form.token.data
             room = Room(token=token, capitan_id=user.id)
             for i in range(1, 7):
                 room.Color.append(Color.query.filter_by(id=str(i)).first())
+                room.color_user = str(user.id) + ',1'
             db.session.add(room)
             db.session.commit()
             user.rooms.append(room)
-            #room.color_user = str(user.id) + ',1'
             db.session.commit()
-        form = JoinForm(csrf_enabled=False)
-        user.Action = ""
-        db.session.commit()
-        if form.validate_on_submit():
-            if Room.query.filter_by(token=str(form.token.data)):
-                return redirect(url_for('room', token=form.token.data))
+            return redirect(url_for('addroom',  token=add_room_form.token.data))
+
+
+        if join_form.validate_on_submit():
+            if Room.query.filter_by(token=str(join_form.token.data)):
+                return redirect(url_for('room', token=join_form.token.data))
         rooms = user.rooms
     else:
         return redirect(url_for('log'))
-    return render_template('viewroom.html', user=cur_user(), form=form,add_room_form=form, rooms=rooms)
+    return render_template('viewroom.html', user=cur_user(), join_form=join_form,add_room_form=add_room_form, rooms=rooms)
 
 
-@app.route('/addroom', methods=['GET', 'POST'])
-def addroom():
+@app.route('/addroom/<string:token>', methods=['GET', 'POST'])
+def addroom(token):
     user = cur_user()
     if user:
-        form = AddRoomForm(csrf_enabled=False)
-        token = form.token.data
-        room = Room(token=token, capitan_id=user.id)
-        if form.validate_on_submit():
-            for i in range(1, 7):
-                room.Color.append(Color.query.filter_by(id=str(i)).first())
-            db.session.add(room)
-            db.session.commit()
-            user.rooms.append(room)
-            #room.color_user = str(user.id) + ',1'
-            db.session.commit()
+        pass
     else:
         return redirect(url_for('log'))
-    return render_template('addroom.html', user=cur_user(), token=token, form=form)
+
+    return render_template('addroom.html', user=cur_user(), token=token)
 
 
 @app.route('/room/<string:token>', methods=['GET', 'POST'])
