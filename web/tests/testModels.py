@@ -30,3 +30,29 @@ class TestModelUser(unittest.TestCase):
         self.assertTrue(hasattr(self.user, "id"))
         self.assertTrue(hasattr(self.user, "login"))
         self.assertTrue(hasattr(self.user, "password"))
+
+    def test_video_class_should_need_fields(self):
+        self.assertTrue(hasattr(self.video, "id"))
+        self.assertTrue(hasattr(self.video, "title"))
+        self.assertTrue(hasattr(self.video, "path"))
+        self.assertTrue(hasattr(self.video, "date"))
+        self.assertTrue(hasattr(self.video, "user"))
+        self.assertTrue(hasattr(self.video, "views"))
+        self.assertTrue(hasattr(self.video, "marks"))
+        self.assertTrue(hasattr(self.video, "comments"))
+        self.assertTrue(hasattr(self.video, "viewers"))
+
+    def test_video_id_should_be_string(self):
+        self.assertTrue(self.video.id is not int)
+
+    def test_video_title_should_be_string(self):
+        self.assertTrue(self.video.id is not int)
+
+    def test_video_path_should_be_string(self):
+        self.assertTrue(self.video.id is not int)
+
+    def test_video_user_should_be_integer(self):
+        self.assertTrue(self.video.id is not str)
+
+    def test_video_views_should_be_integer(self):
+        self.assertTrue(self.video.id is not str)
