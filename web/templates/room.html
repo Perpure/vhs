@@ -2,8 +2,6 @@
 {% block content %}
 <h1>Комната {{room.token}}</h1>
 {% if room.capitan_id == user.id %}
-{% if room.color_user %}
-{% if loaded == False %}
 <form action="" method="post">
     {{Room_Form.hidden_tag()}}
     <a href="{{calibrate_url}}">{{ Room_Form.submit }}</a>
@@ -13,12 +11,10 @@
     <div class="Loader"><div> {{ image_form.image }} </div></div>
     <div id="Calibr"> {{ image_form.submit }} </div>
 </form>
-{%else%}
+{% if room.color_user %}
 <p><a href="{{result_url}}">result</a>
-{%endif%}
-{%else%}
-<p>Пригласите участников в комнату</p>
 {% endif %}
+<p>Пригласите участников в комнату</p>
 {% endif %}
 
 <hr>
