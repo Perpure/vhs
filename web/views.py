@@ -2,10 +2,9 @@ from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
     UserProfileForm, AddRoomForm, AddCommentForm, SearchingVideoForm
 from web.models import User, Video, Room, Color, Comment, Geotag
-from web.helper import read_image, read_video, cur_user, is_true_pixel, read_multi, calibrate_params
+from web.helper import read_image, read_video, cur_user, is_true_pixel, read_multi, calibrate_params, count_params
 from web.video_handler import save_video
 from config import basedir, ALLOWED_EXTENSIONS
-
 from flask import redirect, render_template, session, url_for, make_response, request, jsonify
 from werkzeug.utils import secure_filename
 from random import choice
@@ -117,9 +116,10 @@ def room(token):
     Room_Form = RoomForm()
     calibrate_url = None
     result_url = None
+    color = None
     if user:
         room = Room.query.filter_by(token=token).first()
-
+        room_map_url = token+'_map'
         if Room_Form.validate_on_submit():
             for i in range(len(room.color_user.split(';'))):
                 ID = room.color_user.split(';')[i].split(',')[0]
@@ -150,27 +150,40 @@ def room(token):
                 return render_template('room.html', room=room, user=cur_user(),
                                        calibrate_url=calibrate_url, users=users,
                                        image_form=UploadImageForm(csrf_enabled=False),
-                                       result_url=result_url, Room_Form=Room_Form, loaded=False)
+                                       result_url=result_url, Room_Form=Room_Form, loaded=False,
+                                       room_map=room_map_url)
 
             file = request.files['image']
             if file.filename == '':
                 return render_template('room.html', room=room, user=cur_user(),
                                        calibrate_url=calibrate_url, users=users,
                                        image_form=UploadImageForm(csrf_enabled=False),
-                                       result_url=result_url, Room_Form=Room_Form, loaded=False)
+                                       result_url=result_url, Room_Form=Room_Form, loaded=False,
+                                       room_map=room_map_url)
 
             if file and allowed_image(file.filename):
                 file.save(basedir + '/images/' + room.token + '.' + file.filename.split('.')[-1].lower())
+                image = Image.open(basedir + url_for('get_multi', pid=token))
+                room_map = Image.new('RGB', (image.size[0], image.size[1]), (255, 255, 255))
+                room_map.save(basedir + '/images/' + room.token + '_map.jpg')
+                for member in users[1:]:
+                    colors = room.color_user.split(';')
+                    for i in range(len(colors)):
+                        if colors[i].split(',')[0] == str(member.id):
+                            color = Color.query.filter_by(id=colors[i].split(',')[1]).first().color
+                            print(color)
+                    count_params(room, color, member)
                 return render_template('room.html', room=room, user=cur_user(),
                                        calibrate_url=calibrate_url, users=users,
                                        image_form=image_form, result_url=result_url,
-                                       Room_Form=Room_Form, loaded=True)
+                                       Room_Form=Room_Form, loaded=True, room_map=room_map_url)
 
     else:
         return redirect(url_for('log'))
     return render_template('room.html', room=room, user=cur_user(),
                            calibrate_url=calibrate_url, users=users,
-                           image_form=image_form, result_url=result_url, Room_Form=Room_Form, loaded=False)
+                           image_form=image_form, result_url=result_url, Room_Form=Room_Form, loaded=False,
+                           room_map=room_map_url)
 
 def allowed_image(filename):
     return ('.' in filename and
