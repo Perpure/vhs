@@ -46,7 +46,17 @@ input[type="submit"]
     border-bottom:2px solid #ffb366;
     font-weight:bold;
 }
-
+button.result
+{
+    height:40px;
+    padding:10px;
+    padding-top:8px;
+    background-color:#f0cb8e;
+    transition:0.5s;
+    border:none;
+    border-bottom:2px solid #ffb366;
+    font-weight:bold;
+}
 input[type="file"]
 {
     opacity:0;
