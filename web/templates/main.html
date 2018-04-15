@@ -12,7 +12,7 @@
 </form>
 
 {% for item in items %}
-    <div class="video"><img src="{{url_for('get_image', pid=item.id)}}" alt="" class="preview"><div class="videoTxt"> <a href="play/{{item.id}}" class="Link"><p class="videoName">{{item.title}}</p></a> <p class="videoView">{{item.views}} просмотров</p></div> </div>
+    <a href="play/{{item.id}}" class="Link"><div class="video"><img src="{{url_for('get_image', pid=item.id)}}" alt="" class="preview"><div class="videoTxt"> <p class="videoName">{{item.title}}</p></a> <p class="videoView">{{item.views}} просмотров</p></div> </div>
 {% endfor %}
 
 

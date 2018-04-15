@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Карта видео</h1>
+    <br>
+    <div id="videos_map" align="center"></div>
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+    <script>var videos = []</script>
+    {% for video in videos %}
+        <script>
+            var video = {'title': '{{video.title}}',
+                        'preview': '/images/{{video.id}}/preview.png',
+                        'link': '/play/{{video.id}}',
+                        'latitude': {{video.latitude}},
+                        'longitude': {{video.longitude}} };
+            videos.push(video);
+        </script>
+    {% endfor %}
+    <script src="{{ url_for('static', filename='videos_map.js') }}"></script>
+
+{% endblock %}
