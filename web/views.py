@@ -382,7 +382,7 @@ def videos_map():
     user = cur_user()
 
     for video in Video.get():
-        if video.latitude:
+        if video.geotags:
             videos_with_coords.append(video)
 
     return render_template('videos_map.html', user=user, videos=videos_with_coords)

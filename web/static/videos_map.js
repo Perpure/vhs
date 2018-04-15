@@ -27,17 +27,24 @@ function init () {
 function add_geotags(map) {
 
     for (var i in videos) {
-        var geotag = new ymaps.Placemark([videos[i]['latitude'], videos[i]['longitude']],
-        {
-            title: videos[i]['title'],
-            preview: videos[i]['preview'],
-            link: videos[i]['link']
-        },
-        {
-            balloonContentLayout: BalloonLayout
-        });
+        for (var j in videos[i]['geotags']) {
 
-        map.geoObjects.add(geotag);
+            var gt = videos[i]['geotags'][j];
+            console.log(gt);
+
+            var geotag = new ymaps.Placemark([gt[0], gt[1]],
+            {
+                title: videos[i]['title'],
+                preview: videos[i]['preview'],
+                link: videos[i]['link']
+            },
+            {
+                balloonContentLayout: BalloonLayout
+            });
+
+            map.geoObjects.add(geotag);
+
+        }
     }
 }
 
