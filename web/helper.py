@@ -37,8 +37,3 @@ def cur_user():
     return None
 
 
-class IsVideoViewed:
-    # костыль для просмотров, этот класс лучше не трогать
-    is_viewed = []
-    request = ""
-

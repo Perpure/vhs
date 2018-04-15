@@ -3,7 +3,7 @@ from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, UserProfileForm, SearchingVideoForm
 from web.models import User, Video, Room, Color
 from config import basedir
-from .helper import read_image, read_multi, read_video, cur_user, IsVideoViewed, is_true_pixel
+from .helper import read_image, read_multi, read_video, cur_user, is_true_pixel
 from werkzeug.utils import secure_filename
 from random import choice
 from string import ascii_letters
@@ -48,24 +48,8 @@ def get_image(pid):
 def main():
     form = SearchingVideoForm()
     if form.validate_on_submit():
-        IsVideoViewed.request = str(form.user_input.data)
-        return redirect(url_for('search_video'))
+        return render_template('main.html', form=form, user=cur_user(), items=Video.get(search=form.search.data))
     return render_template('main.html', form=form, user=cur_user(), items=Video.get())
-
-
-@app.route('/search_video', methods=['GET', 'POST'])
-def search_video():
-    video_list = Video.get()
-    qt = len(video_list)
-    items = video_list
-    req = IsVideoViewed.request
-    if req != '':
-        items = []
-        for item in video_list:
-            if str(req) in item.title:
-                items.append(item)
-        qt = len(items)
-    return render_template('search_video.html', user=cur_user, items=items, req=req, qt=qt)
 
 
 @app.route('/viewroom', methods=['GET', 'POST'])
