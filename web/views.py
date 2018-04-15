@@ -74,7 +74,7 @@ def viewroom():
 
     if user:
         join_form = JoinForm(csrf_enabled=False)
-        user.Action = ""
+        user.action = ""
         db.session.commit()
         add_room_form = AddRoomForm(csrf_enabled=False)
         if add_room_form.validate_on_submit():
