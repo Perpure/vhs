@@ -21,11 +21,7 @@ pink = Color(color='#ff33cc')
 db.session.add(pink)  #6
 user = User("11111")
 user.save("11111111")
-room = Room(token='test')
 db.session.commit()
-
-
-
 user = User("22222")
 user.save("22222222")
 

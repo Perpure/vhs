@@ -159,7 +159,7 @@ def room(token):
                                        image_form=UploadImageForm(csrf_enabled=False),
                                        result_url=result_url, Room_Form=Room_Form, loaded=False)
 
-            if file and allowed_file(file.filename):
+            if file and allowed_image(file.filename):
                 file.save(basedir + '/images/' + room.token + '.' + file.filename.split('.')[-1].lower())
                 return render_template('room.html', room=room, user=cur_user(),
                                        calibrate_url=calibrate_url, users=users,
@@ -171,6 +171,10 @@ def room(token):
     return render_template('room.html', room=room, user=cur_user(),
                            calibrate_url=calibrate_url, users=users,
                            image_form=image_form, result_url=result_url, Room_Form=Room_Form, loaded=False)
+
+def allowed_image(filename):
+    return ('.' in filename and
+            filename.split('.')[-1].lower() in app.config["ALLOWED_IMAGE_EXTENSIONS"])
 
 def allowed_file(filename):
     return ('.' in filename and
