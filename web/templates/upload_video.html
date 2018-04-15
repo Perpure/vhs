@@ -12,7 +12,20 @@
             {% endfor %}
         {% endif %}
         <div> {{ form.video.label }} </div>
-        <div> {{ form.video }} </div>
+        <p>(Разрешённые видео форматы
+        {% for format in formats %}
+            .{{format}}
+        {% endfor %}
+        )</p>
+        <div class="Loader"><div> {{ form.video }} </div></div>
+        <div> {{ form.geotag_is_needed.label }} {{ form.geotag_is_needed }}</div>
+        <div> {{ form.geotag_data }}</div>
+        <div id="map"></div>
+        <br>
+        <div style="color: red;"> {{ error }} </div>
         <div> {{ form.submit }} </div>
     </form>
+
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+    <script src="{{ url_for('static', filename='map.js') }}"></script>
 {% endblock %}

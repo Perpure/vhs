@@ -15,11 +15,11 @@
         window.getSelection().removeAllRanges();
         range.selectNode(token);
         window.getSelection().addRange(range);
-        try { 
-            document.execCommand('copy'); 
-        } catch(err) { 
-            console.log('Can`t copy, boss'); 
-        } 
+        try {
+            document.execCommand('copy');
+        } catch(err) {
+            console.log('Can`t copy, boss');
+        }
         window.getSelection().removeAllRanges();
     });
 
@@ -30,11 +30,11 @@
         window.getSelection().removeAllRanges();
         range.selectNode(token);
         window.getSelection().addRange(range);
-        try { 
-            document.execCommand('copy'); 
-        } catch(err) { 
-            console.log('Can`t copy, boss'); 
-        } 
+        try {
+            document.execCommand('copy');
+        } catch(err) {
+            console.log('Can`t copy, boss');
+        }
         window.getSelection().removeAllRanges();
         token.innerHTML=link;
     });

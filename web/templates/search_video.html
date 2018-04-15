@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div>По запросу "{{ req }}" найдено {{ qt }} видео:</div>
+
+<p></p>
+
+{% for item in items %}
+    <div class="video"><img src="{{url_for('get_image', pid=item.id)}}" alt="" class="preview"><div class="videoTxt"> <a href="play/{{item.id}}" class="Link"><p class="videoName">{{item.title}}</p></a> <p class="videoView">{{item.views}} просмотров</p></div> </div>
+{% endfor %}
+
+{% endblock %}
