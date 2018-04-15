@@ -88,6 +88,12 @@ class UserProfileForm(FlaskForm):
     submit_changes = SubmitField("Сохранить")
 
 
+class SearchingVideoForm(FlaskForm):
+    """Форма поиска видео"""
+    user_input = StringField("", validators=[Length(1)])
+    submit_search = SubmitField("Поиск")
+
+
 class AddCommentForm(FlaskForm):
     class Meta:
         csrf = False

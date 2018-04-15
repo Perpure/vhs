@@ -1,7 +1,7 @@
 from flask import redirect, render_template, session, url_for, make_response, request, jsonify
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
-    UserProfileForm, AddRoomForm, AddCommentForm
+    UserProfileForm, AddRoomForm, AddCommentForm, SearchingVideoForm
 from web.models import User, Video, Room, Color, Comment
 from config import basedir
 from .helper import read_image, read_video, cur_user, is_true_pixel, read_multi, calibrate_params
@@ -54,7 +54,26 @@ def get_image(pid):
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    return render_template('main.html', user=cur_user(), items=Video.get())
+    form = SearchingVideoForm()
+    if form.validate_on_submit():
+        IsVideoViewed.request = str(form.user_input.data)
+        return redirect(url_for('search_video'))
+    return render_template('main.html', form=form, user=cur_user(), items=Video.get())
+
+
+@app.route('/search_video', methods=['GET', 'POST'])
+def search_video():
+    video_list = Video.get()
+    qt = len(video_list)
+    items = video_list
+    req = IsVideoViewed.request
+    if req != '':
+        items = []
+        for item in video_list:
+            if str(req) in item.title:
+                items.append(item)
+        qt = len(items)
+    return render_template('search_video.html', user=cur_user, items=items, req=req, qt=qt)
 
 
 @app.route('/viewroom', methods=['GET', 'POST'])
@@ -105,7 +124,6 @@ def room(token):
     Room_Form = RoomForm()
     calibrate_url = None
     result_url = None
-
     if user:
         room = Room.query.filter_by(token=token).first()
 
@@ -161,7 +179,6 @@ def room(token):
     return render_template('room.html', room=room, user=cur_user(),
                            calibrate_url=calibrate_url, users=users,
                            image_form=image_form, result_url=result_url, Room_Form=Room_Form, loaded=False)
-
 
 def allowed_file(filename):
     return ('.' in filename and
@@ -251,7 +268,6 @@ def result(token, color):
     w, h = calibrate_params(firstx, firsty, lastx, lasty, rezolutionx, rezolutiony)
     k = int((width/w)/(sourcex/rezolutionx)*100)
     return render_template('rezult.html', pid='1', top=-(firsty/height)*sourcey, left=-(firstx/width)*sourcex, width=k)
-
 
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():
