@@ -56,7 +56,15 @@ def get_image(pid):
 def main():
     form = SearchingVideoForm()
     if form.validate_on_submit():
-        return render_template('main.html', form=form, user=cur_user(), items=Video.get(search=form.search.data))
+        sort = ""
+
+        if form.date.data: sort += "date"
+        if form.views.data: sort += "views"
+        if form.search.data:
+            return render_template('main.html', form=form, user=cur_user(), items=Video.get(search=form.search.data, sort=sort))
+
+        return render_template('main.html', form=form, user=cur_user(), items=Video.get(sort=sort))
+
     return render_template('main.html', form=form, user=cur_user(), items=Video.get())
 
 
