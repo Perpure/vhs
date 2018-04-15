@@ -81,7 +81,12 @@ def viewroom():
             user.rooms.append(room)
             db.session.commit()
             return redirect(url_for('addroom',  token=add_room_form.token.data))
-
+        else :
+            join_form = JoinForm(csrf_enabled=False)
+            user.action = ""
+            join_form.token.data = " "
+            return render_template('viewroom.html', user=cur_user(), join_form=join_form, add_room_form=add_room_form,
+                                   rooms=user.rooms)
 
         if join_form.validate_on_submit():
             if Room.query.filter_by(token=str(join_form.token.data)):
