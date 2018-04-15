@@ -1,25 +1,19 @@
-from flask import redirect, render_template, session, url_for, make_response, request, jsonify
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
     UserProfileForm, AddRoomForm, AddCommentForm, SearchingVideoForm
-from web.models import User, Video, Room, Color, Comment
-from config import basedir
-from .helper import read_image, read_video, cur_user, is_true_pixel, read_multi, calibrate_params
+from web.models import User, Video, Room, Color, Comment, Geotag
+from web.helper import read_image, read_video, cur_user, is_true_pixel, read_multi, calibrate_params
+from web.video_handler import save_video
+from config import basedir, ALLOWED_EXTENSIONS
+
+from flask import redirect, render_template, session, url_for, make_response, request, jsonify
 from werkzeug.utils import secure_filename
 from random import choice
 from string import ascii_letters
 from werkzeug.exceptions import Aborter
 from functools import wraps
 from PIL import Image, ImageDraw
-from config import ALLOWED_EXTENSIONS
 import os
-
-from web import app, db
-from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, UserProfileForm, AddCommentForm, AddRoomForm
-from web.models import User, Video, Room, Color, Comment
-from web.helper import read_image, read_multi, read_video, cur_user, is_true_pixel
-from web.video_handler import save_video
-from config import basedir
 
 def requiresauth(f):
     @wraps(f)
@@ -200,28 +194,26 @@ def upload():
     error = ""
 
     if form.validate_on_submit():
-        try:
-            if 'video' not in request.files:
-                return redirect(request.url)
+        if 'video' not in request.files:
+            return redirect(request.url)
 
-            file = request.files['video']
+        file = request.files['video']
 
-            if file.filename == '':
-                return redirect(request.url)
+        if file.filename == '':
+            return redirect(request.url)
 
-            if file and allowed_file(file.filename):
-                video = save_video(file, form.title.data)
+        if file and allowed_file(file.filename):
+            video = save_video(file, form.title.data)
 
-                if form.geotag_is_needed.data:
-                    coords = form.geotag_data.data.split(',')
-                    video.add_geotag(coords)
-                return redirect(request.url)
-        except:
-            error = "Произошла ошибка при загрузке видео. Пожалуйста, повторите попытку"
-        finally:
+            if form.geotag_is_needed.data:
+                coords = form.geotag_data.data.split(',')
+                gt = Geotag(*coords)
+                gt.save(video)
+
             return redirect(url_for("main"))
 
-    return render_template('upload_video.html', form=form, user=cur_user(), error=error, formats=ALLOWED_EXTENSIONS)
+    return render_template('upload_video.html', form=form, user=cur_user(), formats=ALLOWED_EXTENSIONS)
+    
 
 
 @app.route('/result/<string:token>/<string:color>', methods=['GET', 'POST'])
@@ -367,7 +359,7 @@ def play(vid):
     if not video:
         abort = Aborter() 
         return abort(404)
-
+    
     user = cur_user()
     form = AddCommentForm()
 
