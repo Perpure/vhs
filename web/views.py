@@ -115,7 +115,6 @@ def room(token):
     Room_Form = RoomForm()
     calibrate_url = None
     result_url = None
-    print(token)
     if user:
         room = Room.query.filter_by(token=token).first()
 
