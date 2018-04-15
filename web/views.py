@@ -112,7 +112,7 @@ def room(token):
         if Room_Form.validate_on_submit():
             for i in range(len(room.color_user.split(';'))):
                 ID = room.color_user.split(';')[i].split(',')[0]
-                User.query.filter_by(id=ID).first().Action = "calibrate"
+                User.query.filter_by(id=ID).first().action = "calibrate"
             db.session.commit()
 
         if not ((room in user.rooms) and (room in user.room_capitan)):
@@ -171,7 +171,7 @@ def allowed_file(filename):
 @app.route('/calibrate/<string:color>', methods=['GET', 'POST'])
 def calibrate(color):
     user = cur_user()
-    user.Action = ""
+    user.action = ""
     db.session.commit()
     return render_template('color.html', color=color)
 
@@ -196,21 +196,19 @@ def upload():
             if file.filename == '':
                 return redirect(request.url)
 
-            if form.geotag_data.data != "":
-                coords = form.geotag_data.data.split(',')
-            else:
-                coords = None
-
             if file and allowed_file(file.filename):
-                save_video(file, form.title.data)
+                video = save_video(file, form.title.data)
 
+                if form.geotag_is_needed.data:
+                    coords = form.geotag_data.data.split(',')
+                    video.add_geotag(coords)
                 return redirect(request.url)
         except:
             error = "Произошла ошибка при загрузке видео. Пожалуйста, повторите попытку"
         finally:
             return redirect(url_for("main"))
 
-    return render_template('upload_video.html', form=form, user=cur_user(), error=error, formats = ALLOWED_EXTENSIONS)
+    return render_template('upload_video.html', form=form, user=cur_user(), error=error, formats=ALLOWED_EXTENSIONS)
 
 
 @app.route('/result/<string:token>/<string:color>', methods=['GET', 'POST'])
@@ -347,7 +345,7 @@ def askAct():
     action = ""
     if cur_user():
         user = cur_user()
-        action = user.Action
+        action = user.action
     return action
 
 
@@ -369,6 +367,18 @@ def play(vid):
         comment.save()
 
     return render_template('play.html', user=user, vid=vid, video=video, form=form)
+
+
+@app.route('/video/map', methods=["GET"])
+def videos_map():
+    videos_with_coords = []
+    user = cur_user()
+
+    for video in Video.get():
+        if video.latitude:
+            videos_with_coords.append(video)
+
+    return render_template('videos_map.html', user=user, videos=videos_with_coords)
 
 
 @app.errorhandler(403)

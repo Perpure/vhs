@@ -56,11 +56,14 @@ class Video(db.Model):
     """Класс описывающий модель Видео"""
     __tablename__ = 'Video'
     id = db.Column(db.String(32), primary_key=True)
-    title = db.Column(db.String(140))
+    title = db.Column(db.String(140), nullable=False)
     path = db.Column(db.String(256), nullable=False)
-    date = db.Column(db.DateTime)
-    user = db.Column(db.Integer())
-    views = db.Column(db.Integer())
+    date = db.Column(db.DateTime, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
+
+    longitude = db.Column(db.Float(), nullable=True)
+    latitude = db.Column(db.Float(), nullable=True)
+    
 
     marks = db.relationship('Mark', 
                     backref='video', 
@@ -74,16 +77,19 @@ class Video(db.Model):
                     secondary=Views,
                     backref='views', 
                     lazy='joined')
+    
+    geotags = db.relationship("Geotag", 
+                    backref="video",
+                    lazy="joined")
 
     def __init__(self, title):
         self.title = title
-        self.views = 0
 
     def save(self, hash, user):
         self.date = datetime.now(tz=None)
         self.id = hashlib.md5((hash + self.date.isoformat()).encode("utf-8")).hexdigest()
         self.path = os.path.join(app.config['VIDEO_SAVE_PATH'], self.id)
-        self.user = user
+        self.user_id = user.id
 
         db.session.add(self)
         db.session.commit()
@@ -92,7 +98,6 @@ class Video(db.Model):
 
     def add_viewer(self, user):
         self.viewers.append(user)
-        self.views += 1
         
         db.session.add(self)
         db.session.commit()
@@ -119,6 +124,33 @@ class Video(db.Model):
 
         return videos
 
+    def add_geotag(self, coords):
+        self.latitude = coords[0]
+        self.longitude = coords[1]
+
+        db.session.add(self)
+        db.session.commit()
+
+
+class Geotag(db.Model):
+    __tablename__ = "Geotag"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    longitude = db.Column(db.Float, nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+    date = db.Column(db.DateTime, nullable=False)
+    video_id = db.Column(db.String(32), db.ForeignKey("Video.id"), nullable=False)
+    
+    def __init__(self, longitude, latitude):
+        self.longitude = longitude
+        self.latitude = latitude
+
+    def save(self, video):
+        self.date = datetime.now()
+        self.video_id = video.id
+        
+        db.session.add(self)
+        db.session.commit()
+
 
 class User(db.Model):
     __tablename__ = 'User'
@@ -131,18 +163,22 @@ class User(db.Model):
     device_width = db.Column(db.Integer)
     device_height = db.Column(db.Integer)
 
+    videos = db.relationship("Video", 
+                            backref="user",
+                            lazy="joined")
+    
     marks = db.relationship('Mark',
                             backref='user',
                             lazy="joined")
 
     comments = db.relationship('Comment',
-                               backref='user',
-                               lazy='joined')
+                            backref='user',
+                            lazy='joined')
 
     rooms = db.relationship("Room",
-                secondary = UserToRoom,
-                backref = "user",
-                lazy = 'joined')
+                            secondary = UserToRoom,
+                            backref = "user",
+                            lazy = "joined")
     
     room_capitan = db.relationship("Room", backref='captain')
 

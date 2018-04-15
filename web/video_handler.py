@@ -33,12 +33,13 @@ def save_video(video_file, title):
     video_file.seek(0)
 
     video = Video(title)
-    directory = video.save(video_hash, cur_user().id)
+    directory = video.save(video_hash, cur_user())
     makedirs(directory)
     video_path = join_path(directory, 'video.' + ext)
     video_file.save(video_path)
 
     prepare_video(video.id, ext)
+    return video
 
 
 def prepare_video(video_id, ext):
