@@ -159,7 +159,7 @@ class User(db.Model):
     password = db.Column(db.String(64), nullable=False)
     name = db.Column(db.String(32), nullable=False)
     channel_info = db.Column(db.String(64))
-    Action = db.Column(db.String(64))
+    action = db.Column(db.String(64))
     device_width = db.Column(db.Integer)
     device_height = db.Column(db.Integer)
 

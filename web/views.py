@@ -56,24 +56,16 @@ def get_image(pid):
 def main():
     form = SearchingVideoForm()
     if form.validate_on_submit():
-        IsVideoViewed.request = str(form.user_input.data)
-        return redirect(url_for('search_video'))
+        sort = ""
+
+        if form.date.data: sort += "date"
+        if form.views.data: sort += "views"
+        if form.search.data:
+            return render_template('main.html', form=form, user=cur_user(), items=Video.get(search=form.search.data, sort=sort))
+
+        return render_template('main.html', form=form, user=cur_user(), items=Video.get(sort=sort))
+
     return render_template('main.html', form=form, user=cur_user(), items=Video.get())
-
-
-@app.route('/search_video', methods=['GET', 'POST'])
-def search_video():
-    video_list = Video.get()
-    qt = len(video_list)
-    items = video_list
-    req = IsVideoViewed.request
-    if req != '':
-        items = []
-        for item in video_list:
-            if str(req) in item.title:
-                items.append(item)
-        qt = len(items)
-    return render_template('search_video.html', user=cur_user, items=items, req=req, qt=qt)
 
 
 @app.route('/viewroom', methods=['GET', 'POST'])
@@ -82,7 +74,7 @@ def viewroom():
 
     if user:
         join_form = JoinForm(csrf_enabled=False)
-        user.Action = ""
+        user.action = ""
         db.session.commit()
         add_room_form = AddRoomForm(csrf_enabled=False)
         if add_room_form.validate_on_submit():
@@ -124,6 +116,7 @@ def room(token):
     Room_Form = RoomForm()
     calibrate_url = None
     result_url = None
+
     if user:
         room = Room.query.filter_by(token=token).first()
 
@@ -141,7 +134,6 @@ def room(token):
             else:
                 room.color_user = str(user.id) + ',1'
             db.session.commit()
-
         if room.color_user is not None:
             colors = room.color_user.split(';')
             for i in range(len(colors)):

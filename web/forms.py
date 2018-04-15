@@ -90,8 +90,10 @@ class UserProfileForm(FlaskForm):
 
 class SearchingVideoForm(FlaskForm):
     """Форма поиска видео"""
-    user_input = StringField("", validators=[Length(1)])
-    submit_search = SubmitField("Поиск")
+    search = StringField("Название")
+    date = BooleanField()
+    views = BooleanField()
+    submit = SubmitField("Поиск")
 
 
 class AddCommentForm(FlaskForm):
