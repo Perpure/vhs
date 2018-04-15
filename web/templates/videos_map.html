@@ -7,11 +7,16 @@
     <script>var videos = []</script>
     {% for video in videos %}
         <script>
+            var geotags = [];
+            {% for geotag in video.geotags %}
+                geotags.push([{{geotag.longitude}}, {{geotag.latitude}}]);
+            {% endfor %}
+
             var video = {'title': '{{video.title}}',
                         'preview': '/images/{{video.id}}/preview.png',
                         'link': '/play/{{video.id}}',
-                        'latitude': {{video.latitude}},
-                        'longitude': {{video.longitude}} };
+                         'geotags': geotags
+                         };
             videos.push(video);
         </script>
     {% endfor %}
