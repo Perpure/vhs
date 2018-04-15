@@ -88,7 +88,6 @@ class UserProfileForm(FlaskForm):
     submit_changes = SubmitField("Сохранить")
 
 
-
 class SearchingVideoForm(FlaskForm):
     """Форма поиска видео"""
     search = StringField("Название")
@@ -109,4 +108,3 @@ class AddCommentForm(FlaskForm):
 class AddRoomForm(FlaskForm):
     token = StringField("Название комнаты", validators=[DataRequired(), Length(5),exist_token])
     submit = SubmitField("Создать")
-

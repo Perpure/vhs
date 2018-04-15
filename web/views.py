@@ -172,7 +172,6 @@ def room(token):
                            calibrate_url=calibrate_url, users=users,
                            image_form=image_form, result_url=result_url, Room_Form=Room_Form, loaded=False)
 
-
 def allowed_file(filename):
     return ('.' in filename and
             filename.split('.')[-1].lower() in app.config["ALLOWED_EXTENSIONS"])
@@ -262,7 +261,6 @@ def result(token, color):
     k = int((width/w)/(sourcex/rezolutionx)*100)
     return render_template('rezult.html', pid='1', top=-(firsty/height)*sourcey, left=-(firstx/width)*sourcex, width=k)
 
-
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():
     """
@@ -349,7 +347,6 @@ def tellRes():
             height = request.json['height']
             user.update_resolution(width=width, height=height)
             return jsonify(width=width, height=height)
-
 
 @app.route('/askAct', methods=['GET', 'POST'])
 def askAct():
