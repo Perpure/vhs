@@ -4,22 +4,20 @@
     <br>
     <div id="videos_map" align="center"></div>
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
-    <script>var videos = []</script>
+    <script>
+    var videos = []
     {% for video in videos %}
-        <script>
-            var geotags = [];
-            {% for geotag in video.geotags %}
-                geotags.push([{{geotag.longitude}}, {{geotag.latitude}}]);
-            {% endfor %}
-
-            var video = {'title': '{{video.title}}',
-                        'preview': '/images/{{video.id}}/preview.png',
-                        'link': '/play/{{video.id}}',
-                         'geotags': geotags
-                         };
-            videos.push(video);
-        </script>
+    videos.push({'title': '{{ video.title }}',
+                'preview': '/images/{{ video.id }}/preview.png',
+                'link': '/play/{{ video.id }}',
+                'geotags':[ 
+                {% for geotag in video.geotags %}
+                    [{{ geotag.longitude }}, {{ geotag.latitude }}],
+                {% endfor %}
+                ]
+                })
     {% endfor %}
+    </script>
     <script src="{{ url_for('static', filename='videos_map.js') }}"></script>
 
 {% endblock %}
