@@ -6,14 +6,9 @@ var BalloonLayout;
 
 
 function init () {
-    if (typeof ymaps.geolocation.latitude != 'undefined')  {
-        lat = ymaps.geolocation.latitude
-        long = ymaps.geolocation.longitude
-    }
-    else {
-        lat = 55.76;
-        long = 37.64;
-    }
+    typeof ymaps.geolocation.latitude === 'undefined' ? 
+                (lat = 55.76, long = 37.64) : 
+                (lat = ymaps.geolocation.latitude, long = ymaps.geolocation.longitude);
     
     var inputSearch = new ymaps.control.SearchControl({
         options: {
@@ -32,28 +27,25 @@ function init () {
 
 
 function add_geotags(map) {
-    var myClusterer = new ymaps.Clusterer();
+    var myClusterer = new ymaps.Clusterer({
+        clusterDisableClickZoom: true,    
+    });
 
     for (var i in videos) {
         for (var j in videos[i]['geotags']) {
-
             var gt = videos[i]['geotags'][j];
 
             var geotag = new ymaps.Placemark([gt[0], gt[1]],
             {
-                balloonContent: 
-                    '<div>' +
-                        '<h3>' + videos[i]['title'] + '</h3>' +
+                balloonContentHeader: videos[i]['title'],
+                balloonContentBody: 
                         '<a href="' + videos[i]['link'] + '">' +
                             '<img width="200px" height="200px"' +
                                 'src="' + videos[i]['preview'] + '" href="' + videos[i]['link'] + '">' +
-                        '</a>' +
-                    '</div>',
+                        '</a>',
                 clusterCaption: videos[i]['title']
             });
-
             myClusterer.add(geotag);
-
         }
     }
     map.geoObjects.add(myClusterer);
