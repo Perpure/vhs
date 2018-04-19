@@ -20,7 +20,7 @@ class TestModelUser(unittest.TestCase):
         self.user = User('TestUser')
         self.user.save('testpassword')
         self.video = Video('TestVideo')
-        self.video.save(hash='Teststring', user=self.user.id)
+        self.video.save(hash='Teststring', user=self.user)
 
     def tearDown(self):
         db.session.remove()
@@ -37,7 +37,7 @@ class TestModelUser(unittest.TestCase):
         self.assertTrue(hasattr(self.video, "path"))
         self.assertTrue(hasattr(self.video, "date"))
         self.assertTrue(hasattr(self.video, "user"))
-        self.assertTrue(hasattr(self.video, "views"))
+        self.assertTrue(hasattr(self.video, "geotags"))
         self.assertTrue(hasattr(self.video, "marks"))
         self.assertTrue(hasattr(self.video, "comments"))
         self.assertTrue(hasattr(self.video, "viewers"))
