@@ -1,7 +1,8 @@
 from web import app, db
 from web.helper import read_image, read_video, cur_user, is_true_pixel, read_multi, calibrate_params
+from web.models import Video
 
-from flask import url_for, redirect, make_response, request
+from flask import url_for, redirect, make_response, request, jsonify
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
@@ -29,14 +30,6 @@ def get_image(pid):
         'Content-Disposition', 'attachment', filename='%s.jpg' % pid)
     return response
 
-@app.route('/askAct', methods=['GET', 'POST'])
-def askAct():
-    action = ""
-    if cur_user():
-        user = cur_user()
-        action = user.action
-    return action
-
 @app.route('/video/<string:vid>/video.mp4')
 def get_video(vid):
     video_binary = read_video(vid)
@@ -45,6 +38,23 @@ def get_video(vid):
     response.headers.set(
         'Content-Disposition', 'attachment', filename='video/%s/video.mp4' % vid)
     return response
+
+@app.route('/video/data')
+def get_video_data():
+    videos = Video.get()
+
+    return jsonify([{"title" : video.title,
+                     "link" : url_for("play", vid=video.id),
+                     "preview" : url_for("get_image", pid=video.id)} for video in videos])
+    
+
+@app.route('/askAct', methods=['GET', 'POST'])
+def askAct():
+    action = ""
+    if cur_user():
+        user = cur_user()
+        action = user.action
+    return action
 
 
 @app.route('/tellRes', methods=['GET', 'POST'])
