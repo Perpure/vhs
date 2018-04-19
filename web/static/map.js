@@ -8,7 +8,8 @@ var height = 200
 function init () {
     map = new ymaps.Map("map", {
             center: [x, y],
-            zoom: 7
+            zoom: 7,
+            controls: []
     });
     geotag = new ymaps.Placemark([x, y],
         {hintContent: 'Выберите геотег для видео'},
