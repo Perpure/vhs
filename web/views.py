@@ -391,6 +391,17 @@ def videos_map():
     return render_template('videos_map.html', user=user, videos=videos_with_coords)
 
 
+@app.route('/views_story', methods=['GET', 'POST'])
+def views_story():
+    videos = Video.get()
+    items = []
+    for video in videos:
+        if cur_user() in video.viewers:
+            items.append(video)
+
+    return render_template('views_story.html', user=cur_user(), items=items)
+
+
 @app.errorhandler(403)
 def forbidden(e):
     return render_template('403.html'), 403
