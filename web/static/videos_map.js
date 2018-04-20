@@ -5,6 +5,8 @@ var height = '700px';
 
 
 function add_geotags(videos) {
+    map.geoObjects.removeAll();
+    
     var myClusterer = new ymaps.Clusterer({
         clusterDisableClickZoom: true,    
     });
@@ -41,20 +43,42 @@ ymaps.ready(function (videos) {
     
     var inputSearch = new ymaps.control.SearchControl({
         options: {
-            size: 'large'          
+            size: 'large',
+            noPopup : true,
+            noSuggestPanel : true,
+            noCentering : true, 
+            noPlacemark : true  
         }
     });    
     
     map = new ymaps.Map("videos_map", {
-            center: [lat, long],
-            zoom: 7,
-            maxZoom: 15,
-            controls: [inputSearch]
+            center : [lat, long],
+            zoom : 7,
+            maxZoom : 23,
+            minZoom : 23,
+            controls : [inputSearch]
     });
     
+
     fetch("/video/data").then(function(response){
         if(response.status == 200){
             response.json().then(add_geotags);
         }
     });
+
+    inputSearch.events.add('submit', function () {
+        fetch("/video/data/" + inputSearch.getRequestString()).then(function(response){
+            if(response.status == 200){
+                response.json().then(add_geotags);
+            }
+        });
+    });
+
+    inputSearch.events.add('clear', function () {
+        fetch("/video/data").then(function(response){
+            if(response.status == 200){
+                response.json().then(add_geotags);
+            }
+        });
+    });  
 });
