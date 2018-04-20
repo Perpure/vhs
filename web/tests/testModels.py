@@ -43,16 +43,13 @@ class TestModelUser(unittest.TestCase):
         self.assertTrue(hasattr(self.video, "viewers"))
 
     def test_video_id_should_be_string(self):
-        self.assertTrue(self.video.id is not int)
+        self.assertIsInstance(self.video.id, str)
 
     def test_video_title_should_be_string(self):
-        self.assertTrue(self.video.id is not int)
+        self.assertIsInstance(self.video.title, str)
 
     def test_video_path_should_be_string(self):
-        self.assertTrue(self.video.id is not int)
+        self.assertIsInstance(self.video.path, str)
 
-    def test_video_user_should_be_integer(self):
-        self.assertTrue(self.video.id is not str)
-
-    def test_video_views_should_be_integer(self):
-        self.assertTrue(self.video.id is not str)
+    def test_video_user_id_should_be_string(self):
+        self.assertIsInstance(self.video.user_id, int)
