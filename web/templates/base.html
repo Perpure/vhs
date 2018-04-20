@@ -30,6 +30,7 @@
         <a href="{{url_for('main')}}" class="Link" id="Home"><div class="menuBtn"><div class="menuTxt">Главная</div><img src="{{ url_for('static', filename='main.png') }}" class="menuImg" id="HomImg"></div></a>
         {%if user %}
         <a href="{{url_for('cabinet')}}" class="Link" id="My"><div class="menuBtn"><div class="menuTxt">Мой Канал</div><img src="{{ url_for('static', filename='channel.png') }}" class="menuImg"></div></a>
+        <a href="{{url_for('views_story')}}" class="Link" id="Views"><div class="menuBtn"><div class="menuTxt">История просмотров</div><img src="{{ url_for('static', filename='channel.png') }}" class="menuImg"></div></a>
         <a href="{{url_for('viewroom')}}" class="Link" id="Multi"><div class="menuBtn"><div class="menuTxt">Мультискрин</div><img src="{{ url_for('static', filename='multi.png') }}" class="menuImg"></div></a>
         <a href="{{url_for('upload')}}" class="Link" id="Load"><div class="menuBtn"><div class="menuTxt">Загрузить Видео</div><img src="{{ url_for('static', filename='load.png') }}" class="menuImg"></div></a>
         <a href="{{url_for('videos_map')}}" class="Link" id="Map"><div class="menuBtn"><div class="menuTxt">Карта</div><img src="{{ url_for('static', filename='map.png') }}" class="menuImg"></div></a>
