@@ -1,32 +1,10 @@
-var map, geotag;
+var map;
+var long, lat;
 var width = '100%';
 var height = '700px';
-var lat, long;
-var BalloonLayout;
 
 
-function init () {
-    typeof ymaps.geolocation.latitude === 'undefined' ? 
-                (lat = 55.76, long = 37.64) : 
-                (lat = ymaps.geolocation.latitude, long = ymaps.geolocation.longitude);
-    
-    var inputSearch = new ymaps.control.SearchControl({
-        options: {
-            size: 'large'          
-        }
-    });    
-    
-    map = new ymaps.Map("videos_map", {
-            center: [lat, long],
-            zoom: 7,
-            controls: [inputSearch]
-    });
-
-    add_geotags(map);
-}
-
-
-function add_geotags(map) {
+function add_geotags(videos) {
     var myClusterer = new ymaps.Clusterer({
         clusterDisableClickZoom: true,    
     });
@@ -48,12 +26,35 @@ function add_geotags(map) {
             myClusterer.add(geotag);
         }
     }
+
     map.geoObjects.add(myClusterer);
 }
 
 
-ymaps.ready(function () {
+ymaps.ready(function (videos) {
     $('#videos_map').css('width', width);
     $('#videos_map').css('height', height);
-    init();
+
+    typeof ymaps.geolocation.latitude === 'undefined' ? 
+                (lat = 55.76, long = 37.64) : 
+                (lat = ymaps.geolocation.latitude, long = ymaps.geolocation.longitude);
+    
+    var inputSearch = new ymaps.control.SearchControl({
+        options: {
+            size: 'large'          
+        }
+    });    
+    
+    map = new ymaps.Map("videos_map", {
+            center: [lat, long],
+            zoom: 7,
+            maxZoom: 15,
+            controls: [inputSearch]
+    });
+    
+    fetch("/video/data").then(function(response){
+        if(response.status == 200){
+            response.json().then(add_geotags);
+        }
+    });
 });

@@ -45,7 +45,17 @@ def get_video_data():
 
     return jsonify([{"title" : video.title,
                      "link" : url_for("play", vid=video.id),
-                     "preview" : url_for("get_image", pid=video.id)} for video in videos])
+                     "preview" : url_for("get_image", pid=video.id),
+                     "geotags" : [(gt.longitude , gt.latitude) for gt in video.geotags]} for video in videos])
+
+@app.route('/video/data/<string:search>')
+def get_video_data_search(search):
+    videos = Video.get(search=search)
+
+    return jsonify([{"title" : video.title,
+                     "link" : url_for("play", vid=video.id),
+                     "preview" : url_for("get_image", pid=video.id),
+                     "geotags" : [(gt.longitude , gt.latitude) for gt in video.geotags]} for video in videos])
     
 
 @app.route('/askAct', methods=['GET', 'POST'])
