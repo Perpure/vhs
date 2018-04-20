@@ -2,7 +2,7 @@ from web import app, db
 from web.helper import read_image, read_video, cur_user, is_true_pixel, read_multi, calibrate_params
 from web.models import Video
 
-from flask import url_for, redirect, make_response, request, jsonify
+from flask import url_for, redirect, make_response, request, jsonify, session
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
