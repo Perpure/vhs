@@ -4,7 +4,7 @@ from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, Upl
 from web.models import User, Video, Room, Color, Comment, Geotag
 from web.video_handler import save_video
 from config import basedir
-from web.helper import allowed_image, allowed_file, requiresauth, cur_user
+from web.helper import allowed_image, allowed_file, requiresauth, cur_user, is_true_pixel, calibrate_params
 
 from flask import redirect, render_template, session, url_for, make_response, request, jsonify
 from werkzeug.utils import secure_filename
