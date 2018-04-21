@@ -1,67 +1,84 @@
-var map, geotag;
+var map;
+var long, lat;
 var width = '100%';
 var height = '700px';
-var lat, long;
-var BalloonLayout;
 
 
-function init () {
-    if (typeof ymaps.geolocation.latitude != 'undefined')  {
-        lat = ymaps.geolocation.latitude
-        long = ymaps.geolocation.longitude
-    }
-    else {
-        lat = 55.76;
-        long = 37.64;
-    }
-
-    map = new ymaps.Map("videos_map", {
-            center: [lat, long],
-            zoom: 7
+function add_geotags(videos) {
+    map.geoObjects.removeAll();
+    
+    var myClusterer = new ymaps.Clusterer({
+        clusterDisableClickZoom: true,    
     });
-
-    add_geotags(map);
-}
-
-
-function add_geotags(map) {
 
     for (var i in videos) {
         for (var j in videos[i]['geotags']) {
-
             var gt = videos[i]['geotags'][j];
-            console.log(gt);
 
             var geotag = new ymaps.Placemark([gt[0], gt[1]],
             {
-                title: videos[i]['title'],
-                preview: videos[i]['preview'],
-                link: videos[i]['link']
-            },
-            {
-                balloonContentLayout: BalloonLayout
+                balloonContentHeader: videos[i]['title'],
+                balloonContentBody: 
+                        '<a href="' + videos[i]['link'] + '">' +
+                            '<img width="200px" height="200px"' +
+                                'src="' + videos[i]['preview'] + '" href="' + videos[i]['link'] + '">' +
+                        '</a>',
+                clusterCaption: videos[i]['title']
             });
-
-            map.geoObjects.add(geotag);
-
+            myClusterer.add(geotag);
         }
     }
+
+    map.geoObjects.add(myClusterer);
 }
 
 
-ymaps.ready(function () {
-    BalloonLayout = ymaps.templateLayoutFactory.createClass(
-        '<div>' +
-            '<h3>$[properties.title]</h3>' +
-            '<a href="$[properties.link]">' +
-                '<img width="200px" height="200px"' +
-                    'src="$[properties.preview]" href="$[properties.link]">' +
-            '</a>' +
-            '<a href="$[properties.link]"> Смотреть </a>' +
-        '</div>'
-    );
-
+ymaps.ready(function (videos) {
     $('#videos_map').css('width', width);
     $('#videos_map').css('height', height);
-    init();
+
+    typeof ymaps.geolocation.latitude === 'undefined' ? 
+                (lat = 55.76, long = 37.64) : 
+                (lat = ymaps.geolocation.latitude, long = ymaps.geolocation.longitude);
+    
+    var inputSearch = new ymaps.control.SearchControl({
+        options: {
+            size: 'large',
+            noPopup : true,
+            noSuggestPanel : true,
+            noCentering : true, 
+            noPlacemark : true  
+        }
+    });    
+    
+    map = new ymaps.Map("videos_map", {
+            center : [lat, long],
+            zoom : 7,
+            maxZoom : 23,
+            minZoom : 23,
+            controls : [inputSearch]
+    });
+    
+
+    fetch("/video/data").then(function(response){
+        if(response.status == 200){
+            response.json().then(add_geotags);
+        }
+    });
+
+    inputSearch.events.add('submit', function () {
+        fetch("/video/data/" + inputSearch.getRequestString()).then(function(response){
+            if(response.status == 200){
+                response.json().then(add_geotags);
+            }
+        });
+    });
+
+    inputSearch.events.add('clear', function () {
+        fetch("/video/data").then(function(response){
+            if(response.status == 200){
+                response.json().then(add_geotags);
+            }
+        });
+    });  
 });

@@ -20,6 +20,11 @@
         <div class="Loader"><div> {{ form.video }} </div></div>
         <div> {{ form.geotag_is_needed.label }} {{ form.geotag_is_needed }}</div>
         <div> {{ form.geotag_data }}</div>
+        {% if form.geotag_data.errors %}
+            {% for error in form.geotag_data.errors %}
+            <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
         <div id="map"></div>
         <br>
         <div style="color: red;"> {{ error }} </div>

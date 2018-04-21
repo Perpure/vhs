@@ -39,6 +39,13 @@ def match(form, field):
     if user and not user.check_pass(field.data):
         raise ValidationError("Неправильный пароль")
 
+def have_geodata(form, field):
+    if form.geotag_is_needed.data:
+        try:
+            [float(x) for x in field.data.split(',')]
+        except Exception:
+            raise ValidationError("Выставите геотег")
+
 
 class RegForm(FlaskForm):
     login_reg = StringField("Имя пользователя", validators=[Length(5, message='Логин слишком короткий'),
@@ -70,7 +77,7 @@ class UploadVideoForm(FlaskForm):
     title = StringField("Введите название видео", validators=[Length(3, message='Название слишком короткое')])
     video = FileField("Выберите файл")
     geotag_is_needed = BooleanField('Прикрепить геотег?')
-    geotag_data = HiddenField()
+    geotag_data = HiddenField(validators=[have_geodata])
     submit = SubmitField("Загрузить")
 
 
