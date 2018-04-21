@@ -21,10 +21,13 @@ def main():
     if form.validate_on_submit():
         sort = ""
 
-        if form.date.data: sort += "date"
-        if form.views.data: sort += "views"
+        if form.date.data:
+            sort += "date"
+        if form.views.data:
+            sort += "views"
         if form.search.data:
-            return render_template('main.html', form=form, user=cur_user(), items=Video.get(search=form.search.data, sort=sort))
+            return render_template('main.html', form=form, user=cur_user(), items=Video.get(search=form.search.data,
+                                                                                            sort=sort))
 
         return render_template('main.html', form=form, user=cur_user(), items=Video.get(sort=sort))
 
@@ -303,6 +306,17 @@ def videos_map():
             videos_with_coords.append(video)
 
     return render_template('videos_map.html', user=user, videos=videos_with_coords)
+
+
+@app.route('/views_story', methods=['GET', 'POST'])
+def views_story():
+    videos = Video.get()
+    items = []
+    for video in videos:
+        if cur_user() in video.viewers:
+            items.append(video)
+
+    return render_template('views_story.html', user=cur_user(), items=items)
 
 
 @app.errorhandler(403)
