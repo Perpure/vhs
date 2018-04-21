@@ -33,6 +33,7 @@ input
     border-bottom:2px solid #ffb366;
     margin-bottom:10px;
     padding-left:5px;
+    background-color:rgba(240, 203, 142,0.5);
 }
 
 input[type="submit"]
@@ -84,6 +85,7 @@ input[type="file"]:hover
   height: 100%;
   padding-bottom: 5px;
   vertical-align: top;
+  border-bottom:2px solid rgba(240, 203, 142,0.5);
 }
 .Logo,.Menu
 {
@@ -201,7 +203,6 @@ main
 .Content
 {
   width: 100%;
-  background-color: #F7E2C0;
   padding: 1.66%;
   margin-bottom: 15px;
 }
@@ -287,8 +288,9 @@ footer
 .Foot{
   width: 100%;
   padding: 1.66%;
-  background-color: #F7E2C0;
+  /*background-color: #F7E2C0;*/
   font-weight:bold;
+  text-align:center;
   /*background: linear-gradient(to bottom, #c8d5e6, #dbe7f0);*/
 }
 
@@ -296,6 +298,26 @@ footer
 {
    margin-bottom:10px;
    height:41px;
+   display:inline-block;
+   width:10%;
+}
+
+.footLine
+{
+  display:inline-block;
+  vertical-align:top;
+  margin-bottom:10px;
+  height:20px;
+  width:45%;
+  border-bottom:2px solid #ffb366;
+}
+
+.fLine
+{
+    align:center;
+    width:100%;
+    color:rgb(240, 203, 142);
+    height:2px;
 }
 
 .contImg
@@ -312,6 +334,7 @@ footer
     cursor:pointer;
     margin-right:9px;
 }
+
 
 .INP
 {
