@@ -20,7 +20,7 @@ class TestModelUser(unittest.TestCase):
         self.user = User('TestUser')
         self.user.save('testpassword')
         self.video = Video('TestVideo')
-        self.video.save(hash='Teststring', user=self.user.id)
+        self.video.save(hash='Teststring', user=self.user)
 
     def tearDown(self):
         db.session.remove()
@@ -37,22 +37,19 @@ class TestModelUser(unittest.TestCase):
         self.assertTrue(hasattr(self.video, "path"))
         self.assertTrue(hasattr(self.video, "date"))
         self.assertTrue(hasattr(self.video, "user"))
-        self.assertTrue(hasattr(self.video, "views"))
+        self.assertTrue(hasattr(self.video, "geotags"))
         self.assertTrue(hasattr(self.video, "marks"))
         self.assertTrue(hasattr(self.video, "comments"))
         self.assertTrue(hasattr(self.video, "viewers"))
 
     def test_video_id_should_be_string(self):
-        self.assertTrue(self.video.id is not int)
+        self.assertIsInstance(self.video.id, str)
 
     def test_video_title_should_be_string(self):
-        self.assertTrue(self.video.id is not int)
+        self.assertIsInstance(self.video.title, str)
 
     def test_video_path_should_be_string(self):
-        self.assertTrue(self.video.id is not int)
+        self.assertIsInstance(self.video.path, str)
 
-    def test_video_user_should_be_integer(self):
-        self.assertTrue(self.video.id is not str)
-
-    def test_video_views_should_be_integer(self):
-        self.assertTrue(self.video.id is not str)
+    def test_video_user_id_should_be_string(self):
+        self.assertIsInstance(self.video.user_id, int)

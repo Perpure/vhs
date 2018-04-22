@@ -22,6 +22,7 @@ Views = db.Table('Views', db.Model.metadata,
     db.Column('Video_id', db.String(32), db.ForeignKey('Video.id'))
 )
 
+
 class Comment(db.Model):
     __tablename__ = 'Comment'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -63,24 +64,14 @@ class Video(db.Model):
 
     longitude = db.Column(db.Float(), nullable=True)
     latitude = db.Column(db.Float(), nullable=True)
+
+    marks = db.relationship('Mark', backref='video', lazy=True)
+
+    comments = db.relationship('Comment', backref='video', lazy='joined')
+
+    viewers = db.relationship('User', secondary=Views, backref='views', lazy='joined')
     
-
-    marks = db.relationship('Mark', 
-                    backref='video', 
-                    lazy=True)
-
-    comments = db.relationship('Comment',
-                    backref='video', 
-                    lazy='joined')
-
-    viewers = db.relationship('User',
-                    secondary=Views,
-                    backref='views', 
-                    lazy='joined')
-    
-    geotags = db.relationship("Geotag", 
-                    backref="video",
-                    lazy="joined")
+    geotags = db.relationship("Geotag", backref="video", lazy="joined")
 
     def __init__(self, title):
         self.title = title
