@@ -2,7 +2,8 @@ from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
     UserProfileForm, AddRoomForm, AddCommentForm, SearchingVideoForm
 from web.models import User, Video, Room, Color, Comment, Geotag
-from web.helper import read_image, read_video, cur_user, is_true_pixel, read_multi, calibrate_params, count_params
+from web.helper import read_image, read_video, allowed_image, allowed_file, cur_user, is_true_pixel, \
+    read_multi, count_params, requiresauth
 from web.video_handler import save_video
 from config import basedir, ALLOWED_EXTENSIONS
 from flask import redirect, render_template, session, url_for, make_response, request, jsonify
@@ -10,39 +11,8 @@ from werkzeug.utils import secure_filename
 from random import choice
 from string import ascii_letters
 from werkzeug.exceptions import Aborter
-from functools import wraps
 from PIL import Image, ImageDraw
 import os
-
-def requiresauth(f):
-    @wraps(f)
-    def wrapped(*args, **kwargs):
-        if cur_user() is None:
-            abort = Aborter()
-            return abort(403)
-        return f(*args, **kwargs)
-
-    return wrapped
-
-
-@app.route('/images/<string:pid>.jpg')
-def get_multi(pid):
-    image_binary = read_multi(pid)
-    response = make_response(image_binary)
-    response.headers.set('Content-Type', 'image/jpeg')
-    response.headers.set(
-        'Content-Disposition', 'attachment', filename='%s.jpg' % pid)
-    return response
-
-
-@app.route('/images/<string:pid>/preview.png')
-def get_image(pid):
-    image_binary = read_image(pid)
-    response = make_response(image_binary)
-    response.headers.set('Content-Type', 'image/jpeg')
-    response.headers.set(
-        'Content-Disposition', 'attachment', filename='%s.jpg' % pid)
-    return response
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -63,53 +33,47 @@ def main():
 
     return render_template('main.html', form=form, user=cur_user(), items=Video.get())
 
-
+@requiresauth
 @app.route('/viewroom', methods=['GET', 'POST'])
 def viewroom():
     user = cur_user()
 
-    if user:
+    join_form = JoinForm(csrf_enabled=False)
+    user.action = ""
+    db.session.commit()
+    add_room_form = AddRoomForm(csrf_enabled=False)
+    if add_room_form.validate_on_submit():
+        token = add_room_form.token.data
+        room = Room(token=token, capitan_id=user.id)
+        for i in range(1, 7):
+            room.Color.append(Color.query.filter_by(id=str(i)).first())
+        db.session.add(room)
+        db.session.commit()
+        user.rooms.append(room)
+        db.session.commit()
+        return redirect(url_for('addroom',  token=add_room_form.token.data))
+    else :
         join_form = JoinForm(csrf_enabled=False)
         user.action = ""
-        db.session.commit()
-        add_room_form = AddRoomForm(csrf_enabled=False)
-        if add_room_form.validate_on_submit():
-            token = add_room_form.token.data
-            room = Room(token=token, capitan_id=user.id)
-            for i in range(1, 7):
-                room.Color.append(Color.query.filter_by(id=str(i)).first())
-            db.session.add(room)
-            db.session.commit()
-            user.rooms.append(room)
-            db.session.commit()
-            return redirect(url_for('addroom',  token=add_room_form.token.data))
-        else :
-            join_form = JoinForm(csrf_enabled=False)
-            user.action = ""
-            join_form.token.data = " "
-            return render_template('viewroom.html', user=cur_user(), join_form=join_form, add_room_form=add_room_form,
-                                   rooms=user.rooms)
+        join_form.token.data = " "
+        return render_template('viewroom.html', user=cur_user(), join_form=join_form, add_room_form=add_room_form,
+                               rooms=user.rooms)
 
-        if join_form.validate_on_submit():
-            if Room.query.filter_by(token=str(join_form.token.data)):
-                return redirect(url_for('room', token=join_form.token.data))
-        rooms = user.rooms
-    else:
-        return redirect(url_for('log'))
+    if join_form.validate_on_submit():
+        if Room.query.filter_by(token=str(join_form.token.data)):
+            return redirect(url_for('room', token=join_form.token.data))
+    rooms = user.rooms
+
     return render_template('viewroom.html', user=cur_user(), join_form=join_form,add_room_form=add_room_form, rooms=rooms)
 
 
+@requiresauth
 @app.route('/addroom/<string:token>', methods=['GET', 'POST'])
 def addroom(token):
-    user = cur_user()
-    if user:
-        pass
-    else:
-        return redirect(url_for('log'))
-
     return render_template('addroom.html', user=cur_user(), token=token)
 
 
+@requiresauth
 @app.route('/room/<string:token>', methods=['GET', 'POST'])
 def room(token):
     user = cur_user()
@@ -185,14 +149,6 @@ def room(token):
                            image_form=image_form, result_url=result_url, Room_Form=Room_Form, loaded=False,
                            room_map=room_map_url)
 
-def allowed_image(filename):
-    return ('.' in filename and
-            filename.split('.')[-1].lower() in app.config["ALLOWED_IMAGE_EXTENSIONS"])
-
-def allowed_file(filename):
-    return ('.' in filename and
-            filename.split('.')[-1].lower() in app.config["ALLOWED_EXTENSIONS"])
-
 
 @app.route('/calibrate/<string:color>', methods=['GET', 'POST'])
 def calibrate(color):
@@ -231,7 +187,7 @@ def upload():
 
             return redirect(url_for("main"))
 
-    return render_template('upload_video.html', form=form, user=cur_user(), formats=ALLOWED_EXTENSIONS)
+    return render_template('upload_video.html', form=form, user=cur_user(), formats=app.config['ALLOWED_EXTENSIONS'])
     
 
 
@@ -334,42 +290,6 @@ def cabinet():
             user.change_channel_info(form.channel_info.data)
         return redirect(url_for("cabinet"))
     return render_template('cabinet.html', form=form, user=cur_user(), items=items)
-
-
-@app.route('/logout', methods=['GET', 'POST'])
-def logout():
-    if 'Login' in session:
-        session.pop('Login')
-    return redirect('/')
-
-
-@app.route('/video/<string:vid>/video.mp4')
-def get_video(vid):
-    video_binary = read_video(vid)
-    response = make_response(video_binary)
-    response.headers.set('Content-Type', 'video/mp4')
-    response.headers.set(
-        'Content-Disposition', 'attachment', filename='video/%s/video.mp4' % vid)
-    return response
-
-
-@app.route('/tellRes', methods=['GET', 'POST'])
-def tellRes():
-    if cur_user():
-        user = cur_user()
-        if request.method == 'POST':
-            width = request.json['width']
-            height = request.json['height']
-            user.update_resolution(width=width, height=height)
-            return jsonify(width=width, height=height)
-
-@app.route('/askAct', methods=['GET', 'POST'])
-def askAct():
-    action = ""
-    if cur_user():
-        user = cur_user()
-        action = user.action
-    return action
 
 
 @app.route('/play/<string:vid>', methods=['GET', 'POST'])
