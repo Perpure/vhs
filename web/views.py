@@ -1,7 +1,7 @@
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
-    UserProfileForm, AddRoomForm, AddCommentForm, SearchingVideoForm
-from web.models import User, Video, Room, Color, Comment, Geotag
+    UserProfileForm, AddRoomForm, AddCommentForm, SearchingVideoForm , AddTagForm
+from web.models import User, Video, Room, Color, Comment, Geotag , Tag
 from web.video_handler import save_video
 from config import basedir
 from web.helper import allowed_image, allowed_file, requiresauth, cur_user, is_true_pixel, calibrate_params
@@ -32,6 +32,7 @@ def main():
         return render_template('main.html', form=form, user=cur_user(), items=Video.get(sort=sort))
 
     return render_template('main.html', form=form, user=cur_user(), items=Video.get())
+
 
 @requiresauth
 @app.route('/viewroom', methods=['GET', 'POST'])
@@ -149,6 +150,9 @@ def upload():
     Отвечает за вывод страницы загрузки и загрузку файлов
     :return: Страница загрузки
     """
+    tag_form = AddTagForm(csrf_enabled=False)
+    user = cur_user()
+    
     form = UploadVideoForm(csrf_enabled=False)
     error = ""
 
@@ -169,9 +173,16 @@ def upload():
                 gt = Geotag(*coords)
                 gt.save(video)
 
+            if len(tag_form.name.data) > 0:
+                video = Video.get(video_id=video)
+                tags = form.name.data.split(',')
+                for i in range(tags[:-1]):
+                    tag = Tag(tag_form.name.data, video.id, user.id)
+                    tag.save()
             return redirect(url_for("main"))
 
-    return render_template('upload_video.html', form=form, user=cur_user(), formats=app.config['ALLOWED_EXTENSIONS'])
+    return render_template('upload_video.html', form=form, user=cur_user(), formats=app.config['ALLOWED_EXTENSIONS'],
+                           tag_form=tag_form)
     
 
 
@@ -215,6 +226,7 @@ def result(token, color):
     w, h = calibrate_params(firstx, firsty, lastx, lasty, rezolutionx, rezolutiony)
     k = int((width/w)/(sourcex/rezolutionx)*100)
     return render_template('rezult.html', pid='1', top=-(firsty/height)*sourcey, left=-(firstx/width)*sourcex, width=k)
+
 
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():

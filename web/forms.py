@@ -112,6 +112,11 @@ class AddCommentForm(FlaskForm):
     submit = SubmitField("Запостить")
 
 
+class AddTagForm(FlaskForm):
+    name = TextAreaField("Тэги", validators= Length(1, message='Тэг слишком короткий'))
+    submit = SubmitField("Создать")
+
+
 class AddRoomForm(FlaskForm):
     token = StringField("Название комнаты", validators=[DataRequired(),exist_token,Length(5, message='Текст слишком короткий')])
     submit = SubmitField("Создать")
