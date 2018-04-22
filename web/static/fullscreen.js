@@ -1,5 +1,5 @@
 jQuery(function($){
-    $("img, div").click(function() {
+    $("img, div").click(function(){
         var doc = window.document;
         var docEl = doc.documentElement;
         
@@ -12,5 +12,10 @@ jQuery(function($){
         else {
             cancelFullScreen.call(doc);  
         }
+        
     });
+
+    setTimeout(function() {
+        $("div").click();
+    }, 1000);
 });
