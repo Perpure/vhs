@@ -18,6 +18,7 @@
         {% endfor %}
         )</p>
         <div class="Loader"><div> {{ form.video }} </div></div>
+        <input name="tags" placeholder="write some tags" value="my video">
         <div> {{ form.geotag_is_needed.label }} {{ form.geotag_is_needed }}</div>
         <div> {{ form.geotag_data }}</div>
         <div id="map"></div>
@@ -28,4 +29,10 @@
 
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
     <script src="{{ url_for('static', filename='map.js') }}"></script>
+    <script src="{{ url_for('static', filename='tagify.js') }}"></script>
+    <script>
+        var input = document.querySelector('input[name=tags]'),
+        tagify = new Tagify( input );
+    </script>
+
 {% endblock %}
