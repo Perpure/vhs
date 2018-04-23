@@ -66,6 +66,7 @@ def count_params(room, color, user):
     width = image.size[0]
     height = image.size[1]
     firstx = 0
+    firsty = 0
     lasty = 0
     lastx = 0
     pix = image.load()
@@ -99,9 +100,11 @@ def count_params(room, color, user):
                         pass
     w = lastx-firstx
     user.color = color
-    user.res_k = int((width/w)/(sourcex/rezolutionx)*100)
-    user.top = -(firsty/height)*sourcey
-    user.left = -(firstx/width)*sourcex
+
+    k = int((width / w) / (sourcex / rezolutionx) * 100)
+    user.res_k = k
+    user.top = -(firsty / height) * sourcey * k / 100
+    user.left = -(firstx / width) * sourcex * k / 100
     db.session.commit()
     room_map = Image.open(basedir + url_for('get_multi', pid=room.token+'_map'))
     draw = ImageDraw.Draw(room_map)
