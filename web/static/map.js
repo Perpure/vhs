@@ -36,7 +36,20 @@ function create_geotag(coords) {
             gt.options.set('preset', 'islands#redIcon')
         }
     });
-}
+
+    geotag.events.add('contextmenu', function(e) {
+        gt = e.get('target');
+
+        var index = geotags.indexOf(gt);
+        geotags.splice(index, 1);
+
+        map.geoObjects.remove(gt);
+        gt.delete;
+
+        e.preventDefault();
+
+    });
+    }
 
 
 function init () {
