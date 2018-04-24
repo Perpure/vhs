@@ -179,7 +179,7 @@ def upload():
 
         if file and allowed_file(file.filename):
             video = save_video(file, form.title.data)
-            data = JSONDecoder().decode(form.geotag_data)
+            data = JSONDecoder().decode(form.geotag_data.data)
             if data['needed']:
                 for coords in data['coords']:
                     gt = Geotag(*coords)

@@ -1,24 +1,40 @@
-var map, geotag;
+var map, moveable_gt;
 var width = 400;
 var height = 200;
 var data;
+var geotags=[];
 
 
 function create_geotag(coords) {
-    geotag = new ymaps.Placemark(coords,
+    var geotag = new ymaps.Placemark(coords,
             {
+                moveable: false,
                 hintContent: 'Выберите геотег для видео'
             },
             {
                 draggable: true,
-                preset: 'islands#redIcon'
+                preset: 'islands#blueIcon'
             }
     );
 
     map.geoObjects.add(geotag);
+    geotags.push(geotag);
 
-    map.events.add('click', function(e) {
-        geotag.geometry.setCoordinates(e.get('coords'));
+    geotag.events.add('click', function(e) {
+        var gt = e.get('target');
+        if (typeof moveable_gt !== 'undefined' && moveable_gt !== null) {
+            moveable_gt.properties.set('moveable', false);
+            moveable_gt.options.set('preset', 'islands#blueIcon');
+        }
+
+        if (gt == moveable_gt) {
+            moveable_gt = null;
+        }
+        else {
+            moveable_gt = gt;
+            gt.properties.set('moveable', true);
+            gt.options.set('preset', 'islands#redIcon')
+        }
     });
 }
 
@@ -34,8 +50,15 @@ function init () {
         }
     );
 
-    map.events.once('click', function(e) {
+    map.events.add('click', function(e) {
+        if (moveable_gt) {
+            moveable_gt.geometry.setCoordinates(e.get('coords'));
+        }
+    });
+
+    map.events.add('dblclick', function(e) {
         create_geotag(e.get('coords'));
+        e.preventDefault();
     });
 }
 
@@ -44,12 +67,14 @@ function show_map() {
     $('#geotag_is_needed').addClass('btn_pushed');
     $('#map').css('width', width+'px');
     $('#map').css('height', height+'px');
+    $('#map-info').show();
 }
 
 function hide_map() {
     $('#map').css('width', '0px');
     $('#map').css('height', '0px');
     $('#geotag_is_needed').removeClass('btn_pushed');
+    $('#map-info').hide();
 }
 
 ymaps.ready(function () {
@@ -76,8 +101,13 @@ ymaps.ready(function () {
     });
     
     $('#submit').click(function() {
-        if (data['needed'] && typeof geotag === 'object') {
-            data['coords'].push(geotag.geometry.getCoordinates());
+        if (data['needed'] && typeof geotags[0] === 'object') {
+
+            data['coords'] = [];
+            for (var i in geotags) {
+                data['coords'].push(geotags[i].geometry.getCoordinates());
+            }
+
         }
         $('#geotag_data').val(JSON.stringify(data));
     });
