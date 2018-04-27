@@ -18,14 +18,19 @@
         {% endfor %}
         )</p>
         <div class="Loader"><div> {{ form.video }} </div></div>
-        <div> {{ form.geotag_is_needed.label }} {{ form.geotag_is_needed }}</div>
+        <div> <button type='button' id="geotag_is_needed">Прикрепить геотег</button></div>
+        <br>
+        <div style="display:none;" id="map-info"><p>Для добавления новых тегов дважды нажмите на карту. Для смены цвета тега кликните по нему.
+                Красные теги перемещаются при клике по карте, любые теги можно двигать перетаскиванием.
+                Преред добавлением тега рекомендуется сделать все теги синими.
+                Для удаления тега щёлкните по нему правой кнопкой мыши.</p></div>
+        <div id="map"></div>
         <div> {{ form.geotag_data }}</div>
         {% if form.geotag_data.errors %}
             {% for error in form.geotag_data.errors %}
             <div style="color: red;">{{ error }}</div>
             {% endfor %}
         {% endif %}
-        <div id="map"></div>
         <br>
         <div style="color: red;"> {{ error }} </div>
         <div> {{ form.submit }} </div>
