@@ -7,6 +7,7 @@ from web.helper import read_image, read_video, allowed_image, allowed_file, cur_
 from web.video_handler import save_video
 from config import basedir, ALLOWED_EXTENSIONS
 from flask import redirect, render_template, session, url_for, make_response, request, jsonify
+from flask.json import JSONDecoder, dumps
 from werkzeug.utils import secure_filename
 from random import choice
 from string import ascii_letters
@@ -166,7 +167,6 @@ def upload():
     :return: Страница загрузки
     """
     form = UploadVideoForm(csrf_enabled=False)
-    error = ""
 
     if form.validate_on_submit():
         if 'video' not in request.files:
@@ -179,14 +179,14 @@ def upload():
 
         if file and allowed_file(file.filename):
             video = save_video(file, form.title.data)
-
-            if form.geotag_is_needed.data:
-                coords = form.geotag_data.data.split(',')
-                gt = Geotag(*coords)
-                gt.save(video)
-
+            data = JSONDecoder().decode(form.geotag_data.data)
+            if data['needed']:
+                for coords in data['coords']:
+                    gt = Geotag(*coords)
+                    gt.save(video)
             return redirect(url_for("main"))
-
+    if not form.geotag_data.data:
+        form.geotag_data.data = dumps({'needed': False, 'coords': []})
     return render_template('upload_video.html', form=form, user=cur_user(), formats=app.config['ALLOWED_EXTENSIONS'])
     
 
