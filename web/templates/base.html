@@ -41,7 +41,7 @@
         </div>
     </div>
     <div class="Searcher" id="searcher">
-        <input type="text" class="inSearch">
+        <input type="text" class="inSearch" id="searchKey">
         <input type="submit" value="Поиск" class="searchBtn" id="startSearch">
     </div>
     <div class="Shadow" id="Shad"></div>
@@ -62,9 +62,11 @@
 <script>
     let start=document.getElementById("startSearch");
     let bd=document.getElementById("Body");
+    let key=document.getElementById("searchKey");
     start.addEventListener('click',function(){
+        let val=key.value;
         $.ajax({
-                       url:"/askAct",
+                       url:"/startSearch/"+val,
                        type:"GET",
                        dataType:"html",
                        success:function(response)

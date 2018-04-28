@@ -2,7 +2,7 @@ from web import app, db
 from web.helper import read_image, read_video, cur_user, is_true_pixel, read_multi
 from web.models import Video
 
-from flask import url_for, redirect, make_response, request, jsonify, session
+from flask import url_for, redirect, make_response, request, jsonify, session, render_template
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
@@ -76,3 +76,8 @@ def tellRes():
             height = request.json['height']
             user.update_resolution(width=width, height=height)
             return jsonify(width=width, height=height)
+
+@app.route('/startSearch/<string:ask>', methods=['GET', 'POST'])
+def startSearch(ask):
+    sort=""
+    return render_template('main.html', user=cur_user(), items=Video.get(search=ask,sort=sort))
