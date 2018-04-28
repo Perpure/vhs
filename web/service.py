@@ -76,3 +76,20 @@ def tellRes():
             height = request.json['height']
             user.update_resolution(width=width, height=height)
             return jsonify(width=width, height=height)
+
+@app.route('/askNewComm/<string:vid>', methods=['GET', 'POST'])
+def askNewComm(vid):
+    video = Video.get(video_id=vid)
+    comms=video.comments
+    cnt=len(comms)
+    return str(cnt)
+
+@app.route('/getNewComm/<string:vid>/<int:cont>', methods=['GET', 'POST'])
+def getNewComm(vid,cont):
+    video = Video.get(video_id=vid)
+    comms=video.comments
+    result=""
+    for i in range(cont,len(comms)):
+        result+=str(comms[i].user.login)+",,"+str(comms[i].text)+";;"
+    result+=""
+    return result
