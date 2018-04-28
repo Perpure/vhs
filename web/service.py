@@ -1,6 +1,6 @@
 from web import app, db
 from web.helper import read_image, read_video, cur_user, is_true_pixel, read_multi
-from web.models import Video
+from web.models import Video, Comment
 
 from flask import url_for, redirect, make_response, request, jsonify, session
 
@@ -93,3 +93,11 @@ def getNewComm(vid,cont):
         result+=str(comms[i].user.login)+",,"+str(comms[i].text)+";;"
     result+=""
     return result
+
+@app.route('/postComm/<string:vid>/<string:name>/<string:text>', methods=['GET', 'POST'])
+def postComm(vid,name,text):
+    video = Video.get(video_id=vid)
+    user = cur_user()
+    comment = Comment(text, video.id, user.id)
+    comment.save()
+    return "lol"
