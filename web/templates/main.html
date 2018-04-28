@@ -11,13 +11,16 @@
     </div>
 </form>
 
-{% for item in items %}
-    <a href="play/{{item.id}}" class="Link">
-        <div class="video"><img src="{{url_for('get_image', pid=item.id)}}" alt="" class="preview">
+{% for item in items %}    
+        <div class="video">
+            <a href="play/{{item.id}}" class="Link">
+            <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="preview">
+            </a>
             <div class="videoTxt"> 
+                <a href="play/{{item.id}}" class="Link">
                 <p class="videoName">{{item.title}}</p>
-    </a> 
-    <p class="videoView">{{ item.viewers | length }} просмотров</p>
+                </a>
+                <p class="videoView">{{ item.viewers | length }} просмотров</p>
             </div> 
         </div>
 {% endfor %}

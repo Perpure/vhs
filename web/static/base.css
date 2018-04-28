@@ -124,14 +124,58 @@ textarea
   cursor: default;
 }
 
+.logo
+{
+    height:100%;
+    width:15%;
+    display:inline-block;
+    vertical-align:top;
+}
+
 .midHead
 {
-  width: 60%;
+  width: 100%;
   margin-left: -5px;
   /*margin-right: 0.5%;*/
   padding-left: 1%;
   padding-right: 1%;
+  float:right;
 }
+
+.navMenu
+{
+    display:inline-block;
+    margin:0 auto;
+}
+
+.navMen
+{
+    display:inline-block;
+    height:50px;
+    padding-left:15px;
+    padding-right:15px;
+    margin-left:-5px;
+    padding-top:15px;
+    text-align:center;
+    color:black;
+    border-right:1px solid rgba(240, 203, 142,0.5);
+}
+
+.navEdge
+{
+    border-right:none;
+}
+
+.navMen:hover
+{
+    cursor:pointer;
+    border-bottom:2px solid rgb(232, 171, 74);
+    background-color:rgba(240, 203, 142,0.4);
+    font-weight:bold;
+    border-right:none;
+    margin-right:1px;
+}
+
 .Menu
 {
   margin-left: -5px;
@@ -202,10 +246,9 @@ textarea
 }
 
 
-
 main
 {
-  width: 80%;
+  width: 70%;
   margin: 0 auto;
 }
 
@@ -219,10 +262,9 @@ main
 .video
 {
     display:inline-block;
-    width:16%;
-    height:150px;
-    vertical-align:top;
-    
+    width:14%;
+    margin-right:2%;
+    margin-bottom:10px;
 }
 
 .video:hover
@@ -234,7 +276,6 @@ main
 {
    display:block;
    width:100%;
-   height:90px;
 }
 
 .videoName
@@ -297,8 +338,8 @@ footer
   width: 100%;
   margin: 0 auto;
   position:absolute;
-  top:100%;
-  margin-top:-130px;
+  height:129px;
+ 
 }
 
 .Foot{
