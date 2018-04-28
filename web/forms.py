@@ -114,7 +114,7 @@ class AddCommentForm(FlaskForm):
 
 class AddTagForm(FlaskForm):
     name = TextAreaField("Тэги", validators=[Length(1, message='Тэг слишком короткий'), Optional()])
-    submit = SubmitField("Создать")
+
 
 
 class AddRoomForm(FlaskForm):
