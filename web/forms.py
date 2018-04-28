@@ -108,12 +108,12 @@ class AddCommentForm(FlaskForm):
         csrf = False
 
     message = TextAreaField("Комментарий", validators=[DataRequired(message='Введите текст'),
-                                                       Length(1, message='Текст слишком короткий')])
+                                                       Length(3, message='Текст слишком короткий')])
     submit = SubmitField("Запостить")
 
 
 class AddTagForm(FlaskForm):
-    name = TextAreaField("Тэги", validators= Length(1, message='Тэг слишком короткий'))
+    name = TextAreaField("Тэги", validators=[Length(1, message='Тэг слишком короткий'), Optional()])
     submit = SubmitField("Создать")
 
 
