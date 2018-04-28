@@ -39,7 +39,7 @@ input
     background-color:rgba(240, 203, 142,0.5);
 }
 
-input[type="submit"]
+input[type="submit"], button
 {
     height:40px;
     padding:10px;
@@ -594,4 +594,9 @@ footer
 
 .b{
     font-weight: 600;
+}
+
+.btn_pushed{
+  background-color:#ffb703;
+  color:black;
 }

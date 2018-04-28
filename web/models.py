@@ -153,6 +153,10 @@ class User(db.Model):
     action = db.Column(db.String(64))
     device_width = db.Column(db.Integer)
     device_height = db.Column(db.Integer)
+    color = db.Column(db.String(64))
+    top = db.Column(db.Integer)
+    left = db.Column(db.Integer)
+    res_k = db.Column(db.Integer)
 
     videos = db.relationship("Video", 
                             backref="user",
