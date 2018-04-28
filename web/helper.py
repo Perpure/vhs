@@ -120,20 +120,23 @@ def count_params(room, color, user):
                                 break
                     except:
                         pass
-    w = lastx-firstx
-    user.color = color
-
-    k = int((width / w) / (sourcex / rezolutionx) * 100)
-    user.res_k = k
-    user.top = -(firsty / height) * sourcey * k / 100
-    user.left = -(firstx / width) * sourcex * k / 100
-    db.session.commit()
-    room_map = Image.open(basedir + url_for('get_multi', pid=room.token+'_map'))
-    draw = ImageDraw.Draw(room_map)
-    for i in range(firstx,lastx):
-        for j in range(firsty,lasty):
-            draw.point((i, j), (R,G,B))
-    room_map.save(basedir + '/images/' + room.token + '_map.jpg')
+    try:
+        w = lastx-firstx
+        user.color = color
+        k = int(rezolutionx / ((w / width) * sourcex)) * 100)
+        user.res_k = k
+        user.top = -(firsty / height) * sourcey * k / 100
+        user.left = -(firstx / width) * sourcex * k / 100
+        db.session.commit()
+        room_map = Image.open(basedir + url_for('get_multi', pid=room.token+'_map'))
+        draw = ImageDraw.Draw(room_map)
+        for i in range(firstx,lastx):
+            for j in range(firsty,lasty):
+                draw.point((i, j), (R,G,B))
+        room_map.save(basedir + '/images/' + room.token + '_map.jpg')
+        return False
+    except:
+        return True
 
 
 def cur_user():
