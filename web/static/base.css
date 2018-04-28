@@ -146,7 +146,6 @@ textarea
 .navMenu
 {
     display:inline-block;
-    margin:0 auto;
 }
 
 .navMen
@@ -183,7 +182,7 @@ textarea
     height:50px;
     top:60px;
     left:17%;
-    width:40%;
+    width:50%;
     background-color:#F7E2C0;
     padding:5px;
     display:none;
@@ -198,7 +197,21 @@ textarea
 
 .searchBtn
 {
-    width:29%;
+    vertical-align:top;
+}
+
+.searchField
+{
+    display:inline-block;
+    height:100%;
+    color:grey;
+    padding:7px;
+}
+
+.searchField:hover
+{
+    cursor:pointer;
+    color:black;
 }
 
 .Shadow

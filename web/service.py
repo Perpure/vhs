@@ -77,7 +77,15 @@ def tellRes():
             user.update_resolution(width=width, height=height)
             return jsonify(width=width, height=height)
 
-@app.route('/startSearch/<string:ask>', methods=['GET', 'POST'])
-def startSearch(ask):
+@app.route('/startSearch/<string:ask>/<int:view>/<int:dat>', methods=['GET', 'POST'])
+def startSearch(ask,view,dat):
     sort=""
-    return render_template('main.html', user=cur_user(), items=Video.get(search=ask,sort=sort))
+    if dat:
+            sort += "date"
+    if view:
+            sort += "views"
+    if ask!=" ":   
+        return render_template('main.html', user=cur_user(), items=Video.get(search=ask,sort=sort))
+    
+    return render_template('main.html', user=cur_user(), items=Video.get())
+
