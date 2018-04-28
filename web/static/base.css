@@ -140,6 +140,7 @@ textarea
   padding-left: 1%;
   padding-right: 1%;
   float:right;
+  position:relative;
 }
 
 .navMenu
@@ -174,6 +175,41 @@ textarea
     font-weight:bold;
     border-right:none;
     margin-right:1px;
+}
+
+.Searcher
+{
+    position: absolute;
+    height:50px;
+    top:60px;
+    left:17%;
+    width:40%;
+    background-color:#F7E2C0;
+    padding:5px;
+    display:none;
+}
+
+.inSearch
+{
+    vertical-align:top;
+    width:70%;
+    height:40px;
+}
+
+.searchBtn
+{
+    width:29%;
+}
+
+.Shadow
+{
+    position:absolute;
+    top:110px;
+    left:18%;
+    background-color:rgba(0,0,0,0.5);
+    width:38%;
+    height:10px;
+    display:none;
 }
 
 .Menu

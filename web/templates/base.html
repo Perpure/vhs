@@ -26,7 +26,7 @@
         </div>
         <div class="navMenu">
         <a href="{{url_for('main')}}" class="Link" id="Home"><div class="navMen">Главная</div></a>
-        <div class="navMen">Поиск</div>
+        <div class="navMen" id="Search">Поиск</div>
         {%if user %}
         <a href="{{url_for('cabinet')}}" class="Link" id="My"><div class="navMen">Мой Канал</div></a>
         <a href="{{url_for('views_story')}}" class="Link" id="Views"><div class="navMen">История</div></a>
@@ -40,7 +40,11 @@
         {%endif%}
         </div>
     </div>
-    <div class="Searcher"></div>
+    <div class="Searcher" id="searcher">
+        <input type="text" class="inSearch">
+        <input type="submit" value="Поиск" class="searchBtn" id="startSearch">
+    </div>
+    <div class="Shadow" id="Shad"></div>
   </header>
   <main>
     <div class="Content" id="Contentt">
@@ -55,4 +59,20 @@
   </footer>
 </body>
 <script src="{{ url_for('static', filename='global.js') }}"></script>
+<script>
+    let start=document.getElementById("startSearch");
+    let bd=document.getElementById("Body");
+    start.addEventListener('click',function(){
+        $.ajax({
+                       url:"/askAct",
+                       type:"GET",
+                       dataType:"html",
+                       success:function(response)
+                       {
+                            Body.innerHTML=response;
+                       },
+                       error:function(){}
+        });
+    });
+</script>
 </html>
