@@ -1,7 +1,7 @@
 from config import basedir
 from web import db, app
 from web.models import User
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageEnhance
 from web.models import User
 from web import app
 from functools import wraps
@@ -50,12 +50,13 @@ def read_video(vid):
 
 
 def is_true_pixel(r, g, b, R, G, B):
-    return (r in range(R-75, R+75))and(g in range(G-75, G+75))and(b in range(B-75, B+75))
+    k=60
+    return (r in range(R-k, R+k))and(g in range(G-k, G+k))and(b in range(B-k, B+k))
 
 
 def count_params(room, color, user):
-    rezolutionx = 400
-    rezolutiony = 887
+    rezolutionx = user.device_width
+    rezolutiony = user.device_height
     source = Image.open(basedir + url_for('get_multi', pid=1))
     sourcex = source.size[0]
     sourcey = source.size[1]
@@ -63,6 +64,8 @@ def count_params(room, color, user):
     G = int(color[3:5], 16)
     B = int(color[5:7], 16)
     image = Image.open(basedir + url_for('get_multi', pid=room.token))
+    converter = ImageEnhance.Color(image)
+    image = converter.enhance(2)
     width = image.size[0]
     height = image.size[1]
     firstx = 0
@@ -78,24 +81,43 @@ def count_params(room, color, user):
             if is_true_pixel(r,g,b,R,G,B):
                 if not (firstx):
                     try:
-                        for f in range(-20,-5):
+                        for f in range(-20,-15):
                             if is_true_pixel(pix[i-f, j-f][0],pix[i-f, j-f][1],pix[i-f, j-f][2],R,G,B):
                                 firstx = i
                                 firsty = j
+                                break
+                    except:
+                        pass
+                if firstx > i:
+                    try:
+                        for f in range(-20,-15):
+                            if is_true_pixel(pix[i-f, j-f][0],pix[i-f, j-f][1],pix[i-f, j-f][2],R,G,B):
+                                firstx = i
+                                break
+                    except:
+                        pass
+                if firsty > j:
+                    try:
+                        for f in range(-20,-15):
+                            if is_true_pixel(pix[i-f, j-f][0],pix[i-f, j-f][1],pix[i-f, j-f][2],R,G,B):
+                                firsty = j
+                                break
                     except:
                         pass
                 if lastx < i:
                     try:
-                        for f in range(5,20):
+                        for f in range(15,20):
                             if is_true_pixel(pix[i-f, j-f][0],pix[i-f, j-f][1],pix[i-f, j-f][2],R,G,B):
                                 lastx = i
+                                break
                     except:
                         pass
                 if lasty < j:
                     try:
-                        for f in range(5,20):
+                        for f in range(15,20):
                             if is_true_pixel(pix[i-f, j-f][0],pix[i-f, j-f][1],pix[i-f, j-f][2],R,G,B):
                                 lasty = j
+                                break
                     except:
                         pass
     w = lastx-firstx

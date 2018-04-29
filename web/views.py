@@ -122,6 +122,9 @@ def room(token):
             if file and allowed_image(file.filename):
                 file.save(basedir + '/images/' + room.token + '.' + file.filename.split('.')[-1].lower())
                 image = Image.open(basedir + url_for('get_multi', pid=token))
+                k=image.size[0]/img.size[1]
+                image = image.resize((int(1000*k),1000))
+                image.save(basedir + url_for('get_multi', pid=token))
                 room_map = Image.new('RGB', (image.size[0], image.size[1]), (255, 255, 255))
                 room_map.save(basedir + '/images/' + room.token + '_map.jpg')
                 for member in users[1:]:
@@ -186,44 +189,7 @@ def upload():
 
 @app.route('/result/<string:token>/<string:color>', methods=['GET', 'POST'])
 def result(token, color):
-    room = Room.query.filter_by(token=token).first()
-    user = cur_user()
-    colors = room.color_user.split(';')
-    for i in range(len(colors)):
-        if colors[i].split(',')[0] == str(user.id):
-            color = Color.query.filter_by(id=colors[i].split(',')[1]).first().color
-            break
-    rezolutionx = 400
-    rezolutiony = 887
-    sourcex = 800
-    sourcey = 600
-    R = int(color[1:3], 16)
-    G = int(color[3:5], 16)
-    B = int(color[5:7], 16)
-    print(basedir)
-    image = Image.open(basedir + url_for('get_multi', pid=token))
-    width = image.size[0]
-    height = image.size[1]
-    firstx = 0
-    lasty = 0
-    lastx = 0
-    pix = image.load()
-    for i in range(width):
-        for j in range(height):
-            r = pix[i, j][0]
-            g = pix[i, j][1]
-            b = pix[i, j][2]
-            if is_true_pixel(r,g,b,R,G,B):
-                if not (firstx):
-                    firstx = i
-                    firsty = j
-                if lastx < i:
-                    lastx = i
-                if lasty < j:
-                    lasty = j
-    w, h = calibrate_params(firstx, firsty, lastx, lasty, rezolutionx, rezolutiony)
-    k = int((width/w)/(sourcex/rezolutionx)*100)
-    return render_template('rezult.html', pid='1', top=-(firsty/height)*sourcey, left=-(firstx/width)*sourcex, width=k)
+    return render_template('rezult.html', pid='1', top=user.top, left=user.left, width=user.res_k)
 
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():
