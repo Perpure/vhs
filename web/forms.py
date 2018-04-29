@@ -78,6 +78,7 @@ class UploadVideoForm(FlaskForm):
     video = FileField("Выберите файл")
     geotag_is_needed = BooleanField('Прикрепить геотег?')
     geotag_data = HiddenField(validators=[have_geodata])
+    tags = TextAreaField("Тэги", validators=[Length(2, message='Тэг слишком короткий'), Optional()])
     submit = SubmitField("Загрузить")
 
 
@@ -110,10 +111,6 @@ class AddCommentForm(FlaskForm):
     message = TextAreaField("Комментарий", validators=[DataRequired(message='Введите текст'),
                                                        Length(3, message='Текст слишком короткий')])
     submit = SubmitField("Запостить")
-
-
-class AddTagForm(FlaskForm):
-    name = TextAreaField("Тэги", validators=[Length(1, message='Тэг слишком короткий'), Optional()])
 
 
 

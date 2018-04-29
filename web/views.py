@@ -1,6 +1,6 @@
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
-    UserProfileForm, AddRoomForm, AddCommentForm, SearchingVideoForm , AddTagForm
+    UserProfileForm, AddRoomForm, AddCommentForm, SearchingVideoForm
 from web.models import User, Video, Room, Color, Comment, Geotag , Tag
 from web.video_handler import save_video
 from config import basedir
@@ -150,7 +150,6 @@ def upload():
     Отвечает за вывод страницы загрузки и загрузку файлов
     :return: Страница загрузки
     """
-    tag_form = AddTagForm(csrf_enabled=False)
     user = cur_user()
     
     form = UploadVideoForm(csrf_enabled=False)
@@ -159,9 +158,7 @@ def upload():
     if form.validate_on_submit():
         if 'video' not in request.files:
             return redirect(request.url)
-
         file = request.files['video']
-
         if file.filename == '':
             return redirect(request.url)
 
@@ -173,18 +170,16 @@ def upload():
                 gt = Geotag(*coords)
                 gt.save(video)
 
-            if len(tag_form.name.data) > 0:
-                video = Video.get(video_id=video)
-                tags = form.name.data.split(',')
-                for i in range(tags[:-1]):
-                    tag = Tag(tag_form.name.data, video.id, user.id)
-                    tag.save()
+            if form.tags.data:
+                tags = form.tags.data.split(',')
+                for tag in tags:
+                    tag_data = Tag(tag, video.id, user.id)
+                    tag_data.save()
             return redirect(url_for("main"))
 
     return render_template('upload_video.html', form=form, user=cur_user(), formats=app.config['ALLOWED_EXTENSIONS'],
-                           tag_form=tag_form)
+                           )
     
-
 
 @app.route('/result/<string:token>/<string:color>', methods=['GET', 'POST'])
 def result(token, color):

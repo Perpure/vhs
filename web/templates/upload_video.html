@@ -26,18 +26,15 @@
             {% endfor %}
         {% endif %}
         <div id="map"></div>
-        <br>
         <div style="color: red;"> {{ error }} </div>
-        <div> {{ form.submit }} </div>
-    </form>
-    <form action="" method="post">
-        <div>{{ tag_form.name.label }}</div>
-        <div>{{ tag_form.name(rows=5, cols=60) }}</div>
-        {% if tag_form.name.errors %}
-            {% for error in tag_form.name.errors %}
+        <div>{{ form.tags.label }}</div>
+        <div>{{ form.tags(rows=5, cols=60) }}</div>
+        {% if form.tags.errors %}
+            {% for error in form.tags.errors %}
             <div style="color: red;">{{ error }}</div>
             {% endfor %}
         {% endif %}
+        <div> {{ form.submit }} </div>
     </form>
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
     <script src="{{ url_for('static', filename='map.js') }}"></script>
