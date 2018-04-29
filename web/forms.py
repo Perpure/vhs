@@ -5,6 +5,7 @@ from wtforms import StringField, PasswordField, SubmitField, TextAreaField, Sele
 from wtforms.validators import Length, EqualTo, ValidationError, DataRequired, Optional
 from web.models import User , Room
 from .helper import cur_user
+from flask.json import JSONDecoder
 from wtforms.widgets import CheckboxInput, ListWidget
 
 
@@ -39,12 +40,11 @@ def match(form, field):
     if user and not user.check_pass(field.data):
         raise ValidationError("Неправильный пароль")
 
+
 def have_geodata(form, field):
-    if form.geotag_is_needed.data:
-        try:
-            [float(x) for x in field.data.split(',')]
-        except Exception:
-            raise ValidationError("Выставите геотег")
+    data = JSONDecoder().decode(field.data)
+    if data['needed'] and not data['coords']:
+        raise ValidationError("Выставьте геотег")
 
 
 class RegForm(FlaskForm):
@@ -76,7 +76,6 @@ class UploadVideoForm(FlaskForm):
     """Форма загрузки видео"""
     title = StringField("Введите название видео", validators=[Length(3, message='Название слишком короткое')])
     video = FileField("Выберите файл")
-    geotag_is_needed = BooleanField('Прикрепить геотег?')
     geotag_data = HiddenField(validators=[have_geodata])
     tags = TextAreaField("Тэги", validators=[Length(2, message='Тэг слишком короткий'), Optional()])
     submit = SubmitField("Загрузить")
