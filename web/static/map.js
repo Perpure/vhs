@@ -12,7 +12,6 @@ function mover(){
 let butn=document.getElementById("Load");
 butn.addEventListener('click',mover);
 
-
 function create_geotag(coords) {
     var geotag = new ymaps.Placemark(coords,
             {
