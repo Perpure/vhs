@@ -1,7 +1,7 @@
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
     UserProfileForm, AddRoomForm, AddCommentForm, SearchingVideoForm
-from web.models import User, Video, Room, Color, Comment, Geotag
+from web.models import User, Video, Room, Color, Comment, Geotag , Tag
 from web.helper import read_image, read_video, allowed_image, allowed_file, cur_user, is_true_pixel, \
     read_multi, count_params, requiresauth
 from web.video_handler import save_video
@@ -156,6 +156,7 @@ def calibrate(color):
     return render_template('color.html', color=color)
 
 
+
 @app.route('/upload', methods=['GET', 'POST'])
 @requiresauth
 def upload():
@@ -163,14 +164,14 @@ def upload():
     Отвечает за вывод страницы загрузки и загрузку файлов
     :return: Страница загрузки
     """
+    user = cur_user()
+    
     form = UploadVideoForm(csrf_enabled=False)
 
     if form.validate_on_submit():
         if 'video' not in request.files:
             return redirect(request.url)
-
         file = request.files['video']
-
         if file.filename == '':
             return redirect(request.url)
 
@@ -181,7 +182,14 @@ def upload():
                 for coords in data['coords']:
                     gt = Geotag(*coords)
                     gt.save(video)
+            
+            if form.tags.data:
+                tags = form.tags.data.split(',')
+                for tag in tags:
+                    tag_data = Tag(tag, video.id, user.id)
+                    tag_data.save()
             return redirect(url_for("main"))
+        
     if not form.geotag_data.data:
         form.geotag_data.data = dumps({'needed': False, 'coords': []})
     return render_template('upload_video.html', form=form, user=cur_user(), formats=app.config['ALLOWED_EXTENSIONS'])

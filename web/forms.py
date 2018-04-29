@@ -84,6 +84,7 @@ class UploadVideoForm(FlaskForm):
     title = StringField("Введите название видео", validators=[Length(3, message='Название слишком короткое')])
     video = FileField("Выберите файл")
     geotag_data = HiddenField(validators=[have_geodata])
+    tags = TextAreaField("Тэги", validators=[Length(2, message='Тэг слишком короткий'), Optional()])
     submit = SubmitField("Загрузить")
 
 
@@ -114,8 +115,9 @@ class AddCommentForm(FlaskForm):
         csrf = False
 
     message = TextAreaField("Комментарий", validators=[DataRequired(message='Введите текст'),
-                                                       Length(1, message='Текст слишком короткий')])
+                                                       Length(3, message='Текст слишком короткий')])
     submit = SubmitField("Запостить")
+
 
 
 class AddRoomForm(FlaskForm):

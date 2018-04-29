@@ -40,6 +40,23 @@ class Comment(db.Model):
         db.session.commit()
 
 
+class Tag(db.Model):
+    __tablename__ = 'Tag'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    text = db.Column(db.Text())
+    video_id = db.Column(db.Text(), db.ForeignKey('Video.id'),nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
+
+    def __init__(self, text, video_id, user_id):
+        self.text = text
+        self.user_id = user_id
+        self.video_id = video_id
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+
 class Mark(db.Model):
     __tablename__ = 'Mark'
     id = db.Column(db.Text(), primary_key=True)
@@ -68,6 +85,8 @@ class Video(db.Model):
     marks = db.relationship('Mark', backref='video', lazy=True)
 
     comments = db.relationship('Comment', backref='video', lazy='joined')
+
+    tags = db.relationship('Tag', backref='video', lazy='joined')
 
     viewers = db.relationship('User', secondary=Views, backref='views', lazy='joined')
     
@@ -169,7 +188,9 @@ class User(db.Model):
     comments = db.relationship('Comment',
                             backref='user',
                             lazy='joined')
-
+    tags = db.relationship('Tag',
+                               backref='user',
+                               lazy='joined')
     rooms = db.relationship("Room",
                             secondary = UserToRoom,
                             backref = "user",
