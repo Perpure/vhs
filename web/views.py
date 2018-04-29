@@ -39,11 +39,11 @@ def main():
 def viewroom():
     user = cur_user()
 
-    join_form = JoinForm(csrf_enabled=False)
+    join_form = JoinForm(csrf_enabled=False, prefix="Submit_Join")
     user.action = ""
     db.session.commit()
-    add_room_form = AddRoomForm(csrf_enabled=False)
-    if add_room_form.validate_on_submit():
+    add_room_form = AddRoomForm(csrf_enabled=False, prefix="Submit_Add")
+    if add_room_form.is_submitted() and add_room_form.validate_on_submit():
         token = add_room_form.token.data
         room = Room(token=token, capitan_id=user.id)
         for i in range(1, 7):
@@ -52,21 +52,14 @@ def viewroom():
         db.session.commit()
         user.rooms.append(room)
         db.session.commit()
-        return redirect(url_for('addroom',  token=add_room_form.token.data))
-    else :
-        join_form = JoinForm(csrf_enabled=False)
-        user.action = ""
-        join_form.token.data = " "
-        return render_template('viewroom.html', user=cur_user(), join_form=join_form, add_room_form=add_room_form,
-                               rooms=user.rooms)
+        return redirect(url_for('addroom', token=add_room_form.token.data))
 
-    if join_form.validate_on_submit():
+    if join_form.is_submitted() and join_form.validate_on_submit():
         if Room.query.filter_by(token=str(join_form.token.data)):
             return redirect(url_for('room', token=join_form.token.data))
     rooms = user.rooms
 
     return render_template('viewroom.html', user=cur_user(), join_form=join_form,add_room_form=add_room_form, rooms=rooms)
-
 
 @requiresauth
 @app.route('/addroom/<string:token>', methods=['GET', 'POST'])
@@ -113,7 +106,7 @@ def room(token):
         if image_form.validate_on_submit():
             if 'image' not in request.files:
                 return render_template('room.html', room=room, user=cur_user(),
-                                       calibrate_url=calibrate_url, users=users,
+                                       calibrate_url=calibrate_url, color=color, users=users,
                                        image_form=UploadImageForm(csrf_enabled=False),
                                        result_url=result_url, Room_Form=Room_Form, loaded=False,
                                        room_map=room_map_url)
@@ -121,7 +114,7 @@ def room(token):
             file = request.files['image']
             if file.filename == '':
                 return render_template('room.html', room=room, user=cur_user(),
-                                       calibrate_url=calibrate_url, users=users,
+                                       calibrate_url=calibrate_url, color=color, users=users,
                                        image_form=UploadImageForm(csrf_enabled=False),
                                        result_url=result_url, Room_Form=Room_Form, loaded=False,
                                        room_map=room_map_url)
@@ -137,16 +130,17 @@ def room(token):
                         if colors[i].split(',')[0] == str(member.id):
                             color = Color.query.filter_by(id=colors[i].split(',')[1]).first().color
                             print(color)
+                            break
                     count_params(room, color, member)
                 return render_template('room.html', room=room, user=cur_user(),
-                                       calibrate_url=calibrate_url, users=users,
+                                       calibrate_url=calibrate_url, color=color, users=users,
                                        image_form=image_form, result_url=result_url,
                                        Room_Form=Room_Form, loaded=True, room_map=room_map_url)
 
     else:
         return redirect(url_for('log'))
     return render_template('room.html', room=room, user=cur_user(),
-                           calibrate_url=calibrate_url, users=users,
+                           calibrate_url=calibrate_url, color=color, users=users,
                            image_form=image_form, result_url=result_url, Room_Form=Room_Form, loaded=False,
                            room_map=room_map_url)
 
@@ -188,7 +182,6 @@ def upload():
     if not form.geotag_data.data:
         form.geotag_data.data = dumps({'needed': False, 'coords': []})
     return render_template('upload_video.html', form=form, user=cur_user(), formats=app.config['ALLOWED_EXTENSIONS'])
-    
 
 
 @app.route('/result/<string:token>/<string:color>', methods=['GET', 'POST'])

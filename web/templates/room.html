@@ -18,7 +18,9 @@
 <p>Пригласите участников в комнату</p>
 {% endif %}
 {% endif %}
-<p><a href="{{result_url}}"><button class="result">Начать демонстрацию</button></a></p>
+<p><a href="{{result_url}}"><button class="result" >Начать демонстрацию</button></a></p>
+<hr>
+<button onclick="launchIntoFullscreen(document.documentElement);" class="fullscreenB">Перейти в полноэкранный режим</button>
 <hr>
 <h5>Участники</h5>
 {% for i in users %}
@@ -31,6 +33,7 @@
 {% if room.capitan_id != user.id %}
     <script>
         let speed=3000;
+        var prev = "None";
         setTimeout(function step(){
             $.ajax({
                        url:"/askAct",
@@ -38,12 +41,21 @@
                        dataType:"text",
                        success:function(response)
                        {
-                            if(response=="calibrate")window.location ="{{calibrate_url}}";
+                            if(response=="calibrate" && prev != "calibrate"){
+                            prev = "calibrate";
+                            $('#Body').prepend('<div style="position:fixed; width:110%; height:110%; background:{{color}};"></div>');
+                            $('#menu').prop({"hidden":true})
+                            ;}
+                            if(response=="result"){
+                            $('#Body').prepend('<img src="{{url_for('get_multi', pid=1)}}" style="position:fixed; width:{{user.res_k}}%; top:{{user.top}}%; left:{{user.left}}%;">');
+                            }
+
                        },
                        error:function(){}
                     });
             setTimeout(step,speed);
         },speed);
+
 
         $(function() {
             $(document).ready(function() {
@@ -61,6 +73,19 @@
                   dataType:"json"
             });
         });
+
+        function launchIntoFullscreen(element) {
+              if(element.requestFullscreen) {
+                element.requestFullscreen();
+              } else if(element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+              } else if(element.webkitRequestFullscreen) {
+                element.webkitRequestFullscreen();
+              } else if(element.msRequestFullscreen) {
+                element.msRequestFullscreen();
+              }
+            }
+
     </script>
 {% endif %}
 {% endblock %}
