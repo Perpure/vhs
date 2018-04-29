@@ -9,7 +9,7 @@ function move(){
         foot.style.top=(Height-130)+"px";
 }
 
-setTimeout(move,5000);
+setTimeout(move,2000);
 
 let searching=false;
 let search=document.getElementById("Search");
