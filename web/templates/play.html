@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-    <video height="400" controls="controls">
+    <video id="my-video" class="video-js" controls preload="auto" width="640" height="264"
+  poster="MY_VIDEO_POSTER.jpg" data-setup="{}">
          <source src="{{url_for('get_video', vid=vid)}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
     </video>
 <p class="videoTitle">{{ video.title }}</p>
@@ -42,4 +43,5 @@
 {% endfor %}
 </div>
 <script src="{{ url_for('static', filename='video.js') }}"></script>
+<script src="http://vjs.zencdn.net/6.6.3/video.js"></script>
 {% endblock %}
