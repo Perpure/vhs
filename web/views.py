@@ -244,7 +244,7 @@ def cabinet():
     items = []
     user = cur_user()
     for item in video_list:
-        if item.user == user.id:
+        if item.user_id == user.id:
             items.append(item)
 
     form = UserProfileForm()
