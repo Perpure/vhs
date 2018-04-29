@@ -182,7 +182,7 @@ textarea
     height:50px;
     top:60px;
     left:17%;
-    width:50%;
+    width:70%;
     background-color:#F7E2C0;
     padding:5px;
     display:none;
@@ -220,7 +220,7 @@ textarea
     top:110px;
     left:18%;
     background-color:rgba(0,0,0,0.5);
-    width:48%;
+    width:68%;
     height:10px;
     display:none;
 }
