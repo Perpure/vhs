@@ -1,6 +1,6 @@
 from web import app, db
 from web.helper import read_image, read_video, cur_user, is_true_pixel, read_multi
-from web.models import Video
+from web.models import Video, Comment
 
 from flask import url_for, redirect, make_response, request, jsonify, session, render_template
 

@@ -39,11 +39,11 @@ def main():
 def viewroom():
     user = cur_user()
 
-    join_form = JoinForm(csrf_enabled=False)
+    join_form = JoinForm(csrf_enabled=False, prefix="Submit_Join")
     user.action = ""
     db.session.commit()
-    add_room_form = AddRoomForm(csrf_enabled=False)
-    if add_room_form.validate_on_submit():
+    add_room_form = AddRoomForm(csrf_enabled=False, prefix="Submit_Add")
+    if add_room_form.is_submitted() and add_room_form.validate_on_submit():
         token = add_room_form.token.data
         room = Room(token=token, capitan_id=user.id)
         for i in range(1, 7):
@@ -52,21 +52,14 @@ def viewroom():
         db.session.commit()
         user.rooms.append(room)
         db.session.commit()
-        return redirect(url_for('addroom',  token=add_room_form.token.data))
-    else :
-        join_form = JoinForm(csrf_enabled=False)
-        user.action = ""
-        join_form.token.data = " "
-        return render_template('viewroom.html', user=cur_user(), join_form=join_form, add_room_form=add_room_form,
-                               rooms=user.rooms)
+        return redirect(url_for('addroom', token=add_room_form.token.data))
 
-    if join_form.validate_on_submit():
+    if join_form.is_submitted() and join_form.validate_on_submit():
         if Room.query.filter_by(token=str(join_form.token.data)):
             return redirect(url_for('room', token=join_form.token.data))
     rooms = user.rooms
 
     return render_template('viewroom.html', user=cur_user(), join_form=join_form,add_room_form=add_room_form, rooms=rooms)
-
 
 @requiresauth
 @app.route('/addroom/<string:token>', methods=['GET', 'POST'])
@@ -113,7 +106,7 @@ def room(token):
         if image_form.validate_on_submit():
             if 'image' not in request.files:
                 return render_template('room.html', room=room, user=cur_user(),
-                                       calibrate_url=calibrate_url, users=users,
+                                       calibrate_url=calibrate_url, color=color, users=users,
                                        image_form=UploadImageForm(csrf_enabled=False),
                                        result_url=result_url, Room_Form=Room_Form, loaded=False,
                                        room_map=room_map_url)
@@ -121,7 +114,7 @@ def room(token):
             file = request.files['image']
             if file.filename == '':
                 return render_template('room.html', room=room, user=cur_user(),
-                                       calibrate_url=calibrate_url, users=users,
+                                       calibrate_url=calibrate_url, color=color, users=users,
                                        image_form=UploadImageForm(csrf_enabled=False),
                                        result_url=result_url, Room_Form=Room_Form, loaded=False,
                                        room_map=room_map_url)
@@ -129,6 +122,9 @@ def room(token):
             if file and allowed_image(file.filename):
                 file.save(basedir + '/images/' + room.token + '.' + file.filename.split('.')[-1].lower())
                 image = Image.open(basedir + url_for('get_multi', pid=token))
+                k=image.size[0]/img.size[1]
+                image = image.resize((int(1000*k),1000))
+                image.save(basedir + url_for('get_multi', pid=token))
                 room_map = Image.new('RGB', (image.size[0], image.size[1]), (255, 255, 255))
                 room_map.save(basedir + '/images/' + room.token + '_map.jpg')
                 for member in users[1:]:
@@ -137,16 +133,17 @@ def room(token):
                         if colors[i].split(',')[0] == str(member.id):
                             color = Color.query.filter_by(id=colors[i].split(',')[1]).first().color
                             print(color)
+                            break
                     count_params(room, color, member)
                 return render_template('room.html', room=room, user=cur_user(),
-                                       calibrate_url=calibrate_url, users=users,
+                                       calibrate_url=calibrate_url, color=color, users=users,
                                        image_form=image_form, result_url=result_url,
                                        Room_Form=Room_Form, loaded=True, room_map=room_map_url)
 
     else:
         return redirect(url_for('log'))
     return render_template('room.html', room=room, user=cur_user(),
-                           calibrate_url=calibrate_url, users=users,
+                           calibrate_url=calibrate_url, color=color, users=users,
                            image_form=image_form, result_url=result_url, Room_Form=Room_Form, loaded=False,
                            room_map=room_map_url)
 
@@ -188,49 +185,11 @@ def upload():
     if not form.geotag_data.data:
         form.geotag_data.data = dumps({'needed': False, 'coords': []})
     return render_template('upload_video.html', form=form, user=cur_user(), formats=app.config['ALLOWED_EXTENSIONS'])
-    
 
 
 @app.route('/result/<string:token>/<string:color>', methods=['GET', 'POST'])
 def result(token, color):
-    room = Room.query.filter_by(token=token).first()
-    user = cur_user()
-    colors = room.color_user.split(';')
-    for i in range(len(colors)):
-        if colors[i].split(',')[0] == str(user.id):
-            color = Color.query.filter_by(id=colors[i].split(',')[1]).first().color
-            break
-    rezolutionx = 400
-    rezolutiony = 887
-    sourcex = 800
-    sourcey = 600
-    R = int(color[1:3], 16)
-    G = int(color[3:5], 16)
-    B = int(color[5:7], 16)
-    print(basedir)
-    image = Image.open(basedir + url_for('get_multi', pid=token))
-    width = image.size[0]
-    height = image.size[1]
-    firstx = 0
-    lasty = 0
-    lastx = 0
-    pix = image.load()
-    for i in range(width):
-        for j in range(height):
-            r = pix[i, j][0]
-            g = pix[i, j][1]
-            b = pix[i, j][2]
-            if is_true_pixel(r,g,b,R,G,B):
-                if not (firstx):
-                    firstx = i
-                    firsty = j
-                if lastx < i:
-                    lastx = i
-                if lasty < j:
-                    lasty = j
-    w, h = calibrate_params(firstx, firsty, lastx, lasty, rezolutionx, rezolutiony)
-    k = int((width/w)/(sourcex/rezolutionx)*100)
-    return render_template('rezult.html', pid='1', top=-(firsty/height)*sourcey, left=-(firstx/width)*sourcex, width=k)
+    return render_template('rezult.html', pid='1', top=user.top, left=user.left, width=user.res_k)
 
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():

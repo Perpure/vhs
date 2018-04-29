@@ -18,19 +18,22 @@
 <p>Пригласите участников в комнату</p>
 {% endif %}
 {% endif %}
-<p><a href="{{result_url}}"><button class="result">Начать демонстрацию</button></a></p>
+<p><a href="{{result_url}}"><button class="result" >Начать демонстрацию</button></a></p>
+<hr>
+<button onclick="launchIntoFullscreen(document.documentElement);" class="fullscreenB">Перейти в полноэкранный режим</button>
 <hr>
 <h5>Участники</h5>
 {% for i in users %}
 <p>{{i.login}}</p>
 {% endfor %}
 <hr>
-<img src="{{url_for('get_multi', pid=room_map)}}" style="width:800px">
+<img src="{{url_for('get_multi', pid=room_map)}}" style="width:100%">
 <hr>
 <p>После того, как вы пригласили участников, разместите их устройства на площади для показа, открыв страницу комнаты. На странице капитана (создавший комнату пользователь) нажмите на кнопку калибровки, после чего на всех устройствах откроется цветная сплошная заливка. Нажмите на кнопку загрузки файла и сделайте фотографию устройств, желательно под прямым углом. Если что-то пошло не так, вы можете убрать лишнее освещение, сделать экран на телефонах ярче. После этого выберите желаемое для показа видео и нажмите на кнопку результата. Все устройства начнут воспроизведение.</p>
 {% if room.capitan_id != user.id %}
     <script>
         let speed=3000;
+        var prev = "None";
         setTimeout(function step(){
             $.ajax({
                        url:"/askAct",
@@ -38,12 +41,21 @@
                        dataType:"text",
                        success:function(response)
                        {
-                            if(response=="calibrate")window.location ="{{calibrate_url}}";
+                            if(response=="calibrate" && prev != "calibrate"){
+                            prev = "calibrate";
+                            $('#Body').prepend('<div style="position:fixed; width:110%; height:110%; background:{{color}};"></div>');
+                            $('#menu').prop({"hidden":true})
+                            ;}
+                            if(response=="result"){
+                            $('#Body').prepend('<img src="{{url_for('get_multi', pid=1)}}" style="position:fixed; width:{{user.res_k}}%; top:{{user.top}}%; left:{{user.left}}%;">');
+                            }
+
                        },
                        error:function(){}
                     });
             setTimeout(step,speed);
         },speed);
+
 
         $(function() {
             $(document).ready(function() {
@@ -61,6 +73,19 @@
                   dataType:"json"
             });
         });
+
+        function launchIntoFullscreen(element) {
+              if(element.requestFullscreen) {
+                element.requestFullscreen();
+              } else if(element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+              } else if(element.webkitRequestFullscreen) {
+                element.webkitRequestFullscreen();
+              } else if(element.msRequestFullscreen) {
+                element.msRequestFullscreen();
+              }
+            }
+
     </script>
 {% endif %}
 {% endblock %}
