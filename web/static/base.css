@@ -244,6 +244,12 @@ main
     font-weight:bold;
 }
 
+.commArea
+{
+    resize:none;
+    width:40%;
+}
+
 .Comment
 {
     height:100px;
