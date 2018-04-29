@@ -15,7 +15,7 @@ class RoomForm(FlaskForm):
 
 class UploadImageForm(FlaskForm):
     image = FileField("Выберите файл")
-    submit = SubmitField("Загрузить")
+    submit = SubmitField("Инициализировать фотографию")
 
 
 def not_exist(form, field):

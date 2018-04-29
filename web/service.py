@@ -1,8 +1,8 @@
 from web import app, db
 from web.helper import read_image, read_video, cur_user, is_true_pixel, read_multi
-from web.models import Video
+from web.models import Video, Comment
 
-from flask import url_for, redirect, make_response, request, jsonify, session
+from flask import url_for, redirect, make_response, request, jsonify, session, render_template
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
@@ -66,6 +66,30 @@ def askAct():
         action = user.action
     return action
 
+@app.route('/askNewComm/<string:vid>', methods=['GET', 'POST'])
+def askNewComm(vid):
+    video = Video.get(video_id=vid)
+    comms=video.comments
+    cnt=len(comms)
+    return str(cnt)
+
+@app.route('/getNewComm/<string:vid>/<int:cont>', methods=['GET', 'POST'])
+def getNewComm(vid,cont):
+    video = Video.get(video_id=vid)
+    comms=video.comments
+    result=""
+    for i in range(cont,len(comms)):
+        result+=str(comms[i].user.login)+",,"+str(comms[i].text)+";;"
+    result+=""
+    return result
+
+@app.route('/postComm/<string:vid>/<string:name>/<string:text>', methods=['GET', 'POST'])
+def postComm(vid,name,text):
+    video = Video.get(video_id=vid)
+    user = cur_user()
+    comment = Comment(text, video.id, user.id)
+    comment.save()
+    return "lol"
 
 @app.route('/tellRes', methods=['GET', 'POST'])
 def tellRes():
@@ -76,3 +100,16 @@ def tellRes():
             height = request.json['height']
             user.update_resolution(width=width, height=height)
             return jsonify(width=width, height=height)
+
+@app.route('/startSearch/<string:ask>/<int:view>/<int:dat>', methods=['GET', 'POST'])
+def startSearch(ask,view,dat):
+    sort=""
+    if dat:
+            sort += "date"
+    if view:
+            sort += "views"
+    if ask!=" ":   
+        return render_template('main.html', user=cur_user(), items=Video.get(search=ask,sort=sort))
+    
+    return render_template('main.html', user=cur_user(), items=Video.get())
+

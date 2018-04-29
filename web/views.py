@@ -122,6 +122,9 @@ def room(token):
             if file and allowed_image(file.filename):
                 file.save(basedir + '/images/' + room.token + '.' + file.filename.split('.')[-1].lower())
                 image = Image.open(basedir + url_for('get_multi', pid=token))
+                k=image.size[0]/image.size[1]
+                image = image.resize((int(1000*k),1000))
+                image.save(basedir + url_for('get_multi', pid=token))
                 room_map = Image.new('RGB', (image.size[0], image.size[1]), (255, 255, 255))
                 room_map.save(basedir + '/images/' + room.token + '_map.jpg')
                 for member in users[1:]:
@@ -142,7 +145,7 @@ def room(token):
     return render_template('room.html', room=room, user=cur_user(),
                            calibrate_url=calibrate_url, color=color, users=users,
                            image_form=image_form, result_url=result_url, Room_Form=Room_Form, loaded=False,
-                           room_map=room_map_url)
+                           room_map=room_map_url, map_ex=os.path.exists(basedir + '/images/' + room.token + '_map.jpg'))
 
 
 @app.route('/calibrate/<string:color>', methods=['GET', 'POST'])
@@ -192,12 +195,10 @@ def upload():
     return render_template('upload_video.html', form=form, user=cur_user(), formats=app.config['ALLOWED_EXTENSIONS'])
 
 
-
-@app.route('/result/<string:token>/<string:color>', methods=['GET', 'POST'])
-def result(token, color):
+@app.route('/result/', methods=['GET', 'POST'])
+def result():
     user = cur_user()
     return render_template('rezult.html', pid='1', top=user.top, left=user.left, width=user.res_k)
-
 
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():
