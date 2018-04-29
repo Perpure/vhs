@@ -4,6 +4,14 @@ var height = 200;
 var data;
 var geotags=[];
 
+function mover(){
+        let Height=document.body.scrollHeight;
+        let foot=document.getElementById("Footer");
+        foot.style.top=(Height-130)+"px";
+}
+let butn=document.getElementById("Load");
+butn.addEventListener('click',mover);
+
 
 function create_geotag(coords) {
     var geotag = new ymaps.Placemark(coords,

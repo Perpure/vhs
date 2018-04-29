@@ -12,8 +12,9 @@
 <form action="" method="post" enctype="multipart/form-data">
     <div class="Loader"><div><input id="image" name="image" type="file" accept="image/*" capture></div></div>
     <div id="Calibr"> {{ image_form.submit }} </div>
+<button class="result" id="showRes">Начать демонстрацию</button>
     {% if map_ex %}
-    <p><a href="{{result_url}}"><button class="result" >Начать демонстрацию</button></a></p>
+    
     {% endif %}
 </form>
 {% if room.color_user %}
@@ -91,8 +92,26 @@
                 element.msRequestFullscreen();
               }
             }
-
-    </script>
+</script>
+    
+{%else%}
+<script>
+let show=document.getElementById("showRes");
+show.addEventListener('click',function(){
+    let hash=window.location.href;
+    let sl=0;
+        for(let i=0;i<hash.length;i++)
+            if(hash[i]=='/')sl=i;
+    hash=hash.substring(sl+1);
+    $.ajax({
+                       url:"/showRes/"+hash,
+                       type:"GET",
+                       dataType:"text",
+                       success:function(response){},
+                       error:function(){}
+                    });
+});
+</script>
 {% endif %}
 {% endblock %}
 

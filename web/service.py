@@ -1,6 +1,6 @@
 from web import app, db
 from web.helper import read_image, read_video, cur_user, is_true_pixel, read_multi
-from web.models import Video, Comment
+from web.models import Video, Comment, User, Room
 
 from flask import url_for, redirect, make_response, request, jsonify, session, render_template
 
@@ -112,4 +112,13 @@ def startSearch(ask,view,dat):
         return render_template('main.html', user=cur_user(), items=Video.get(search=ask,sort=sort))
     
     return render_template('main.html', user=cur_user(), items=Video.get())
+
+@app.route('/showRes/<string:token>', methods=['GET', 'POST'])
+def showRes(token):
+    room = Room.query.filter_by(token=token).first()
+    for i in range(len(room.color_user.split(';'))):
+                ID = room.color_user.split(';')[i].split(',')[0]
+                User.query.filter_by(id=ID).first().action = "result"
+    db.session.commit()
+    return 0
 
