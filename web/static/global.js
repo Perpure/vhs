@@ -3,9 +3,13 @@ let body=document.getElementById("Body");
 let wid=body.offsetWidth;
 if(wid<=1400)elem.innerHTML="VHS";
 
-let Height=document.body.scrollHeight;
-let foot=document.getElementById("Footer");
-foot.style.top=(Height-130)+"px";
+function move(){
+        let Height=document.body.scrollHeight;
+        let foot=document.getElementById("Footer");
+        foot.style.top=(Height-130)+"px";
+}
+
+setTimeout(move,5000);
 
 let searching=false;
 let search=document.getElementById("Search");
