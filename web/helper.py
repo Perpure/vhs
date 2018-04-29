@@ -1,7 +1,29 @@
 from config import basedir
-from flask import session
+from web import db, app
 from web.models import User
+from PIL import Image, ImageDraw, ImageEnhance
+from web.models import User
+from web import app
+from functools import wraps
+from flask import session, redirect, url_for
 
+
+def allowed_image(filename):
+    return ('.' in filename and
+            filename.split('.')[-1].lower() in app.config["ALLOWED_IMAGE_EXTENSIONS"])
+
+def allowed_file(filename):
+    return ('.' in filename and
+            filename.split('.')[-1].lower() in app.config["ALLOWED_EXTENSIONS"])
+
+def requiresauth(f):
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+        if cur_user() is None:
+            return redirect(url_for('log'))
+        return f(*args, **kwargs)
+
+    return wrapped
 
 def read_multi(pid):
     path = basedir + '/images/%s.jpg' % pid
@@ -28,81 +50,90 @@ def read_video(vid):
 
 
 def is_true_pixel(r, g, b, R, G, B):
-    return (r in range(R-50, R+50))and(g in range(G-50, G+50))and(b in range(B-50, B+50))
+    k=60
+    return (r in range(R-k, R+k))and(g in range(G-k, G+k))and(b in range(B-k, B+k))
 
 
-def calibrate_params(firstx, firsty, lastx, lasty, rezolutionx, rezolutiony):
-    x = lastx - firstx + 1
-    y = lasty - firsty + 1
-    if (x / y) > (rezolutionx / rezolutiony):
-        e = (x / y) - (rezolutionx / rezolutiony)
-        w = x
-        h = y
-        w1 = 0
-        h1 = 0
-        while True:
-            w -= 1
-            if (w / h) <= (rezolutionx / rezolutiony):
-                if (rezolutionx / rezolutiony) - (w / h) < ((w + 1) / h) - (rezolutionx / rezolutiony):
-                    e = (rezolutionx / rezolutiony) - (w / h)
-                    w1 = w
-                    h1 = h
-                    break
-                else:
-                    e = (rezolutionx / rezolutiony) - ((w + 1) / h)
-                    w1 = w + 1
-                    h1 = h
-                    break
-        w = x
-        h = y
-        while True:
-            h += 1
-            if (w / h) <= (rezolutionx / rezolutiony):
-                if (rezolutionx / rezolutiony) - (w / h) < (w / (h - 1)) - (rezolutionx / rezolutiony):
-                    if ((rezolutionx / rezolutiony) - (w / h)) < e:
-                        w1 = w
-                        h1 = h
-                    break
-                else:
-                    if ((rezolutionx / rezolutiony) - (w / (h - 1))) < e:
-                        w1 = w
-                        h1 = h - 1
-                    break
-    else:
-        e = (rezolutionx / rezolutiony) - (x / y)
-        w = x
-        h = y
-        w1 = 0
-        h1 = 0
-        while True:
-            w += 1
-            if (w / h) <= (rezolutionx / rezolutiony):
-                if (rezolutionx / rezolutiony) - (w / h) < ((w - 1) / h) - (rezolutionx / rezolutiony):
-                    e = (rezolutionx / rezolutiony) - (w / h)
-                    w1 = w
-                    h1 = h
-                    break
-                else:
-                    e = (rezolutionx / rezolutiony) - ((w - 1) / h)
-                    w1 = w - 1
-                    h1 = h
-                    break
-        w = x
-        h = y
-        while True:
-            h -= 1
-            if (w / h) <= (rezolutionx / rezolutiony):
-                if (rezolutionx / rezolutiony) - (w / h) < (w / (h + 1)) - (rezolutionx / rezolutiony):
-                    if ((rezolutionx / rezolutiony) - (w / h)) < e:
-                        w1 = w
-                        h1 = h
-                    break
-                else:
-                    if ((rezolutionx / rezolutiony) - (w / (h + 1))) < e:
-                        w1 = w
-                        h1 = h + 1
-                    break
-    return w1, h1
+def count_params(room, color, user):
+    rezolutionx = user.device_width
+    rezolutiony = user.device_height
+    source = Image.open(basedir + url_for('get_multi', pid=1))
+    sourcex = source.size[0]
+    sourcey = source.size[1]
+    R = int(color[1:3], 16)
+    G = int(color[3:5], 16)
+    B = int(color[5:7], 16)
+    image = Image.open(basedir + url_for('get_multi', pid=room.token))
+    converter = ImageEnhance.Color(image)
+    image = converter.enhance(2)
+    width = image.size[0]
+    height = image.size[1]
+    firstx = 0
+    firsty = 0
+    lasty = 0
+    lastx = 0
+    pix = image.load()
+    for i in range(width):
+        for j in range(height):
+            r = pix[i, j][0]
+            g = pix[i, j][1]
+            b = pix[i, j][2]
+            if is_true_pixel(r,g,b,R,G,B):
+                if not (firstx):
+                    try:
+                        for f in range(-20,-15):
+                            if is_true_pixel(pix[i-f, j-f][0],pix[i-f, j-f][1],pix[i-f, j-f][2],R,G,B):
+                                firstx = i
+                                firsty = j
+                                break
+                    except:
+                        pass
+                if firstx > i:
+                    try:
+                        for f in range(-20,-15):
+                            if is_true_pixel(pix[i-f, j-f][0],pix[i-f, j-f][1],pix[i-f, j-f][2],R,G,B):
+                                firstx = i
+                                break
+                    except:
+                        pass
+                if firsty > j:
+                    try:
+                        for f in range(-20,-15):
+                            if is_true_pixel(pix[i-f, j-f][0],pix[i-f, j-f][1],pix[i-f, j-f][2],R,G,B):
+                                firsty = j
+                                break
+                    except:
+                        pass
+                if lastx < i:
+                    try:
+                        for f in range(15,20):
+                            if is_true_pixel(pix[i-f, j-f][0],pix[i-f, j-f][1],pix[i-f, j-f][2],R,G,B):
+                                lastx = i
+                                break
+                    except:
+                        pass
+                if lasty < j:
+                    try:
+                        for f in range(15,20):
+                            if is_true_pixel(pix[i-f, j-f][0],pix[i-f, j-f][1],pix[i-f, j-f][2],R,G,B):
+                                lasty = j
+                                break
+                    except:
+                        pass
+    w = lastx-firstx
+    user.color = color
+
+    k = int((width / w) / (sourcex / rezolutionx) * 100)
+    user.res_k = k
+    user.top = -(firsty / height) * sourcey * k / 100
+    user.left = -(firstx / width) * sourcex * k / 100
+    db.session.commit()
+    room_map = Image.open(basedir + url_for('get_multi', pid=room.token+'_map'))
+    draw = ImageDraw.Draw(room_map)
+    for i in range(firstx,lastx):
+        for j in range(firsty,lasty):
+            draw.point((i, j), (R,G,B))
+    room_map.save(basedir + '/images/' + room.token + '_map.jpg')
 
 
 def cur_user():

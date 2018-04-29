@@ -18,13 +18,30 @@
         {% endfor %}
         )</p>
         <div class="Loader"><div> {{ form.video }} </div></div>
-        <input name="tags" placeholder="write some tags" value="my video">
-        <div> {{ form.geotag_is_needed.label }} {{ form.geotag_is_needed }}</div>
-        <div> {{ form.geotag_data }}</div>
-        <div id="map"></div>
+        <div> <button type='button' id="geotag_is_needed">Прикрепить геотег</button></div>
         <br>
+        <div style="display:none;" id="map-info"><p>Для добавления новых тегов дважды нажмите на карту. Для смены цвета тега кликните по нему.
+                Красные теги перемещаются при клике по карте, любые теги можно двигать перетаскиванием.
+                Преред добавлением тега рекомендуется сделать все теги синими.
+                Для удаления тега щёлкните по нему правой кнопкой мыши.</p></div>
+        <div id="map"></div>
+        <div> {{ form.geotag_data }}</div>
+        {% if form.geotag_data.errors %}
+            {% for error in form.geotag_data.errors %}
+            <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+        <div id="map"></div>
         <div style="color: red;"> {{ error }} </div>
-        <div> {{ form.submit }} </div>
+        <div>{{ form.tags.label }}</div>
+        <input name="tags" placeholder="добавьте теги через enter" value="my video">
+        <div>{{ form.tags(rows=5, cols=60, display=none) }}</div>
+        {% if form.tags.errors %}
+            {% for error in form.tags.errors %}
+            <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+        <div margin-top = 5px> {{ form.submit }} </div>
     </form>
 
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
@@ -34,5 +51,26 @@
         var input = document.querySelector('input[name=tags]'),
         tagify = new Tagify( input );
     </script>
+    <script type="text/javascript">
+        $( init );
+
+        function init() {
+            $('#submit').bind( 'submit', addTags );
+        }
+
+        function addTags() {
+            let mas = document.body.getElementsByTagName('span');
+            for (let i = 0; i < mas.length-1; i++){
+            tags.value = tags.value + "," + mas[i].innerHTML;
+            }
+            tags.value = tags.value.substring(1, tags.value.length);
+        }
+    </script>
+
+    <style>
+       #tags {
+        display: none;
+       }
+    </style>
 
 {% endblock %}

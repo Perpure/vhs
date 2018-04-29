@@ -5,6 +5,7 @@ from wtforms import StringField, PasswordField, SubmitField, TextAreaField, Sele
 from wtforms.validators import Length, EqualTo, ValidationError, DataRequired, Optional
 from web.models import User , Room
 from .helper import cur_user
+from flask.json import JSONDecoder
 from wtforms.widgets import CheckboxInput, ListWidget
 
 
@@ -14,7 +15,7 @@ class RoomForm(FlaskForm):
 
 class UploadImageForm(FlaskForm):
     image = FileField("Выберите файл")
-    submit = SubmitField("Загрузить")
+    submit = SubmitField("Инициализировать фотографию")
 
 
 def not_exist(form, field):
@@ -26,9 +27,16 @@ def exist(form, field):
     if User.get(login=field.data) is None:
         raise ValidationError("Такого пользователя не существует")
 
+
 def exist_token(form,field):
     if Room.get(token=field.data):
         raise ValidationError("Такая комната уже существует")
+
+
+def not_exist_token(form,field):
+    if not Room.get(token=field.data):
+        raise ValidationError("Такой комнаты нет")
+
 
 def match(form, field):
     user = None
@@ -38,6 +46,12 @@ def match(form, field):
         user = User.get(login=form.login_log.data)
     if user and not user.check_pass(field.data):
         raise ValidationError("Неправильный пароль")
+
+
+def have_geodata(form, field):
+    data = JSONDecoder().decode(field.data)
+    if data['needed'] and not data['coords']:
+        raise ValidationError("Выставьте геотег")
 
 
 class RegForm(FlaskForm):
@@ -52,7 +66,7 @@ class RegForm(FlaskForm):
 
 
 class JoinForm(FlaskForm):
-    token = StringField("Токен")
+    token = StringField("Токен", validators=[not_exist_token, Length(5, message='Токен слишком короткий')])
     submit = SubmitField("Присоединиться")
 
 
@@ -69,8 +83,8 @@ class UploadVideoForm(FlaskForm):
     """Форма загрузки видео"""
     title = StringField("Введите название видео", validators=[Length(3, message='Название слишком короткое')])
     video = FileField("Выберите файл")
-    geotag_is_needed = BooleanField('Прикрепить геотег?')
-    geotag_data = HiddenField()
+    geotag_data = HiddenField(validators=[have_geodata])
+    tags = TextAreaField("Тэги", validators=[Length(2, message='Тэг слишком короткий'), Optional()])
     submit = SubmitField("Загрузить")
 
 
@@ -91,8 +105,8 @@ class UserProfileForm(FlaskForm):
 class SearchingVideoForm(FlaskForm):
     """Форма поиска видео"""
     search = StringField("Название")
-    date = BooleanField()
-    views = BooleanField()
+    date = BooleanField("Дата")
+    views = BooleanField("Просмотры")
     submit = SubmitField("Поиск")
 
 
@@ -101,10 +115,13 @@ class AddCommentForm(FlaskForm):
         csrf = False
 
     message = TextAreaField("Комментарий", validators=[DataRequired(message='Введите текст'),
-                                                       Length(1, message='Текст слишком короткий')])
+                                                       Length(3, message='Текст слишком короткий')])
     submit = SubmitField("Запостить")
 
 
+
 class AddRoomForm(FlaskForm):
-    token = StringField("Название комнаты", validators=[DataRequired(),exist_token,Length(5, message='Текст слишком короткий')])
+    token = StringField("Название комнаты", validators=[DataRequired(),
+                                                        exist_token,
+                                                        Length(5, message='Текст слишком короткий')])
     submit = SubmitField("Создать")

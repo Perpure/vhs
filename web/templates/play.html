@@ -5,8 +5,13 @@
     </video>
 <p class="videoTitle">{{ video.title }}</p>
 <p class="videoDate">Добавлено {{video.date}}</p>
+{% for tag in video.tags %}
+<div class="Tag">
+    <p>{{ '#'+tag.text+' ' }}</p>
+</div>
+{% endfor %}
 {%if user %}
-<form action="" method="post">
+<!--<form action="" method="post">
         <div>{{ form.message.label }}</div>
         <div>{{ form.message(rows=5, cols=60) }}</div>
         {% if form.message.errors %}
@@ -15,13 +20,17 @@
             {% endfor %}
         {% endif %}
         {{ form.submit }}
-</form>
+</form>-->
+<textarea id="txtPlate" class="commArea"></textarea>
+<br>
+<input type="submit" value="Запостить" id="addC">
 
 {% else %}
 <a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы комментировать
 {%endif%}
 <p>Просмотры: {{ video.viewers | length }}</p>
 <p>Комментарии</p>
+<div id="CSect">
 {% for comment in video.comments %}
 <div class="Comment">
     <img src="../static/a.png" alt="" class="commAva">
@@ -31,4 +40,6 @@
     </div>
 </div>
 {% endfor %}
+</div>
+<script src="{{ url_for('static', filename='video.js') }}"></script>
 {% endblock %}

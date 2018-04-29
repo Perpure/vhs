@@ -6,7 +6,7 @@
 ███─█──█───█
 ─█──█──█─███
 -->
-<html lang="en">
+<html lang="en" id="html">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,39 +20,93 @@
 </head>
 <body id="Body">
   <header>
-    <div class="Logo">
-      <a href="{{url_for('main')}}" class="Link"><img src="{{ url_for('static', filename='vhs4.png') }}" alt="" class="LogoImg"></a>
-      <div class="LogoTxt" id="logoTxt">VideoHostingService</div>
-    </div>
-    <div class="midHead"></div>
-    <div class="Menu">
-      Меню
-      <div class="inMenu">
-        <a href="{{url_for('main')}}" class="Link" id="Home"><div class="menuBtn"><div class="menuTxt">Главная</div><img src="{{ url_for('static', filename='main.png') }}" class="menuImg" id="HomImg"></div></a>
+    <div class="midHead">
+        <div class="logo">
+        <a href="{{url_for('main')}}" class="Link"><img src="{{ url_for('static', filename='vhs4.png') }}" alt="" class="LogoImg"></a>
+        <div class="LogoTxt" id="logoTxt">VideoHostingService</div>
+        </div>
+        <div class="navMenu">
+        <a href="{{url_for('main')}}" class="Link" id="Home"><div class="navMen">Главная</div></a>
+        <div class="navMen" id="Search">Поиск</div>
         {%if user %}
-        <a href="{{url_for('cabinet')}}" class="Link" id="My"><div class="menuBtn"><div class="menuTxt">Мой Канал</div><img src="{{ url_for('static', filename='channel.png') }}" class="menuImg"></div></a>
-        <a href="{{url_for('viewroom')}}" class="Link" id="Multi"><div class="menuBtn"><div class="menuTxt">Мультискрин</div><img src="{{ url_for('static', filename='multi.png') }}" class="menuImg"></div></a>
-        <a href="{{url_for('upload')}}" class="Link" id="Load"><div class="menuBtn"><div class="menuTxt">Загрузить Видео</div><img src="{{ url_for('static', filename='load.png') }}" class="menuImg"></div></a>
-        <a href="{{url_for('videos_map')}}" class="Link" id="Map"><div class="menuBtn"><div class="menuTxt">Карта</div><img src="{{ url_for('static', filename='map.png') }}" class="menuImg"></div></a>
-        <a href="{{url_for('logout')}}" class="Link" id="Out"><div class="menuBtn"><div class="menuTxt">Выйти</div><img src="{{ url_for('static', filename='out.png') }}" class="menuImg"></div></a>
+        <a href="{{url_for('cabinet')}}" class="Link" id="My"><div class="navMen">Мой Канал</div></a>
+        <a href="{{url_for('views_story')}}" class="Link" id="Views"><div class="navMen">История</div></a>
+        <a href="{{url_for('viewroom')}}" class="Link" id="Multi"><div class="navMen">Мультискрин</div></a>
+        <a href="{{url_for('upload')}}" class="Link" id="Load"><div class="navMen">Загрузить Видео</div></a>
+        <a href="{{url_for('videos_map')}}" class="Link" id="Map"><div class="navMen">Карта</div></a>
+        <a href="{{url_for('logout')}}" class="Link" id="Out"><div class="navMen navEdge">Выйти</div></a>
         {%else%}
-        <a href="{{url_for('log')}}" class="Link" id="Come"><div class="menuBtn"><div class="menuTxt">Войти</div><img src="{{ url_for('static', filename='log.png') }}" class="menuImg" id="ComeImg"></div></a>
-        <a href="{{url_for('reg')}}" class="Link" id="Log"><div class="menuBtn"><div class="menuTxt">Регистрация</div><img src="{{ url_for('static', filename='reg.png') }}" class="menuImg" id="LogImg"></div></a>
+        <a href="{{url_for('log')}}" class="Link" id="Come"><div class="navMen">Войти</div></a>
+        <a href="{{url_for('reg')}}" class="Link" id="Log"><div class="navMen navEdge">Регистрация</div></a>
         {%endif%}
-      </div>
+        </div>
     </div>
+    <div class="Searcher" id="searcher">
+        <input type="text" class="inSearch" id="searchKey">
+        <div class="searchField" value=0 id="Date">Дата</div>
+        <div class="searchField" value=0 id="byViews">Просмотры</div>
+        <input type="submit" value="Поиск" class="searchBtn" id="startSearch">
+    </div>
+    <div class="Shadow" id="Shad"></div>
   </header>
   <main>
-    <div class="Content">
+    <div class="Content" id="Contentt">
       {% block content %}{% endblock %}
     </div>
   </main>
-  <footer>
+  <footer id="Footer">
     <div class="Foot">
-      <div class="Contact"><a href="https://vk.com/shpteam" class="Link"><img src="{{ url_for('static', filename='vk.png') }}" alt="" class="contImg"></a><img src="{{ url_for('static', filename='fb.png') }}" alt="" class="contImg"></div>
-      2018, 53rd Group
+      <div class="footLine"></div><div class="Contact"><a href="https://vk.com/shpteam" class="Link"><img src="{{ url_for('static', filename='vk.png') }}" alt="" class="contImg"></a><img src="{{ url_for('static', filename='fb.png') }}" alt="" class="contImg contEdge"></div><div class="footLine"></div>
+      <p class="Creator">2018, 53rd Group</p>
     </div>
   </footer>
 </body>
 <script src="{{ url_for('static', filename='global.js') }}"></script>
+<script>
+    function swit(e){
+        let elem=e.currentTarget;
+        if(elem.value)
+        {
+            elem.style.backgroundColor="rgba(0,0,0,0)";
+            elem.style.fontWeight="normal";
+            elem.style.color="grey";
+            elem.value=0;
+        }
+        else
+        {        
+            elem.style.backgroundColor="#f0cb8e";
+            elem.style.fontWeight="bold";
+            elem.style.color="black";
+            elem.value=1;
+        }
+    }
+
+    let start=document.getElementById("startSearch");
+    let date=document.getElementById("Date");
+    let views=document.getElementById("byViews");
+    let key=document.getElementById("searchKey");
+
+    views.value=0;
+    date.value=0;
+    views.addEventListener('click',swit);     
+    date.addEventListener('click',swit);  
+     
+
+    start.addEventListener('click',function(){
+        let val=key.value;
+        let vw=views.value;
+        let dt=date.value;
+        if(val=="")val=" ";
+        $.ajax({
+                       url:"/startSearch/"+val+"/"+vw+"/"+dt,
+                       type:"GET",
+                       dataType:"html",
+                       success:function(response)
+                       {
+                            Body.innerHTML=response;
+                       },
+                       error:function(){}
+        });
+    });
+</script>
 </html>
