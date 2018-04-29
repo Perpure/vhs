@@ -4,7 +4,10 @@ body
 {
   font-family: 'Roboto', sans-serif;
   background-color: white;
-  background-image:url("bg4.png");
+  /*background-image:url("bg4.png");*/
+  background-color:rgba(240, 203, 142,0.2);
+  height:100vh;
+position:relative;
 }
 
 header
@@ -33,6 +36,7 @@ input
     border-bottom:2px solid #ffb366;
     margin-bottom:10px;
     padding-left:5px;
+    background-color:rgba(240, 203, 142,0.5);
 }
 
 input[type="submit"], button
@@ -77,6 +81,11 @@ input[type="file"]:hover
     cursor:pointer;
 }
 
+textarea
+{
+    resize:none;
+}
+
 .Logo,.midHead,.Menu
 {
   display: inline-block;
@@ -84,16 +93,17 @@ input[type="file"]:hover
   height: 100%;
   padding-bottom: 5px;
   vertical-align: top;
+  border-bottom:2px solid rgba(240, 203, 142,0.5);
 }
 .Logo,.Menu
 {
-  width: 19.5%;
+  width: 20%;
   padding-left: 1%;
 }
 
 .Logo
 {
-  margin-right: 0.5%;
+  /*margin-right: 0.5%;*/
 }
 
 
@@ -114,14 +124,107 @@ input[type="file"]:hover
   cursor: default;
 }
 
+.logo
+{
+    height:100%;
+    width:15%;
+    display:inline-block;
+    vertical-align:top;
+}
+
 .midHead
 {
-  width: 60%;
-  margin-left: -4px;
-  margin-right: 0.5%;
+  width: 100%;
+  margin-left: -5px;
+  /*margin-right: 0.5%;*/
   padding-left: 1%;
   padding-right: 1%;
+  float:right;
+  position:relative;
 }
+
+.navMenu
+{
+    display:inline-block;
+}
+
+.navMen
+{
+    display:inline-block;
+    height:50px;
+    padding-left:15px;
+    padding-right:15px;
+    margin-left:-5px;
+    padding-top:15px;
+    text-align:center;
+    color:black;
+    border-right:1px solid rgba(240, 203, 142,0.5);
+}
+
+.navEdge
+{
+    border-right:none;
+}
+
+.navMen:hover
+{
+    cursor:pointer;
+    border-bottom:2px solid rgb(232, 171, 74);
+    background-color:rgba(240, 203, 142,0.4);
+    font-weight:bold;
+    border-right:none;
+    margin-right:1px;
+}
+
+.Searcher
+{
+    position: absolute;
+    height:50px;
+    top:60px;
+    left:17%;
+    width:70%;
+    background-color:#F7E2C0;
+    padding:5px;
+    display:none;
+}
+
+.inSearch
+{
+    vertical-align:top;
+    width:70%;
+    height:40px;
+}
+
+.searchBtn
+{
+    vertical-align:top;
+}
+
+.searchField
+{
+    display:inline-block;
+    height:100%;
+    color:grey;
+    padding:7px;
+}
+
+.searchField:hover
+{
+    cursor:pointer;
+    color:black;
+}
+
+.Shadow
+{
+    position:absolute;
+    top:110px;
+    left:18%;
+    background-color:rgba(0,0,0,0.5);
+    width:68%;
+    height:10px;
+    display:none;
+}
+
 .Menu
 {
   margin-left: -5px;
@@ -130,6 +233,7 @@ input[type="file"]:hover
   padding-top: 15px;
   position: relative;
   font-size: 120%;
+  float:right;
 }
 .Menu:hover
 {
@@ -191,17 +295,15 @@ input[type="file"]:hover
 }
 
 
-
 main
 {
-  width: 60%;
+  width: 70%;
   margin: 0 auto;
 }
 
 .Content
 {
   width: 100%;
-  background-color: #F7E2C0;
   padding: 1.66%;
   margin-bottom: 15px;
 }
@@ -209,8 +311,9 @@ main
 .video
 {
     display:inline-block;
-    width:150px;
-    height:200px;
+    width:14%;
+    margin-right:2%;
+    margin-bottom:10px;
 }
 
 .video:hover
@@ -222,7 +325,6 @@ main
 {
    display:block;
    width:100%;
-   height:90px;
 }
 
 .videoName
@@ -230,6 +332,8 @@ main
     font-weight:bold;
     font-size:90%;
     margin-bottom:3px;
+    overflow:hidden;
+    height:42px;
 }
 
 .videoAth,.videoView
@@ -286,15 +390,19 @@ main
 
 footer
 {
-  width: 60%;
+  width: 100%;
   margin: 0 auto;
+  position:absolute;
+  height:129px;
+ 
 }
 
 .Foot{
   width: 100%;
   padding: 1.66%;
-  background-color: #F7E2C0;
+  /*background-color: #F7E2C0;*/
   font-weight:bold;
+  text-align:center;
   /*background: linear-gradient(to bottom, #c8d5e6, #dbe7f0);*/
 }
 
@@ -302,6 +410,26 @@ footer
 {
    margin-bottom:10px;
    height:41px;
+   display:inline-block;
+   width:10%;
+}
+
+.footLine
+{
+  display:inline-block;
+  vertical-align:top;
+  margin-bottom:10px;
+  height:20px;
+  width:45%;
+  border-bottom:2px solid #ffb366;
+}
+
+.fLine
+{
+    align:center;
+    width:100%;
+    color:rgb(240, 203, 142);
+    height:2px;
 }
 
 .contImg
@@ -312,6 +440,8 @@ footer
     vertical-align:top;
 }
 
+
+
 .contImg:hover
 {
     height:41px;
@@ -319,9 +449,14 @@ footer
     margin-right:9px;
 }
 
+.contEdge,.contEdge:hover
+{
+    margin-right:0;
+}
+
 .INP
 {
-    width:300px;
+    width:200px;
     margin:0 auto;
 }
 
