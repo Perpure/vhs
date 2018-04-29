@@ -172,7 +172,7 @@ def upload():
         if file.filename == '':
             return redirect(request.url)
 
-          if file and allowed_file(file.filename):
+        if file and allowed_file(file.filename):
             video = save_video(file, form.title.data)
             data = JSONDecoder().decode(form.geotag_data.data)
             if data['needed']:
@@ -194,7 +194,7 @@ def upload():
 
 
 @app.route('/result/<string:token>/<string:color>', methods=['GET', 'POST'])
-def result(token, color
+def result(token, color):
     user = cur_user()
     return render_template('rezult.html', pid='1', top=user.top, left=user.left, width=user.res_k)
 
