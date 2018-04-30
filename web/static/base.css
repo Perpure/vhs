@@ -7,15 +7,13 @@ body
   /*background-image:url("bg4.png");*/
   background-color:rgba(240, 203, 142,0.2);
   height:100vh;
-position:relative;
+  position:relative;
 }
 
 header
 {
-  margin-bottom: 23px;
-  height: 50px;
-  margin-top: -8px;
   width: 100%;
+  vertical-align: top;
 }
 
 a
@@ -86,27 +84,20 @@ textarea
     resize:none;
 }
 
-.Logo,.midHead,.Menu
+.midHead
 {
   display: inline-block;
   background-color: #F7E2C0;
-  height: 100%;
+  height: 50px;
   padding-bottom: 5px;
   vertical-align: top;
   border-bottom:2px solid rgba(240, 203, 142,0.5);
-}
-.Logo,.Menu
-{
-  width: 20%;
+  margin-bottom:10px;
+  width: 100%;
   padding-left: 1%;
+  padding-right: 1%;
+  position:relative;
 }
-
-.Logo
-{
-  /*margin-right: 0.5%;*/
-}
-
-
 
 .LogoImg,.LogoTxt
 {
@@ -115,10 +106,13 @@ textarea
   vertical-align: top;
   margin-top:5px;
 }
+
 .LogoTxt
 {
   padding: 10px;
+  padding-right:0;
 }
+
 .LogoTxt:hover
 {
   cursor: default;
@@ -132,17 +126,6 @@ textarea
     vertical-align:top;
 }
 
-.midHead
-{
-  width: 100%;
-  margin-left: -5px;
-  /*margin-right: 0.5%;*/
-  padding-left: 1%;
-  padding-right: 1%;
-  float:right;
-  position:relative;
-}
-
 .navMenu
 {
     display:inline-block;
@@ -152,10 +135,8 @@ textarea
 {
     display:inline-block;
     height:50px;
-    padding-left:15px;
-    padding-right:15px;
+    padding:15px;
     margin-left:-5px;
-    padding-top:15px;
     text-align:center;
     color:black;
     border-right:1px solid rgba(240, 203, 142,0.5);
@@ -171,7 +152,6 @@ textarea
     cursor:pointer;
     border-bottom:2px solid rgb(232, 171, 74);
     background-color:rgba(240, 203, 142,0.4);
-    font-weight:bold;
     border-right:none;
     margin-right:1px;
 }
@@ -225,75 +205,12 @@ textarea
     display:none;
 }
 
-.Menu
-{
-  margin-left: -5px;
-  transition: 0.5s;
-  text-align: center;
-  padding-top: 15px;
-  position: relative;
-  font-size: 120%;
-  float:right;
-}
-.Menu:hover
-{
-  background-color: #ffcc99;
-  cursor: pointer;
-}
-
-.Menu:hover .menuBtn
-{
-  display: block;
-}
-
-.inMenu
-{
-  position: absolute;
-  top: 50px;
-  left: 0px;
-  width: 100%;
-  padding-top: 23px;
-}
-
-.menuBtn
-{
-  transition: 0.5s;
-  width: 100%;
-  height: 40px;
-  padding: 1%;
-  padding-left:15px;
-  text-align: left;
-  background-color: #F7E2C0;
-  display: none;
-  padding-top: 8px;
-  color:black;
-}
-
-.menuBtn:hover,.tokenBtnMid:hover,.tokenBtnEdge:hover,input[type="submit"]:hover
+.tokenBtnMid:hover,.tokenBtnEdge:hover,input[type="submit"]:hover
 {
   background-color:rgba(240, 203, 142,0.5);
   cursor: pointer;
   color:black;
 }
-
-.menuImg
-{
-    height:90%;
-    vertical-align:top;
-    float:right;
-}
-
-.menuTxt
-{
-    display:inline-block;
-    transition:0.5s;
-}
-
-.menuBtn:hover > .menuTxt
-{
-    margin-left:10px;
-}
-
 
 main
 {
@@ -400,10 +317,8 @@ footer
 .Foot{
   width: 100%;
   padding: 1.66%;
-  /*background-color: #F7E2C0;*/
   font-weight:bold;
   text-align:center;
-  /*background: linear-gradient(to bottom, #c8d5e6, #dbe7f0);*/
 }
 
 .Contact
@@ -503,48 +418,70 @@ footer
     padding-top:10px;
 }
 
-@media (max-width:1050px)
+@media (max-width:1065px)
 {
-    .Logo,.midHead,.Menu
+    .midHead
     {
-      width:100%;
-      margin-bottom:10px;
-      height:50px;
-      margin-right:0%;
-      margin-left:0%;
-    }
-    
-    .Logo
-    {
-      text-align:center;
+      height:100%;
+      padding-bottom:0;
     }
 
-    header
-    {
-      height:180px;
-    }
-    
-    main,footer
+    main,.logo
     {
       width:100%;
     }
-    .inMenu
+    
+    .navMenu
     {
-      background-color:rgba(0, 0, 0,0.5);
-      padding-bottom:10px;
-      display: none;
+      text-align:center;
+      border-top:2px solid rgba(240, 203, 142,0.5);
+      width:100%;
     }
-    .Menu:hover > .inMenu
+    
+    .navMen:hover
     {
-      display: block;
+      border:none;
     }
-    .menuBtn:hover
+    
+    .logo
     {
-      background-color:rgba(240, 203, 142,1);
+      margin:0 auto;
+      height:50px;
+      display:block;
+      text-align:center;
+    }
+    .video
+    {
+      width:18%;
+    }
+
+    .Searcher
+{
+    top:110px;
+    width:100%;
+    left:0;
+}
+
+
+    .Shadow
+    {
+        top:160px;
+        left:1%;
+        width:98%;
+    }
+
+}
+
+@media (max-width:500px)
+{
+    .video
+    {
+      width:80%;
+      margin:0 auto;
+      display:block;
     }
 }
 
-=======
 
 .content{
     width: 100%;

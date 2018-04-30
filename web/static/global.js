@@ -1,15 +1,11 @@
 let elem=document.getElementById("logoTxt");
 let body=document.getElementById("Body");
 let wid=body.offsetWidth;
-if(wid<=1400)elem.innerHTML="VHS";
+if(wid<=550)elem.innerHTML="VHS";
 
-function move(){
-        let Height=document.body.scrollHeight;
-        let foot=document.getElementById("Footer");
-        foot.style.top=(Height-130)+"px";
-}
-
-setTimeout(move,2000);
+let Height=document.body.scrollHeight;
+let foot=document.getElementById("Footer");
+foot.style.top=(Height-130)+"px";
 
 let searching=false;
 let search=document.getElementById("Search");

@@ -4,13 +4,28 @@ var height = 200;
 var data;
 var geotags=[];
 
+let mapOpened=false;
+
 function mover(){
+    if(mapOpened)
+    {
         let Height=document.body.scrollHeight;
         let foot=document.getElementById("Footer");
-        foot.style.top=(Height-130)+"px";
+        foot.style.top=(Height-480)+"px";
+        mapOpened=false;
+    }
+    else
+    {
+        let Height=document.body.scrollHeight;
+        let foot=document.getElementById("Footer");
+        foot.style.top=(Height+170)+"px";
+        mapOpened=true;
+    }   
 }
-let butn=document.getElementById("Load");
+
+let butn=document.getElementById("geotag_is_needed");
 butn.addEventListener('click',mover);
+
 
 function create_geotag(coords) {
     var geotag = new ymaps.Placemark(coords,
