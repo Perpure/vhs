@@ -126,6 +126,14 @@ textarea
     vertical-align:top;
 }
 
+.menuHolder
+{
+    width:100%;
+    display:none;
+    height:50px;
+    padding-top:13px;
+}
+
 .navMenu
 {
     display:inline-block;
@@ -479,6 +487,16 @@ footer
       width:80%;
       margin:0 auto;
       display:block;
+    }
+    .navMen
+    {
+        display:none;
+        border-right:none;
+        border-bottom:1px solid rgba(240, 203, 142,0.5);
+    }
+    .menuHolder
+    {
+        display:block;
     }
 }
 
