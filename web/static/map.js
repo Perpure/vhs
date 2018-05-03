@@ -87,6 +87,7 @@ function show_map() {
     $('#map').css('width', width+'px');
     $('#map').css('height', height+'px');
     $('#map-info').show();
+    map.container.fitToViewport();
 }
 
 function hide_map() {
@@ -94,6 +95,7 @@ function hide_map() {
     $('#map').css('height', '0px');
     $('#geotag_is_needed').removeClass('btn_pushed');
     $('#map-info').hide();
+    map.container.fitToViewport();
 }
 
 ymaps.ready(function () {
