@@ -5,20 +5,24 @@
     </video>
 <p class="videoTitle">{{ video.title }}</p>
 <p class="videoDate">Добавлено {{video.date}}</p>
+<p>Просмотры: {{ video.viewers | length }}</p>
 
 {%if user%}
-<input type="submit" name="btn" value="Понравилось">
-<input type="submit" name="btn" value="НЕ понравилось">
 <!--<form method="post">-->
-    <!--<div>{{ form.submit }}</div>-->
+    <!--<div>-->
+        <!--<button type='button' id="like">Нравится</button>-->
+        <!--<button type='button' id="dislike">НЕ нравится</button>-->
+    <!--</div>-->
 <!--</form>-->
-<!--<form>-->
-    <!--<div>{{ dislike_form.submit }}</div>-->
-<!--</form>-->
+<form method="post">
+    <input name="like_btn" type="submit" value="Нравится">
+    <input name="dislike_btn" type="submit" value="НЕ нравится">
+</form>
 {%else%}
 <a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы поставить оценку
 {%endif%}
-<br>
+<div>Лайки: {{ video.likes }}</div>
+<div>Дизлайки: {{ video.dislikes }}</div>
 
 {% for tag in video.tags %}
 <div class="Tag">
@@ -43,7 +47,6 @@
 {% else %}
 <a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы комментировать
 {%endif%}
-<p>Просмотры: {{ video.viewers | length }}</p>
 <p>Комментарии</p>
 <div id="CSect">
 {% for comment in video.comments %}

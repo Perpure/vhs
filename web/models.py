@@ -82,6 +82,9 @@ class Video(db.Model):
     longitude = db.Column(db.Float(), nullable=True)
     latitude = db.Column(db.Float(), nullable=True)
 
+    likes = db.Column(db.Integer())
+    dislikes = db.Column(db.Integer())
+
     marks = db.relationship('Mark', backref='video', lazy=True)
 
     comments = db.relationship('Comment', backref='video', lazy='joined')
@@ -100,6 +103,8 @@ class Video(db.Model):
         self.id = hashlib.md5((hash + self.date.isoformat()).encode("utf-8")).hexdigest()
         self.path = os.path.join(app.config['VIDEO_SAVE_PATH'], self.id)
         self.user_id = user.id
+        self.likes = 0
+        self.dislikes = 0
 
         db.session.add(self)
         db.session.commit()
