@@ -5,6 +5,21 @@
     </video>
 <p class="videoTitle">{{ video.title }}</p>
 <p class="videoDate">Добавлено {{video.date}}</p>
+
+{%if user%}
+<input type="submit" name="btn" value="Понравилось">
+<input type="submit" name="btn" value="НЕ понравилось">
+<!--<form method="post">-->
+    <!--<div>{{ form.submit }}</div>-->
+<!--</form>-->
+<!--<form>-->
+    <!--<div>{{ dislike_form.submit }}</div>-->
+<!--</form>-->
+{%else%}
+<a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы поставить оценку
+{%endif%}
+<br>
+
 {% for tag in video.tags %}
 <div class="Tag">
     <p>{{ '#'+tag.text+' , ' }}</p>

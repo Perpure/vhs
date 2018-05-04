@@ -64,7 +64,7 @@ class Mark(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
     is_like = db.Column(db.Boolean, nullable=False)
 
-    def save(self,is_like):
+    def save(self, is_like):
         self.is_like = is_like
         db.session.add(self)
         db.session.commit()
@@ -89,7 +89,7 @@ class Video(db.Model):
     tags = db.relationship('Tag', backref='video', lazy='joined')
 
     viewers = db.relationship('User', secondary=Views, backref='views', lazy='joined')
-    
+
     geotags = db.relationship("Geotag", backref="video", lazy="joined")
 
     def __init__(self, title):
