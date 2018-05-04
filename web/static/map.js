@@ -5,11 +5,10 @@ var data;
 var geotags=[];
 
 function mover(){
-        let Height=document.body.scrollHeight;
-        let foot=document.getElementById("Footer");
-        foot.style.top=(Height-130)+"px";
-}
-let butn=document.getElementById("Load");
+        var Height=document.body.scrollHeight;
+        var foot=document.getElementById("Footer");
+        foot.style.top=(Height-130)+"px"; }
+var butn=document.getElementById("Load");
 butn.addEventListener('click',mover);
 
 function create_geotag(coords) {
@@ -51,7 +50,7 @@ function create_geotag(coords) {
         geotags.splice(index, 1);
 
         map.geoObjects.remove(gt);
-        gt.delete;
+        gt.devare;
 
         e.preventDefault();
 
@@ -88,6 +87,7 @@ function show_map() {
     $('#map').css('width', width+'px');
     $('#map').css('height', height+'px');
     $('#map-info').show();
+    map.container.fitToViewport();
 }
 
 function hide_map() {
@@ -95,6 +95,7 @@ function hide_map() {
     $('#map').css('height', '0px');
     $('#geotag_is_needed').removeClass('btn_pushed');
     $('#map-info').hide();
+    map.container.fitToViewport();
 }
 
 ymaps.ready(function () {
