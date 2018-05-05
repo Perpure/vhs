@@ -50,7 +50,7 @@ function create_geotag(coords) {
         geotags.splice(index, 1);
 
         map.geoObjects.remove(gt);
-        gt.devare;
+        gt.delete;
 
         e.preventDefault();
 
@@ -58,7 +58,7 @@ function create_geotag(coords) {
     }
 
 
-function init () {
+function map_init () {
     map = new ymaps.Map("map", {
             center: [55, 47],
             zoom: 6,
@@ -100,7 +100,7 @@ function hide_map() {
 
 ymaps.ready(function () {
     data = JSON.parse($('#geotag_data').val())
-    init();
+    map_init();
 
     if (data['needed']) {
         for (var i in data['coords']) {
