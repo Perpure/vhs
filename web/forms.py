@@ -124,8 +124,6 @@ class AddCommentForm(FlaskForm):
 
     message = TextAreaField("Комментарий", validators=[DataRequired(message='Введите текст'),
                                                        Length(3, message='Текст слишком короткий')])
-    # like = HiddenField("Нравится")
-    # dislike = HiddenField("НЕ нравится")
     like = SubmitField("Нравится")
     dislike = SubmitField("НЕ нравится")
     submit = SubmitField("Запостить")

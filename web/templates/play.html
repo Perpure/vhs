@@ -15,8 +15,8 @@
     <!--</div>-->
 <!--</form>-->
 <form method="post">
-    <input name="like_btn" type="submit" value="Нравится">
-    <input name="dislike_btn" type="submit" value="НЕ нравится">
+    <input class="mark_btn" name="like_btn" type="submit" value="Нравится">
+    <input class="mark_btn" name="dislike_btn" type="submit" value="НЕ нравится">
 </form>
 {%else%}
 <a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы поставить оценку

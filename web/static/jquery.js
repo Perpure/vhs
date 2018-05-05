@@ -10306,6 +10306,11 @@ jQuery.isNumeric = function( obj ) {
 };
 
 
+jQuery.click(function(){)
+$('.mark_btn').click(function(){
+    $(".mark.btn").attr('disabled',true);
+}});
+
 
 
 // Register as a named AMD module, since jQuery can be concatenated with other
