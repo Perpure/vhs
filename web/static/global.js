@@ -110,3 +110,16 @@ date.addEventListener('click',swit);
                        error:function(){}
         });
     });
+
+let nsize=document.body.scrollHeight;
+setTimeout(function step(){
+            
+            if(document.body.scrollHeight!=nsize)
+            {
+                let foot=document.getElementById("Footer");
+                foot.style.top=0;
+                mov();
+                nsize=document.body.scrollHeight;
+            }
+            setTimeout(step,500);
+        },500);
