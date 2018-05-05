@@ -276,10 +276,14 @@ def play(vid):
         video.add_viewer(user)
 
     if like_form.like.data:
-        video.add_like()
+        video.add_like(user)
+        if user in video.dislikes:
+            video.dislikes.remove(user)
 
     if dislike_form.dislike.data:
-        video.add_dislike()
+        video.add_dislike(user)
+        if user in video.likes:
+            video.likes.remove(user)
 
     if form.validate_on_submit():
         comment = Comment(form.message.data, video.id, user.id)

@@ -23,6 +23,18 @@ Views = db.Table('Views', db.Model.metadata,
 )
 
 
+Likes = db.Table('Likes', db.Model.metadata,
+    db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
+    db.Column('Video_id', db.String(32), db.ForeignKey('Video.id'))
+)
+
+
+Dislikes = db.Table('Dislikes', db.Model.metadata,
+    db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
+    db.Column('Video_id', db.String(32), db.ForeignKey('Video.id'))
+)
+
+
 class Comment(db.Model):
     __tablename__ = 'Comment'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -82,8 +94,8 @@ class Video(db.Model):
     longitude = db.Column(db.Float(), nullable=True)
     latitude = db.Column(db.Float(), nullable=True)
 
-    likes = db.Column(db.Integer())
-    dislikes = db.Column(db.Integer())
+    likes = db.relationship('User', secondary=Likes, backref='likes', lazy='joined')
+    dislikes = db.relationship('User', secondary=Dislikes, backref='dislikes', lazy='joined')
 
     marks = db.relationship('Mark', backref='video', lazy=True)
 
@@ -103,8 +115,6 @@ class Video(db.Model):
         self.id = hashlib.md5((hash + self.date.isoformat()).encode("utf-8")).hexdigest()
         self.path = os.path.join(app.config['VIDEO_SAVE_PATH'], self.id)
         self.user_id = user.id
-        self.likes = 0
-        self.dislikes = 0
 
         db.session.add(self)
         db.session.commit()
@@ -117,13 +127,13 @@ class Video(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def add_like(self):
-        self.likes += 1
+    def add_like(self, user):
+        self.likes.append(user)
         db.session.add(self)
         db.session.commit()
 
-    def add_dislike(self):
-        self.dislikes += 1
+    def add_dislike(self, user):
+        self.dislikes.append(user)
         db.session.add(self)
         db.session.commit()
 

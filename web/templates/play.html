@@ -20,8 +20,8 @@
 {%else%}
 <a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы поставить оценку
 {%endif%}
-<div>Лайки: {{ video.likes }}</div>
-<div>Дизлайки: {{ video.dislikes }}</div>
+<div>Лайки: {{ video.likes | length }}</div>
+<div>Дизлайки: {{ video.dislikes | length }}</div>
 
 {% for tag in video.tags %}
 <div class="Tag">
