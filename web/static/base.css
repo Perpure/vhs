@@ -179,7 +179,7 @@ textarea
 .inSearch
 {
     vertical-align:top;
-    width:70%;
+    width:65%;
     height:40px;
 }
 
@@ -194,6 +194,17 @@ textarea
     height:100%;
     color:grey;
     padding:7px;
+    text-align:center;
+}
+
+.byDate
+{
+    width:8%;
+}
+
+.byViews
+{
+    width:15%;
 }
 
 .searchField:hover
@@ -318,7 +329,7 @@ footer
   width: 100%;
   margin: 0 auto;
   position:absolute;
-  height:129px;
+  height:119px;
  
 }
 
@@ -449,6 +460,7 @@ footer
     .navMen:hover
     {
       border:none;
+      display:inline-block;
     }
     
     .logo
@@ -464,11 +476,11 @@ footer
     }
 
     .Searcher
-{
-    top:110px;
-    width:100%;
-    left:0;
-}
+    {
+        top:110px;
+        width:100%;
+        left:0;
+    }
 
 
     .Shadow
@@ -478,6 +490,49 @@ footer
         width:98%;
     }
 
+    .Contact
+    {
+      width:20%;
+    }
+    .footLine
+    {
+      width:40%;
+    }
+    .byDate
+    {
+        width:55px;
+    }
+
+    .byViews
+    {
+        width:108px;
+    }
+}
+
+@media (max-width:860px)
+{
+    .Searcher
+    {
+      height:100px;
+      z-index:2;
+      top:200px;
+    }
+    .inSearch
+    {
+      display:block;
+      width:100%;
+    }
+    .Shadow
+    {
+      top:190px;
+      height:120px;
+      width:100%;
+      left:0;
+    }
+    .searchBtn
+    {
+      width:45%;
+    }
 }
 
 @media (max-width:500px)
@@ -498,6 +553,15 @@ footer
     {
         display:block;
     }
+    .Contact
+    {
+      width:30%;
+    }
+    .footLine
+    {
+      width:35%;
+    }
+    
 }
 
 
