@@ -1,7 +1,7 @@
 var map;
 var long, lat;
 var width = '100%';
-var height = '700px';
+var height = 700;
 
 
 function add_geotags(videos) {
@@ -60,8 +60,12 @@ ymaps.ready(function (videos) {
     $('#show_video_map').change(function () {
         $('#video_table').hide();
         $('#videos_map').css('width', width);
-        $('#videos_map').css('height', height);
+        $('#videos_map').css('height', height+'px');
         map.container.fitToViewport();
+
+        var footer_top = Number($('#Footer').css('top').slice(0, -2));
+        footer_top += height/2;
+        $('#Footer').css('top', footer_top+"px");
     });
 
     $('#show_video_table').change(function () {
@@ -69,6 +73,10 @@ ymaps.ready(function (videos) {
         $('#videos_map').css('width', '0px');
         $('#videos_map').css('height', '0px');
         map.container.fitToViewport();
+
+        var footer_top = Number($('#Footer').css('top').slice(0, -2));
+        footer_top -= height/2;
+        $('#Footer').css('top', footer_top+"px");
     });
 
     fetch("/video/data").then(function(response){
