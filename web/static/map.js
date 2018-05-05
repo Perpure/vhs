@@ -50,7 +50,7 @@ function create_geotag(coords) {
         geotags.splice(index, 1);
 
         map.geoObjects.remove(gt);
-        gt.devare;
+        gt.delete;
 
         e.preventDefault();
 
@@ -58,7 +58,7 @@ function create_geotag(coords) {
     }
 
 
-function init () {
+function map_init () {
     map = new ymaps.Map("map", {
             center: [55, 47],
             zoom: 6,
@@ -88,6 +88,10 @@ function show_map() {
     $('#map').css('height', height+'px');
     $('#map-info').show();
     map.container.fitToViewport();
+
+    var footer_top = Number($('#Footer').css('top').slice(0, -2));
+    footer_top += height + 50;
+    $('#Footer').css('top', footer_top+"px");
 }
 
 function hide_map() {
@@ -96,11 +100,15 @@ function hide_map() {
     $('#geotag_is_needed').removeClass('btn_pushed');
     $('#map-info').hide();
     map.container.fitToViewport();
+
+    var footer_top = Number($('#Footer').css('top').slice(0, -2));
+    footer_top -= height + 50;
+    $('#Footer').css('top', footer_top+"px");
 }
 
 ymaps.ready(function () {
     data = JSON.parse($('#geotag_data').val())
-    init();
+    map_init();
 
     if (data['needed']) {
         for (var i in data['coords']) {
