@@ -117,6 +117,16 @@ class Video(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def add_like(self):
+        self.likes += 1
+        db.session.add(self)
+        db.session.commit()
+
+    def add_dislike(self):
+        self.dislikes += 1
+        db.session.add(self)
+        db.session.commit()
+
     @staticmethod
     def get(search=None, sort=None, video_id=None):
         if video_id:

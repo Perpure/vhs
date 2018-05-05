@@ -8,15 +8,14 @@
 <p>Просмотры: {{ video.viewers | length }}</p>
 
 {%if user%}
-<!--<form method="post">-->
-    <!--<div>-->
-        <!--<button type='button' id="like">Нравится</button>-->
-        <!--<button type='button' id="dislike">НЕ нравится</button>-->
-    <!--</div>-->
-<!--</form>-->
 <form method="post">
-    <input class="mark_btn" name="like_btn" type="submit" value="Нравится">
-    <input class="mark_btn" name="dislike_btn" type="submit" value="НЕ нравится">
+    <!--<input class="mark_btn" name="like_btn" type="submit" value="Нравится">-->
+    <!--<input class="mark_btn" name="dislike_btn" type="submit" value="НЕ нравится">-->
+    {{ form.hidden_tag() }}
+    <div>
+        {{ like_form.like }}
+        {{ dislike_form.dislike }}
+    </div>
 </form>
 {%else%}
 <a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы поставить оценку

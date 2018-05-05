@@ -1,6 +1,6 @@
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
-    UserProfileForm, AddRoomForm, AddCommentForm, SearchingVideoForm
+    UserProfileForm, AddRoomForm, AddCommentForm, SearchingVideoForm, LikeForm, DislikeForm
 from web.models import User, Video, Room, Color, Comment, Geotag, Tag
 from web.helper import read_image, read_video, allowed_image, allowed_file, cur_user, is_true_pixel, \
     read_multi, count_params, requiresauth
@@ -269,19 +269,24 @@ def play(vid):
     
     user = cur_user()
     form = AddCommentForm()
+    like_form = LikeForm()
+    dislike_form = DislikeForm()
 
     if user and user not in video.viewers:
         video.add_viewer(user)
 
+    if like_form.like.data:
+        video.add_like()
+
+    if dislike_form.dislike.data:
+        video.add_dislike()
+
     if form.validate_on_submit():
-        if request.form['like_btn'] and request.method == "POST":
-            video.likes += 1
-        if request.form['dislike_btn'] and request.method == "POST":
-            video.dislikes += 1
         comment = Comment(form.message.data, video.id, user.id)
         comment.save()
 
-    return render_template('play.html', user=user, vid=vid, video=video, form=form)
+    return render_template('play.html', user=user, vid=vid, video=video, form=form,
+                           like_form=like_form, dislike_form=dislike_form)
 
 
 @app.route('/video/map', methods=["GET"])
