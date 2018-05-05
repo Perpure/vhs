@@ -34,8 +34,6 @@ function add_geotags(videos) {
 
 
 ymaps.ready(function (videos) {
-    $('#videos_map').css('width', width);
-    $('#videos_map').css('height', height);
 
     typeof ymaps.geolocation.latitude === 'undefined' ? 
                 (lat = 55.76, long = 37.64) : 
@@ -58,7 +56,20 @@ ymaps.ready(function (videos) {
             minZoom : 23,
             controls : [inputSearch]
     });
-    
+
+    $('#show_video_map').change(function () {
+        $('#video_table').hide();
+        $('#videos_map').css('width', width);
+        $('#videos_map').css('height', height);
+        map.container.fitToViewport();
+    });
+
+    $('#show_video_table').change(function () {
+        $('#video_table').show();
+        $('#videos_map').css('width', '0px');
+        $('#videos_map').css('height', '0px');
+        map.container.fitToViewport();
+    });
 
     fetch("/video/data").then(function(response){
         if(response.status == 200){

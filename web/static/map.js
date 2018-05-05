@@ -66,7 +66,7 @@ function create_geotag(coords) {
         geotags.splice(index, 1);
 
         map.geoObjects.remove(gt);
-        gt.delete;
+        gt.devare;
 
         e.preventDefault();
 
@@ -103,6 +103,7 @@ function show_map() {
     $('#map').css('width', width+'px');
     $('#map').css('height', height+'px');
     $('#map-info').show();
+    map.container.fitToViewport();
 }
 
 function hide_map() {
@@ -110,6 +111,7 @@ function hide_map() {
     $('#map').css('height', '0px');
     $('#geotag_is_needed').removeClass('btn_pushed');
     $('#map-info').hide();
+    map.container.fitToViewport();
 }
 
 ymaps.ready(function () {

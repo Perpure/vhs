@@ -34,14 +34,43 @@
         <div id="map"></div>
         <div style="color: red;"> {{ error }} </div>
         <div>{{ form.tags.label }}</div>
-        <div>{{ form.tags(rows=5, cols=60) }}</div>
+        <input name="tags" placeholder="добавьте теги через enter" value="my video">
+        <div>{{ form.tags(rows=5, cols=60, display=none) }}</div>
         {% if form.tags.errors %}
             {% for error in form.tags.errors %}
             <div style="color: red;">{{ error }}</div>
             {% endfor %}
         {% endif %}
-        <div> {{ form.submit }} </div>
+        <div margin-top = 5px> {{ form.submit }} </div>
     </form>
+
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
     <script src="{{ url_for('static', filename='map.js') }}"></script>
+    <script src="{{ url_for('static', filename='tagify.js') }}"></script>
+    <script>
+        var input = document.querySelector('input[name=tags]'),
+        tagify = new Tagify( input );
+    </script>
+    <script type="text/javascript">
+        $( init );
+
+        function init() {
+            $('#submit').bind( 'submit', addTags );
+        }
+
+        function addTags() {
+            let mas = document.body.getElementsByTagName('span');
+            for (let i = 0; i < mas.length-1; i++){
+            tags.value = tags.value + "," + mas[i].innerHTML;
+            }
+            tags.value = tags.value.substring(1, tags.value.length);
+        }
+    </script>
+
+    <style>
+       #tags {
+        display: none;
+       }
+    </style>
+
 {% endblock %}
