@@ -18,13 +18,14 @@ function mover(){
     {
         let Height=document.body.scrollHeight;
         let foot=document.getElementById("Footer");
-        foot.style.top=(Height+170)+"px";
+        foot.style.top=(Height+270)+"px";
         mapOpened=true;
     }   
+    console.log(12);
 }
 
 let butn=document.getElementById("geotag_is_needed");
-butn.addEventListener('click',mover);
+
 
 
 function create_geotag(coords) {

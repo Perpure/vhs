@@ -9,7 +9,7 @@ function mov()
     let Height=document.body.scrollHeight;
     let foot=document.getElementById("Footer");
     foot.style.top=0;
-    foot.style.top=(Height-130)+"px";
+    foot.style.top=(Height)+"px";
     console.log(11);
 }
 
