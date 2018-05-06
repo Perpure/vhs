@@ -134,7 +134,12 @@ def room(token):
                             color = Color.query.filter_by(id=colors[i].split(',')[1]).first().color
                             print(color)
                             break
-                    count_params(room, color, member)
+                    if count_params(room, color, member):
+                        return render_template('room.html', room=room, user=cur_user(),
+                                               calibrate_url=calibrate_url, color=color, users=users,
+                                               image_form=image_form, result_url=result_url,
+                                               Room_Form=Room_Form, loaded=True, room_map=room_map_url,
+                                               msg="Мы не смогли идентифицировать устройства, попробуйте загрузить другую фотографию.")
                 return render_template('room.html', room=room, user=cur_user(),
                                        calibrate_url=calibrate_url, color=color, users=users,
                                        image_form=image_form, result_url=result_url,
