@@ -123,7 +123,7 @@ def count_params(room, color, user):
     try:
         w = lastx-firstx
         user.color = color
-        k = int(rezolutionx / ((w / width) * sourcex)) * 100)
+        k = int((rezolutionx / ((w / width) * sourcex)) * 100)
         user.res_k = k
         user.top = -(firsty / height) * sourcey * k / 100
         user.left = -(firstx / width) * sourcex * k / 100
