@@ -580,7 +580,13 @@ footer
     margin-top: -1px;
     margin-left: -4px;
     min-width: 482px;
+    min-height: 212px;
 }
+
+.buttondlc{
+    margin-bottom: 0;
+}
+
 
 .conbu{
    width: 482px; 
