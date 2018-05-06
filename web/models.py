@@ -23,6 +23,18 @@ Views = db.Table('Views', db.Model.metadata,
 )
 
 
+Likes = db.Table('Likes', db.Model.metadata,
+    db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
+    db.Column('Video_id', db.String(32), db.ForeignKey('Video.id'))
+)
+
+
+Dislikes = db.Table('Dislikes', db.Model.metadata,
+    db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
+    db.Column('Video_id', db.String(32), db.ForeignKey('Video.id'))
+)
+
+
 class Comment(db.Model):
     __tablename__ = 'Comment'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -64,7 +76,7 @@ class Mark(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
     is_like = db.Column(db.Boolean, nullable=False)
 
-    def save(self,is_like):
+    def save(self, is_like):
         self.is_like = is_like
         db.session.add(self)
         db.session.commit()
@@ -82,6 +94,9 @@ class Video(db.Model):
     longitude = db.Column(db.Float(), nullable=True)
     latitude = db.Column(db.Float(), nullable=True)
 
+    likes = db.relationship('User', secondary=Likes, backref='likes', lazy='joined')
+    dislikes = db.relationship('User', secondary=Dislikes, backref='dislikes', lazy='joined')
+
     marks = db.relationship('Mark', backref='video', lazy=True)
 
     comments = db.relationship('Comment', backref='video', lazy='joined')
@@ -89,7 +104,7 @@ class Video(db.Model):
     tags = db.relationship('Tag', backref='video', lazy='joined')
 
     viewers = db.relationship('User', secondary=Views, backref='views', lazy='joined')
-    
+
     geotags = db.relationship("Geotag", backref="video", lazy="joined")
 
     def __init__(self, title):
@@ -109,6 +124,16 @@ class Video(db.Model):
     def add_viewer(self, user):
         self.viewers.append(user)
         
+        db.session.add(self)
+        db.session.commit()
+
+    def add_like(self, user):
+        self.likes.append(user)
+        db.session.add(self)
+        db.session.commit()
+
+    def add_dislike(self, user):
+        self.dislikes.append(user)
         db.session.add(self)
         db.session.commit()
 

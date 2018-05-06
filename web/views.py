@@ -1,7 +1,7 @@
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
-    UserProfileForm, AddRoomForm, AddCommentForm, SearchingVideoForm
-from web.models import User, Video, Room, Color, Comment, Geotag , Tag
+    UserProfileForm, AddRoomForm, AddCommentForm, SearchingVideoForm, LikeForm, DislikeForm
+from web.models import User, Video, Room, Color, Comment, Geotag, Tag
 from web.helper import read_image, read_video, allowed_image, allowed_file, cur_user, is_true_pixel, \
     read_multi, count_params, requiresauth
 from web.video_handler import save_video
@@ -156,7 +156,6 @@ def calibrate(color):
     return render_template('color.html', color=color)
 
 
-
 @app.route('/upload', methods=['GET', 'POST'])
 @requiresauth
 def upload():
@@ -199,6 +198,7 @@ def upload():
 def result():
     user = cur_user()
     return render_template('rezult.html', pid='1', top=user.top, left=user.left, width=user.res_k)
+
 
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():
@@ -269,15 +269,28 @@ def play(vid):
     
     user = cur_user()
     form = AddCommentForm()
+    like_form = LikeForm()
+    dislike_form = DislikeForm()
 
     if user and user not in video.viewers:
         video.add_viewer(user)
-    
+
+    if like_form.like.data:
+        video.add_like(user)
+        if user in video.dislikes:
+            video.dislikes.remove(user)
+
+    if dislike_form.dislike.data:
+        video.add_dislike(user)
+        if user in video.likes:
+            video.likes.remove(user)
+
     if form.validate_on_submit():
         comment = Comment(form.message.data, video.id, user.id)
         comment.save()
 
-    return render_template('play.html', user=user, vid=vid, video=video, form=form)
+    return render_template('play.html', user=user, vid=vid, video=video, form=form,
+                           like_form=like_form, dislike_form=dislike_form)
 
 
 @app.route('/video/map', methods=["GET"])
