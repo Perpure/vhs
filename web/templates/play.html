@@ -4,7 +4,7 @@
          <source src="{{url_for('get_video', vid=vid)}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
     </video>
 <p class="videoTitle">{{ video.title }}</p>
-<p class="videoDate">Добавлено {{video.date}}</p>
+<p class="videoDate" id="Dating">Добавлено {{video.date}}</p>
 <p>Просмотры: {{ video.viewers | length }}</p>
 
 {%if user%}
@@ -24,21 +24,13 @@
 <div>Дизлайки: {{ video.dislikes | length }}</div>
 
 {% for tag in video.tags %}
-<div class="Tag">
-    <p>{{ '#'+tag.text+' ' }}</p>
-</div>
+<span class="Tag">
+    {{ '#'+tag.text+' ' }}
+</span>
 {% endfor %}
+
 {%if user %}
-<!--<form action="" method="post">
-        <div>{{ form.message.label }}</div>
-        <div>{{ form.message(rows=5, cols=60) }}</div>
-        {% if form.message.errors %}
-            {% for error in form.message.errors %}
-            <div style="color: red;">{{ error }}</div>
-            {% endfor %}
-        {% endif %}
-        {{ form.submit }}
-</form>-->
+
 <textarea id="txtPlate" class="commArea"></textarea>
 <br>
 <input type="submit" value="Запостить" id="addC">
@@ -60,4 +52,12 @@
 </div>
 <script src="{{ url_for('static', filename='video.js') }}"></script>
 <script src="http://vjs.zencdn.net/6.6.3/video.js"></script>
+<script>
+    (function () {
+    var Dator=document.getElementById("Dating");
+    var Date=Dator.innerHTML;
+    Date=Date.substr(0,20);
+    Dator.innerHTML=Date;
+    })();
+</script>
 {% endblock %}
