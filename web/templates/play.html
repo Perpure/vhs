@@ -23,11 +23,11 @@
 <div>Лайки: {{ video.likes | length }}</div>
 <div>Дизлайки: {{ video.dislikes | length }}</div>
 
+<div>
 {% for tag in video.tags %}
-<div class="Tag">
-    <p>{{ '#'+tag.text+' ' }}</p>
-</div>
+    {{ '#'+tag.text+' ' }}
 {% endfor %}
+</div>
 {%if user %}
 <!--<form action="" method="post">
         <div>{{ form.message.label }}</div>
