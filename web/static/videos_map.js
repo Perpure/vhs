@@ -101,3 +101,11 @@ ymaps.ready(function (videos) {
         });
     });  
 });
+
+function mover(){
+        let Height=document.body.scrollHeight;
+        let foot=document.getElementById("Footer");
+        foot.style.top=(Height-130)+"px";
+}
+
+setTimeout(mover,2000);
