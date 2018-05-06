@@ -572,36 +572,47 @@ footer
 
 .content0{
     width: 100%;
-    height: 210px;
-    border-radius: 20px;
+    height: auto;
     margin: auto;
+    padding: 5px;
     background-color: #faebd7;
+    border: 1px solid #ffcc99;
+    margin-top: -1px;
+    margin-left: -4px;
+    min-width: 482px;
+}
+
+.conbu{
+   width: 482px; 
 }
 
 .z1{
     display: inline-block;
     background-color: #faebd7;
-    border-radius: 6px; 
-    padding: 2px;
+    border-bottom: 1px solid #ffcc99;
+    padding: 4px;
     cursor: pointer;
+    margin-left: -4px;
 }
 
 .z2{
     display: inline-block;
-    background-color: #ffcc99;
-    border-radius: 6px;
-    padding: 2px;
+    background-color: #faebd7;
+    border-top: 1px solid #ffcc99;
+    border-left: 1px solid #ffcc99;
+    border-right: 1px solid #ffcc99;
+    border-bottom: 1px solid #faebd7;
+    padding: 4px;
     cursor: pointer;
+    margin-left: -4px;
 }
 
 .con{
     display: none;
-    padding: 4px;
 }
 
 .con2{
     display: block;
-    padding: 4px;
 } 
 
 .ava{
@@ -618,7 +629,7 @@ footer
 }
 
 .set{
-    margin: 10px 0;
+    margin-bottom: 10px;
 }
 
 .but{
