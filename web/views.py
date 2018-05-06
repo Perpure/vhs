@@ -284,11 +284,15 @@ def play(vid):
         video.add_like(user)
         if user in video.dislikes:
             video.dislikes.remove(user)
+            db.session.add(user)
+            db.session.commit()
 
     if dislike_form.dislike.data:
         video.add_dislike(user)
         if user in video.likes:
             video.likes.remove(user)
+            db.session.add(user)
+            db.session.commit()
 
     if form.validate_on_submit():
         comment = Comment(form.message.data, video.id, user.id)
