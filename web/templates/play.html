@@ -4,6 +4,13 @@
          <source src="{{url_for('get_video', vid=vid)}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
     </video>
 <p class="videoTitle">{{ video.title }}</p>
+<div style="margin: 5px">
+{% for tag in video.tags %}
+    <span style="border: 1px solid #ffb366; padding: 3px;">
+        {{ '#'+tag.text+' ' }}
+    </span>
+{% endfor %}
+</div>
 <p class="videoDate">Добавлено {{video.date}}</p>
 <p>Просмотры: {{ video.viewers | length }}</p>
 
@@ -23,11 +30,6 @@
 <div>Лайки: {{ video.likes | length }}</div>
 <div>Дизлайки: {{ video.dislikes | length }}</div>
 
-<div>
-{% for tag in video.tags %}
-    {{ '#'+tag.text+' ' }}
-{% endfor %}
-</div>
 {%if user %}
 <!--<form action="" method="post">
         <div>{{ form.message.label }}</div>
