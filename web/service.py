@@ -64,6 +64,12 @@ def askAct():
     if cur_user():
         user = cur_user()
         action = user.action
+        if action == 'calibrate':
+            user.action = ''
+            return action
+        elif action == 'result':
+            user.action = ''
+            return action
     return action
 
 @app.route('/askNewComm/<string:vid>', methods=['GET', 'POST'])
