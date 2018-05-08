@@ -73,18 +73,23 @@ def askNewComm(vid):
     cnt=len(comms)
     return str(cnt)
 
+def getId(Comment):
+    return Comment.id
+
 @app.route('/getNewComm/<string:vid>/<int:cont>', methods=['GET', 'POST'])
 def getNewComm(vid,cont):
     video = Video.get(video_id=vid)
     comms=video.comments
+    sorted(comms,key=getId)
+    print(comms)
     result=""
     for i in range(cont,len(comms)):
         result+=str(comms[i].user.login)+",,"+str(comms[i].text)+";;"
     result+=""
     return result
 
-@app.route('/postComm/<string:vid>/<string:name>/<string:text>', methods=['GET', 'POST'])
-def postComm(vid,name,text):
+@app.route('/postComm/<string:vid>/<string:text>', methods=['GET', 'POST'])
+def postComm(vid,text):
     video = Video.get(video_id=vid)
     user = cur_user()
     comment = Comment(text, video.id, user.id)

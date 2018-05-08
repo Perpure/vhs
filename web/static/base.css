@@ -2,7 +2,7 @@
 
 body
 {
-  font-family: 'Roboto', sans-serif;
+  
   background-color: white;
   /*background-image:url("bg4.png");*/
   background-color:rgba(240, 203, 142,0.2);
@@ -284,10 +284,53 @@ main
     font-weight:bold;
 }
 
+.liking,.infoOne
+{
+    display:inline-block;
+    vertical-align:top;
+}
+
+.liking
+{
+    float:right;
+}
+
+.likeShow,.disShow
+{
+    display:inline-block;
+    height:3px;
+}
+
+.likeShow
+{
+    background-color:green;
+}
+
+.disShow
+{
+    background-color:red;
+    margin-left:-6px;
+}
+
+.Tag
+{
+    border:2px solid #ffcc99;
+    border-radius:5px;
+    padding:3px;
+    margin-right:5px;
+}
+
 .commArea
 {
     resize:none;
     width:40%;
+}
+
+.cSect
+{
+    border-top:2px solid #ffcc99;
+    margin-top:10px;
+    padding-top:10px;
 }
 
 .Comment
@@ -532,6 +575,12 @@ footer
     .searchBtn
     {
       width:45%;
+    }
+    .liking
+    {
+        display:block;
+        float:none;
+        margin-bottom:10px;
     }
 }
 

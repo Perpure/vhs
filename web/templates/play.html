@@ -4,42 +4,47 @@
          <source src="{{url_for('get_video', vid=vid)}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
     </video>
 <p class="videoTitle">{{ video.title }}</p>
-<p class="videoDate" id="Dating">Добавлено {{video.date}}</p>
+
+<div class="infoOne">
+<p class="videoDate" id="Dating">Добавлено {{video.date}}</i></p>
 <p>Просмотры: {{ video.viewers | length }}</p>
+</div>
 
 {%if user%}
-<form method="post">
-    <!--<input class="mark_btn" name="like_btn" type="submit" value="Нравится">-->
-    <!--<input class="mark_btn" name="dislike_btn" type="submit" value="НЕ нравится">-->
+<form method="post" class="liking">
     {{ form.hidden_tag() }}
     <div>
+        <div id="likSh" class="likeShow"></div>
+        <div id="disSh" class="disShow"></div>
+        <br>
         {{ like_form.like }}
+        <span id="lik">{{ video.likes | length }}</span>
         {{ dislike_form.dislike }}
+        <span id="dis">{{ video.dislikes | length }}</span>
     </div>
 </form>
-{%else%}
-<a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы поставить оценку
 {%endif%}
-<div>Лайки: {{ video.likes | length }}</div>
-<div>Дизлайки: {{ video.dislikes | length }}</div>
 
+<div class="tags">
 {% for tag in video.tags %}
 <span class="Tag">
     {{ '#'+tag.text+' ' }}
 </span>
 {% endfor %}
+</div>
 
+{%if not user%}
+<br><a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы оценить видео
+{%endif%}
+<div id="CSect" class="cSect">
+<p>Комментарии</p>
 {%if user %}
 
 <textarea id="txtPlate" class="commArea"></textarea>
 <br>
 <input type="submit" value="Запостить" id="addC">
-
-{% else %}
-<a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы комментировать
 {%endif%}
-<p>Комментарии</p>
-<div id="CSect">
+
 {% for comment in video.comments %}
 <div class="Comment">
     <img src="../static/a.png" alt="" class="commAva">
