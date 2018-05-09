@@ -53,8 +53,8 @@ def parse(colors, impath):
         draw = ImageDraw.Draw(room_map)
         for x in range(firstx,lastx):
             for y in range(firsty,lasty):
-                draw.point((x, y), (i[0][0],i[0][1],i[0][2]))
+                draw.point((x, y), (i[0][2],i[0][1],i[0][0]))
         room_map.save('2.jpg')
         res_k = resolution[0]/(lastx - firstx)
-        print(firstx, lastx, firsty, lasty)
+        print(firstx, lastx, firsty, lasty, res_k)
     return res, resolution
