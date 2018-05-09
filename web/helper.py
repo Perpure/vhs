@@ -116,12 +116,12 @@ def parse(room, users, impath):
             for y in range(firsty,lasty):
                 draw.point((x, y), (res[i][0][2], res[i][0][1], res[i][0][0]))
         room_map.save(basedir + url_for('get_multi', pid=room.token+'_map'))
-        res_k = resolution[0] / (lastx - firstx)
+        res_k = ( resolution[0] / (lastx - firstx) ) * 100
         left = - ( (firstx / resolution[0]) * res_k )
         top = - ( (firsty / resolution[1]) * res_k )
-        users[i].res_k = res_k
-        users[i].top = top
-        users[i].left = left
+        users[i].res_k = int(res_k)
+        users[i].top = int(top)
+        users[i].left = int(left)
         db.session.commit()        
         
 def cur_user():

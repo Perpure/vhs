@@ -13,17 +13,28 @@ blue = Color(color='#0000ff')
 db.session.add(blue)  #2
 green = Color(color='#00ff00')
 db.session.add(green) #3
-brown = Color(color='#996633')
-db.session.add(brown) #4
-white = Color(color='#ffffff')
-db.session.add(white) #5
-pink = Color(color='#ff33cc')
+yellow = Color(color='#ffff00')
+db.session.add(yellow)#4
+cyan = Color(color='#00ffff')
+db.session.add(cyan)  #5
+pink = Color(color='#ff00ff')
 db.session.add(pink)  #6
 user = User("11111")
 user.save("11111111")
 db.session.commit()
 user = User("22222")
 user.save("22222222")
+user = User("33333")
+user.save("33333333")
+user = User("44444")
+user.save("44444444")
+user = User("55555")
+user.save("55555555")
+user = User("66666")
+user.save("66666666")
+user = User("77777")
+user.save("77777777")
+db.session.commit()
 
 
 
