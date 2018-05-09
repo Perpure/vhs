@@ -1,6 +1,7 @@
 import numpy as np
 import math
-
+import cv2
+from PIL import Image, ImageDraw, ImageEnhance
 def parse(colors, impath):
     img = cv2.imread(impath) # Читаем изображение
     hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV) # Меняем цветовую схему с BGR на HSV
@@ -41,5 +42,19 @@ def parse(colors, impath):
     res = [ [rect[0], [int(rect[1][0][0] - minX), int(rect[1][0][1] - minY)], [int(x) for x in rect[1][1] ], int(rect[1][2])] for rect in rects] 
     # Находим разрешение
     resolution = [maxX - minX, maxY - minY]
-
+    room_map = Image.new('RGB', (resolution[0],resolution[1]), (255, 255, 255))
+    room_map.save('2.jpg')
+    for i in res:
+        firstx = int(i[1][0]-i[2][0]/2)
+        lastx = int(i[1][0]+i[2][0]/2)
+        firsty = int(i[1][1]-i[2][1]/2)
+        lasty = int(i[1][1]+i[2][1]/2)
+        room_map = Image.open('2.jpg')
+        draw = ImageDraw.Draw(room_map)
+        for x in range(firstx,lastx):
+            for y in range(firsty,lasty):
+                draw.point((x, y), (i[0][0],i[0][1],i[0][2]))
+        room_map.save('2.jpg')
+        res_k = resolution[0]/(lastx - firstx)
+        print(firstx, lastx, firsty, lasty)
     return res, resolution
