@@ -54,11 +54,17 @@
                        {
                             if(response=="calibrate" && prev != "calibrate"){
                             prev = "calibrate";
-                            $('#Body').prepend('<div style="position:fixed; width:110%; height:110%; background:{{color}};"></div>');
-                            $('#menu').prop({"hidden":true})
+                            $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; background:{{color}};"></div>');
+                            $('#Footer').prop({"hidden":true})
+                            $('#Header').prop({"hidden":true})
+                            prev = "calibrate"
                             ;}
-                            if(response=="result"){
-                            $('#Body').prepend('<img src="{{url_for('get_multi', pid=1)}}" style="position:fixed; width:{{user.res_k}}%; top:{{user.top}}%; left:{{user.left}}%;">');
+                            if(response=="result" && prev != "result"){
+                            $('#Body').prepend('<img src="{{url_for('get_multi', pid=1)}}" style="position:fixed; width:{{user.res_k}}%; top:{{user.top}}px; left:{{user.left}}px;">');
+                            $('#Footer').prop({"hidden":true})
+                            $('#Header').prop({"hidden":true})
+                            $('#calibrImage').prop({"hidden":true})
+                            prev = "result"
                             }
 
                        },

@@ -115,7 +115,7 @@ class LikeForm(FlaskForm):
 
 
 class DislikeForm(FlaskForm):
-    dislike = SubmitField("НЕ нравится")
+    dislike = SubmitField("Не Нравится")
 
 
 class AddCommentForm(FlaskForm):

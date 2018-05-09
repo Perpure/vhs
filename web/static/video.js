@@ -1,4 +1,4 @@
-        let speed=5000;
+        let speed=3000;
         let hash=window.location.href;
         let sl=0;
         for(let i=0;i<hash.length;i++)
@@ -47,17 +47,63 @@
             setTimeout(step,speed);
         },speed);
 
-        let addCom=document.getElementById("addC");
-        let plate=document.getElementById("txtPlate");
-        addCom.addEventListener('click',function(){
-            let txt=plate.value;
-            let name="lol";
+var addCom=document.getElementById("addC");
+var plate=document.getElementById("txtPlate");
+addCom.addEventListener('click',function(){
+            var txt=plate.value;
             $.ajax({
-               url:"/postComm/"+hash+"/"+name+"/"+txt,
+               url:"/postComm/"+hash+"/"+txt,
                type:"GET",
                dataType:"text",
                success:function(response){},
                error:function(){}
             });
             plate.value="";
+});
+
+        $('#like').click(function(){
+            $.ajax({
+               url:"/likeVideo/"+hash,
+               type:"GET",
+               dataType:"text",
+               success:function(response){
+                    var parsedJson = $.parseJSON(response);
+                    $("span.lik").empty()
+                    $("span.dis").empty()
+                    var likes = parsedJson[0].likes
+                    var dislikes = parsedJson[0].dislikes
+                    $("span.lik").html(likes)
+                    $("span.dis").html(dislikes)
+                    console.log(parsedJson)},
+               error:function(){
+                    alert('Произошла ошибка')}
+            });
         });
+
+        $('#dislike').click(function(){
+            $.ajax({
+               url:"/dislikeVideo/"+hash,
+               type:"GET",
+               dataType:"text",
+               success:function(response){
+                    var parsedJson = $.parseJSON(response);
+                    $("span.lik").empty()
+                    $("span.dis").empty()
+                    var likes = + parsedJson[0].likes
+                    var dislikes = parsedJson[0].dislikes
+                    $("span.lik").html(likes)
+                    $("span.dis").html(dislikes)
+                    console.log(parsedJson)},
+               error:function(){
+                    alert('Произошла ошибка')}
+            });
+        });
+
+var lkes=document.getElementById("lik");
+var disl=document.getElementById("dis");
+var lkesIn=document.getElementById("likSh");
+var disIn=document.getElementById("disSh");
+lkes=lkes.innerHTML;
+disl=disl.innerHTML;
+lkesIn.style.width=(lkes*100)/(lkes*1+disl*1)+"%";
+disIn.style.width=(disl*100)/(lkes*1+disl*1)+"%";

@@ -4,6 +4,7 @@ from web.models import Video, Comment, User, Room
 
 from flask import url_for, redirect, make_response, request, jsonify, session, render_template
 
+
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
     if 'Login' in session:
@@ -60,11 +61,20 @@ def get_video_data_search(search):
 
 @app.route('/askAct', methods=['GET', 'POST'])
 def askAct():
-    action = ""
     if cur_user():
         user = cur_user()
         action = user.action
-    return action
+        if action == 'calibrate':
+            user.action = ''
+            db.session.add(user)
+            db.session.commit()
+            return action
+        elif action == 'result':
+            user.action = ''
+            db.session.add(user)
+            db.session.commit()
+            return action
+    return ''
 
 @app.route('/askNewComm/<string:vid>', methods=['GET', 'POST'])
 def askNewComm(vid):
@@ -73,23 +83,59 @@ def askNewComm(vid):
     cnt=len(comms)
     return str(cnt)
 
+def getId(Comment):
+    return Comment.id
+
 @app.route('/getNewComm/<string:vid>/<int:cont>', methods=['GET', 'POST'])
 def getNewComm(vid,cont):
     video = Video.get(video_id=vid)
     comms=video.comments
+    sorted(comms,key=getId)
+    print(comms)
     result=""
     for i in range(cont,len(comms)):
         result+=str(comms[i].user.login)+",,"+str(comms[i].text)+";;"
     result+=""
     return result
 
-@app.route('/postComm/<string:vid>/<string:name>/<string:text>', methods=['GET', 'POST'])
-def postComm(vid,name,text):
+
+@app.route('/postComm/<string:vid>/<string:text>', methods=['GET', 'POST'])
+def postComm(vid,text):
     video = Video.get(video_id=vid)
     user = cur_user()
-    comment = Comment(text, video.id, user.id)
-    comment.save()
+    if len(text) <= 1000:
+        comment = Comment(text, video.id, user.id)
+        comment.save()
     return "lol"
+
+
+@app.route('/likeVideo/<string:vid>/', methods=['GET', 'POST'])
+def likeVideo(vid):
+    user = cur_user()
+    video = Video.get(video_id=vid)
+
+    video.add_like(user)
+    if user in video.dislikes:
+        video.dislikes.remove(user)
+        db.session.add(user)
+        db.session.commit()
+    return jsonify([{"likes": str(len(video.likes)),
+                     "dislikes": str(len(video.dislikes))}])
+
+
+@app.route('/dislikeVideo/<string:vid>/', methods=['GET', 'POST'])
+def dislikeVideo(vid):
+    user = cur_user()
+    video = Video.get(video_id=vid)
+
+    video.add_dislike(user)
+    if user in video.likes:
+        video.likes.remove(user)
+        db.session.add(user)
+        db.session.commit()
+    return jsonify([{"likes": str(len(video.likes)),
+                     "dislikes": str(len(video.dislikes))}])
+
 
 @app.route('/tellRes', methods=['GET', 'POST'])
 def tellRes():
