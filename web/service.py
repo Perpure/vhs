@@ -60,11 +60,20 @@ def get_video_data_search(search):
 
 @app.route('/askAct', methods=['GET', 'POST'])
 def askAct():
-    action = ""
     if cur_user():
         user = cur_user()
         action = user.action
-    return action
+        if action == 'calibrate':
+            user.action = ''
+            db.session.add(user)
+            db.session.commit()
+            return action
+        elif action == 'result':
+            user.action = ''
+            db.session.add(user)
+            db.session.commit()
+            return action
+    return ''
 
 @app.route('/askNewComm/<string:vid>', methods=['GET', 'POST'])
 def askNewComm(vid):
