@@ -299,6 +299,12 @@ main
     font-weight:bold;
 }
 
+.video-js
+{
+    margin:0 auto;
+    width:100%;
+}
+
 .liking,.infoOne
 {
     display:inline-block;
@@ -325,6 +331,7 @@ main
 {
     background-color:red;
     margin-left:-6px;
+    float:right;
 }
 
 .Tag
@@ -596,6 +603,11 @@ footer
         display:block;
         float:none;
         margin-bottom:10px;
+        text-align:center;
+    }
+    .dlc
+    {
+        display:inline-block;
     }
 }
 

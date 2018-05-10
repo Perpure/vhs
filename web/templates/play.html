@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-    <video id="my-video" class="video-js" controls preload="auto" width="640" height="264" data-setup="{}">
+    <video id="my-video" class="video-js" controls preload="auto"  data-setup="{}">
          <source src="{{url_for('get_video', vid=vid)}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
     </video>
 <p class="videoTitle">{{ video.title }}</p>
@@ -17,10 +17,12 @@
         <div id="likSh" class="likeShow"></div>
         <div id="disSh" class="disShow"></div>
         <br>
+        <div class="dlc">
         {{ like_form.like(class="Like") }}
         <span id="lik">{{ video.likes | length }}</span>
         {{ dislike_form.dislike(class="Dislike") }}
         <span id="dis">{{ video.dislikes | length }}</span>
+        </div>
     </div>
 </form>
 {%endif%}
@@ -74,7 +76,7 @@
     }
     .Like
     {
-        {%if lkd==0 %}
+        {%if lkd!=1 %}
             background-image:url({{ url_for('static', filename='lik1.png') }});
         {%else%}
             background-image:url({{ url_for('static', filename='lik1L.png') }});
@@ -82,7 +84,7 @@
     }
     .Dislike
     {
-        {%if lkd==0 %}
+        {%if lkd!=-1 %}
             background-image:url({{ url_for('static', filename='dis1.png') }});
         {%else%}
             background-image:url({{ url_for('static', filename='dis1D.png') }});
