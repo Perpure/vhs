@@ -48,6 +48,15 @@ input[type="submit"], button
     border-bottom:2px solid #ffb366;
     font-weight:bold;
 }
+
+input[name="like"],input[name="dislike"]
+{
+   color:rgba(0,0,0,0);
+   border:none;
+   background-color:rgba(0,0,0,0);
+   width:40px;
+}
+
 button.result
 {
     height:40px;
@@ -229,6 +238,12 @@ textarea
   background-color:rgba(240, 203, 142,0.5);
   cursor: pointer;
   color:black;
+}
+
+input[name="like"]:hover,input[name="dislike"]:hover
+{
+    background-color:rgba(0,0,0,0);
+    color:rgba(0,0,0,0);
 }
 
 main

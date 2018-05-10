@@ -17,9 +17,9 @@
         <div id="likSh" class="likeShow"></div>
         <div id="disSh" class="disShow"></div>
         <br>
-        {{ like_form.like }}
+        {{ like_form.like(class="Like") }}
         <span id="lik">{{ video.likes | length }}</span>
-        {{ dislike_form.dislike }}
+        {{ dislike_form.dislike(class="Dislike") }}
         <span id="dis">{{ video.dislikes | length }}</span>
     </div>
 </form>
@@ -65,4 +65,40 @@
     Dator.innerHTML=Date;
     })();
 </script>
+<style>
+    .Like,.Dislike
+    {
+        background-size:40%;
+        background-repeat:no-repeat;
+        background-position:center;
+    }
+    .Like
+    {
+        {%if lkd==0 %}
+            background-image:url({{ url_for('static', filename='lik1.png') }});
+        {%else%}
+            background-image:url({{ url_for('static', filename='lik1L.png') }});
+        {%endif%}
+    }
+    .Dislike
+    {
+        {%if lkd==0 %}
+            background-image:url({{ url_for('static', filename='dis1.png') }});
+        {%else%}
+            background-image:url({{ url_for('static', filename='dis1D.png') }});
+        {%endif%}
+    }
+    .Like:hover,.Dislike:hover
+    {
+        background-size:41%;
+    }
+    .Like:hover
+    {
+        background-image:url({{ url_for('static', filename='lik1H.png') }});
+    }
+    .Dislike:hover
+    {
+        background-image:url({{ url_for('static', filename='dis1H.png') }});
+    }
+</style>
 {% endblock %}
