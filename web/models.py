@@ -1,5 +1,6 @@
 ﻿from web import db
 from web import app
+import shutil
 import hashlib
 import os
 from datetime import datetime
@@ -164,6 +165,11 @@ class Video(db.Model):
         self.longitude = coords[1]
 
         db.session.add(self)
+        db.session.commit()
+
+    def delete_video(self):
+        shutil.rmtree(self.path)
+        db.session.delete(self)
         db.session.commit()
 
 

@@ -18,6 +18,11 @@
         {% endfor %}
         )</p>
         <div class="Loader"><div> {{ form.video }} </div></div>
+        {% if form.video.errors %}
+            {% for error in form.video.errors %}
+            <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
         <div> <button type='button' id="geotag_is_needed">Прикрепить геотег</button></div>
         <br>
         <div style="display:none;" id="map-info"><p>Для добавления новых тегов дважды нажмите на карту. Для смены цвета тега кликните по нему.

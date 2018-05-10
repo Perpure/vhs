@@ -5,6 +5,7 @@ from web.models import User, Video, Room, Color, Comment, Geotag, Tag
 from web.helper import read_image, read_video, allowed_image, allowed_file, cur_user, is_true_pixel, \
     read_multi, count_params, requiresauth
 from web.video_handler import save_video
+from wtforms.validators import ValidationError
 from config import basedir, ALLOWED_EXTENSIONS
 from flask import redirect, render_template, session, url_for, make_response, request, jsonify
 from flask.json import JSONDecoder, dumps
@@ -181,19 +182,28 @@ def upload():
 
         if file and allowed_file(file.filename):
             video = save_video(file, form.title.data)
+
+            if not video:
+                form.video.errors.append(ValidationError('Ошибка при загрузке видео'))
+                return render_template('upload_video.html', form=form, user=cur_user(),
+                                       formats=app.config['ALLOWED_EXTENSIONS'])
+
             data = JSONDecoder().decode(form.geotag_data.data)
             if data['needed']:
                 for coords in data['coords']:
                     gt = Geotag(*coords)
                     gt.save(video)
-            
+
             if form.tags.data:
                 tags = form.tags.data.split(',')
                 for tag in tags:
                     tag_data = Tag(tag, video.id, user.id)
                     tag_data.save()
             return redirect(url_for("main"))
-        
+        elif not allowed_file(file.filename):
+            form.video.errors.append(ValidationError('Некорректное разрешение'))
+
+
     if not form.geotag_data.data:
         form.geotag_data.data = dumps({'needed': False, 'coords': []})
     return render_template('upload_video.html', form=form, user=cur_user(), formats=app.config['ALLOWED_EXTENSIONS'])
