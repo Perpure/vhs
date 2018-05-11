@@ -4,6 +4,7 @@
          <source src="{{url_for('get_video', vid=vid)}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
     </video>
 <p class="videoTitle">{{ video.title }}</p>
+
 <div style="margin: 5px">
 {% for tag in video.tags %}
     <span style="border: 1px solid #ffb366; padding: 3px;">
@@ -11,7 +12,7 @@
     </span>
 {% endfor %}
 </div>
-<p class="videoDate">Добавлено {{video.date}}</p>
+<p class="videoDate">Добавлено {{video.date}} пользователем {{video.user_login}}</p>
 <p>Просмотры: {{ video.viewers | length }}</p>
 
 {%if user%}

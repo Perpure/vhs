@@ -34,6 +34,7 @@ def main():
 
     return render_template('main.html', form=form, user=cur_user(), items=Video.get())
 
+
 @requiresauth
 @app.route('/viewroom', methods=['GET', 'POST'])
 def viewroom():
