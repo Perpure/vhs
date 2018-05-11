@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-    <video id="my-video" class="video-js" controls preload="auto"  data-setup="{}">
+    <video id="my-video" class="video-js" poster="{{url_for('get_image', pid=vid)}}"
+    data-setup='{"controls": true, "autoplay": false, "preload": "auto"}'>
          <source src="{{url_for('get_video', vid=vid)}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
     </video>
 <p class="videoTitle">{{ video.title }}</p>
@@ -11,20 +12,21 @@
 </div>
 
 {%if user%}
-<form method="post" class="liking">
-    {{ form.hidden_tag() }}
+<div class="liking">
     <div>
         <div id="likSh" class="likeShow"></div>
         <div id="disSh" class="disShow"></div>
         <br>
         <div class="dlc">
-        {{ like_form.like(class="Like") }}
-        <span id="lik">{{ video.likes | length }}</span>
-        {{ dislike_form.dislike(class="Dislike") }}
-        <span id="dis">{{ video.dislikes | length }}</span>
+        <input class="Like" id="like" name="like" type="submit" value="Нравится">
+        <!--{{ like_form.like(class="Like") }}-->
+        <span class="lik" id="lik">{{ video.likes | length }}</span>
+        <input class="Dislike" id="dislike" name="dislike" type="submit" value="НЕ нравится">
+        <!--{{ dislike_form.dislike(class="Dislike") }}-->
+        <span class="dis" id="dis">{{ video.dislikes | length }}</span>
         </div>
     </div>
-</form>
+</div>
 {%endif%}
 
 <div class="tags">
@@ -42,7 +44,7 @@
 <p>Комментарии</p>
 {%if user %}
 
-<textarea id="txtPlate" class="commArea"></textarea>
+<textarea id="txtPlate" class="commArea" maxlength="1000"></textarea>
 <br>
 <input type="submit" value="Запостить" id="addC">
 {%endif%}
@@ -104,3 +106,4 @@
     }
 </style>
 {% endblock %}
+

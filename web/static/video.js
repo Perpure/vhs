@@ -61,6 +61,44 @@ addCom.addEventListener('click',function(){
             plate.value="";
 });
 
+        $('#like').click(function(){
+            $.ajax({
+               url:"/likeVideo/"+hash,
+               type:"GET",
+               dataType:"text",
+               success:function(response){
+                    var parsedJson = $.parseJSON(response);
+                    $("span.lik").empty()
+                    $("span.dis").empty()
+                    var likes = parsedJson[0].likes
+                    var dislikes = parsedJson[0].dislikes
+                    $("span.lik").html(likes)
+                    $("span.dis").html(dislikes)
+                    console.log(parsedJson)},
+               error:function(){
+                    alert('Произошла ошибка')}
+            });
+        });
+
+        $('#dislike').click(function(){
+            $.ajax({
+               url:"/dislikeVideo/"+hash,
+               type:"GET",
+               dataType:"text",
+               success:function(response){
+                    var parsedJson = $.parseJSON(response);
+                    $("span.lik").empty()
+                    $("span.dis").empty()
+                    var likes = + parsedJson[0].likes
+                    var dislikes = parsedJson[0].dislikes
+                    $("span.lik").html(likes)
+                    $("span.dis").html(dislikes)
+                    console.log(parsedJson)},
+               error:function(){
+                    alert('Произошла ошибка')}
+            });
+        });
+
 var lkes=document.getElementById("lik");
 var disl=document.getElementById("dis");
 var lkesIn=document.getElementById("likSh");
