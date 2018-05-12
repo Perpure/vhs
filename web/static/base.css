@@ -311,6 +311,18 @@ main
     vertical-align:top;
 }
 
+.Like,.Dislike
+{
+        background-size:40%;
+        background-repeat:no-repeat;
+        background-position:center;
+}
+
+.Like:hover,.Dislike:hover
+{
+    background-size:41%;
+}
+
 .liking
 {
     float:right;

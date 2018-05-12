@@ -40,7 +40,7 @@
 {%if not user%}
 <br><a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы оценить видео
 {%endif%}
-<div id="CSect" class="cSect">
+<div class="cSect">
 <p>Комментарии</p>
 {%if user %}
 
@@ -48,34 +48,21 @@
 <br>
 <input type="submit" value="Запостить" id="addC">
 {%endif%}
-
+<div id="CSect">
 {% for comment in video.comments %}
 <div class="Comment">
     <img src="../static/a.png" alt="" class="commAva">
     <div class="commTxt">
-        <p>{{ comment.user.login }}</p>
+        <p>{{ comment.user.name }}</p>
         <p>{{ comment.text }}</p>
     </div>
 </div>
 {% endfor %}
 </div>
+</div>
 <script src="{{ url_for('static', filename='video.js') }}"></script>
 <script src="http://vjs.zencdn.net/6.6.3/video.js"></script>
-<script>
-    (function () {
-    var Dator=document.getElementById("Dating");
-    var Date=Dator.innerHTML;
-    Date=Date.substr(0,20);
-    Dator.innerHTML=Date;
-    })();
-</script>
 <style>
-    .Like,.Dislike
-    {
-        background-size:40%;
-        background-repeat:no-repeat;
-        background-position:center;
-    }
     .Like
     {
         {%if lkd!=1 %}
@@ -91,10 +78,6 @@
         {%else%}
             background-image:url({{ url_for('static', filename='dis1D.png') }});
         {%endif%}
-    }
-    .Like:hover,.Dislike:hover
-    {
-        background-size:41%;
     }
     .Like:hover
     {
