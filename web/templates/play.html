@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-    <video id="my-video" class="video-js" controls preload="auto" width="640" height="264" data-setup="{}">
+    <video id="my-video" class="video-js" poster="{{url_for('get_image', pid=vid)}}"
+    data-setup='{"controls": true, "autoplay": false, "preload": "auto"}'>
          <source src="{{url_for('get_video', vid=vid)}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
     </video>
 <p class="videoTitle">{{ video.title }}</p>
@@ -16,33 +17,41 @@
 <p>Просмотры: {{ video.viewers | length }}</p>
 
 {%if user%}
-<form method="post">
-    <!--<input class="mark_btn" name="like_btn" type="submit" value="Нравится">-->
-    <!--<input class="mark_btn" name="dislike_btn" type="submit" value="НЕ нравится">-->
-    {{ form.hidden_tag() }}
+<div class="liking">
     <div>
-        {{ like_form.like }}
-        {{ dislike_form.dislike }}
+        <div id="likSh" class="likeShow"></div>
+        <div id="disSh" class="disShow"></div>
+        <br>
+        <div class="dlc">
+        <input class="Like" id="like" name="like" type="submit" value="Нравится">
+        <!--{{ like_form.like(class="Like") }}-->
+        <span class="lik" id="lik">{{ video.likes | length }}</span>
+        <input class="Dislike" id="dislike" name="dislike" type="submit" value="НЕ нравится">
+        <!--{{ dislike_form.dislike(class="Dislike") }}-->
+        <span class="dis" id="dis">{{ video.dislikes | length }}</span>
+        </div>
     </div>
-</form>
-{%else%}
-<a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы поставить оценку
+</div>
 {%endif%}
 <div>Лайки: {{ video.likes | length }}</div>
 <div>Дизлайки: {{ video.dislikes | length }}</div>
 
+<div class="tags">
+{% for tag in video.tags %}
+<span class="Tag">
+    {{ '#'+tag.text+' ' }}
+</span>
+{% endfor %}
+</div>
+
+{%if not user%}
+<br><a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы оценить видео
+{%endif%}
+<div class="cSect">
+<p>Комментарии</p>
 {%if user %}
-<!--<form action="" method="post">
-        <div>{{ form.message.label }}</div>
-        <div>{{ form.message(rows=5, cols=60) }}</div>
-        {% if form.message.errors %}
-            {% for error in form.message.errors %}
-            <div style="color: red;">{{ error }}</div>
-            {% endfor %}
-        {% endif %}
-        {{ form.submit }}
-</form>-->
-<textarea id="txtPlate" class="commArea"></textarea>
+
+<textarea id="txtPlate" class="commArea" maxlength="1000"></textarea>
 <br>
 <input type="submit" value="Запостить" id="addC">
 
@@ -55,12 +64,46 @@
 <div class="Comment">
     <img src="../static/a.png" alt="" class="commAva">
     <div class="commTxt">
-        <p>{{ comment.user.login }}</p>
+        <p>{{ comment.user.name }}</p>
         <p>{{ comment.text }}</p>
     </div>
 </div>
 {% endfor %}
 </div>
+</div>
 <script src="{{ url_for('static', filename='video.js') }}"></script>
 <script src="http://vjs.zencdn.net/6.6.3/video.js"></script>
+<style>
+    .Like
+    {
+        {%if lkd!=1 %}
+            background-image:url({{ url_for('static', filename='lik1.png') }});
+        {%else%}
+            background-image:url({{ url_for('static', filename='lik1L.png') }});
+        {%endif%}
+    }
+    .Dislike
+    {
+        {%if lkd!=-1 %}
+            background-image:url({{ url_for('static', filename='dis1.png') }});
+        {%else%}
+            background-image:url({{ url_for('static', filename='dis1D.png') }});
+        {%endif%}
+    }
+
+    .Like:hover,.Dislike:hover
+{
+    background-size:41%;
+}    
+
+    .Like:hover
+    {
+        background-image:url({{ url_for('static', filename='lik1H.png') }});
+    }
+    .Dislike:hover
+    {
+        background-image:url({{ url_for('static', filename='dis1H.png') }});
+    }
+</style>
 {% endblock %}
+

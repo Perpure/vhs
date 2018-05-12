@@ -309,9 +309,15 @@ def play(vid):
     if form.validate_on_submit():
         comment = Comment(form.message.data, video.id, user.id)
         comment.save()
-
+    
+    
+    likened=0
+    if user in video.likes:
+        likened=1
+    if user in video.dislikes:
+        likened=-1
     return render_template('play.html', user=user, vid=vid, video=video, form=form,
-                           like_form=like_form, dislike_form=dislike_form)
+                           like_form=like_form, dislike_form=dislike_form,lkd=likened)
 
 
 @app.route('/video/map', methods=["GET"])
