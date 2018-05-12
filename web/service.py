@@ -90,7 +90,7 @@ def getId(Comment):
 def getNewComm(vid,cont):
     video = Video.get(video_id=vid)
     comms=video.comments
-    print(comms[0].id,comms[1].id,comms[2].id)
+    sorted(comms,key=getId)
     result=""
     for i in range(cont,len(comms)):
         result+=str(comms[i].user.login)+",,"+str(comms[i].text)+";;"
