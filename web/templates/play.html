@@ -12,7 +12,7 @@
     </span>
 {% endfor %}
 </div>
-<p class="videoDate">Добавлено {{video.date}} пользователем {{video.user_login}}</p>
+<p class="videoDate">Добавлено {{video.date}} пользователем <a href="{{url_for('cabinet', usr=video.user_login)}}" class="Link">{{video.user_login}}</a></p>
 <p>Просмотры: {{ video.viewers | length }}</p>
 
 {%if user%}
