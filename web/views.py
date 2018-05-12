@@ -1,7 +1,7 @@
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
     UserProfileForm, AddRoomForm, AddCommentForm, SearchingVideoForm, LikeForm, DislikeForm
-from web.models import User, Video, Room, Color, Comment, Geotag, Tag
+from web.models import User, Video, Room, Color, Comment, Geotag, Tag, AnonUser
 from web.helper import read_image, read_video, allowed_image, allowed_file, cur_user, is_true_pixel, \
     read_multi, count_params, requiresauth
 from web.video_handler import save_video
@@ -18,6 +18,9 @@ import os
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
+    if cur_user() is None:
+        user = AnonUser(request.cookies.get('session'))
+
     form = SearchingVideoForm()
     if form.validate_on_submit():
         sort = ""

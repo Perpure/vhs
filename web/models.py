@@ -301,3 +301,28 @@ class Color(db.Model):
     __tablename__ = 'Color'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     color = db.Column(db.String(64), nullable=False)
+
+
+class AnonUser(db.Model):
+    """
+    Таблица для анонимного пользователя. Идентификация - по сессионной куке.
+    """
+    __tablename__ = 'AnonUser'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    session = db.Column(db.String(128), nullable=False)
+    action = db.Column(db.String(64))
+    device_width = db.Column(db.Integer)
+    device_height = db.Column(db.Integer)
+    color = db.Column(db.String(64))
+    top = db.Column(db.Integer)
+    left = db.Column(db.Integer)
+    res_k = db.Column(db.Integer)
+
+    def __init__(self, session):
+        """
+        Сохраняет анонимного пользователя.
+        :param session: Кука сессии
+        """
+        self.session = session
+        db.session.add(self)
+        db.session.commit()
