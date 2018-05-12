@@ -325,6 +325,7 @@ main
 .likeShow
 {
     background-color:green;
+    vertical-align:top;
 }
 
 .disShow
