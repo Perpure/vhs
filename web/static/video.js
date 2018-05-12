@@ -34,7 +34,7 @@
                                         while(response1[cur1]!=";" || response1[cur1+1]!=";")
                                             cur1++;
                                         let text=response1.substr(cur,cur1-cur);
-                                        commSection.innerHTML+='<div class="Comment"><img src="../static/a.png" alt="" class="commAva"><div class="commTxt"><p>'+name+'</p><p>'+text+'</p></div></div>';
+                                        commSection.innerHTML='<div class="Comment"><img src="../static/a.png" alt="" class="commAva"><div class="commTxt"><p>'+name+'</p><p>'+text+'</p></div></div>'+commSection.innerHTML;
                                      }
                                    },
                                    error:function(){}
@@ -61,7 +61,21 @@ addCom.addEventListener('click',function(){
             plate.value="";
 });
 
-        $('#like').click(function(){
+function calc()
+{
+    var lkes=document.getElementById("lik");
+    var disl=document.getElementById("dis");
+    var lkesIn=document.getElementById("likSh");
+    var disIn=document.getElementById("disSh");
+    lkes=lkes.innerHTML;
+    disl=disl.innerHTML;
+    lkesIn.style.width=(lkes*100)/(lkes*1+disl*1)+"%";
+    disIn.style.width=(disl*100)/(lkes*1+disl*1)+"%";
+}
+
+calc();
+
+$('#like').click(function(){
             $.ajax({
                url:"/likeVideo/"+hash,
                type:"GET",
@@ -74,13 +88,17 @@ addCom.addEventListener('click',function(){
                     var dislikes = parsedJson[0].dislikes
                     $("span.lik").html(likes)
                     $("span.dis").html(dislikes)
-                    console.log(parsedJson)},
+                    console.log(parsedJson)
+                    calc();                    
+                    },
                error:function(){
                     alert('Произошла ошибка')}
             });
-        });
+            document.getElementById("like").style.backgroundImage="url(/static/lik1L.png)";
+            document.getElementById("dislike").style.backgroundImage="url(/static/dis1.png)";
+});
 
-        $('#dislike').click(function(){
+$('#dislike').click(function(){
             $.ajax({
                url:"/dislikeVideo/"+hash,
                type:"GET",
@@ -93,17 +111,20 @@ addCom.addEventListener('click',function(){
                     var dislikes = parsedJson[0].dislikes
                     $("span.lik").html(likes)
                     $("span.dis").html(dislikes)
-                    console.log(parsedJson)},
+                    console.log(parsedJson)
+                    calc();    
+                    },
                error:function(){
                     alert('Произошла ошибка')}
             });
-        });
+            document.getElementById("dislike").style.backgroundImage="url(/static/dis1D.png)";
+            document.getElementById("like").style.backgroundImage="url(/static/lik1.png)";
+});
 
-var lkes=document.getElementById("lik");
-var disl=document.getElementById("dis");
-var lkesIn=document.getElementById("likSh");
-var disIn=document.getElementById("disSh");
-lkes=lkes.innerHTML;
-disl=disl.innerHTML;
-lkesIn.style.width=(lkes*100)/(lkes*1+disl*1)+"%";
-disIn.style.width=(disl*100)/(lkes*1+disl*1)+"%";
+
+(function () {
+    var Dator=document.getElementById("Dating");
+    var Date=Dator.innerHTML;
+    Date=Date.substr(0,20);
+    Dator.innerHTML=Date;
+    })();

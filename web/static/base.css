@@ -311,6 +311,13 @@ main
     vertical-align:top;
 }
 
+.Like,.Dislike
+{
+        background-size:40%;
+        background-repeat:no-repeat;
+        background-position:center;
+}
+
 .liking
 {
     float:right;
