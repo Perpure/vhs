@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>Комната {{room.token}}</h1>
-{% if room.capitan_id == user.id %}
+{% if room.capitan_id == anon.id %}
 {% if room.color_user %}
 <form action="" method="post">
     {{Room_Form.hidden_tag()}}
@@ -19,7 +19,7 @@
 </form>
 
 {% endif %}
-{% if room.capitan_id != user.id %}
+{% if room.capitan_id != anon.id %}
 <hr>
 <button onclick="launchIntoFullscreen(document.documentElement);" class="fullscreenB">Перейти в полноэкранный режим</button>
 {% endif %}
@@ -56,7 +56,7 @@
 {% endif %}
 <hr>
 <p>После того, как вы пригласили участников, разместите их устройства на площади для показа, открыв страницу комнаты. На странице капитана (создавший комнату пользователь) нажмите на кнопку калибровки, после чего на всех устройствах откроется цветная сплошная заливка. Нажмите на кнопку загрузки файла и сделайте фотографию устройств, желательно под прямым углом. Если что-то пошло не так, вы можете убрать лишнее освещение, сделать экран на телефонах ярче. После этого выберите желаемое для показа видео и нажмите на кнопку результата. Все устройства начнут воспроизведение.</p>
-{% if room.capitan_id != user.id %}
+{% if room.capitan_id != anon.id %}
     <script>
         let speed=3000;
         var prev = "None";
@@ -75,7 +75,7 @@
                             prev = "calibrate"
                             ;}
                             if(response=="result" && prev != "result"){
-                            $('#Body').prepend('<img src="{{url_for('get_multi', pid=1)}}" style="position:fixed; width:{{user.res_k}}%; top:{{user.top}}%; left:{{user.left}}%;">');
+                            $('#Body').prepend('<img src="{{url_for('get_multi', pid=1)}}" style="position:fixed; width:{{anon.res_k}}%; top:{{anon.top}}%; left:{{anon.left}}%;">');
                             $('#Footer').prop({"hidden":true})
                             $('#Header').prop({"hidden":true})
                             $('#calibrImage').prop({"hidden":true})

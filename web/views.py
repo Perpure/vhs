@@ -18,9 +18,6 @@ import os
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    if cur_user() is None:
-        user = AnonUser(request.cookies.get('session'))
-
     form = SearchingVideoForm()
     if form.validate_on_submit():
         sort = ""
@@ -37,10 +34,13 @@ def main():
 
     return render_template('main.html', form=form, user=cur_user(), items=Video.get())
 
-@requiresauth
+
 @app.route('/viewroom', methods=['GET', 'POST'])
 def viewroom():
-    user = cur_user()
+    if not('anon_id' in session):
+        user = AnonUser()
+    else:
+        user = AnonUser.query.filter_by(id=session['id'])
 
     join_form = JoinForm(csrf_enabled=False, prefix="Submit_Join")
     user.action = ""
@@ -62,18 +62,21 @@ def viewroom():
             return redirect(url_for('room', token=join_form.token.data))
     rooms = user.rooms
 
-    return render_template('viewroom.html', user=cur_user(), join_form=join_form,add_room_form=add_room_form, rooms=rooms)
+    return render_template('viewroom.html', user=cur_user(), join_form=join_form,add_room_form=add_room_form,
+                           rooms=rooms, anon = user)
 
-@requiresauth
 @app.route('/addroom/<string:token>', methods=['GET', 'POST'])
 def addroom(token):
     return render_template('addroom.html', user=cur_user(), token=token)
 
 
-@requiresauth
 @app.route('/room/<string:token>', methods=['GET', 'POST'])
 def room(token):
-    user = cur_user()
+    if not('anon_id' in session):
+        user = AnonUser()
+    else:
+        user = AnonUser.query.filter_by(id=session['id'])
+
     Room_Form = RoomForm()
     calibrate_url = None
     result_url = None
@@ -112,7 +115,7 @@ def room(token):
                                        calibrate_url=calibrate_url, color=color, users=users,
                                        image_form=UploadImageForm(csrf_enabled=False),
                                        result_url=result_url, Room_Form=Room_Form, loaded=False,
-                                       room_map=room_map_url)
+                                       room_map=room_map_url, anon=user)
 
             file = request.files['image']
             if file.filename == '':
@@ -120,7 +123,7 @@ def room(token):
                                        calibrate_url=calibrate_url, color=color, users=users,
                                        image_form=UploadImageForm(csrf_enabled=False),
                                        result_url=result_url, Room_Form=Room_Form, loaded=False,
-                                       room_map=room_map_url)
+                                       room_map=room_map_url, anon=user)
 
             if file and allowed_image(file.filename):
                 file.save(basedir + '/images/' + room.token + '.' + file.filename.split('.')[-1].lower())
@@ -138,24 +141,29 @@ def room(token):
                     return render_template('room.html', room=room, user=cur_user(),
                                                calibrate_url=calibrate_url, color=color, users=users,
                                                image_form=image_form, result_url=result_url,
-                                               Room_Form=Room_Form, loaded=True, room_map=room_map_url,
+                                               Room_Form=Room_Form, loaded=True, room_map=room_map_url, anon=user,
                                                msg="Мы не смогли идентифицировать устройства, попробуйте загрузить другую фотографию.")
                 return render_template('room.html', room=room, user=cur_user(),
                                        calibrate_url=calibrate_url, color=color, users=users,
-                                       image_form=image_form, result_url=result_url,
+                                       image_form=image_form, result_url=result_url, anon=user,
                                        Room_Form=Room_Form, loaded=True, room_map=room_map_url)
 
     else:
         return redirect(url_for('log'))
     return render_template('room.html', room=room, user=cur_user(),
                            calibrate_url=calibrate_url, color=color, users=users,
-                           image_form=image_form, result_url=result_url, Room_Form=Room_Form, loaded=False,
+                           image_form=image_form, result_url=result_url, Room_Form=Room_Form, loaded=False, anon=user,
                            room_map=room_map_url, map_ex=os.path.exists(basedir + '/images/' + room.token + '_map.jpg'))
 
 @app.route('/room/<string:token>/choose_video/<string:vid_id>', methods=['GET', 'POST'])
 def choosed_video(token,vid_id):
+    if not('anon_id' in session):
+        user = AnonUser(request.cookies.get('session'))
+        session['id'] = user.id
+    else:
+        user = AnonUser.query.filter_by(id=session['id'])
     room = Room.query.filter_by(token=token).first()
-    if cur_user().id == room.capitan_id:
+    if user.id == room.capitan_id:
         room.video_id = vid_id
         db.session.commit()
     return redirect(url_for('room', token=token))
@@ -179,14 +187,6 @@ def choose_video(token):
         return render_template('choose_video.html', form=form, user=cur_user(), items=Video.get(sort=sort), cap=cap, room=room)
 
     return render_template('choose_video.html', form=form, user=cur_user(), items=Video.get(), cap=cap, room=room)
-
-@app.route('/calibrate/<string:color>', methods=['GET', 'POST'])
-def calibrate(color):
-    user = cur_user()
-    user.action = ""
-    db.session.commit()
-    return render_template('color.html', color=color)
-
 
 @app.route('/upload', methods=['GET', 'POST'])
 @requiresauth

@@ -3,10 +3,10 @@ from web import app
 import hashlib
 import os
 from datetime import datetime
-
+from flask import session
 
 UserToRoom = db.Table('UserToRoom', db.Model.metadata,
-    db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
+    db.Column('AnonUser_id', db.Integer, db.ForeignKey('AnonUser.id')),
     db.Column('Room_id', db.Integer, db.ForeignKey('Room.id'))
 )
 
@@ -216,12 +216,6 @@ class User(db.Model):
     tags = db.relationship('Tag',
                                backref='user',
                                lazy='joined')
-    rooms = db.relationship("Room",
-                            secondary = UserToRoom,
-                            backref = "user",
-                            lazy = "joined")
-    
-    room_capitan = db.relationship("Room", backref='captain')
 
     def __init__(self, login):
         self.login = login
@@ -281,7 +275,7 @@ class Room(db.Model):
     __tablename__ = 'Room'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     video_id = db.Column(db.String(32))
-    capitan_id = db.Column(db.Integer, db.ForeignKey('User.id'))
+    capitan_id = db.Column(db.Integer, db.ForeignKey('AnonUser.id'))
     token = db.Column(db.String(64), nullable=False)
     color_user = db.Column(db.Text())
     Color = db.relationship("Color",
@@ -306,11 +300,10 @@ class Color(db.Model):
 
 class AnonUser(db.Model):
     """
-    Таблица для анонимного пользователя. Идентификация - по сессионной куке.
+    Таблица для анонимного пользователя.
     """
     __tablename__ = 'AnonUser'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    session = db.Column(db.String(128), nullable=False)
     action = db.Column(db.String(64))
     device_width = db.Column(db.Integer)
     device_height = db.Column(db.Integer)
@@ -318,12 +311,16 @@ class AnonUser(db.Model):
     top = db.Column(db.Integer)
     left = db.Column(db.Integer)
     res_k = db.Column(db.Integer)
-
-    def __init__(self, session):
+    rooms = db.relationship("Room",
+                            secondary = UserToRoom,
+                            backref = "user",
+                            lazy = "joined")
+    
+    room_capitan = db.relationship("Room", backref='captain')
+    def __init__(self):
         """
         Сохраняет анонимного пользователя.
-        :param session: Кука сессии
         """
-        self.session = session
         db.session.add(self)
         db.session.commit()
+        session['id'] = self.id
