@@ -5,7 +5,9 @@
             <div class="conbu">
          <div class="z1 z2" onclick="func(this)">Информация о пользователе</div>
          <div class="z1" onclick="func(this)">Видео пользователя</div>
+        {% if settings %}
          <div class="z1" onclick="func(this)">Настройки</div>
+        {% endif %}
                 </div>
          <div class="con con2">
              <div class="content0">
@@ -38,6 +40,7 @@
 {% endfor %}
                  </div>
         </div>
+        {% if settings %}
         <form action="" method="post">
              {{form.hidden_tag()}}
              <div class="con">
@@ -88,6 +91,7 @@
             </div>
             </div>
         </form>
+        {% endif %}
     </div>
             </div>
     <script>
