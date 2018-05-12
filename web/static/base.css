@@ -447,7 +447,11 @@ footer
     vertical-align:top;
 }
 
-
+.ResultVideo
+{
+    z-index:5;
+    position:absolute;
+}
 
 .contImg:hover
 {

@@ -45,6 +45,22 @@
     <script>
         let speed=3000;
         var prev = "None";
+
+        function Result()
+        {
+            var buddy=document.getElementById("Body");
+            var ftt=document.getElementById("Footer");
+            var tp={{ user.top }};
+            var lft={{ user.left }};
+            var k={{ user.res_k }};
+            buddy.innerHTML+='<video class="ResultVideo" autoplay="autoplay" src="/static/testt.mp4" id="ReVi"></video>'
+            var RV=document.getElementById("ReVi");
+            RV.style.top=tp+"%";
+            RV.style.left=lft+"%";
+            RV.style.width=k+"%";
+            ftt.style.display="none";
+        }
+
         setTimeout(function step(){
             $.ajax({
                        url:"/askAct",
@@ -59,11 +75,13 @@
                             $('#Header').prop({"hidden":true})
                             prev = "calibrate"
                             ;}
-                            if(response=="result" && prev != "result"){
-                            $('#Body').prepend('<img src="{{url_for('get_multi', pid=1)}}" style="position:fixed; width:{{user.res_k}}%; top:{{user.top}}px; left:{{user.left}}px;">');
+                            if(response.substr(0,6)=="result" && prev != "result"){
+                            console.log(1212)
+                            /**$('#Body').prepend('<img src="{{url_for('get_multi', pid=1)}}" style="position:fixed; width:{{user.res_k}}%; top:{{user.top}}px; left:{{user.left}}px;">');
                             $('#Footer').prop({"hidden":true})
                             $('#Header').prop({"hidden":true})
-                            $('#calibrImage').prop({"hidden":true})
+                            $('#calibrImage').prop({"hidden":true})**/
+                            setTimeout(Result,response.substr(6)/2);
                             prev = "result"
                             }
 
