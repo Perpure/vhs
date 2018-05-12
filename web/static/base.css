@@ -318,11 +318,6 @@ main
         background-position:center;
 }
 
-.Like:hover,.Dislike:hover
-{
-    background-size:41%;
-}
-
 .liking
 {
     float:right;
