@@ -1,24 +1,23 @@
-let elem=document.getElementById("logoTxt");
-let body=document.getElementById("Body");
-let wid=body.offsetWidth;
+var elem=document.getElementById("logoTxt");
+var body=document.getElementById("Body");
+var wid=body.offsetWidth;
 if(wid<=550)elem.innerHTML="VHS";
 
 function mov()
 {
-    
-    let Height=document.body.scrollHeight;
-    let foot=document.getElementById("Footer");
+
+    var Height=document.body.scrollHeight;
+    var foot=document.getElementById("Footer");
     foot.style.top=0;
     foot.style.top=(Height)+"px";
-    console.log(11);
 }
 
 mov();
 
-let searching=false;
-let search=document.getElementById("Search");
-let searcher=document.getElementById("searcher");
-let shadow=document.getElementById("Shad");
+var searching=false;
+var search=document.getElementById("Search");
+var searcher=document.getElementById("searcher");
+var shadow=document.getElementById("Shad");
 search.addEventListener('click',function(){
     if(searching)
     {
@@ -27,27 +26,27 @@ search.addEventListener('click',function(){
         searching=false;
     }
     else
-    {       
+    {
         shadow.style.display="block";
         searcher.style.display="block";
         searching=true;
     }
 });
 
-let holder=document.getElementById("mHolder");
-let opned=false;
+var holder=document.getElementById("mHolder");
+var opned=false;
 holder.addEventListener('click',function(){
-    let els=document.getElementsByClassName("navMen");
+    var els=document.getElementsByClassName("navMen");
     if(opned)
-    {        
-        for(let i=0;i<els.length;i++)
+    {
+        for(var i=0;i<els.length;i++)
             els[i].style.display="none";
         holder.style.backgroundColor="rgba(240, 203, 142,0)";
         opned=false;
     }
     else
     {
-        for(let i=0;i<els.length;i++)
+        for(var i=0;i<els.length;i++)
             els[i].style.display="block";
         holder.style.backgroundColor="rgba(240, 203, 142,0.4)";
         opned=true;
@@ -56,7 +55,7 @@ holder.addEventListener('click',function(){
 });
 
 function swit(e){
-        let elem=e.currentTarget;
+        var elem=e.currentTarget;
         if(elem.value)
         {
             elem.style.backgroundColor="rgba(0,0,0,0)";
@@ -65,7 +64,7 @@ function swit(e){
             elem.value=0;
         }
         else
-        {        
+        {
             elem.style.backgroundColor="#f0cb8e";
             elem.style.fontWeight="bold";
             elem.style.color="black";
@@ -73,21 +72,21 @@ function swit(e){
         }
 }
 
-let start=document.getElementById("startSearch");
-let date=document.getElementById("Date");
-let views=document.getElementById("byViews");
-let key=document.getElementById("searchKey");
+var start=document.getElementById("startSearch");
+var date=document.getElementById("Date");
+var views=document.getElementById("byViews");
+var key=document.getElementById("searchKey");
 
 views.value=0;
 date.value=0;
-views.addEventListener('click',swit);     
-date.addEventListener('click',swit);  
-     
+views.addEventListener('click',swit);
+date.addEventListener('click',swit);
+
 
     start.addEventListener('click',function(){
-        let val=key.value;
-        let vw=views.value;
-        let dt=date.value;
+        var val=key.value;
+        var vw=views.value;
+        var dt=date.value;
         if(val=="")val=" ";
         $.ajax({
                        url:"/startSearch/"+val+"/"+vw+"/"+dt,
@@ -95,28 +94,28 @@ date.addEventListener('click',swit);
                        dataType:"html",
                        success:function(response)
                        {
-                            let placer="";
-                            let plus=false;
-                            for(let i=0;i<response.length;i++)
+                            var placer="";
+                            var plus=false;
+                            for(var i=0;i<response.length;i++)
                             {
                                 if(response[i]=='<' && response[i+1]=='m' && response[i+2]=='a' && response[i+3]=='i')plus=true;
                                 if(plus)placer+=response[i];
                                 if(response[i+2]=='/' && response[i+3]=='m' && plus)i=response.length;
                             }
                             placer=placer.substr(17);
-                            let mn=document.getElementById("Main");
+                            var mn=document.getElementById("Main");
                             mn.innerHTML=placer;
                        },
                        error:function(){}
         });
     });
 
-let nsize=document.body.scrollHeight;
+var nsize=document.body.scrollHeight;
 setTimeout(function step(){
-            
+
             if(document.body.scrollHeight!=nsize)
             {
-                let foot=document.getElementById("Footer");
+                var foot=document.getElementById("Footer");
                 foot.style.top=0;
                 mov();
                 nsize=document.body.scrollHeight;
