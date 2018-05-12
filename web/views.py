@@ -3,7 +3,7 @@ from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, Upl
     UserProfileForm, AddRoomForm, AddCommentForm, SearchingVideoForm, LikeForm, DislikeForm
 from web.models import User, Video, Room, Color, Comment, Geotag, Tag, AnonUser
 from web.helper import read_image, read_video, allowed_image, allowed_file, cur_user, is_true_pixel, \
-    read_multi, count_params, requiresauth
+    read_multi, parse, requiresauth
 from web.video_handler import save_video
 from config import basedir, ALLOWED_EXTENSIONS
 from flask import redirect, render_template, session, url_for, make_response, request, jsonify
@@ -124,21 +124,18 @@ def room(token):
 
             if file and allowed_image(file.filename):
                 file.save(basedir + '/images/' + room.token + '.' + file.filename.split('.')[-1].lower())
-                image = Image.open(basedir + url_for('get_multi', pid=token))
-                k=image.size[0]/image.size[1]
-                image = image.resize((int(1000*k),1000))
-                image.save(basedir + url_for('get_multi', pid=token))
-                room_map = Image.new('RGB', (image.size[0], image.size[1]), (255, 255, 255))
-                room_map.save(basedir + '/images/' + room.token + '_map.jpg')
                 for member in users[1:]:
                     colors = room.color_user.split(';')
                     for i in range(len(colors)):
                         if colors[i].split(',')[0] == str(member.id):
                             color = Color.query.filter_by(id=colors[i].split(',')[1]).first().color
-                            print(color)
+                            member.color = color
+                            db.session.commit()
                             break
-                    if count_params(room, color, member):
-                        return render_template('room.html', room=room, user=cur_user(),
+                try:
+                    parse(room, users[1:], basedir + '/images/' + room.token + '.jpg')
+                except:
+                    return render_template('room.html', room=room, user=cur_user(),
                                                calibrate_url=calibrate_url, color=color, users=users,
                                                image_form=image_form, result_url=result_url,
                                                Room_Form=Room_Form, loaded=True, room_map=room_map_url,
@@ -155,6 +152,33 @@ def room(token):
                            image_form=image_form, result_url=result_url, Room_Form=Room_Form, loaded=False,
                            room_map=room_map_url, map_ex=os.path.exists(basedir + '/images/' + room.token + '_map.jpg'))
 
+@app.route('/room/<string:token>/choose_video/<string:vid_id>', methods=['GET', 'POST'])
+def choosed_video(token,vid_id):
+    room = Room.query.filter_by(token=token).first()
+    if cur_user().id == room.capitan_id:
+        room.video_id = vid_id
+        db.session.commit()
+    return redirect(url_for('room', token=token))
+
+@app.route('/room/<string:token>/choose_video', methods=['GET', 'POST'])
+def choose_video(token):
+    room = Room.query.filter_by(token=token).first()
+    cap = room.capitan_id
+    form = SearchingVideoForm()
+    if form.validate_on_submit():
+        sort = ""
+
+        if form.date.data:
+            sort += "date"
+        if form.views.data:
+            sort += "views"
+        if form.search.data:
+            return render_template('choose_video.html', form=form, user=cur_user(), items=Video.get(search=form.search.data,
+                                                                                            sort=sort), cap=cap, room=room)
+
+        return render_template('choose_video.html', form=form, user=cur_user(), items=Video.get(sort=sort), cap=cap, room=room)
+
+    return render_template('choose_video.html', form=form, user=cur_user(), items=Video.get(), cap=cap, room=room)
 
 @app.route('/calibrate/<string:color>', methods=['GET', 'POST'])
 def calibrate(color):
