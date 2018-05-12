@@ -90,6 +90,7 @@ class Video(db.Model):
     path = db.Column(db.String(256), nullable=False)
     date = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
+    user_login = db.Column(db.String)
 
     longitude = db.Column(db.Float(), nullable=True)
     latitude = db.Column(db.Float(), nullable=True)
@@ -115,6 +116,7 @@ class Video(db.Model):
         self.id = hashlib.md5((hash + self.date.isoformat()).encode("utf-8")).hexdigest()
         self.path = os.path.join(app.config['VIDEO_SAVE_PATH'], self.id)
         self.user_id = user.id
+        self.user_login = user.login
 
         db.session.add(self)
         db.session.commit()
