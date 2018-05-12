@@ -149,6 +149,33 @@ def room(token):
                            image_form=image_form, result_url=result_url, Room_Form=Room_Form, loaded=False,
                            room_map=room_map_url, map_ex=os.path.exists(basedir + '/images/' + room.token + '_map.jpg'))
 
+@app.route('/room/<string:token>/choose_video/<string:vid_id>', methods=['GET', 'POST'])
+def choosed_video(token,vid_id):
+    room = Room.query.filter_by(token=token).first()
+    if cur_user().id == room.capitan_id:
+        room.video_id = vid_id
+        db.session.commit()
+    return redirect(url_for('room', token=token))
+
+@app.route('/room/<string:token>/choose_video', methods=['GET', 'POST'])
+def choose_video(token):
+    room = Room.query.filter_by(token=token).first()
+    cap = room.capitan_id
+    form = SearchingVideoForm()
+    if form.validate_on_submit():
+        sort = ""
+
+        if form.date.data:
+            sort += "date"
+        if form.views.data:
+            sort += "views"
+        if form.search.data:
+            return render_template('choose_video.html', form=form, user=cur_user(), items=Video.get(search=form.search.data,
+                                                                                            sort=sort), cap=cap, room=room)
+
+        return render_template('choose_video.html', form=form, user=cur_user(), items=Video.get(sort=sort), cap=cap, room=room)
+
+    return render_template('choose_video.html', form=form, user=cur_user(), items=Video.get(), cap=cap, room=room)
 
 @app.route('/calibrate/<string:color>', methods=['GET', 'POST'])
 def calibrate(color):
