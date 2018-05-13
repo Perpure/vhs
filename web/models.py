@@ -154,8 +154,9 @@ class Video(db.Model):
                 videos.sort(key=lambda video: len(video.viewers), reverse=True)
 
         if search:
+            print(search)
             if '#' in search:
-                temp = [(video, len([word for word in search.split(' #')
+                temp = [(video, len([word for word in search.split('#')
                                      if word.lower() in video.get_tags()])) for video in videos]
             else:
                 temp = [(video, len([word for word in search.lower().split()

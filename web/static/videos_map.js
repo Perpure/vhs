@@ -69,9 +69,8 @@ function init_all(videos) {
         $('#Footer').css('top', footer_top+"px");
     });
 
-    var data = "";
-    if (key.value) data="/"+key.value.replace(/#/g, " %23");;
-    fetch("/video/data"+data).then(function(response){
+
+    fetch("/video/data", {search:key.value}).then(function(response){
         if(response.status == 200){
             response.json().then(add_geotags);
         }

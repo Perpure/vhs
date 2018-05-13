@@ -95,7 +95,7 @@ date.addEventListener('click',swit);
 
 
     start.addEventListener('click',function(){
-        var val = key.value.replace(/#/g, " %23");
+        var val = key.value;
         var vw=views.value;
         var dt=date.value;
         if (pr_page == "" ) {
@@ -104,9 +104,14 @@ date.addEventListener('click',swit);
 
         if(val=="") val=" ";
         $.ajax({
-                       url:"/startSearch/"+val+"/"+vw+"/"+dt,
+                       url:"/startSearch",
                        type:"GET",
                        dataType:"html",
+                       data: {
+                            ask:val,
+                            view:vw,
+                            dat:dt
+                       },
                        success:function(response)
                        {
                             var placer="";
