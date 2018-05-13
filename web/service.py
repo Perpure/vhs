@@ -31,6 +31,7 @@ def get_image(pid):
         'Content-Disposition', 'attachment', filename='%s.jpg' % pid)
     return response
 
+
 @app.route('/video/<string:vid>/video.mp4')
 def get_video(vid):
     video_binary = read_video(vid)
@@ -39,6 +40,7 @@ def get_video(vid):
     response.headers.set(
         'Content-Disposition', 'attachment', filename='video/%s/video.mp4' % vid)
     return response
+
 
 @app.route('/video/data')
 def get_video_data():
@@ -77,6 +79,7 @@ def askAct():
             return action
     return ''
 
+
 @app.route('/askNewComm/<string:vid>', methods=['GET', 'POST'])
 def askNewComm(vid):
     video = Video.get(video_id=vid)
@@ -84,8 +87,10 @@ def askNewComm(vid):
     cnt=len(comms)
     return str(cnt)
 
+
 def getId(Comment):
     return Comment.id
+
 
 @app.route('/getNewComm/<string:vid>/<int:cont>', methods=['GET', 'POST'])
 def getNewComm(vid,cont):
@@ -163,6 +168,7 @@ def startSearch():
         return render_template('main.html', user=cur_user(), items=Video.get(search=ask,sort=sort))
     
     return render_template('main.html', user=cur_user(), items=Video.get())
+
 
 @app.route('/showRes/<string:token>', methods=['GET', 'POST'])
 def showRes(token):

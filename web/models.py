@@ -69,19 +69,6 @@ class Tag(db.Model):
         db.session.commit()
 
 
-class Mark(db.Model):
-    __tablename__ = 'Mark'
-    id = db.Column(db.Text(), primary_key=True)
-    video_id = db.Column(db.String(32), db.ForeignKey('Video.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
-    is_like = db.Column(db.Boolean, nullable=False)
-
-    def save(self, is_like):
-        self.is_like = is_like
-        db.session.add(self)
-        db.session.commit()
-
-
 class Video(db.Model):
     """Класс описывающий модель Видео"""
     __tablename__ = 'Video'
@@ -97,8 +84,6 @@ class Video(db.Model):
 
     likes = db.relationship('User', secondary=Likes, backref='likes', lazy='joined')
     dislikes = db.relationship('User', secondary=Dislikes, backref='dislikes', lazy='joined')
-
-    marks = db.relationship('Mark', backref='video', lazy=True)
 
     comments = db.relationship('Comment', backref='video', lazy='joined')
 
@@ -219,10 +204,6 @@ class User(db.Model):
 
     videos = db.relationship("Video", 
                             backref="user",
-                            lazy="joined")
-    
-    marks = db.relationship('Mark',
-                            backref='user',
                             lazy="joined")
 
     comments = db.relationship('Comment',
