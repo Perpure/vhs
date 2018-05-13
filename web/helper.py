@@ -2,7 +2,7 @@ from config import basedir
 from web import db, app
 from web.models import User
 from PIL import Image, ImageDraw, ImageEnhance
-from web.models import User
+from web.models import User, AnonUser
 from web import app
 from functools import wraps
 from flask import session, redirect, url_for
@@ -133,3 +133,13 @@ def cur_user():
     if 'Login' in session:
         return User.get(login=session['Login'])
     return None
+
+
+def anon_user():
+    user = None
+    if 'anon_id' in session:
+        user = AnonUser.get(id=session['anon_id'])
+    if not user:
+        user = AnonUser()
+        session['anon_id'] = user.id
+    return user
