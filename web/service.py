@@ -57,7 +57,7 @@ def get_video_data_search():
 @app.route('/askAct', methods=['GET', 'POST'])
 def askAct():
     if 'anon_id' in session:
-        user = AnonUser.query.filter_by(id=session['anon_id']).first()
+        user = AnonUser.query.get(id=session['anon_id'])
         action = user.action
         if action == 'calibrate':
             user.action = ''
@@ -86,10 +86,7 @@ def askAct():
                             "top": user.top,
                             "left": user.left,
                             "width": user.width})
-    return jsonify({"action": '',
-                    "top": user.top,
-                    "left": user.left,
-                    "width": user.width})
+    return jsonify({"action": ''})
 
 
 @app.route('/askNewComm/<string:vid>', methods=['GET', 'POST'])
@@ -202,9 +199,9 @@ def showRes(token):
                 now=hr*3600000+mt*60000+sc*1000+ms
                 now+=15000-(now-zero)
                 ID = roomers[i].split(',')[0]
-                anon = AnonUser.query.filter_by(id=ID).first()
+                anon = AnonUser.query.get(id=ID).first()
                 anon.action = "result"
-                anon.time = str(now)
+                anon.time = now
     db.session.commit()
     return 0
 
