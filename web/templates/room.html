@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Комната {{room.token}} {{anon.id}} {{anon.res_k}}</h1>
+<h1>Комната {{room.token}}</h1>
 {% if room.capitan_id == anon.id %}
 {% if room.color_user %}
 <form action="" method="post">
