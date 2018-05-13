@@ -6,10 +6,15 @@
     </video>
 <p class="videoTitle">{{ video.title }}</p>
 
-<div class="infoOne">
-<p class="videoDate" id="Dating">Добавлено {{video.date}}</i></p>
-<p>Просмотры: {{ video.viewers | length }}</p>
+<div style="margin: 5px">
+{% for tag in video.tags %}
+    <span style="border: 1px solid #ffb366; padding: 3px;">
+        {{ '#'+tag.text+' ' }}
+    </span>
+{% endfor %}
 </div>
+<p class="videoDate">Добавлено {{video.date}} пользователем <a href="{{url_for('cabinet', usr=video.user_login)}}" class="Link">{{video.user_login}}</a></p>
+<p>Просмотры: {{ video.viewers | length }}</p>
 
 {%if user%}
 <div class="liking">
@@ -28,6 +33,8 @@
     </div>
 </div>
 {%endif%}
+<div>Лайки: {{ video.likes | length }}</div>
+<div>Дизлайки: {{ video.dislikes | length }}</div>
 
 <div class="tags">
 {% for tag in video.tags %}
@@ -47,7 +54,11 @@
 <textarea id="txtPlate" class="commArea" maxlength="1000"></textarea>
 <br>
 <input type="submit" value="Запостить" id="addC">
+
+{% else %}
+<a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы комментировать
 {%endif%}
+<p>Комментарии</p>
 <div id="CSect">
 {% for comment in video.comments %}
 <div class="Comment">

@@ -4,27 +4,27 @@ var height = 200;
 var data;
 var geotags=[];
 
-let mapOpened=false;
+var mapOpened=false;
 
 function mover(){
     if(mapOpened)
     {
-        let Height=document.body.scrollHeight;
-        let foot=document.getElementById("Footer");
+        var Height=document.body.scrollHeight;
+        var foot=document.getElementById("Footer");
         foot.style.top=(Height-480)+"px";
         mapOpened=false;
     }
     else
     {
-        let Height=document.body.scrollHeight;
-        let foot=document.getElementById("Footer");
+        var Height=document.body.scrollHeight;
+        var foot=document.getElementById("Footer");
         foot.style.top=(Height+270)+"px";
         mapOpened=true;
     }   
     console.log(12);
 }
 
-let butn=document.getElementById("geotag_is_needed");
+var butn=document.getElementById("geotag_is_needed");
 
 
 
