@@ -30,25 +30,25 @@ function add_geotags(videos) {
     }
 
     map.geoObjects.add(myClusterer);
+
 }
 
 
-ymaps.ready(function (videos) {
-
-    typeof ymaps.geolocation.latitude === 'undefined' ? 
-                (lat = 55.76, long = 37.64) : 
+function init_all(videos) {
+    typeof ymaps.geolocation.latitude === 'undefined' ?
+                (lat = 55.76, long = 37.64) :
                 (lat = ymaps.geolocation.latitude, long = ymaps.geolocation.longitude);
-    
+
     var inputSearch = new ymaps.control.SearchControl({
         options: {
             size: 'large',
             noPopup : true,
             noSuggestPanel : true,
-            noCentering : true, 
-            noPlacemark : true  
+            noCentering : true,
+            noPlacemark : true
         }
-    });    
-    
+    });
+
     map = new ymaps.Map("videos_map", {
             center : [lat, long],
             zoom : 7,
@@ -79,7 +79,9 @@ ymaps.ready(function (videos) {
         $('#Footer').css('top', footer_top+"px");
     });
 
-    fetch("/video/data").then(function(response){
+    var data = "";
+    if (key.value) data="/"+key.value;
+    fetch("/video/data"+data).then(function(response){
         if(response.status == 200){
             response.json().then(add_geotags);
         }
@@ -99,7 +101,16 @@ ymaps.ready(function (videos) {
                 response.json().then(add_geotags);
             }
         });
-    });  
+    });
+    if (map_needed) {
+        $('#show_video_map').trigger('change');
+        $('#show_video_map').prop('checked', true);
+    }
+}
+
+ymaps.ready(function (videos) {
+    init_all(videos);
+
 });
 
 function mover(){
