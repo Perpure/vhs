@@ -63,7 +63,8 @@ def askAct():
             user.action = ''
             db.session.add(user)
             db.session.commit()
-            return action
+            return jsonify({"action" : action[:9],
+                            "color": action[9:]})
         elif action != '':
             user.action = ''
             db.session.add(user)
@@ -75,9 +76,11 @@ def askAct():
             ms=round(time.microsecond/1000)
             new=hr*3600000+mt*60000+sc*1000+ms
             old=action[6:]
-            action="result"+str(int(old)-new)
-            return action
-    return ''
+            action="result"
+            time=str(int(old)-new)
+            return jsonify({"action" : action,
+                            "time":time})
+    return jsonify({"action" : ''})
 
 
 @app.route('/askNewComm/<string:vid>', methods=['GET', 'POST'])
