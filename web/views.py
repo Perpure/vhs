@@ -276,9 +276,9 @@ def log():
     return render_template('auth.html', form=form, user=cur_user())
 
 
-@app.route('/cabinet', methods=['GET', 'POST'])
+@app.route('/cabinet/<string:usr>', methods=['GET', 'POST'])
 @requiresauth
-def cabinet():
+def cabinet(usr):
     """
     Отвечает за вывод страницы личного кабинета
     :return: Страница личного кабинета
@@ -287,9 +287,19 @@ def cabinet():
     video_list = Video.get()
     items = []
     user = cur_user()
-    for item in video_list:
-        if item.user_id == user.id:
-            items.append(item)
+    cabinet_owner = User.get(login=usr)
+
+    if user == cabinet_owner:
+        is_cabinet_settings_available = True
+    else:
+        is_cabinet_settings_available = False
+
+    try:
+        for item in video_list:
+            if item.user_id == cabinet_owner.id:
+                items.append(item)
+    except:
+        return render_template('404.html'), 404
 
     form = UserProfileForm()
     if form.validate_on_submit():
@@ -300,8 +310,9 @@ def cabinet():
             user.save(form.change_password.data)
         if form.channel_info.data:
             user.change_channel_info(form.channel_info.data)
-        return redirect(url_for("cabinet"))
-    return render_template('cabinet.html', form=form, user=cur_user(), items=items)
+        return redirect(url_for("cabinet", usr=cabinet_owner.login))
+    return render_template('cabinet.html', form=form, user=cur_user(), items=items,
+                           settings=is_cabinet_settings_available, usr=cabinet_owner)
 
 
 @app.route('/play/<string:vid>', methods=['GET', 'POST'])

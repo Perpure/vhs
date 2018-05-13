@@ -1,12 +1,12 @@
-        let speed=3000;
-        let hash=window.location.href;
-        let sl=0;
-        for(let i=0;i<hash.length;i++)
+        var speed=3000;
+        var hash=window.location.href;
+        var sl=0;
+        for(var i=0;i<hash.length;i++)
             if(hash[i]=='/')sl=i;
         hash=hash.substring(sl+1);
         
-        let commSection=document.getElementById("CSect");
-        let curComms = document.getElementsByClassName("Comment").length;
+        var commSection=document.getElementById("CSect");
+        var curComms = document.getElementsByClassName("Comment").length;
         setTimeout(function step(){
             $.ajax({
                        url:"/askNewComm/"+hash,
@@ -16,24 +16,24 @@
                        {
                             if(response>curComms)
                             {
-                                   let def=response-curComms;
+                                   var def=response-curComms;
                                    $.ajax({
                                    url:"/getNewComm/"+hash+"/"+curComms,
                                    type:"GET",
                                    dataType:"text",
                                    success:function(response1)
                                    {
-                                     let cur=0;
-                                     let cur1=0;
-                                     for(let i=0;i<def;i++)
+                                     var cur=0;
+                                     var cur1=0;
+                                     for(var i=0;i<def;i++)
                                      {
                                         while(response1[cur1]!="," || response1[cur1+1]!=",")
                                             cur1++;
-                                        let name=response1.substr(cur,cur1-cur);
+                                        var name=response1.substr(cur,cur1-cur);
                                         cur=cur1+2;
                                         while(response1[cur1]!=";" || response1[cur1+1]!=";")
                                             cur1++;
-                                        let text=response1.substr(cur,cur1-cur);
+                                        var text=response1.substr(cur,cur1-cur);
                                         commSection.innerHTML='<div class="Comment"><img src="../static/a.png" alt="" class="commAva"><div class="commTxt"><p>'+name+'</p><p>'+text+'</p></div></div>'+commSection.innerHTML;
                                      }
                                    },
