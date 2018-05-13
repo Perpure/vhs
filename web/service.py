@@ -1,6 +1,6 @@
 from web import app, db
 from web.helper import read_image, read_video, cur_user, is_true_pixel, read_multi
-from web.models import Video, Comment, User, Room
+from web.models import Video, Comment, User, Room, AnonUser
 
 from flask import url_for, redirect, make_response, request, jsonify, session, render_template
 
@@ -61,8 +61,8 @@ def get_video_data_search(search):
 
 @app.route('/askAct', methods=['GET', 'POST'])
 def askAct():
-    if cur_user():
-        user = cur_user()
+    if 'anon_id' in session:
+        user = AnonUser.query.filter_by(id=session['anon_id']).first()
         action = user.action
         if action == 'calibrate':
             user.action = ''
@@ -139,8 +139,8 @@ def dislikeVideo(vid):
 
 @app.route('/tellRes', methods=['GET', 'POST'])
 def tellRes():
-    if cur_user():
-        user = cur_user()
+    if 'anon_id' in session:
+        user = AnonUser.query.filter_by(id=session['anon_id']).first()
         if request.method == 'POST':
             width = request.json['width']
             height = request.json['height']
@@ -164,7 +164,7 @@ def showRes(token):
     room = Room.query.filter_by(token=token).first()
     for i in range(len(room.color_user.split(';'))):
                 ID = room.color_user.split(';')[i].split(',')[0]
-                User.query.filter_by(id=ID).first().action = "result"
+                AnonUser.query.filter_by(id=ID).first().action = "result"
     db.session.commit()
     return 0
 

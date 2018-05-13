@@ -3,10 +3,10 @@ from web import app
 import hashlib
 import os
 from datetime import datetime
-
+from flask import session
 
 UserToRoom = db.Table('UserToRoom', db.Model.metadata,
-    db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
+    db.Column('AnonUser_id', db.Integer, db.ForeignKey('AnonUser.id')),
     db.Column('Room_id', db.Integer, db.ForeignKey('Room.id'))
 )
 
@@ -230,12 +230,6 @@ class User(db.Model):
     tags = db.relationship('Tag',
                                backref='user',
                                lazy='joined')
-    rooms = db.relationship("Room",
-                            secondary = UserToRoom,
-                            backref = "user",
-                            lazy = "joined")
-    
-    room_capitan = db.relationship("Room", backref='captain')
 
     def __init__(self, login):
         self.login = login
@@ -294,7 +288,8 @@ class User(db.Model):
 class Room(db.Model):
     __tablename__ = 'Room'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    capitan_id = db.Column(db.Integer, db.ForeignKey('User.id'))
+    video_id = db.Column(db.String(32))
+    capitan_id = db.Column(db.Integer, db.ForeignKey('AnonUser.id'))
     token = db.Column(db.String(64), nullable=False)
     color_user = db.Column(db.Text())
     Color = db.relationship("Color",
@@ -315,3 +310,38 @@ class Color(db.Model):
     __tablename__ = 'Color'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     color = db.Column(db.String(64), nullable=False)
+
+
+class AnonUser(db.Model):
+    """
+    Таблица для анонимного пользователя.
+    """
+    __tablename__ = 'AnonUser'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    action = db.Column(db.String(64))
+    device_width = db.Column(db.Integer)
+    device_height = db.Column(db.Integer)
+    color = db.Column(db.String(64))
+    top = db.Column(db.Integer)
+    left = db.Column(db.Integer)
+    res_k = db.Column(db.Integer)
+    rooms = db.relationship("Room",
+                            secondary = UserToRoom,
+                            backref = "user",
+                            lazy = "joined")
+    
+    room_capitan = db.relationship("Room", backref='captain')
+    def __init__(self):
+        """
+        Сохраняет анонимного пользователя.
+        """
+        db.session.add(self)
+        db.session.commit()
+
+    def update_resolution(self, width, height):
+        if self.device_width == width and self.device_height == height:
+            return()
+        self.device_height = height
+        self.device_width = width
+        db.session.add(self)
+        db.session.commit()

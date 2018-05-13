@@ -12,7 +12,9 @@ MarkupSafe==1.0
 moviepy==0.2.3.2
 nose2==0.7.4
 numpy==1.14.1
+opencv-python==3.4.0.12
 Pillow==5.0.0
+pkg-resources==0.0.0
 six==1.11.0
 SQLAlchemy==1.2.3
 tqdm==4.11.2
