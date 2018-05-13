@@ -36,14 +36,6 @@
 <div>Лайки: {{ video.likes | length }}</div>
 <div>Дизлайки: {{ video.dislikes | length }}</div>
 
-<div class="tags">
-{% for tag in video.tags %}
-<span class="Tag">
-    {{ '#'+tag.text+' ' }}
-</span>
-{% endfor %}
-</div>
-
 {%if not user%}
 <br><a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы оценить видео
 {%endif%}
