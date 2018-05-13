@@ -89,20 +89,20 @@
             $.ajax({
                        url:"/askAct",
                        type:"GET",
-                       dataType:"json",
+                       dataType:"text",
                        success:function(response)
                        {
                             console.log(response);
-                            if(response.action=="calibrate"){
+                            if(response.substr(0,9)=="calibrate"){
                             prev = "calibrate";
-                            $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; background:'+response.color+';"></div>');
+                            $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; background:'+response.substr(9)+';"></div>');
                             $('#Footer').prop({"hidden":true})
                             $('#Header').prop({"hidden":true})
                             prev = "calibrate"
                             ;}
-                            if(response.action=="result"){
+                            if(response.substr(0,6)=="result"){
                             console.log(1212);
-                            setTimeout(Result,response.time);
+                            setTimeout(Result,response.substr(6));
                             prev = "result";
                             }
 

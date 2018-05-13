@@ -324,6 +324,7 @@ class AnonUser(db.Model):
     __tablename__ = 'AnonUser'
     id = db.Column(db.String(32), primary_key=True)
     action = db.Column(db.String(64))
+    time = db.Column(db.Integer)
     device_width = db.Column(db.Integer)
     device_height = db.Column(db.Integer)
     color = db.Column(db.String(64))

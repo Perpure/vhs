@@ -75,7 +75,7 @@ def room(token):
                 ID = room.color_user.split(';')[i].split(',')[0]
                 anon=AnonUser.get(id=ID)
                 print(anon.color)
-                anon.action = "calibrate"+anon.color
+                anon.action = "calibrate"
             db.session.commit()
 
         if not ((room in user.rooms)):
