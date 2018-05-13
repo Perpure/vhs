@@ -39,22 +39,12 @@ function init_all(videos) {
                 (lat = 55.76, long = 37.64) :
                 (lat = ymaps.geolocation.latitude, long = ymaps.geolocation.longitude);
 
-    var inputSearch = new ymaps.control.SearchControl({
-        options: {
-            size: 'large',
-            noPopup : true,
-            noSuggestPanel : true,
-            noCentering : true,
-            noPlacemark : true
-        }
-    });
-
     map = new ymaps.Map("videos_map", {
             center : [lat, long],
             zoom : 7,
             maxZoom : 23,
             minZoom : 23,
-            controls : [inputSearch]
+            controls : []
     });
 
     $('#show_video_map').change(function () {
@@ -80,28 +70,13 @@ function init_all(videos) {
     });
 
     var data = "";
-    if (key.value) data="/"+key.value;
+    if (key.value) data="/"+key.value.replace(/#/g, " %23");;
     fetch("/video/data"+data).then(function(response){
         if(response.status == 200){
             response.json().then(add_geotags);
         }
     });
 
-    inputSearch.events.add('submit', function () {
-        fetch("/video/data/" + inputSearch.getRequestString()).then(function(response){
-            if(response.status == 200){
-                response.json().then(add_geotags);
-            }
-        });
-    });
-
-    inputSearch.events.add('clear', function () {
-        fetch("/video/data").then(function(response){
-            if(response.status == 200){
-                response.json().then(add_geotags);
-            }
-        });
-    });
     if (map_needed) {
         $('#show_video_map').trigger('change');
         $('#show_video_map').prop('checked', true);

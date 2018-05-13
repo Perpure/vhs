@@ -95,7 +95,7 @@ date.addEventListener('click',swit);
 
 
     start.addEventListener('click',function(){
-        var val=key.value;
+        var val = key.value.replace(/#/g, " %23");
         var vw=views.value;
         var dt=date.value;
         if (pr_page == "" ) {
