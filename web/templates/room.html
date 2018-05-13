@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Комната {{room.token}}</h1>
+<h1>Комната {{room.token}} {{anon.id}} {{anon.res_k}}</h1>
 {% if room.capitan_id == anon.id %}
 {% if room.color_user %}
 <form action="" method="post">
     {{Room_Form.hidden_tag()}}
-    <a href="{{calibrate_url}}">{{ Room_Form.submit }}</a>
+    {{ Room_Form.submit }}
 </form>
 {% endif %}
 <h5>Загрузите калибровочное фото</h5>
@@ -30,18 +30,20 @@
             <img src="{{url_for('get_image', pid=room.video_id)}}" alt="" class="preview">
             </a>
         </div>
+<form action="{{url_for('choose_video', token=room.token)}}">
+<button>Выбрать другое видео для демонстрации</button>
+</form>
 {% else %}
+{% if room.capitan_id == anon.id %}
 <hr>
 <form action="{{url_for('choose_video', token=room.token)}}">
 <button>Выберите видео для демонстрации</button>
 </form>
 {% endif %}
+{% endif %}
 {% if room.color_user %}
 <hr>
-<h5>Участники</h5>
-{% for i in users %}
-<p>{{i.login}}</p>
-{% endfor %}
+<h5>Количество участников: {{count}}</h5>
 {% else %}
 <hr>
 <p>Пригласите участников в комнату</p>

@@ -323,4 +323,11 @@ class AnonUser(db.Model):
         """
         db.session.add(self)
         db.session.commit()
-        session['id'] = self.id
+
+    def update_resolution(self, width, height):
+        if self.device_width == width and self.device_height == height:
+            return()
+        self.device_height = height
+        self.device_width = width
+        db.session.add(self)
+        db.session.commit()

@@ -39,8 +39,12 @@ def main():
 def viewroom():
     if not('anon_id' in session):
         user = AnonUser()
+        session['anon_id'] = user.id
     else:
-        user = AnonUser.query.filter_by(id=session['id'])
+        user = AnonUser.query.filter_by(id=session['anon_id']).first()
+        if not(user):
+            user = AnonUser()
+            session['anon_id'] = user.id
 
     join_form = JoinForm(csrf_enabled=False, prefix="Submit_Join")
     user.action = ""
@@ -74,8 +78,12 @@ def addroom(token):
 def room(token):
     if not('anon_id' in session):
         user = AnonUser()
+        session['anon_id'] = user.id
     else:
-        user = AnonUser.query.filter_by(id=session['id'])
+        user = AnonUser.query.filter_by(id=session['anon_id']).first()
+        if not(user):
+            user = AnonUser()
+            session['anon_id'] = user.id
 
     Room_Form = RoomForm()
     calibrate_url = None
@@ -87,10 +95,10 @@ def room(token):
         if Room_Form.validate_on_submit():
             for i in range(len(room.color_user.split(';'))):
                 ID = room.color_user.split(';')[i].split(',')[0]
-                User.query.filter_by(id=ID).first().action = "calibrate"
+                AnonUser.query.filter_by(id=ID).first().action = "calibrate"
             db.session.commit()
 
-        if not ((room in user.rooms) and (room in user.room_capitan)):
+        if not ((room in user.rooms)):
             user.rooms.append(room)
             if room.color_user:
                 color_id = len(room.color_user.split(';')) + 1
@@ -98,16 +106,15 @@ def room(token):
             else:
                 room.color_user = str(user.id) + ',1'
             db.session.commit()
-        if room.color_user is not None:
+        users = room.user
+        for member in users[1:]:
             colors = room.color_user.split(';')
             for i in range(len(colors)):
-                if colors[i].split(',')[0] == str(user.id):
+                if colors[i].split(',')[0] == str(member.id):
                     color = Color.query.filter_by(id=colors[i].split(',')[1]).first().color
-                    calibrate_url = url_for('calibrate', color=color)
-                    result_url = url_for('result', token=token, color=color)
+                    member.color = color
+                    db.session.commit()
                     break
-        users = room.user
-
         image_form = UploadImageForm(csrf_enabled=False)
         if image_form.validate_on_submit():
             if 'image' not in request.files:
@@ -115,7 +122,7 @@ def room(token):
                                        calibrate_url=calibrate_url, color=color, users=users,
                                        image_form=UploadImageForm(csrf_enabled=False),
                                        result_url=result_url, Room_Form=Room_Form, loaded=False,
-                                       room_map=room_map_url, anon=user)
+                                       room_map=room_map_url, anon=user, count=len(users))
 
             file = request.files['image']
             if file.filename == '':
@@ -123,45 +130,41 @@ def room(token):
                                        calibrate_url=calibrate_url, color=color, users=users,
                                        image_form=UploadImageForm(csrf_enabled=False),
                                        result_url=result_url, Room_Form=Room_Form, loaded=False,
-                                       room_map=room_map_url, anon=user)
+                                       room_map=room_map_url, anon=user, count=len(users))
 
             if file and allowed_image(file.filename):
                 file.save(basedir + '/images/' + room.token + '.' + file.filename.split('.')[-1].lower())
-                for member in users[1:]:
-                    colors = room.color_user.split(';')
-                    for i in range(len(colors)):
-                        if colors[i].split(',')[0] == str(member.id):
-                            color = Color.query.filter_by(id=colors[i].split(',')[1]).first().color
-                            member.color = color
-                            db.session.commit()
-                            break
                 try:
                     parse(room, users[1:], basedir + '/images/' + room.token + '.jpg')
                 except:
                     return render_template('room.html', room=room, user=cur_user(),
                                                calibrate_url=calibrate_url, color=color, users=users,
-                                               image_form=image_form, result_url=result_url,
+                                               image_form=image_form, result_url=result_url, count=len(users),
                                                Room_Form=Room_Form, loaded=True, room_map=room_map_url, anon=user,
                                                msg="Мы не смогли идентифицировать устройства, попробуйте загрузить другую фотографию.")
                 return render_template('room.html', room=room, user=cur_user(),
                                        calibrate_url=calibrate_url, color=color, users=users,
                                        image_form=image_form, result_url=result_url, anon=user,
-                                       Room_Form=Room_Form, loaded=True, room_map=room_map_url)
+                                       Room_Form=Room_Form, loaded=True, room_map=room_map_url, count=len(users))
 
     else:
         return redirect(url_for('log'))
     return render_template('room.html', room=room, user=cur_user(),
-                           calibrate_url=calibrate_url, color=color, users=users,
+                           calibrate_url=calibrate_url, color=color, users=users, count=len(users),
                            image_form=image_form, result_url=result_url, Room_Form=Room_Form, loaded=False, anon=user,
                            room_map=room_map_url, map_ex=os.path.exists(basedir + '/images/' + room.token + '_map.jpg'))
 
 @app.route('/room/<string:token>/choose_video/<string:vid_id>', methods=['GET', 'POST'])
 def choosed_video(token,vid_id):
     if not('anon_id' in session):
-        user = AnonUser(request.cookies.get('session'))
-        session['id'] = user.id
+        user = AnonUser()
+        session['anon_id'] = user.id
     else:
-        user = AnonUser.query.filter_by(id=session['id'])
+        user = AnonUser.query.filter_by(id=session['anon_id']).first()
+        if not(user):
+            user = AnonUser()
+            session['anon_id'] = user.id
+
     room = Room.query.filter_by(token=token).first()
     if user.id == room.capitan_id:
         room.video_id = vid_id
@@ -170,6 +173,15 @@ def choosed_video(token,vid_id):
 
 @app.route('/room/<string:token>/choose_video', methods=['GET', 'POST'])
 def choose_video(token):
+    if not('anon_id' in session):
+        user = AnonUser()
+        session['anon_id'] = user.id
+    else:
+        user = AnonUser.query.filter_by(id=session['anon_id']).first()
+        if not(user):
+            user = AnonUser()
+            session['anon_id'] = user.id
+
     room = Room.query.filter_by(token=token).first()
     cap = room.capitan_id
     form = SearchingVideoForm()
