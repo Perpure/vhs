@@ -120,14 +120,16 @@ def parse(room, users, impath):
         
         #Считаем-с
         firsty = int(rect[0][1] - rect[1][1] / 2)        
-
+        lasty = int(rect[0][1] + rect[1][1] / 2)
         firstx = int(rect[0][0] - rect[1][0] / 2)
         lastx = int(rect[0][0] + rect[1][0] / 2)
+        print(firstx, firsty, ';', lastx, lasty)
+        width = ( resolution[0] / (lastx - firstx) ) * 100
+        height = ( resolution[1] / (lasty - firsty) ) * 100
+        res_k = max(width, height)
 
-        res_k = ( resolution[0] / (lastx - firstx) ) * 100
-
-        left = - ( (firstx / resolution[0]) * res_k )
-        top = - ( (firsty / resolution[1]) * res_k )
+        left = - ( firstx / resolution[0] )
+        top = - ( firsty / resolution[1] )
 
         #Записываем-с
         user.res_k = int(res_k)
