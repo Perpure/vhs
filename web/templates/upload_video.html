@@ -12,7 +12,7 @@
             {% endfor %}
         {% endif %}
         <div> {{ form.video.label }} </div>
-        <p>(Разрешённые видео форматы
+        <p>(Разрешённые видео форматы:
         {% for format in formats %}
             .{{format}}
         {% endfor %}
@@ -33,14 +33,16 @@
         {% endif %}
         <div style="color: red;"> {{ error }} </div>
         <div>{{ form.tags.label }}</div>
-        <input name="tags" placeholder="добавьте теги через enter" value="my video">
+        <div style="margin-bottom:15px">
+        <input name="tags" placeholder="добавьте теги через enter"> <!-- value="my video"> -->
+        </div>
         <div>{{ form.tags(rows=5, cols=60, display=none) }}</div>
         {% if form.tags.errors %}
             {% for error in form.tags.errors %}
             <div style="color: red;">{{ error }}</div>
             {% endfor %}
         {% endif %}
-        <div margin-top = 5px> {{ form.submit }} </div>
+        <div> {{ form.submit }} </div>
     </form>
 
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
