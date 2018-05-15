@@ -49,7 +49,7 @@
 
 var addCom=document.getElementById("addC");
 var plate=document.getElementById("txtPlate");
-addCom.addEventListener('click',function(){
+if(addCom!=null)addCom.addEventListener('click',function(){
             var txt=plate.value;
             $.ajax({
                url:"/postComm/"+hash+"/"+txt,
@@ -73,7 +73,7 @@ function calc()
     disIn.style.width=(disl*100)/(lkes*1+disl*1)+"%";
 }
 
-calc();
+if(addCom!=null)calc();
 
 $('#like').click(function(){
             $.ajax({
@@ -124,7 +124,8 @@ $('#dislike').click(function(){
 
 (function () {
     var Dator=document.getElementById("Dating");
-    var Date=Dator.innerHTML;
-    Date=Date.substr(0,20);
-    Dator.innerHTML=Date;
-    })();
+    var Dte=Dator.innerHTML;
+    console.log(12);
+    Dte=Dte.substr(0,10);
+    Dator.innerHTML=Dte;
+})();
