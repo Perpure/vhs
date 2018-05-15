@@ -4,30 +4,6 @@ var height = 200;
 var data;
 var geotags=[];
 
-var mapOpened=false;
-
-function mover(){
-    if(mapOpened)
-    {
-        var Height=document.body.scrollHeight;
-        var foot=document.getElementById("Footer");
-        foot.style.top=(Height-480)+"px";
-        mapOpened=false;
-    }
-    else
-    {
-        var Height=document.body.scrollHeight;
-        var foot=document.getElementById("Footer");
-        foot.style.top=(Height+270)+"px";
-        mapOpened=true;
-    }   
-    console.log(12);
-}
-
-var butn=document.getElementById("geotag_is_needed");
-
-
-
 function create_geotag(coords) {
     var geotag = new ymaps.Placemark(coords,
             {
