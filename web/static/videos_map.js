@@ -86,11 +86,3 @@ ymaps.ready(function (videos) {
     init_all(videos);
 
 });
-
-function mover(){
-        var Height=document.body.scrollHeight;
-        var foot=document.getElementById("Footer");
-        foot.style.top=(Height-130)+"px";
-}
-
-setTimeout(mover,2000);
