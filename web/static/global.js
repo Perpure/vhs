@@ -3,17 +3,6 @@ var body=document.getElementById("Body");
 var wid=body.offsetWidth;
 if(wid<=550)elem.innerHTML="VHS";
 
-function mov()
-{
-
-    var Height=document.body.scrollHeight;
-    var foot=document.getElementById("Footer");
-    foot.style.top=0;
-    foot.style.top=(Height)+"px";
-}
-
-mov();
-
 var searching=false;
 var search=document.getElementById("Search");
 var searcher=document.getElementById("searcher");
@@ -51,7 +40,6 @@ holder.addEventListener('click',function(){
         holder.style.backgroundColor="rgba(240, 203, 142,0.4)";
         opned=true;
     }
-    mov();
 });
 
 function swit(e){
@@ -109,16 +97,3 @@ date.addEventListener('click',swit);
                        error:function(){}
         });
     });
-
-var nsize=document.body.scrollHeight;
-setTimeout(function step(){
-
-            if(document.body.scrollHeight!=nsize)
-            {
-                var foot=document.getElementById("Footer");
-                foot.style.top=0;
-                mov();
-                nsize=document.body.scrollHeight;
-            }
-            setTimeout(step,500);
-        },500);
