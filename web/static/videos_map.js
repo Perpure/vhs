@@ -34,7 +34,7 @@ function add_geotags(videos) {
 }
 
 
-function init_all(videos) {
+function init_all() {
     typeof ymaps.geolocation.latitude === 'undefined' ?
                 (lat = 55.76, long = 37.64) :
                 (lat = ymaps.geolocation.latitude, long = ymaps.geolocation.longitude);
@@ -52,10 +52,6 @@ function init_all(videos) {
         $('#videos_map').css('width', width);
         $('#videos_map').css('height', height+'px');
         map.container.fitToViewport();
-
-        var footer_top = Number($('#Footer').css('top').slice(0, -2));
-        footer_top += height/2;
-        $('#Footer').css('top', footer_top+"px");
     });
 
     $('#show_video_table').change(function () {
@@ -63,18 +59,9 @@ function init_all(videos) {
         $('#videos_map').css('width', '0px');
         $('#videos_map').css('height', '0px');
         map.container.fitToViewport();
-
-        var footer_top = Number($('#Footer').css('top').slice(0, -2));
-        footer_top -= height/2;
-        $('#Footer').css('top', footer_top+"px");
     });
 
-
-    fetch("/video/data", {search:key.value}).then(function(response){
-        if(response.status == 200){
-            response.json().then(add_geotags);
-        }
-    });
+    $.get("/video/data", {search: key.value}).done(add_geotags);
 
     if (map_needed) {
         $('#show_video_map').trigger('change');
@@ -82,7 +69,4 @@ function init_all(videos) {
     }
 }
 
-ymaps.ready(function (videos) {
-    init_all(videos);
-
-});
+ymaps.ready(init_all);

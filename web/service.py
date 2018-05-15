@@ -42,18 +42,9 @@ def get_video(vid):
     return response
 
 
-@app.route('/video/data')
-def get_video_data():
-    videos = Video.get()
-
-    return jsonify([{"title" : video.title,
-                     "link" : url_for("play", vid=video.id),
-                     "preview" : url_for("get_image", pid=video.id),
-                     "geotags" : [(gt.longitude , gt.latitude) for gt in video.geotags]} for video in videos])
-
 @app.route('/video/data', methods=['GET'])
 def get_video_data_search():
-    search = request.get('search')
+    search = request.args.get('search')
     videos = Video.get(search=search)
 
     return jsonify([{"title" : video.title,
