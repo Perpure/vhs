@@ -35,7 +35,7 @@
 <div class="tags">
 {% for tag in video.tags %}
 <span class="Tag">
-    {{ '#'+tag.text+' ' }}
+    {{ '#'+tag.text }}
 </span>
 {% endfor %}
 </div>
@@ -47,7 +47,7 @@
 <p>Комментарии</p>
 {%if user %}
 
-<textarea id="txtPlate" class="commArea" maxlength="1000"></textarea>
+<textarea id="txtPlate" class="commArea" maxlength="200"></textarea>
 <br>
 <input type="submit" value="Запостить" id="addC">
 {%endif%}

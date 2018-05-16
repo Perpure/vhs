@@ -29,12 +29,16 @@
                                      {
                                         while(response1[cur1]!="," || response1[cur1+1]!=",")
                                             cur1++;
+                                        var login=response1.substr(cur,cur1-cur);
+                                        cur=cur1+2;
+                                        while(response1[cur1]!="." || response1[cur1+1]!=".")
+                                            cur1++;
                                         var name=response1.substr(cur,cur1-cur);
                                         cur=cur1+2;
                                         while(response1[cur1]!=";" || response1[cur1+1]!=";")
                                             cur1++;
                                         var text=response1.substr(cur,cur1-cur);
-                                        commSection.innerHTML='<div class="Comment"><img src="../static/a.png" alt="" class="commAva"><div class="commTxt"><p>'+name+'</p><p>'+text+'</p></div></div>'+commSection.innerHTML;
+                                        commSection.innerHTML='<div class="Comment"><img src="../static/a.png" alt="" class="commAva"><div class="commTxt"><p class="commAuth"><a href="/cabinet/'+login+'" class="Link">'+name+'</a></p><p>'+text+'</p></div></div>'+commSection.innerHTML;
                                      }
                                    },
                                    error:function(){}
@@ -75,6 +79,9 @@ function calc()
 
 if(addCom!=null)calc();
 
+var lk=document.getElementById("like");
+var dlk=document.getElementById("dislike");
+
 $('#like').click(function(){
             $.ajax({
                url:"/likeVideo/"+hash,
@@ -94,8 +101,12 @@ $('#like').click(function(){
                error:function(){
                     alert('Произошла ошибка')}
             });
-            document.getElementById("like").style.backgroundImage="url(/static/lik1L.png)";
-            document.getElementById("dislike").style.backgroundImage="url(/static/dis1.png)";
+            var stl=window.getComputedStyle(lk);
+            if(stl.backgroundImage[stl.backgroundImage.length-7]=='L')lk.style.backgroundImage="url(/static/lik1.png)";
+            else{
+                lk.style.backgroundImage="url(/static/lik1L.png)";
+                dlk.style.backgroundImage="url(/static/dis1.png)";
+            }
 });
 
 $('#dislike').click(function(){
@@ -117,8 +128,12 @@ $('#dislike').click(function(){
                error:function(){
                     alert('Произошла ошибка')}
             });
-            document.getElementById("dislike").style.backgroundImage="url(/static/dis1D.png)";
-            document.getElementById("like").style.backgroundImage="url(/static/lik1.png)";
+            var stl=window.getComputedStyle(dlk);
+            if(stl.backgroundImage[stl.backgroundImage.length-7]=='D')dlk.style.backgroundImage="url(/static/dis1.png)";
+            else{            
+                dlk.style.backgroundImage="url(/static/dis1D.png)";
+                lk.style.backgroundImage="url(/static/lik1.png)";
+            }
 });
 
 
