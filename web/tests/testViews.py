@@ -50,7 +50,7 @@ class TestPageAvail(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_should_cabinet_page_be_exist(self):
-        response = self.client.get("/cabinet", follow_redirects=True)
+        response = self.client.get("/cabinet/TestUser", follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
     def test_should_upload_page_be_exist(self):

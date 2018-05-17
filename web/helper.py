@@ -11,13 +11,16 @@ import math
 import cv2
 import os
 
+
 def allowed_image(filename):
     return ('.' in filename and
             filename.split('.')[-1].lower() in app.config["ALLOWED_IMAGE_EXTENSIONS"])
 
+
 def allowed_file(filename):
     return ('.' in filename and
             filename.split('.')[-1].lower() in app.config["ALLOWED_EXTENSIONS"])
+
 
 def requiresauth(f):
     @wraps(f)
@@ -27,6 +30,7 @@ def requiresauth(f):
         return f(*args, **kwargs)
 
     return wrapped
+
 
 def read_multi(pid):
     path = basedir + '/images/%s.jpg' % pid
@@ -123,9 +127,9 @@ def parse(room, users, impath):
         users[i].top = int(top)
         users[i].left = int(left)
         db.session.commit()        
-        
+
+
 def cur_user():
     if 'Login' in session:
         return User.get(login=session['Login'])
     return None
-

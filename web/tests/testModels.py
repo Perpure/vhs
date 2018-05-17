@@ -36,9 +36,9 @@ class TestModelUser(unittest.TestCase):
         self.assertTrue(hasattr(self.video, "title"))
         self.assertTrue(hasattr(self.video, "path"))
         self.assertTrue(hasattr(self.video, "date"))
-        self.assertTrue(hasattr(self.video, "user"))
+        self.assertTrue(hasattr(self.video, "user_id"))
+        self.assertTrue(hasattr(self.video, "user_login"))
         self.assertTrue(hasattr(self.video, "geotags"))
-        self.assertTrue(hasattr(self.video, "marks"))
         self.assertTrue(hasattr(self.video, "comments"))
         self.assertTrue(hasattr(self.video, "viewers"))
 

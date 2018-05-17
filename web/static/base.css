@@ -1,19 +1,27 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
+html
+{
+    height:100%;
+}
+
 body
 {
-  
+  font-family: 'Roboto', sans-serif;
   background-color: white;
   /*background-image:url("bg4.png");*/
   background-color:rgba(240, 203, 142,0.2);
-  height:100vh;
+  height:100%;
   position:relative;
+  display: flex;
+  flex-direction: column;
 }
 
 header
 {
   width: 100%;
   vertical-align: top;
+  margin-bottom:10px;
 }
 
 a
@@ -79,7 +87,8 @@ input[type="file"]
 {
     width:300px;
     height:150px;
-    background-image:url("Loader.png");
+    background-image:url("Loader2.png");
+    background-repeat:no-repeat;
     margin-bottom:10px;
 }
 
@@ -101,7 +110,6 @@ textarea
   padding-bottom: 5px;
   vertical-align: top;
   border-bottom:2px solid rgba(240, 203, 142,0.5);
-  margin-bottom:10px;
   width: 100%;
   padding-left: 1%;
   padding-right: 1%;
@@ -250,6 +258,7 @@ main
 {
   width: 70%;
   margin: 0 auto;
+  flex: 1 0 auto;
 }
 
 .Content
@@ -401,9 +410,8 @@ footer
 {
   width: 100%;
   margin: 0 auto;
-  position:absolute;
   height:119px;
- 
+  flex: 0 0 auto;
 }
 
 .Foot{
@@ -411,6 +419,7 @@ footer
   padding: 1.66%;
   font-weight:bold;
   text-align:center;
+  padding-bottom:0;
 }
 
 .Contact
@@ -421,6 +430,11 @@ footer
    width:10%;
 }
 
+.Creator
+{
+    margin:0;
+}
+
 .footLine
 {
   display:inline-block;
@@ -429,14 +443,6 @@ footer
   height:20px;
   width:45%;
   border-bottom:2px solid #ffb366;
-}
-
-.fLine
-{
-    align:center;
-    width:100%;
-    color:rgb(240, 203, 142);
-    height:2px;
 }
 
 .contImg

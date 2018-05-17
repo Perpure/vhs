@@ -200,6 +200,7 @@ def choose_video(token):
 
     return render_template('choose_video.html', form=form, user=cur_user(), items=Video.get(), cap=cap, room=room, anon=user)
 
+
 @app.route('/upload', methods=['GET', 'POST'])
 @requiresauth
 def upload():
@@ -347,13 +348,12 @@ def play(vid):
     if form.validate_on_submit():
         comment = Comment(form.message.data, video.id, user.id)
         comment.save()
-    
-    
-    likened=0
+
+    likened = 0
     if user in video.likes:
-        likened=1
+        likened = 1
     if user in video.dislikes:
-        likened=-1
+        likened = -1
     return render_template('play.html', user=user, vid=vid, video=video, form=form,
                            like_form=like_form, dislike_form=dislike_form,lkd=likened)
 
