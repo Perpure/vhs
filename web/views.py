@@ -194,11 +194,11 @@ def choose_video(token):
             sort += "views"
         if form.search.data:
             return render_template('choose_video.html', form=form, user=cur_user(), items=Video.get(search=form.search.data,
-                                                                                            sort=sort), cap=cap, room=room)
+                                                                                            sort=sort), cap=cap, room=room, anon=user)
 
-        return render_template('choose_video.html', form=form, user=cur_user(), items=Video.get(sort=sort), cap=cap, room=room)
+        return render_template('choose_video.html', form=form, user=cur_user(), items=Video.get(sort=sort), cap=cap, room=room, anon=user)
 
-    return render_template('choose_video.html', form=form, user=cur_user(), items=Video.get(), cap=cap, room=room)
+    return render_template('choose_video.html', form=form, user=cur_user(), items=Video.get(), cap=cap, room=room, anon=user)
 
 
 @app.route('/upload', methods=['GET', 'POST'])

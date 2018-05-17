@@ -1,6 +1,7 @@
 from web import app, db
 from web.helper import read_image, read_video, cur_user, is_true_pixel, read_multi
 from web.models import Video, Comment, User, Room, AnonUser
+from datetime import datetime
 
 from flask import url_for, redirect, make_response, request, jsonify, session, render_template
 
@@ -71,10 +72,18 @@ def askAct():
             db.session.add(user)
             db.session.commit()
             return action
-        elif action == 'result':
+        elif action != '':
             user.action = ''
             db.session.add(user)
             db.session.commit()
+            time=datetime.now(tz=None)
+            hr=time.hour
+            mt=time.minute
+            sc=time.second
+            ms=round(time.microsecond/1000)
+            new=hr*3600000+mt*60000+sc*1000+ms
+            old=action[6:]
+            action="result"+str(int(old)-new)
             return action
     return ''
 
@@ -168,10 +177,15 @@ def startSearch(ask,view,dat):
 
 @app.route('/showRes/<string:token>', methods=['GET', 'POST'])
 def showRes(token):
-    room = Room.query.filter_by(token=token).first()
+    room = Room.query.filter_by(token=token).first()  
+    time=datetime.now(tz=None)
+    hr=time.hour
+    mt=time.minute+1
+    sc=time.second
+    ms=round(time.microsecond/1000)
     for i in range(len(room.color_user.split(';'))):
                 ID = room.color_user.split(';')[i].split(',')[0]
-                AnonUser.query.filter_by(id=ID).first().action = "result"
+                AnonUser.query.filter_by(id=ID).first().action = "result"+str(hr*3600000+mt*60000+sc*1000+ms)
     db.session.commit()
     return 0
 
