@@ -5,35 +5,37 @@
          <source src="{{url_for('get_video', vid=vid)}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
     </video>
 <p class="videoTitle">{{ video.title }}</p>
-
+<p class="vidViews">Просмотры: {{ video.viewers | length }}</p>
+<br>
 <div class="infoOne">
-<p><a href="{{url_for('cabinet', usr=video.user_login)}}" class="Link">{{video.user_login}}</a></p>
-<p class="videoDate" id="Dating">Добавлено {{video.date}}</p>
-<p>Просмотры: {{ video.viewers | length }}</p>
+<div>
+    <img src="../static/a.png" alt="" class="authAva">
+    <div class="inAuth">    
+        <b><a href="{{url_for('cabinet', usr=video.user_login)}}" class="Link">{{video.user.name}}</a></b>
+        <p class="videoDate" id="Dating">{{video.date}}</p>
+    </div>
+</div>
 </div>
 
 {%if user%}
 <div class="liking">
-    <div>
-        <div id="likSh" class="likeShow"></div>
-        <div id="disSh" class="disShow"></div>
-        <br>
-        <div class="dlc">
-        <input class="Like" id="like" name="like" type="submit" value="Нравится">
-        <!--{{ like_form.like(class="Like") }}-->
-        <span class="lik" id="lik">{{ video.likes | length }}</span>
-        <input class="Dislike" id="dislike" name="dislike" type="submit" value="НЕ нравится">
-        <!--{{ dislike_form.dislike(class="Dislike") }}-->
-        <span class="dis" id="dis">{{ video.dislikes | length }}</span>
+        <div class="lineLike">        
+            <div id="likSh" class="likeShow"></div>
+            <div id="disSh" class="disShow"></div>
         </div>
-    </div>
+        <div class="dlc">
+            <input class="Like" id="like" name="like" type="submit" value="Нравится">
+            <span class="lik" id="lik">{{ video.likes | length }}</span>
+            <input class="Dislike" id="dislike" name="dislike" type="submit" value="НЕ нравится">
+            <span class="dis" id="dis">{{ video.dislikes | length }}</span>
+        </div>
 </div>
 {%endif%}
 
 <div class="tags">
 {% for tag in video.tags %}
 <span class="Tag">
-    {{ '#'+tag.text+' ' }}
+    {{ '#'+tag.text }}
 </span>
 {% endfor %}
 </div>
@@ -45,7 +47,7 @@
 <p>Комментарии</p>
 {%if user %}
 
-<textarea id="txtPlate" class="commArea" maxlength="1000"></textarea>
+<textarea id="txtPlate" class="commArea" maxlength="200"></textarea>
 <br>
 <input type="submit" value="Запостить" id="addC">
 {%endif%}
@@ -54,7 +56,7 @@
 <div class="Comment">
     <img src="../static/a.png" alt="" class="commAva">
     <div class="commTxt">
-        <p>{{ comment.user.name }}</p>
+        <p class="commAuth"><a href="{{url_for('cabinet', usr=comment.user.login)}}" class="Link">{{ comment.user.name }}</a></p>
         <p>{{ comment.text }}</p>
     </div>
 </div>

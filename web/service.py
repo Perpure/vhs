@@ -108,7 +108,7 @@ def getNewComm(vid,cont):
     print(comms)
     result=""
     for i in range(cont,len(comms)):
-        result+=str(comms[i].user.login)+",,"+str(comms[i].text)+";;"
+        result+=str(comms[i].user.login)+",,"+str(comms[i].user.name)+".."+str(comms[i].text)+";;"
     result+=""
     return result
 
@@ -127,12 +127,17 @@ def postComm(vid,text):
 def likeVideo(vid):
     user = cur_user()
     video = Video.get(video_id=vid)
-
-    video.add_like(user)
-    if user in video.dislikes:
-        video.dislikes.remove(user)
+    
+    if user in video.likes:
+        video.likes.remove(user)
         db.session.add(user)
         db.session.commit()
+    else:
+        video.add_like(user)
+        if user in video.dislikes:
+            video.dislikes.remove(user)
+            db.session.add(user)
+            db.session.commit()
     return jsonify([{"likes": str(len(video.likes)),
                      "dislikes": str(len(video.dislikes))}])
 
@@ -141,12 +146,17 @@ def likeVideo(vid):
 def dislikeVideo(vid):
     user = cur_user()
     video = Video.get(video_id=vid)
-
-    video.add_dislike(user)
-    if user in video.likes:
-        video.likes.remove(user)
-        db.session.add(user)
-        db.session.commit()
+    
+    if user in video.dislikes:
+            video.dislikes.remove(user)
+            db.session.add(user)
+            db.session.commit()
+    else:
+        video.add_dislike(user)
+        if user in video.likes:
+            video.likes.remove(user)
+            db.session.add(user)
+            db.session.commit()
     return jsonify([{"likes": str(len(video.likes)),
                      "dislikes": str(len(video.dislikes))}])
 
