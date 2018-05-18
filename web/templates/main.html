@@ -16,7 +16,7 @@
             <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="preview">
             </a>
             <div class="videoTxt"> 
-                <a href="play/{{item.id}}" class="Link">
+                <a href="{{ url_for('play', vid=item.id) }}" class="Link">
                 <p class="videoName" title="{{item.title}}">{{item.title}}</p>
                 </a>
                 <p class="videoView">{{ item.viewers | length }} просмотров</p>
