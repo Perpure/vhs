@@ -119,7 +119,7 @@ def room(token):
         if image_form.validate_on_submit():
             if 'image' not in request.files:
                 return render_template('room.html', room=room, user=cur_user(),
-                                       calibrate_url=calibrate_url, color=color, users=users,
+                                       calibrate_url=calibrate_url, color=user.color, users=users,
                                        image_form=UploadImageForm(csrf_enabled=False),
                                        result_url=result_url, Room_Form=Room_Form, loaded=False,
                                        room_map=room_map_url, anon=user, count=len(users))
@@ -127,7 +127,7 @@ def room(token):
             file = request.files['image']
             if file.filename == '':
                 return render_template('room.html', room=room, user=cur_user(),
-                                       calibrate_url=calibrate_url, color=color, users=users,
+                                       calibrate_url=calibrate_url, color=user.color, users=users,
                                        image_form=UploadImageForm(csrf_enabled=False),
                                        result_url=result_url, Room_Form=Room_Form, loaded=False,
                                        room_map=room_map_url, anon=user, count=len(users))
@@ -138,19 +138,19 @@ def room(token):
                     parse(room, users[1:], basedir + '/images/' + room.token + '.jpg')
                 except:
                     return render_template('room.html', room=room, user=cur_user(),
-                                               calibrate_url=calibrate_url, color=color, users=users,
+                                               calibrate_url=calibrate_url, color=user.color, users=users,
                                                image_form=image_form, result_url=result_url, count=len(users),
                                                Room_Form=Room_Form, loaded=True, room_map=room_map_url, anon=user,
                                                msg="Мы не смогли идентифицировать устройства, попробуйте загрузить другую фотографию.")
                 return render_template('room.html', room=room, user=cur_user(),
-                                       calibrate_url=calibrate_url, color=color, users=users,
+                                       calibrate_url=calibrate_url, color=user.color, users=users,
                                        image_form=image_form, result_url=result_url, anon=user,
                                        Room_Form=Room_Form, loaded=True, room_map=room_map_url, count=len(users))
 
     else:
         return redirect(url_for('log'))
     return render_template('room.html', room=room, user=cur_user(),
-                           calibrate_url=calibrate_url, color=color, users=users, count=len(users),
+                           calibrate_url=calibrate_url, color=user.color, users=users, count=len(users),
                            image_form=image_form, result_url=result_url, Room_Form=Room_Form, loaded=False, anon=user,
                            room_map=room_map_url, map_ex=os.path.exists(basedir + '/images/' + room.token + '_map.jpg'))
 
