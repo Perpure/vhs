@@ -180,8 +180,8 @@ def showRes(token):
     room = Room.query.filter_by(token=token).first()  
     time=datetime.now(tz=None)
     hr=time.hour
-    mt=time.minute+1
-    sc=time.second
+    mt=time.minute
+    sc=time.second+20
     ms=round(time.microsecond/1000)
     for i in range(len(room.color_user.split(';'))):
                 ID = room.color_user.split(';')[i].split(',')[0]

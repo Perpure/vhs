@@ -62,7 +62,7 @@
 <p>После того, как вы пригласили участников, разместите их устройства на площади для показа, открыв страницу комнаты. На странице капитана (создавший комнату пользователь) нажмите на кнопку калибровки, после чего на всех устройствах откроется цветная сплошная заливка. Нажмите на кнопку загрузки файла и сделайте фотографию устройств, желательно под прямым углом. Если что-то пошло не так, вы можете убрать лишнее освещение, сделать экран на телефонах ярче. После этого выберите желаемое для показа видео и нажмите на кнопку результата. Все устройства начнут воспроизведение.</p>
 {% if room.capitan_id != anon.id %}
     <script>
-        let speed=3000;
+        let speed=9000;
         var prev = "None";
 
         function Result()
@@ -97,13 +97,9 @@
                             prev = "calibrate"
                             ;}
                             if(response.substr(0,6)=="result" && prev != "result"){
-                            console.log(1212)
-                            /**$('#Body').prepend('<img src="{{url_for('get_multi', pid=1)}}" style="position:fixed; width:{{anon.res_k}}%; top:{{anon.top}}%; left:{{anon.left}}%;">');
-                            $('#Footer').prop({"hidden":true})
-                            $('#Header').prop({"hidden":true})
-                            $('#calibrImage').prop({"hidden":true})**/
-                            setTimeout(Result,response.substr(6)/2);
-                            prev = "result"
+                            console.log(1212);
+                            setTimeout(Result,response.substr(6));
+                            prev = "result";
                             }
 
                        },
