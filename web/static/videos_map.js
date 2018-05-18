@@ -30,31 +30,21 @@ function add_geotags(videos) {
     }
 
     map.geoObjects.add(myClusterer);
+
 }
 
 
-ymaps.ready(function (videos) {
-
-    typeof ymaps.geolocation.latitude === 'undefined' ? 
-                (lat = 55.76, long = 37.64) : 
+function init_all() {
+    typeof ymaps.geolocation.latitude === 'undefined' ?
+                (lat = 55.76, long = 37.64) :
                 (lat = ymaps.geolocation.latitude, long = ymaps.geolocation.longitude);
-    
-    var inputSearch = new ymaps.control.SearchControl({
-        options: {
-            size: 'large',
-            noPopup : true,
-            noSuggestPanel : true,
-            noCentering : true, 
-            noPlacemark : true  
-        }
-    });    
-    
+
     map = new ymaps.Map("videos_map", {
             center : [lat, long],
             zoom : 7,
             maxZoom : 23,
             minZoom : 23,
-            controls : [inputSearch]
+            controls : []
     });
 
     $('#show_video_map').change(function () {
@@ -62,10 +52,6 @@ ymaps.ready(function (videos) {
         $('#videos_map').css('width', width);
         $('#videos_map').css('height', height+'px');
         map.container.fitToViewport();
-
-        var footer_top = Number($('#Footer').css('top').slice(0, -2));
-        footer_top += height/2;
-        $('#Footer').css('top', footer_top+"px");
     });
 
     $('#show_video_table').change(function () {
@@ -73,31 +59,14 @@ ymaps.ready(function (videos) {
         $('#videos_map').css('width', '0px');
         $('#videos_map').css('height', '0px');
         map.container.fitToViewport();
-
-        var footer_top = Number($('#Footer').css('top').slice(0, -2));
-        footer_top -= height/2;
-        $('#Footer').css('top', footer_top+"px");
     });
 
-    fetch("/video/data").then(function(response){
-        if(response.status == 200){
-            response.json().then(add_geotags);
-        }
-    });
+    $.get("/video/data", {search: key.value}).done(add_geotags);
 
-    inputSearch.events.add('submit', function () {
-        fetch("/video/data/" + inputSearch.getRequestString()).then(function(response){
-            if(response.status == 200){
-                response.json().then(add_geotags);
-            }
-        });
-    });
+    if (map_needed) {
+        $('#show_video_map').trigger('change');
+        $('#show_video_map').prop('checked', true);
+    }
+}
 
-    inputSearch.events.add('clear', function () {
-        fetch("/video/data").then(function(response){
-            if(response.status == 200){
-                response.json().then(add_geotags);
-            }
-        });
-    });  
-});
+ymaps.ready(init_all);

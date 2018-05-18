@@ -43,17 +43,9 @@ def get_video(vid):
     return response
 
 
-@app.route('/video/data')
-def get_video_data():
-    videos = Video.get()
-
-    return jsonify([{"title" : video.title,
-                     "link" : url_for("play", vid=video.id),
-                     "preview" : url_for("get_image", pid=video.id),
-                     "geotags" : [(gt.longitude , gt.latitude) for gt in video.geotags]} for video in videos])
-
-@app.route('/video/data/<string:search>')
-def get_video_data_search(search):
+@app.route('/video/data', methods=['GET'])
+def get_video_data_search():
+    search = request.args.get('search')
     videos = Video.get(search=search)
 
     return jsonify([{"title" : video.title,
@@ -171,10 +163,13 @@ def tellRes():
             user.update_resolution(width=width, height=height)
             return jsonify(width=width, height=height)
 
-
-@app.route('/startSearch/<string:ask>/<int:view>/<int:dat>', methods=['GET', 'POST'])
-def startSearch(ask,view,dat):
+@app.route('/startSearch', methods=['GET'])
+def startSearch():
     sort=""
+    ask = request.args.get('ask')
+    view = request.args.get('view')
+    dat = request.args.get('dat')
+
     if dat:
             sort += "date"
     if view:
