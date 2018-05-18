@@ -110,7 +110,7 @@ date.addEventListener('click',swit);
                             }
                             placer=placer.substr(17);
                             var mn=document.getElementById("Main");
-                            mn.innerHTML=placer;
+                            mn.innerHTML=placer;                            
                        },
                        error:function(){}
         });
