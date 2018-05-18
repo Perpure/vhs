@@ -243,9 +243,9 @@ def upload():
         elif not allowed_file(file.filename):
             form.video.errors.append(ValidationError('Некорректное разрешение'))
 
-
     if not form.geotag_data.data:
         form.geotag_data.data = dumps({'needed': False, 'coords': []})
+
     return render_template('upload_video.html', form=form, user=cur_user(), formats=app.config['ALLOWED_EXTENSIONS'])
 
 
