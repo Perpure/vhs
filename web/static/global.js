@@ -10,14 +10,15 @@ var shadow=document.getElementById("Shad");
 search.addEventListener('click',function(){
     if(searching)
     {
-        shadow.style.display="none";
         searcher.style.display="none";
         searching=false;
     }
     else
     {
-        shadow.style.display="block";
-        searcher.style.display="block";
+        if(screen.width>570)
+            searcher.style.display="flex";
+        else
+            searcher.style.display="block";         
         searching=true;
     }
 });
@@ -41,6 +42,25 @@ holder.addEventListener('click',function(){
         opned=true;
     }
 });
+
+var clast=document.getElementsByClassName("navClast");
+for(var j=0;j<clast.length;j++){
+    clast[j].addEventListener('click',function()
+    {   
+        if(screen.width<570)
+        {
+            var ins=this.getElementsByClassName("subBtn");
+            this.style.marginBottom=ins.length*50+10+"px";
+        }
+    });
+    clast[j].addEventListener('mouseout',function()
+    {   
+        if(screen.width<570)
+        {
+            this.style.marginBottom=0;
+        }
+    });
+    }
 
 function swit(e){
         var elem=e.currentTarget;

@@ -19,22 +19,33 @@ import os
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    form = SearchingVideoForm()
-    if form.validate_on_submit():
-        sort = ""
+    return render_template('main.html', user=cur_user(), items=Video.get())
 
-        if form.date.data:
-            sort += "date"
-        if form.views.data:
-            sort += "views"
-        if form.search.data:
-            return render_template('main.html', form=form, user=cur_user(), items=Video.get(search=form.search.data,
-                                                                                            sort=sort))
+@app.route('/createroom', methods=['GET', 'POST'])
+def createroom():
+    if not('anon_id' in session):
+        user = AnonUser()
+        session['anon_id'] = user.id
+    else:
+        user = AnonUser.query.filter_by(id=session['anon_id']).first()
+        if not(user):
+            user = AnonUser()
+            session['anon_id'] = user.id
+    user.action = ""
+    db.session.commit()
 
-        return render_template('main.html', form=form, user=cur_user(), items=Video.get(sort=sort))
-
-    return render_template('main.html', form=form, user=cur_user(), items=Video.get())
-
+    add_room_form = AddRoomForm(csrf_enabled=False, prefix="Submit_Add")
+    if add_room_form.is_submitted() and add_room_form.validate_on_submit():
+        token = add_room_form.token.data
+        room = Room(token=token, capitan_id=user.id)
+        for i in range(1, 7):
+            room.Color.append(Color.query.filter_by(id=str(i)).first())
+        db.session.add(room)
+        db.session.commit()
+        user.rooms.append(room)
+        db.session.commit()
+        return redirect(url_for('room', token=add_room_form.token.data))
+    return render_template('create_room.html', add_room_form=add_room_form)
 
 @app.route('/viewroom', methods=['GET', 'POST'])
 def viewroom():
@@ -50,24 +61,13 @@ def viewroom():
     join_form = JoinForm(csrf_enabled=False, prefix="Submit_Join")
     user.action = ""
     db.session.commit()
-    add_room_form = AddRoomForm(csrf_enabled=False, prefix="Submit_Add")
-    if add_room_form.is_submitted() and add_room_form.validate_on_submit():
-        token = add_room_form.token.data
-        room = Room(token=token, capitan_id=user.id)
-        for i in range(1, 7):
-            room.Color.append(Color.query.filter_by(id=str(i)).first())
-        db.session.add(room)
-        db.session.commit()
-        user.rooms.append(room)
-        db.session.commit()
-        return redirect(url_for('addroom', token=add_room_form.token.data))
 
     if join_form.is_submitted() and join_form.validate_on_submit():
         if Room.query.filter_by(token=str(join_form.token.data)):
             return redirect(url_for('room', token=join_form.token.data))
     rooms = user.rooms
 
-    return render_template('viewroom.html', user=cur_user(), join_form=join_form,add_room_form=add_room_form,
+    return render_template('viewroom.html', user=cur_user(), join_form=join_form,
                            rooms=Room.query.all(), anon = user)
 
 @app.route('/addroom/<string:token>', methods=['GET', 'POST'])

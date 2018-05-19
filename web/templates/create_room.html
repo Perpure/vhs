@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<form action="" method="post">
+        <div>{{ add_room_form.token.label}}</div>
+        <div>{{ add_room_form.token(rows=2, cols=30) }}</div>
+        {% if add_room_form.token.errors %}
+            {% for error in add_room_form.token.errors %}
+            <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+        {{ add_room_form.submit }}
+</form>
+{% endblock %}

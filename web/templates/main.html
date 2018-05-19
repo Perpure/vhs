@@ -2,11 +2,14 @@
 {% block content %}
 
     <div>
-        <label for="show_video_map">Отображать на карте</label>
-        <input name="selector" id="show_video_map" type="radio">
-        <br>
-        <label for="show_video_table">Отображать в виде таблицы</label>
-        <input name="selector" id="show_video_table" type="radio" checked>
+        <div class="showType" id="showMap">
+            <label for="show_video_map">Отображать на карте</label>
+            <input name="selector" id="show_video_map" type="radio" class="showRad">
+        </div>
+        <div class="showType showInv" id="showTab">
+            <label for="show_video_table">Отображать в виде таблицы</label>
+            <input name="selector" id="show_video_table" type="radio" checked class="showRad">
+        </div>
     </div>
 
     <div id="video_table">

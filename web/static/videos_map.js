@@ -51,6 +51,8 @@ function init_all() {
         $('#video_table').hide();
         $('#videos_map').css('width', width);
         $('#videos_map').css('height', height+'px');
+        $('#showMap').hide();
+        $('#showTab').show();
         map.container.fitToViewport();
     });
 
@@ -58,6 +60,8 @@ function init_all() {
         $('#video_table').show();
         $('#videos_map').css('width', '0px');
         $('#videos_map').css('height', '0px');
+        $('#showMap').show();
+        $('#showTab').hide();
         map.container.fitToViewport();
     });
 
