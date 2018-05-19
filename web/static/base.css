@@ -461,6 +461,7 @@ footer
 {
     z-index:5;
     position:absolute;
+    display:none;
 }
 
 .contImg:hover
