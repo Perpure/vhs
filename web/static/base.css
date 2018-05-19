@@ -236,7 +236,7 @@ textarea
     height:50px;
     top:60px;
     left:17%;
-    width:70%;
+    width:60%;
     background-color:#F7E2C0;
     padding:5px;
     display:none;
@@ -245,13 +245,15 @@ textarea
 .inSearch
 {
     vertical-align:top;
-    width:65%;
+    flex-grow:7;
     height:40px;
+    margin-right:5px;
 }
 
 .searchBtn
 {
     vertical-align:top;
+    flex-grow:1;
 }
 
 .searchField
@@ -261,6 +263,8 @@ textarea
     color:grey;
     padding:7px;
     text-align:center;
+    flex-grow:1;
+    margin-right:5px;
 }
 
 .byDate
@@ -277,17 +281,6 @@ textarea
 {
     cursor:pointer;
     color:black;
-}
-
-.Shadow
-{
-    position:absolute;
-    top:110px;
-    left:18%;
-    background-color:rgba(0,0,0,0.5);
-    width:68%;
-    height:10px;
-    display:none;
 }
 
 .tokenBtnMid:hover,.tokenBtnEdge:hover,input[type="submit"]:hover, button:hover
@@ -308,6 +301,33 @@ main
   width: 70%;
   margin: 0 auto;
   flex: 1 0 auto;
+}
+
+.showType
+{
+    display:inline-block;
+    border-bottom:2px solid rgba(240, 203, 142,0.5);
+    margin-bottom:15px;
+    width:300px;
+    height:30px;
+    text-align:center;
+    background-color:rgba(240, 203, 142,0.4);
+    padding:5px;
+}
+
+.showType:hover > label
+{
+    cursor:pointer;
+}
+
+.showInv
+{
+    display:none;
+}
+
+.showRad
+{
+    visibility:hidden;
 }
 
 .Content
@@ -666,14 +686,6 @@ footer
         left:0;
     }
 
-
-    .Shadow
-    {
-        top:160px;
-        left:1%;
-        width:98%;
-    }
-
     .Contact
     {
       width:20%;
@@ -695,28 +707,6 @@ footer
 
 @media (max-width:860px)
 {
-    .Searcher
-    {
-      height:100px;
-      z-index:2;
-      top:200px;
-    }
-    .inSearch
-    {
-      display:block;
-      width:100%;
-    }
-    .Shadow
-    {
-      top:190px;
-      height:120px;
-      width:100%;
-      left:0;
-    }
-    .searchBtn
-    {
-      width:45%;
-    }
     .liking
     {
         display:block;
@@ -730,8 +720,24 @@ footer
     }
 }
 
-@media (max-width:500px)
+@media (max-width:570px)
 {
+    .Searcher
+    {
+      background-color:#f3d6a5;
+      height:100px;
+      z-index:2;
+      top:310px;
+    }
+    .inSearch
+    {
+      display:block;
+      width:100%;
+    }
+    .searchBtn
+    {
+      width:45%;
+    }
     .video
     {
       width:80%;

@@ -10,14 +10,15 @@ var shadow=document.getElementById("Shad");
 search.addEventListener('click',function(){
     if(searching)
     {
-        shadow.style.display="none";
         searcher.style.display="none";
         searching=false;
     }
     else
     {
-        shadow.style.display="block";
-        searcher.style.display="block";
+        if(screen.width>570)
+            searcher.style.display="flex";
+        else
+            searcher.style.display="block";         
         searching=true;
     }
 });

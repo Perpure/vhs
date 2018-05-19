@@ -19,21 +19,7 @@ import os
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    form = SearchingVideoForm()
-    if form.validate_on_submit():
-        sort = ""
-
-        if form.date.data:
-            sort += "date"
-        if form.views.data:
-            sort += "views"
-        if form.search.data:
-            return render_template('main.html', form=form, user=cur_user(), items=Video.get(search=form.search.data,
-                                                                                            sort=sort))
-
-        return render_template('main.html', form=form, user=cur_user(), items=Video.get(sort=sort))
-
-    return render_template('main.html', form=form, user=cur_user(), items=Video.get())
+    return render_template('main.html', user=cur_user(), items=Video.get())
 
 
 @app.route('/viewroom', methods=['GET', 'POST'])
