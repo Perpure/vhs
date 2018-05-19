@@ -43,6 +43,25 @@ holder.addEventListener('click',function(){
     }
 });
 
+var clast=document.getElementsByClassName("navClast");
+for(var j=0;j<clast.length;j++){
+    clast[j].addEventListener('click',function()
+    {   
+        if(screen.width<570)
+        {
+            var ins=this.getElementsByClassName("subBtn");
+            this.style.marginBottom=ins.length*50+10+"px";
+        }
+    });
+    clast[j].addEventListener('mouseout',function()
+    {   
+        if(screen.width<570)
+        {
+            this.style.marginBottom=0;
+        }
+    });
+    }
+
 function swit(e){
         var elem=e.currentTarget;
         if(elem.value)
