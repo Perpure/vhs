@@ -181,11 +181,20 @@ def showRes(token):
     time=datetime.now(tz=None)
     hr=time.hour
     mt=time.minute
-    sc=time.second+20
+    sc=time.second
     ms=round(time.microsecond/1000)
-    for i in range(len(room.color_user.split(';'))):
-                ID = room.color_user.split(';')[i].split(',')[0]
-                AnonUser.query.filter_by(id=ID).first().action = "result"+str(hr*3600000+mt*60000+sc*1000+ms)
+    zero=hr*3600000+mt*60000+sc*1000+ms
+    roomers=room.color_user.split(';')
+    for i in range(len(roomers)):
+                time=datetime.now(tz=None)
+                hr=time.hour
+                mt=time.minute
+                sc=time.second
+                ms=round(time.microsecond/1000)
+                now=hr*3600000+mt*60000+sc*1000+ms
+                now+=15000-(now-zero)
+                ID = roomers[i].split(',')[0]
+                AnonUser.query.filter_by(id=ID).first().action = "result"+str(now)
     db.session.commit()
     return 0
 
