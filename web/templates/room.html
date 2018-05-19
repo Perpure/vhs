@@ -143,11 +143,12 @@
 </script>
     
 {%else%}
+{% if room.video_id %}
 <script>
-let show=document.getElementById("showRes");
+var show=document.getElementById("showRes");
 show.addEventListener('click',function(){
-    let hash=window.location.href;
-    let sl=0;
+    var hash=window.location.href;
+    var sl=0;
         for(let i=0;i<hash.length;i++)
             if(hash[i]=='/')sl=i;
     hash=hash.substring(sl+1);
@@ -160,6 +161,7 @@ show.addEventListener('click',function(){
                     });
 });
 </script>
+{% endif %}
 {% endif %}
 {% endblock %}
 
