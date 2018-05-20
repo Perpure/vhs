@@ -329,6 +329,11 @@ main
     padding:5px;
 }
 
+.typeLabel
+{
+    width:100%;
+}
+
 .showType:hover > label
 {
     cursor:pointer;
@@ -778,6 +783,17 @@ footer
       width:35%;
     }
     
+    .Content
+    {
+      text-align:center;
+    }
+
+    .showType
+    {
+      margin:0 auto;
+        margin-bottom:10px;
+    }
+
 }
 
 
