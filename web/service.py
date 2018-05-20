@@ -59,7 +59,7 @@ def askAct():
     if 'anon_id' in session:
         user = AnonUser.query.filter_by(id=session['anon_id']).first()
         action = user.action
-        if action == 'calibrate':
+        if action[:9] == 'calibrate':
             user.action = ''
             db.session.add(user)
             db.session.commit()
