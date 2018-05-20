@@ -59,7 +59,7 @@ def askAct():
     if 'anon_id' in session:
         user = AnonUser.query.filter_by(id=session['anon_id']).first()
         action = user.action
-        if action == 'calibrate':
+        if action[:9] == 'calibrate':
             user.action = ''
             db.session.add(user)
             db.session.commit()
@@ -83,25 +83,16 @@ def askAct():
 @app.route('/askNewComm/<string:vid>', methods=['GET', 'POST'])
 def askNewComm(vid):
     video = Video.get(video_id=vid)
-    comms=video.comments
-    cnt=len(comms)
-    return str(cnt)
-
-
-def getId(Comment):
-    return Comment.id
+    return str(len(video.comments))
 
 
 @app.route('/getNewComm/<string:vid>/<int:cont>', methods=['GET', 'POST'])
-def getNewComm(vid,cont):
-    video = Video.get(video_id=vid)
-    comms=video.comments
-    sorted(comms,key=getId)
-    print(comms)
+def getNewComm(vid, cont):
+    comms = Video.get(video_id=vid).comments
+    comms.sort(key=lambda x: x.id)
     result=""
     for i in range(cont,len(comms)):
         result+=str(comms[i].user.login)+",,"+str(comms[i].user.name)+".."+str(comms[i].text)+";;"
-    result+=""
     return result
 
 

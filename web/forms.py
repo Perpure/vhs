@@ -117,21 +117,8 @@ class SearchingVideoForm(FlaskForm):
     submit = SubmitField("Поиск")
 
 
-class LikeForm(FlaskForm):
-    like = SubmitField("Нравится")
-
-
-class DislikeForm(FlaskForm):
-    dislike = SubmitField("Не Нравится")
-
-
-class AddCommentForm(FlaskForm):
-    class Meta:
-        csrf = False
-
-    message = TextAreaField("Комментарий", validators=[DataRequired(message='Введите текст'),
-                                                       Length(3, message='Текст слишком короткий')])
-    submit = SubmitField("Запостить")
+class VideoToRoomForm(FlaskForm):
+    submit = SubmitField("Создать комнату для видео")
 
 
 class AddRoomForm(FlaskForm):

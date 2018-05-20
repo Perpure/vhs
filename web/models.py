@@ -287,6 +287,11 @@ class Room(db.Model):
         self.capitan_id = capitan_id
         self.date = datetime.now(tz=None)
 
+    def save(self, vid):
+        self.video_id = vid
+        db.session.add(self)
+        db.session.commit()
+    
     @staticmethod
     def get(token=None, name=None):
         if name:
