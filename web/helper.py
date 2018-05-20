@@ -138,7 +138,7 @@ def parse(room, users, impath):
     
     del draw      
         
-    room_map.save(basedir + '/images/' + room.token + '_map.jpg')   
+    room_map.save(os.path.join(basedir, 'images', room.token + '_map.jpg'))   
 
 
 def cur_user():
