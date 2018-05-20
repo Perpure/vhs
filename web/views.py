@@ -54,7 +54,7 @@ def viewroom():
     rooms = user.rooms
 
     return render_template('viewroom.html', user=cur_user(), join_form=join_form,
-                           rooms=Room.query.all(), anon=user)
+                           rooms=Room.get(), anon=user)
 
 @app.route('/addroom/<string:token>', methods=['GET', 'POST'])
 def addroom(token):
