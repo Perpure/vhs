@@ -8,7 +8,7 @@ from flask import session
 from random import random
 
 UserToRoom = db.Table('UserToRoom', db.Model.metadata,
-    db.Column('AnonUser_id', db.Integer, db.ForeignKey('AnonUser.id')),
+    db.Column('AnonUser_id', db.String(32), db.ForeignKey('AnonUser.id')),
     db.Column('Room_id', db.Integer, db.ForeignKey('Room.id'))
 )
 
