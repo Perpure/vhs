@@ -5,6 +5,7 @@ import hashlib
 import os
 from datetime import datetime
 from flask import session
+from random import random
 
 UserToRoom = db.Table('UserToRoom', db.Model.metadata,
     db.Column('AnonUser_id', db.Integer, db.ForeignKey('AnonUser.id')),
@@ -275,6 +276,7 @@ class User(db.Model):
 class Room(db.Model):
     __tablename__ = 'Room'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    date = db.Column(db.DateTime, nullable=False)
     video_id = db.Column(db.String(32))
     capitan_id = db.Column(db.Integer, db.ForeignKey('AnonUser.id'))
     token = db.Column(db.String(64), nullable=False)
@@ -283,6 +285,11 @@ class Room(db.Model):
                             secondary=ColorToRoom,
                             backref="Room",
                             lazy="joined")
+
+    def __init__(self, token, capitan_id):
+    	self.token = token
+    	self.capitan_id = capitan_id
+    	self.date = datetime.now(tz=None)
 
     @staticmethod
     def get(id=None, token=None):
@@ -298,13 +305,19 @@ class Color(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     color = db.Column(db.String(64), nullable=False)
 
+    @staticmethod
+    def get(id=None):
+        if id:
+            return Color.query.get(id)
+        return Color.query.all()
+
 
 class AnonUser(db.Model):
     """
     Таблица для анонимного пользователя.
     """
     __tablename__ = 'AnonUser'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.String(32), primary_key=True)
     action = db.Column(db.String(64))
     device_width = db.Column(db.Integer)
     device_height = db.Column(db.Integer)
@@ -322,8 +335,15 @@ class AnonUser(db.Model):
         """
         Сохраняет анонимного пользователя.
         """
+        self.id = hashlib.md5((datetime.now(tz=None).isoformat() + str(random())).encode("utf-8")).hexdigest()
         db.session.add(self)
         db.session.commit()
+
+    @staticmethod
+    def get(id=None):
+        if id:
+            return AnonUser.query.get(id)
+        return AnonUser.query.all()
 
     def update_resolution(self, width, height):
         if self.device_width == width and self.device_height == height:
