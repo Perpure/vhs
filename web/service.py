@@ -105,8 +105,9 @@ def getNewComm(vid,cont):
     return result
 
 
-@app.route('/postComm/<string:vid>/<string:text>', methods=['GET', 'POST'])
-def postComm(vid,text):
+@app.route('/postComm/<string:vid>/', methods=['GET'])
+def postComm(vid):
+    text = request.args.get('comm')
     video = Video.get(video_id=vid)
     user = cur_user()
     if len(text) <= 1000:

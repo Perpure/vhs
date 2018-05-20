@@ -8,40 +8,36 @@ from flask import session
 from random import random
 
 UserToRoom = db.Table('UserToRoom', db.Model.metadata,
-    db.Column('AnonUser_id', db.String(32), db.ForeignKey('AnonUser.id')),
-    db.Column('Room_id', db.Integer, db.ForeignKey('Room.id'))
-)
-
+                      db.Column('AnonUser_id', db.String(32), db.ForeignKey('AnonUser.id')),
+                      db.Column('Room_id', db.Integer, db.ForeignKey('Room.token'))
+                      )
 
 ColorToRoom = db.Table('ColorToRoom', db.Model.metadata,
-    db.Column('Color_id', db.Integer, db.ForeignKey('Color.id')),
-    db.Column('Room_id', db.Integer, db.ForeignKey('Room.id'))
-)
-
+                       db.Column('Color_id', db.Integer, db.ForeignKey('Color.id')),
+                       db.Column('Room_id', db.Integer, db.ForeignKey('Room.token'))
+                       )
 
 Views = db.Table('Views', db.Model.metadata,
-    db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
-    db.Column('Video_id', db.String(32), db.ForeignKey('Video.id'))
-)
-
+                 db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
+                 db.Column('Video_id', db.String(32), db.ForeignKey('Video.id'))
+                 )
 
 Likes = db.Table('Likes', db.Model.metadata,
-    db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
-    db.Column('Video_id', db.String(32), db.ForeignKey('Video.id'))
-)
-
+                 db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
+                 db.Column('Video_id', db.String(32), db.ForeignKey('Video.id'))
+                 )
 
 Dislikes = db.Table('Dislikes', db.Model.metadata,
-    db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
-    db.Column('Video_id', db.String(32), db.ForeignKey('Video.id'))
-)
+                    db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
+                    db.Column('Video_id', db.String(32), db.ForeignKey('Video.id'))
+                    )
 
 
 class Comment(db.Model):
     __tablename__ = 'Comment'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     text = db.Column(db.Text())
-    video_id = db.Column(db.Text(), db.ForeignKey('Video.id'),nullable=False)
+    video_id = db.Column(db.Text(), db.ForeignKey('Video.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
 
     def __init__(self, text, video_id, user_id):
@@ -58,7 +54,7 @@ class Tag(db.Model):
     __tablename__ = 'Tag'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     text = db.Column(db.Text())
-    video_id = db.Column(db.Text(), db.ForeignKey('Video.id'),nullable=False)
+    video_id = db.Column(db.Text(), db.ForeignKey('Video.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
 
     def __init__(self, text, video_id, user_id):
@@ -112,7 +108,7 @@ class Video(db.Model):
 
     def add_viewer(self, user):
         self.viewers.append(user)
-        
+
         db.session.add(self)
         db.session.commit()
 
@@ -132,10 +128,10 @@ class Video(db.Model):
             return Video.query.get(video_id)
 
         videos = Video.query.all()
-            
+
         if sort:
             sort = sort.lower()
-            if "date" in sort: 
+            if "date" in sort:
                 videos.sort(key=lambda video: video.date, reverse=True)
             if "views" in sort:
                 videos.sort(key=lambda video: len(video.viewers), reverse=True)
@@ -180,7 +176,7 @@ class Geotag(db.Model):
     latitude = db.Column(db.Float, nullable=False)
     date = db.Column(db.DateTime, nullable=False)
     video_id = db.Column(db.String(32), db.ForeignKey("Video.id"), nullable=False)
-    
+
     def __init__(self, longitude, latitude):
         self.longitude = longitude
         self.latitude = latitude
@@ -188,7 +184,7 @@ class Geotag(db.Model):
     def save(self, video):
         self.date = datetime.now()
         self.video_id = video.id
-        
+
         db.session.add(self)
         db.session.commit()
 
@@ -208,16 +204,16 @@ class User(db.Model):
     left = db.Column(db.Integer)
     res_k = db.Column(db.Integer)
 
-    videos = db.relationship("Video", 
-                            backref="user",
-                            lazy="joined")
+    videos = db.relationship("Video",
+                             backref="user",
+                             lazy="joined")
 
     comments = db.relationship('Comment',
-                            backref='user',
-                            lazy='joined')
-    tags = db.relationship('Tag',
                                backref='user',
                                lazy='joined')
+    tags = db.relationship('Tag',
+                           backref='user',
+                           lazy='joined')
 
     def __init__(self, login):
         self.login = login
@@ -258,7 +254,7 @@ class User(db.Model):
 
     def update_resolution(self, width, height):
         if self.device_width == width and self.device_height == height:
-            return()
+            return ()
         self.device_height = height
         self.device_width = width
         db.session.add(self)
@@ -275,28 +271,28 @@ class User(db.Model):
 
 class Room(db.Model):
     __tablename__ = 'Room'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    token = db.Column(db.Integer, primary_key=True, autoincrement=True)
     date = db.Column(db.DateTime, nullable=False)
     video_id = db.Column(db.String(32))
     capitan_id = db.Column(db.Integer, db.ForeignKey('AnonUser.id'))
-    token = db.Column(db.String(64), nullable=False)
+    name = db.Column(db.String(64), nullable=False)
     color_user = db.Column(db.Text())
     Color = db.relationship("Color",
                             secondary=ColorToRoom,
                             backref="Room",
                             lazy="joined")
 
-    def __init__(self, token, capitan_id):
-    	self.token = token
-    	self.capitan_id = capitan_id
-    	self.date = datetime.now(tz=None)
+    def __init__(self, name, capitan_id):
+        self.name = name
+        self.capitan_id = capitan_id
+        self.date = datetime.now(tz=None)
 
     @staticmethod
-    def get(id=None, token=None):
+    def get(token=None, name=None):
+        if name:
+            return Room.query.filter_by(name=name).first()
         if token:
-            return Room.query.filter_by(token=token).first()
-        if id:
-            return Room.query.get(id)
+            return Room.query.get(token)
         return Room.query.all()
 
 
@@ -326,11 +322,12 @@ class AnonUser(db.Model):
     left = db.Column(db.Integer)
     res_k = db.Column(db.Integer)
     rooms = db.relationship("Room",
-                            secondary = UserToRoom,
-                            backref = "user",
-                            lazy = "joined")
-    
+                            secondary=UserToRoom,
+                            backref="user",
+                            lazy="joined")
+
     room_capitan = db.relationship("Room", backref='captain')
+
     def __init__(self):
         """
         Сохраняет анонимного пользователя.
@@ -347,7 +344,7 @@ class AnonUser(db.Model):
 
     def update_resolution(self, width, height):
         if self.device_width == width and self.device_height == height:
-            return()
+            return ()
         self.device_height = height
         self.device_width = width
         db.session.add(self)

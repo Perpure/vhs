@@ -30,15 +30,15 @@ def createroom():
     add_room_form = AddRoomForm(csrf_enabled=False, prefix="Submit_Add")
 
     if add_room_form.validate_on_submit():
-        token = add_room_form.token.data
-        room = Room(token=token, capitan_id=user.id)
+        name = add_room_form.token.data
+        room = Room(name=name, capitan_id=user.id)
         for i in range(1, 7):
             room.Color.append(Color.get(id=str(i)))
         db.session.add(room)
         db.session.commit()
         user.rooms.append(room)
         db.session.commit()
-        return redirect(url_for('room', token=add_room_form.token.data))
+        return redirect(url_for('room', token=room.token))
     return render_template('create_room.html', add_room_form=add_room_form)
 
 @app.route('/viewroom', methods=['GET', 'POST'])
@@ -56,12 +56,12 @@ def viewroom():
     return render_template('viewroom.html', user=cur_user(), join_form=join_form,
                            rooms=Room.get(), anon=user)
 
-@app.route('/addroom/<string:token>', methods=['GET', 'POST'])
+@app.route('/addroom/<int:token>', methods=['GET', 'POST'])
 def addroom(token):
     return render_template('addroom.html', user=cur_user(), token=token)
 
 
-@app.route('/room/<string:token>', methods=['GET', 'POST'])
+@app.route('/room/<int:token>', methods=['GET', 'POST'])
 def room(token):
     user = anon_user()
     Room_Form = RoomForm()
@@ -70,7 +70,7 @@ def room(token):
     color = None
     if user:
         room = Room.get(token=token)
-        room_map_url = token + '_map'
+        room_map_url = str(token) + '_map'
 
         if Room_Form.validate_on_submit():
             for i in range(len(room.color_user.split(';'))):
@@ -133,7 +133,7 @@ def room(token):
     return render_template('room.html', room=room, user=cur_user(),
                            calibrate_url=calibrate_url, color=user.color, users=users, count=len(users),
                            image_form=image_form, result_url=result_url, Room_Form=Room_Form, loaded=False, anon=user,
-                           room_map=room_map_url, map_ex=os.path.exists(basedir + '/images/' + room.token + '_map.jpg'))
+                           room_map=room_map_url, map_ex=os.path.exists(basedir + '/images/' + str(room.token) + '_map.jpg'))
 
 @app.route('/room/<string:token>/choose_video/<string:vid_id>', methods=['GET', 'POST'])
 def choosed_video(token,vid_id):
