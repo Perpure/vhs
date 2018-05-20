@@ -75,7 +75,9 @@ def room(token):
         if Room_Form.validate_on_submit():
             for i in range(len(room.color_user.split(';'))):
                 ID = room.color_user.split(';')[i].split(',')[0]
-                AnonUser.get(id=ID).action = "calibrate"
+                anon=AnonUser.get(id=ID)
+                print(anon.color)
+                anon.action = "calibrate"+anon.color
             db.session.commit()
 
         if not ((room in user.rooms)):
