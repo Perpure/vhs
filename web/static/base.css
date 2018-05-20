@@ -878,3 +878,9 @@ footer
   background-color:#ffb703;
   color:black;
 }
+.labelnoselect{
+  -moz-user-select: none; 
+  -ms-user-select: none; 
+  -o-user-select: none; 
+  -webkit-user-select: none;
+}
