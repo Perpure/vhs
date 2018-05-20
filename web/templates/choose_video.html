@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-{% if cap == user.id %}
+{% if cap == anon.id %}
     <div>
         <label for="show_video_map">Отображать на карте</label>
         <input name="selector" id="show_video_map" type="radio">

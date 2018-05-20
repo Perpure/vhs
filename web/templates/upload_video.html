@@ -17,7 +17,10 @@
             .{{format}}
         {% endfor %}
         )</p>
-        <div class="Loader"><div> {{ form.video }} </div></div>
+        <div class="Loader">
+            <div style="margin-bottom:-25px"> {{ form.video }} </div>
+            <p id="fileName"></p>
+        </div>
         <div> <button type='button' id="geotag_is_needed">Прикрепить геотег</button></div>
         <br>
         <div style="display:none;" id="map-info"><p>Для добавления новых тегов дважды нажмите на карту. Для смены цвета тега кликните по нему.
@@ -71,6 +74,9 @@
         $( ".Loader" )
           .change(function () {
             $( ".Loader" ).css('background-image', 'url("/static/LoaderChange.png")')
+            var filename = $('#video').val()
+            $('#fileName').html(filename);
+            $('#OuterDiv').append('<div id="innerDiv"></div>');
           })
     </script>
 
