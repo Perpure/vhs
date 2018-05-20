@@ -814,6 +814,10 @@ footer
     padding: 4px;
     cursor: pointer;
     margin-left: -4px;
+  -moz-user-select: none; 
+  -ms-user-select: none; 
+  -o-user-select: none; 
+  -webkit-user-select: none;
 }
 
 .z2{
@@ -826,6 +830,10 @@ footer
     padding: 4px;
     cursor: pointer;
     margin-left: -4px;
+  -moz-user-select: none; 
+  -ms-user-select: none; 
+  -o-user-select: none; 
+  -webkit-user-select: none;
 }
 
 .con{
