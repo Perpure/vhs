@@ -1,5 +1,6 @@
 ﻿from web import db
 from web import app
+import shutil
 import hashlib
 import os
 from datetime import datetime
@@ -140,18 +141,35 @@ class Video(db.Model):
                 videos.sort(key=lambda video: len(video.viewers), reverse=True)
 
         if search:
-            temp = [(video, len([word for word in search.lower().split() if word in video.title.lower()])) for video in videos]
+            if '#' in search:
+                temp = [(video, len([word for word in search.split('#')
+                                     if word.lower() in video.get_tags()])) for video in videos]
+            else:
+                temp = [(video, len([word for word in search.lower().split()
+                                     if word in video.title.lower()])) for video in videos]
+
             temp = [item for item in temp if item[1] > 0]
             temp.sort(key=lambda item: item[1], reverse=True)
             videos = [item[0] for item in temp]
 
         return videos
 
+    def get_tags(self):
+        tags = []
+        for tag in self.tags:
+            tags.append(tag.text.lower())
+        return tags
+
     def add_geotag(self, coords):
         self.latitude = coords[0]
         self.longitude = coords[1]
 
         db.session.add(self)
+        db.session.commit()
+
+    def delete_video(self):
+        shutil.rmtree(self.path)
+        db.session.delete(self)
         db.session.commit()
 
 

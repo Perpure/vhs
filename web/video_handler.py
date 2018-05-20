@@ -1,7 +1,7 @@
 from moviepy.editor import VideoFileClip
 from web.models import Video
 from os.path import join as join_path
-from os import makedirs
+from os import makedirs, rmdir
 from random import random
 from werkzeug.utils import secure_filename
 from hashlib import md5
@@ -37,8 +37,11 @@ def save_video(video_file, title):
     makedirs(directory)
     video_path = join_path(directory, 'video.' + ext)
     video_file.save(video_path)
-
-    prepare_video(video.id, ext)
+    try:
+        prepare_video(video.id, ext)
+    except:
+        video.delete_video()
+        return None
     return video
 
 

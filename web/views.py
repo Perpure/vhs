@@ -5,6 +5,7 @@ from web.models import User, Video, Room, Color, Comment, Geotag, Tag, AnonUser
 from web.helper import read_image, read_video, allowed_image, allowed_file, cur_user, is_true_pixel, \
     read_multi, parse, requiresauth, anon_user
 from web.video_handler import save_video
+from wtforms.validators import ValidationError
 from config import basedir, ALLOWED_EXTENSIONS
 from flask import redirect, render_template, session, url_for, make_response, request, jsonify
 from flask.json import JSONDecoder, dumps
@@ -18,29 +19,22 @@ import os
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    form = SearchingVideoForm()
-    if form.validate_on_submit():
-        sort = ""
+    return render_template('main.html', user=cur_user(), items=Video.get())
 
-        if form.date.data:
-            sort += "date"
-        if form.views.data:
-            sort += "views"
-        if form.search.data:
-            return render_template('main.html', form=form, user=cur_user(), items=Video.get(search=form.search.data,
-                                                                                            sort=sort))
-
-        return render_template('main.html', form=form, user=cur_user(), items=Video.get(sort=sort))
-
-    return render_template('main.html', form=form, user=cur_user(), items=Video.get())
-
-
-@app.route('/viewroom', methods=['GET', 'POST'])
-def viewroom():
-    user = anon_user()
-    join_form = JoinForm(csrf_enabled=False, prefix="Submit_Join")
+@app.route('/createroom', methods=['GET', 'POST'])
+def createroom():
+    if not('anon_id' in session):
+        user = AnonUser()
+        session['anon_id'] = user.id
+    else:
+        user = AnonUser.query.filter_by(id=session['anon_id']).first()
+        if not(user):
+            user = AnonUser()
+            session['anon_id'] = user.id
+            
     user.action = ""
     db.session.commit()
+
     add_room_form = AddRoomForm(csrf_enabled=False, prefix="Submit_Add")
 
     if add_room_form.validate_on_submit():
@@ -52,7 +46,23 @@ def viewroom():
         db.session.commit()
         user.rooms.append(room)
         db.session.commit()
-        return redirect(url_for('addroom', token=add_room_form.token.data))
+        return redirect(url_for('room', token=add_room_form.token.data))
+    return render_template('create_room.html', add_room_form=add_room_form)
+
+@app.route('/viewroom', methods=['GET', 'POST'])
+def viewroom():
+    if not('anon_id' in session):
+        user = AnonUser()
+        session['anon_id'] = user.id
+    else:
+        user = AnonUser.query.filter_by(id=session['anon_id']).first()
+        if not(user):
+            user = AnonUser()
+            session['anon_id'] = user.id
+
+    join_form = JoinForm(csrf_enabled=False, prefix="Submit_Join")
+    user.action = ""
+    db.session.commit()
 
     if join_form.validate_on_submit():
         if Room.get(token=str(join_form.token.data)):
@@ -191,21 +201,30 @@ def upload():
 
         if file and allowed_file(file.filename):
             video = save_video(file, form.title.data)
+
+            if not video:
+                form.video.errors.append(ValidationError('Ошибка при загрузке видео'))
+                return render_template('upload_video.html', form=form, user=cur_user(),
+                                       formats=app.config['ALLOWED_EXTENSIONS'])
+
             data = JSONDecoder().decode(form.geotag_data.data)
             if data['needed']:
                 for coords in data['coords']:
                     gt = Geotag(*coords)
                     gt.save(video)
-            
+
             if form.tags.data:
                 tags = form.tags.data.split(',')
                 for tag in tags:
                     tag_data = Tag(tag, video.id, user.id)
                     tag_data.save()
             return redirect(url_for("main"))
-        
+        elif not allowed_file(file.filename):
+            form.video.errors.append(ValidationError('Некорректное разрешение'))
+
     if not form.geotag_data.data:
         form.geotag_data.data = dumps({'needed': False, 'coords': []})
+
     return render_template('upload_video.html', form=form, user=cur_user(), formats=app.config['ALLOWED_EXTENSIONS'])
 
 

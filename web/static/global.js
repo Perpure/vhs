@@ -10,14 +10,15 @@ var shadow=document.getElementById("Shad");
 search.addEventListener('click',function(){
     if(searching)
     {
-        shadow.style.display="none";
         searcher.style.display="none";
         searching=false;
     }
     else
     {
-        shadow.style.display="block";
-        searcher.style.display="block";
+        if(screen.width>570)
+            searcher.style.display="flex";
+        else
+            searcher.style.display="block";         
         searching=true;
     }
 });
@@ -42,6 +43,25 @@ holder.addEventListener('click',function(){
     }
 });
 
+var clast=document.getElementsByClassName("navClast");
+for(var j=0;j<clast.length;j++){
+    clast[j].addEventListener('click',function()
+    {   
+        if(screen.width<570)
+        {
+            var ins=this.getElementsByClassName("subBtn");
+            this.style.marginBottom=ins.length*50+10+"px";
+        }
+    });
+    clast[j].addEventListener('mouseout',function()
+    {   
+        if(screen.width<570)
+        {
+            this.style.marginBottom=0;
+        }
+    });
+    }
+
 function swit(e){
         var elem=e.currentTarget;
         if(elem.value)
@@ -60,10 +80,19 @@ function swit(e){
         }
 }
 
+function getCurrentPage() {
+    var url = window.location.href;
+    var host = "http://"+window.location.host+"/";
+
+    return url.substr(host.length);
+}
+
 var start=document.getElementById("startSearch");
 var date=document.getElementById("Date");
 var views=document.getElementById("byViews");
 var key=document.getElementById("searchKey");
+var pr_page=getCurrentPage();
+var map_needed=false;
 
 views.value=0;
 date.value=0;
@@ -72,14 +101,23 @@ date.addEventListener('click',swit);
 
 
     start.addEventListener('click',function(){
-        var val=key.value;
+        var val = key.value;
         var vw=views.value;
         var dt=date.value;
-        if(val=="")val=" ";
+        if (pr_page == "" ) {
+            map_needed=$('#show_video_map').prop('checked');
+        }
+
+        if(val=="") val=" ";
         $.ajax({
-                       url:"/startSearch/"+val+"/"+vw+"/"+dt,
+                       url:"/startSearch",
                        type:"GET",
                        dataType:"html",
+                       data: {
+                            ask:val,
+                            view:vw,
+                            dat:dt
+                       },
                        success:function(response)
                        {
                             var placer="";
@@ -92,8 +130,16 @@ date.addEventListener('click',swit);
                             }
                             placer=placer.substr(17);
                             var mn=document.getElementById("Main");
-                            mn.innerHTML=placer;
+                            mn.innerHTML=placer;                            
                        },
                        error:function(){}
         });
+        if (pr_page != "") {
+            $.getScript("https://api-maps.yandex.ru/2.1/?lang=ru_RU", function () {$.getScript('/static/videos_map.js');});
+        }
+        else {
+            $.getScript('/static/videos_map.js');
+        }
+        pr_page="";
+
     });

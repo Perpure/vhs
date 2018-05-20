@@ -13,7 +13,7 @@
     <div class="Loader"><div><input id="image" name="image" type="file" accept="image/*" capture></div></div>
     <div id="Calibr"> {{ image_form.submit }} </div>
 {% if room.video_id %}
-<div class="result" id="showRes">Начать демонстрацию</div>
+<button class="result" id="showRes" type="button">Начать демонстрацию</button>
 {% endif %}
     {% if map_ex %}
     
@@ -61,8 +61,11 @@
 <hr>
 <p>После того, как вы пригласили участников, разместите их устройства на площади для показа, открыв страницу комнаты. На странице капитана (создавший комнату пользователь) нажмите на кнопку калибровки, после чего на всех устройствах откроется цветная сплошная заливка. Нажмите на кнопку загрузки файла и сделайте фотографию устройств, желательно под прямым углом. Если что-то пошло не так, вы можете убрать лишнее освещение, сделать экран на телефонах ярче. После этого выберите желаемое для показа видео и нажмите на кнопку результата. Все устройства начнут воспроизведение.</p>
 {% if room.capitan_id != anon.id %}
+{% if room.video_id %}
+<video class="ResultVideo" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
+{% endif %}
     <script>
-        let speed=3000;
+        var speed=4000;
         var prev = "None";
 
         function Result()
@@ -72,13 +75,13 @@
             var tp={{ anon.top }};
             var lft={{ anon.left }};
             var k={{ anon.res_k }};
-            {% if room.video_id %}
-            buddy.innerHTML+='<video class="ResultVideo" autoplay="autoplay" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>'
-            {% endif %}
             var RV=document.getElementById("ReVi");
+            RV.style.display="block";
+            RV.play();
             RV.style.top=tp+"%";
             RV.style.left=lft+"%";
             RV.style.width=k+"%";
+            RV.addEventListener('ended',function(){RV.style.display="none";});
             ftt.style.display="none";
         }
 
@@ -89,21 +92,17 @@
                        dataType:"text",
                        success:function(response)
                        {
-                            if(response=="calibrate" && prev != "calibrate"){
+                            if(response=="calibrate"){
                             prev = "calibrate";
                             $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; background:{{color}};"></div>');
                             $('#Footer').prop({"hidden":true})
                             $('#Header').prop({"hidden":true})
                             prev = "calibrate"
                             ;}
-                            if(response.substr(0,6)=="result" && prev != "result"){
-                            console.log(1212)
-                            /**$('#Body').prepend('<img src="{{url_for('get_multi', pid=1)}}" style="position:fixed; width:{{anon.res_k}}%; top:{{anon.top}}%; left:{{anon.left}}%;">');
-                            $('#Footer').prop({"hidden":true})
-                            $('#Header').prop({"hidden":true})
-                            $('#calibrImage').prop({"hidden":true})**/
-                            setTimeout(Result,response.substr(6)/2);
-                            prev = "result"
+                            if(response.substr(0,6)=="result"){
+                            console.log(1212);
+                            setTimeout(Result,response.substr(6));
+                            prev = "result";
                             }
 
                        },
@@ -144,11 +143,12 @@
 </script>
     
 {%else%}
+{% if room.video_id %}
 <script>
-let show=document.getElementById("showRes");
+var show=document.getElementById("showRes");
 show.addEventListener('click',function(){
-    let hash=window.location.href;
-    let sl=0;
+    var hash=window.location.href;
+    var sl=0;
         for(let i=0;i<hash.length;i++)
             if(hash[i]=='/')sl=i;
     hash=hash.substring(sl+1);
@@ -161,6 +161,7 @@ show.addEventListener('click',function(){
                     });
 });
 </script>
+{% endif %}
 {% endif %}
 {% endblock %}
 

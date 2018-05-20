@@ -144,3 +144,49 @@ $('#dislike').click(function(){
     Dte=Dte.substr(0,10);
     Dator.innerHTML=Dte;
 })();
+
+var taggs=document.getElementsByClassName("Tag");
+for(var i=0;i<taggs.length;i++)
+    taggs[i].addEventListener('click',function(){
+        var val = this.innerText;
+        var vw=0;
+        var dt=0;
+        if (pr_page == "" ) {
+            map_needed=$('#show_video_map').prop('checked');
+        }
+
+        if(val=="") val=" ";
+        $.ajax({
+                       url:"/startSearch",
+                       type:"GET",
+                       dataType:"html",
+                       data: {
+                            ask:val,
+                            view:vw,
+                            dat:dt
+                       },
+                       success:function(response)
+                       {
+                            var placer="";
+                            var plus=false;
+                            for(var i=0;i<response.length;i++)
+                            {
+                                if(response[i]=='<' && response[i+1]=='m' && response[i+2]=='a' && response[i+3]=='i')plus=true;
+                                if(plus)placer+=response[i];
+                                if(response[i+2]=='/' && response[i+3]=='m' && plus)i=response.length;
+                            }
+                            placer=placer.substr(17);
+                            var mn=document.getElementById("Main");
+                            mn.innerHTML=placer;
+                       },
+                       error:function(){}
+        });
+        if (pr_page != "") {
+            $.getScript("https://api-maps.yandex.ru/2.1/?lang=ru_RU", function () {$.getScript('/static/videos_map.js');});
+        }
+        else {
+            $.getScript('/static/videos_map.js');
+        }
+        pr_page="";
+
+    });
