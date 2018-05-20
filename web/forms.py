@@ -128,7 +128,7 @@ class AddCommentForm(FlaskForm):
 
 
 class AddRoomForm(FlaskForm):
-    token = StringField("Название комнаты", validators=[DataRequired(),
+    token = StringField("Название комнаты", validators=[DataRequired(message='Введите название комнаты'),
                                                         exist_token,
                                                         Length(5, message='Текст слишком короткий')])
     submit = SubmitField("Создать")
