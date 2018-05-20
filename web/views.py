@@ -23,15 +23,7 @@ def main():
 
 @app.route('/createroom', methods=['GET', 'POST'])
 def createroom():
-    if not('anon_id' in session):
-        user = AnonUser()
-        session['anon_id'] = user.id
-    else:
-        user = AnonUser.query.filter_by(id=session['anon_id']).first()
-        if not(user):
-            user = AnonUser()
-            session['anon_id'] = user.id
-            
+    user = anon_user()
     user.action = ""
     db.session.commit()
 
@@ -51,15 +43,7 @@ def createroom():
 
 @app.route('/viewroom', methods=['GET', 'POST'])
 def viewroom():
-    if not('anon_id' in session):
-        user = AnonUser()
-        session['anon_id'] = user.id
-    else:
-        user = AnonUser.query.filter_by(id=session['anon_id']).first()
-        if not(user):
-            user = AnonUser()
-            session['anon_id'] = user.id
-
+    user = anon_user()
     join_form = JoinForm(csrf_enabled=False, prefix="Submit_Join")
     user.action = ""
     db.session.commit()
@@ -69,8 +53,8 @@ def viewroom():
             return redirect(url_for('room', token=join_form.token.data))
     rooms = user.rooms
 
-    return render_template('viewroom.html', user=cur_user(), join_form=join_form, 
-                           rooms=Room.query.all(), anon=user)
+    return render_template('viewroom.html', user=cur_user(), join_form=join_form,
+                           rooms=Room.get(), anon=user)
 
 @app.route('/addroom/<string:token>', methods=['GET', 'POST'])
 def addroom(token):
@@ -108,7 +92,7 @@ def room(token):
             colors = room.color_user.split(';')
             for i in range(len(colors)):
                 if colors[i].split(',')[0] == str(member.id):
-                    color = Color.query.filter_by(id=colors[i].split(',')[1]).first().color
+                    color = Color.get(id=colors[i].split(',')[1]).color
                     member.color = color
                     db.session.commit()
                     break
@@ -154,7 +138,7 @@ def room(token):
 @app.route('/room/<string:token>/choose_video/<string:vid_id>', methods=['GET', 'POST'])
 def choosed_video(token,vid_id):
     user = anon_user()
-    room = Room.query.filter_by(token=token).first()
+    room = Room.get(token=token)
     if user.id == room.capitan_id:
         room.video_id = vid_id
         db.session.commit()
@@ -163,7 +147,7 @@ def choosed_video(token,vid_id):
 @app.route('/room/<string:token>/choose_video', methods=['GET', 'POST'])
 def choose_video(token):
     user = anon_user()
-    room = Room.query.filter_by(token=token).first()
+    room = Room.get(token=token)
     cap = room.capitan_id
     form = SearchingVideoForm()
     if form.validate_on_submit():
