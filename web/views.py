@@ -69,7 +69,7 @@ def viewroom():
             return redirect(url_for('room', token=join_form.token.data))
     rooms = user.rooms
 
-    return render_template('viewroom.html', user=cur_user(), join_form=join_form, add_room_form=add_room_form,
+    return render_template('viewroom.html', user=cur_user(), join_form=join_form, 
                            rooms=Room.query.all(), anon=user)
 
 @app.route('/addroom/<string:token>', methods=['GET', 'POST'])
