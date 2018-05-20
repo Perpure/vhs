@@ -44,8 +44,10 @@ function init_all() {
             zoom : 7,
             maxZoom : 23,
             minZoom : 23,
-            controls : []
+            controls : ['zoomControl']
     });
+
+    map.events.add('wheel', function(e){e.preventDefault();});
 
     $('#show_video_map').change(function () {
         $('#video_table').hide();

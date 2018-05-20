@@ -55,7 +55,7 @@ function map_init () {
     map = new ymaps.Map("map", {
             center: [55, 47],
             zoom: 6,
-            controls: [],
+            controls: ['zoomControl'],
         },
         {
             autoFitToViewport: 'always'
@@ -72,6 +72,7 @@ function map_init () {
         create_geotag(e.get('coords'));
         e.preventDefault();
     });
+    map.events.add('wheel', function(e) {e.preventDefault();});
 }
 
 
