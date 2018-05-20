@@ -297,6 +297,7 @@ def play(vid):
         return abort(404)
     
     user = cur_user()
+    usr = User.get(login=video.user_login)
     form = AddCommentForm()
     like_form = LikeForm()
     dislike_form = DislikeForm()
@@ -327,7 +328,7 @@ def play(vid):
         likened = 1
     if user in video.dislikes:
         likened = -1
-    return render_template('play.html', user=user, vid=vid, video=video, form=form,
+    return render_template('play.html', user=user, vid=vid, video=video, form=form, usr=usr,
                            like_form=like_form, dislike_form=dislike_form,lkd=likened)
 
 

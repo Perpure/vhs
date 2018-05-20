@@ -38,7 +38,7 @@
                                         while(response1[cur1]!=";" || response1[cur1+1]!=";")
                                             cur1++;
                                         var text=response1.substr(cur,cur1-cur);
-                                        commSection.innerHTML='<div class="Comment"><img src="../static/a.png" alt="" class="commAva"><div class="commTxt"><p class="commAuth"><a href="/cabinet/'+login+'" class="Link">'+name+'</a></p><p>'+text+'</p></div></div>'+commSection.innerHTML;
+                                        commSection.innerHTML='<div class="Comment"><img src="'+userAvatar+'" alt="" class="commAva"><div class="commTxt"><p class="commAuth"><a href="/cabinet/'+login+'" class="Link">'+name+'</a></p><p>'+text+'</p></div></div>'+commSection.innerHTML;
                                      }
                                    },
                                    error:function(){}

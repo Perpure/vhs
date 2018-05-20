@@ -9,7 +9,7 @@
 <br>
 <div class="infoOne">
 <div>
-    <img src="../static/a.png" alt="" class="authAva">
+    <img src="../static/images/{{ usr.avatar }}" alt="" class="authAva">
     <div class="inAuth">    
         <b><a href="{{url_for('cabinet', usr=video.user_login)}}" class="Link">{{video.user.name}}</a></b>
         <p class="videoDate" id="Dating">{{video.date}}</p>
@@ -54,7 +54,7 @@
 <div id="CSect">
 {% for comment in video.comments %}
 <div class="Comment">
-    <img src="../static/a.png" alt="" class="commAva">
+    <img src="../static/images/{{ user.avatar }}" alt="" class="commAva">
     <div class="commTxt">
         <p class="commAuth"><a href="{{url_for('cabinet', usr=comment.user.login)}}" class="Link">{{ comment.user.name }}</a></p>
         <p>{{ comment.text }}</p>
@@ -64,6 +64,9 @@
 </div>
 </div>
 
+<script>
+    var userAvatar = {{ user.avatar }}
+</script>
 <script src="{{ url_for('static', filename='video.js') }}"></script>
 <script src="http://vjs.zencdn.net/6.6.3/video.js"></script>
 <style>
