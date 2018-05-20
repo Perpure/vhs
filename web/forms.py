@@ -35,7 +35,7 @@ def exist_token(form,field):
 
 
 def not_exist_token(form,field):
-    if not Room.get(name=field.data):
+    if not Room.get(token=field.data):
         raise ValidationError("Такой комнаты нет")
 
 
@@ -72,7 +72,7 @@ class RegForm(FlaskForm):
 
 
 class JoinForm(FlaskForm):
-    token = StringField("Токен", validators=[not_exist_token, Length(5, message='Токен слишком короткий')])
+    token = StringField("Токен", validators=[not_exist_token])
     submit = SubmitField("Присоединиться")
 
 

@@ -49,7 +49,7 @@ def viewroom():
     db.session.commit()
 
     if join_form.validate_on_submit():
-        if Room.get(token=str(join_form.token.data)):
+        if Room.get(token=join_form.token.data):
             return redirect(url_for('room', token=join_form.token.data))
     rooms = user.rooms
 
