@@ -83,7 +83,6 @@
     
     {% if room.capitan_id != anon.id %}
     var speed=4000;
-    var prev = "None";
 
     function Result()
     {
@@ -108,16 +107,13 @@
             success:function(response)
             {
                 if(response.substr(0,9)=="calibrate"){
-                    prev = "calibrate";
                     $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; background:'+response.substr(9)+';"></div>');
                     $('#Footer').prop({"hidden":true})
                     $('#Header').prop({"hidden":true})
-                    prev = "calibrate"
                 ;}
 
                 if(response.substr(0,6)=="result"){
                     setTimeout(Result,response.substr(6));
-                    prev = "result";
                     var time=Math.round(response.substr(6)/1000);
                     countDown(time);
                 }
