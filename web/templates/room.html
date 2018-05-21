@@ -108,7 +108,7 @@
                             console.log(1212);
                             setTimeout(Result,response.substr(6));
                             prev = "result";
-                            var time=Math.floor(response.substr(6)/1000).toPrecision(0);
+                            var time=Math.round(response.substr(6)/1000);
                             var coud=document.getElementById("cod");
                             coud.style.marginTop="10px";
                             setTimeout(function step(){
