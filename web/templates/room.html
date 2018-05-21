@@ -14,6 +14,7 @@
     <div id="Calibr"> {{ image_form.submit }} </div>
 {% if room.video_id %}
 <button class="result" id="showRes" type="button">Начать демонстрацию</button>
+<div id="cod"></div>
 {% endif %}
     {% if map_ex %}
     
@@ -49,6 +50,9 @@
 {% else %}
 <hr>
 <p>Пригласите участников в комнату</p>
+{% endif %}
+{% if room.capitan_id != anon.id %}
+<div id="cod"></div>
 {% endif %}
 {% if map_ex %}
 <hr>
@@ -104,6 +108,15 @@
                             console.log(1212);
                             setTimeout(Result,response.substr(6));
                             prev = "result";
+                            var time=Math.floor(response.substr(6)/1000).toPrecision(0);
+                            var coud=document.getElementById("cod");
+                            coud.style.marginTop="10px";
+                            setTimeout(function step(){
+                                time--;
+                                coud.innerHTML=time;
+                                if(time)setTimeout(step,1000);
+                                else coud.innerHTML="";
+                            },1000);
                             }
 
                        },
@@ -160,6 +173,15 @@ show.addEventListener('click',function(){
                        success:function(response){},
                        error:function(){}
                     });
+    var time=16;
+    var coud=document.getElementById("cod");
+    coud.style.marginTop="10px";
+    setTimeout(function step(){
+            time--;
+            coud.innerHTML=time;
+            if(time)setTimeout(step,1000);
+            else coud.innerHTML="";
+    },1000);
 });
 </script>
 {% endif %}
