@@ -1,7 +1,7 @@
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
     UserProfileForm, AddRoomForm, SearchingVideoForm, VideoToRoomForm
-from web.models import User, Video, Room, Color, Comment, Geotag, Tag, AnonUser
+from web.models import User, Video, Room, Color, Comment, Geotag, Tag, AnonUser, RoomAnonColor
 from web.helper import read_image, read_video, allowed_image, allowed_file, cur_user, is_true_pixel, \
     read_multi, parse, requiresauth, anon_user
 from web.video_handler import save_video
@@ -73,18 +73,22 @@ def room(token):
         if Room_Form.validate_on_submit():
             for i in range(len(room.color_user.split(';'))):
                 ID = room.color_user.split(';')[i].split(',')[0]
-                anon=AnonUser.get(id=ID)
+                anon = AnonUser.get(id=ID)
                 print(anon.color)
                 anon.action = "calibrate"
             db.session.commit()
 
         if not ((room in user.rooms)):
+            color_id = len(room.user)
             user.rooms.append(room)
-            if room.color_user:
-                color_id = len(room.color_user.split(';')) + 1
-                room.color_user += ';' + str(user.id) + ',' + str(color_id)
-            else:
-                room.color_user = str(user.id) + ',1'
+            rac = RoomAnonColor()
+            rac.anon.append(user)
+            rac.color.append(Color.query.get(color_id))
+            rac.room.append(room)
+            db.session.add(rac)
+            print(rac)
+            print(rac.room[0].token)
+            print('|||||||||||||||||||||||||||||||||||||||||||||||||||||||||')
             db.session.commit()
 
         users = room.user
