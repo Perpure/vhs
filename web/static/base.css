@@ -84,14 +84,14 @@ input[type="file"]
 {
     opacity:0;
     width:300px;
-    height:150px;
+    height:60px;
 }
 
 .Loader
 {
     width:300px;
-    height:150px;
-    background-image:url("Loader2.png");
+    height:60px;
+    background-image:url("Loader3.png");
     background-repeat:no-repeat;
     margin-bottom:10px;
 }
