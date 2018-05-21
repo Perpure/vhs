@@ -46,7 +46,13 @@
 {%if not user%}
 <br><a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы оценить видео
 {%endif%}
+
 <div class="cSect">
+
+<form action="" method="POST">
+    {{ form.submit }}
+</form>
+
 <p>Комментарии</p>
 {%if user %}
 
@@ -54,8 +60,9 @@
 <br>
 <input type="submit" value="Запостить" id="addC">
 {%endif%}
+
 <div id="CSect">
-{% for comment in video.comments %}
+{% for comment in video.comments|sort(attribute="id")|reverse %}
 <div class="Comment">
     <img src="../static/a.png" alt="" class="commAva">
     <div class="commTxt">

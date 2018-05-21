@@ -1,6 +1,6 @@
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
-    UserProfileForm, AddRoomForm, AddCommentForm, SearchingVideoForm, LikeForm, DislikeForm
+    UserProfileForm, AddRoomForm, SearchingVideoForm, VideoToRoomForm
 from web.models import User, Video, Room, Color, Comment, Geotag, Tag, AnonUser
 from web.helper import read_image, read_video, allowed_image, allowed_file, cur_user, is_true_pixel, \
     read_multi, parse, requiresauth, anon_user
@@ -15,6 +15,7 @@ from string import ascii_letters
 from werkzeug.exceptions import Aborter
 from PIL import Image, ImageDraw
 import os
+from datetime import datetime
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -56,9 +57,6 @@ def viewroom():
     return render_template('viewroom.html', user=cur_user(), join_form=join_form,
                            rooms=Room.get(), anon=user)
 
-@app.route('/addroom/<string:token>', methods=['GET', 'POST'])
-def addroom(token):
-    return render_template('addroom.html', user=cur_user(), token=token)
 
 
 @app.route('/room/<string:token>', methods=['GET', 'POST'])
