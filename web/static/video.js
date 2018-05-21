@@ -155,8 +155,6 @@ var taggs=document.getElementsByClassName("Tag");
 for(var i=0;i<taggs.length;i++)
     taggs[i].addEventListener('click',function(){
         var val = this.innerText;
-        val=val.substr(0,val.length-1);
-        console.log(val);
         var vw=0;
         var dt=0;
         if (pr_page == "" ) {

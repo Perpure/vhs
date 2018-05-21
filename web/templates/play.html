@@ -37,9 +37,7 @@
 
 <div class="tags">
 {% for tag in video.tags %}
-<span class="Tag">
-    {{ '#'+tag.text }}
-</span>
+<span class="Tag">#{{ tag.text }}</span>
 {% endfor %}
 </div>
 
