@@ -1,55 +1,55 @@
-        var speed=3000;
-        var hash=window.location.href;
-        var sl=0;
-        for(var i=0;i<hash.length;i++)
-            if(hash[i]=='/')sl=i;
-        hash=hash.substring(sl+1);
+var speed=3000;
+var hash=window.location.href;
+var sl=0;
+for(var i=0;i<hash.length;i++)
+    if(hash[i]=='/')sl=i;
+hash=hash.substring(sl+1);
         
-        var commSection=document.getElementById("CSect");
-        var curComms = document.getElementsByClassName("Comment").length;
-        setTimeout(function step(){
-            $.ajax({
-                       url:"/askNewComm/"+hash,
-                       type:"GET",
-                       dataType:"text",
-                       success:function(response)
-                       {
-                            if(response>curComms)
-                            {
-                                   var def=response-curComms;
-                                   $.ajax({
-                                   url:"/getNewComm/"+hash+"/"+curComms,
-                                   type:"GET",
-                                   dataType:"text",
-                                   success:function(response1)
-                                   {
-                                     var cur=0;
-                                     var cur1=0;
-                                     for(var i=0;i<def;i++)
-                                     {
-                                        while(response1[cur1]!="," || response1[cur1+1]!=",")
-                                            cur1++;
-                                        var login=response1.substr(cur,cur1-cur);
-                                        cur=cur1+2;
-                                        while(response1[cur1]!="." || response1[cur1+1]!=".")
-                                            cur1++;
-                                        var name=response1.substr(cur,cur1-cur);
-                                        cur=cur1+2;
-                                        while(response1[cur1]!=";" || response1[cur1+1]!=";")
-                                            cur1++;
-                                        var text=response1.substr(cur,cur1-cur);
-                                        commSection.innerHTML='<div class="Comment"><img src="../static/a.png" alt="" class="commAva"><div class="commTxt"><p class="commAuth"><a href="/cabinet/'+login+'" class="Link">'+name+'</a></p><p>'+text+'</p></div></div>'+commSection.innerHTML;
-                                     }
-                                   },
-                                   error:function(){}
-                                });
-                                curComms=response;
-                            }
-                       },
-                       error:function(){}
-                    });
-            setTimeout(step,speed);
-        },speed);
+var commSection=document.getElementById("CSect");
+var curComms = document.getElementsByClassName("Comment").length;
+setTimeout(function step(){
+    $.ajax({
+        url:"/askNewComm/"+hash,
+        type:"GET",
+        dataType:"text",
+        success:function(response)
+        {
+            if(response>curComms)
+            {
+                var def=response-curComms;
+                $.ajax({
+                    url:"/getNewComm/"+hash+"/"+curComms,
+                    type:"GET",
+                    dataType:"text",
+                    success:function(response1)
+                    {
+                        var cur=0;
+                        var cur1=0;
+                        for(var i=0;i<def;i++)
+                        {
+                            while(response1[cur1]!="," || response1[cur1+1]!=",")
+                                cur1++;
+                            var login=response1.substr(cur,cur1-cur);
+                            cur=cur1+2;
+                            while(response1[cur1]!="." || response1[cur1+1]!=".")
+                                cur1++;
+                            var name=response1.substr(cur,cur1-cur);
+                            cur=cur1+2;
+                            while(response1[cur1]!=";" || response1[cur1+1]!=";")
+                                cur1++;
+                            var text=response1.substr(cur,cur1-cur);
+                            commSection.innerHTML='<div class="Comment"><img src="../static/a.png" alt="" class="commAva"><div class="commTxt"><p class="commAuth"><a href="/cabinet/'+login+'" class="Link">'+name+'</a></p><p>'+text+'</p></div></div>'+commSection.innerHTML;
+                        }
+                    },
+                    error:function(){}
+                });
+                curComms=response;
+            }
+        },
+        error:function(){}
+    });
+    setTimeout(step,speed);
+},speed);
 
 var addCom=document.getElementById("addC");
 var plate=document.getElementById("txtPlate");
@@ -96,7 +96,6 @@ $('#like').click(function(){
                     var dislikes = parsedJson[0].dislikes
                     $("span.lik").html(likes)
                     $("span.dis").html(dislikes)
-                    console.log(parsedJson)
                     calc();                    
                     if(cur!=$("span.lik").html()){
                         var stl=window.getComputedStyle(lk);
@@ -126,7 +125,6 @@ $('#dislike').click(function(){
                     var dislikes = parsedJson[0].dislikes
                     $("span.lik").html(likes)
                     $("span.dis").html(dislikes)
-                    console.log(parsedJson)
                     calc();    
                     if(cur!=$("span.dis").html()){
                         var stl=window.getComputedStyle(dlk);
@@ -146,7 +144,6 @@ $('#dislike').click(function(){
 (function () {
     var Dator=document.getElementById("Dating");
     var Dte=Dator.innerHTML;
-    console.log(12);
     Dte=Dte.substr(0,10);
     Dator.innerHTML=Dte;
 })();
