@@ -11,7 +11,7 @@
 
 <div class="infoOne">
 <div>
-    <img src="../static/images/{{ usr.avatar }}" alt="" class="authAva">
+    <div class="authAva"><img src="../static/images/{{ usr.avatar }}" alt="" class="authAvaIn"></div>
     <div class="inAuth">    
         <b><a href="{{url_for('cabinet', usr=video.user_login)}}" class="Link">{{video.user.name}}</a></b>
         <p class="videoDate" id="Dating">{{video.date}}</p>
@@ -60,7 +60,7 @@
 <div id="CSect">
 {% for comment in video.comments|sort(attribute="id")|reverse %}
 <div class="Comment">
-    <img src="../static/images/{{ user.avatar }}" alt="" class="commAva">
+    <div class="commAva"><img src="../static/images/{{ comment.user.avatar }}" alt="" class="commAvaIn"></div>
     <div class="commTxt">
         <p class="commAuth"><a href="{{url_for('cabinet', usr=comment.user.login)}}" class="Link">{{ comment.user.name }}</a></p>
         <p>{{ comment.text }}</p>
