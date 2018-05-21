@@ -68,80 +68,76 @@
 {% if room.video_id %}
 <video class="ResultVideo" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
 {% endif %}
-    <script>
-        var speed=4000;
-        var prev = "None";
+<script>
+    var speed=4000;
+    var prev = "None";
 
-        function Result()
-        {
-            var buddy=document.getElementById("Body");
-            var ftt=document.getElementById("Footer");
-            var tp={{ anon.top }};
-            var lft={{ anon.left }};
-            var k={{ anon.res_k }};
-            var RV=document.getElementById("ReVi");
-            RV.style.display="block";
-            RV.play();
-            RV.style.top=tp+"%";
-            RV.style.left=lft+"%";
-            RV.style.width=k+"%";
-            RV.addEventListener('ended',function(){RV.style.display="none";});
-            ftt.style.display="none";
-        }
+    function Result()
+    {
+        var tp={{ anon.top }};
+        var lft={{ anon.left }};
+        var k={{ anon.res_k }};
+        $('#ReVi').css({
+            display: 'block',
+            top: tp + "%",
+            left: lft + "%",
+            width: k+"%"
+        });
+        $('#ReVi').get(0).play();
+        $('#ReVi').on('ended',function(){ $('#ReVi').css("display","none"); });
+    }
 
-        setTimeout(function step(){
-            $.ajax({
-                       url:"/askAct",
-                       type:"GET",
-                       dataType:"text",
-                       success:function(response)
-                       {
-                            console.log(response);
-                            if(response.substr(0,9)=="calibrate"){
-                            prev = "calibrate";
-                            $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; background:'+response.substr(9)+';"></div>');
-                            $('#Footer').prop({"hidden":true})
-                            $('#Header').prop({"hidden":true})
-                            prev = "calibrate"
-                            ;}
-                            if(response.substr(0,6)=="result"){
-                            console.log(1212);
-                            setTimeout(Result,response.substr(6));
-                            prev = "result";
-                            var time=Math.round(response.substr(6)/1000);
-                            var coud=document.getElementById("cod");
-                            coud.style.marginTop="10px";
-                            setTimeout(function step(){
-                                time--;
-                                coud.innerHTML=time;
-                                if(time)setTimeout(step,1000);
-                                else coud.innerHTML="";
-                            },1000);
-                            }
+    setTimeout(function step(){
+        $.ajax({
+            url:"/askAct",
+            type:"GET",
+            dataType:"text",
+            success:function(response)
+            {
+                if(response.substr(0,9)=="calibrate"){
+                    prev = "calibrate";
+                    $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; background:'+response.substr(9)+';"></div>');
+                    $('#Footer').prop({"hidden":true})
+                    $('#Header').prop({"hidden":true})
+                    prev = "calibrate"
+                ;}
 
-                       },
-                       error:function(){}
-                    });
-            setTimeout(step,speed);
-        },speed);
+                if(response.substr(0,6)=="result"){
+                    setTimeout(Result,response.substr(6));
+                    prev = "result";
+                    var time=Math.round(response.substr(6)/1000);
+                    $('#cod').css("margin-top","10px");
+                    setTimeout(function step(){
+                        time--;
+                        $('#cod').html("<h5>Показ начнётся через: </h5>"+time+" с");
+                        if(time)setTimeout(step,1000);
+                        else $('#cod').empty();
+                    },1000);
+                }
+
+            },
+            error:function(){}
+        });
+        setTimeout(step,speed);
+    },speed);
 
 
-        $(function() {
-            $(document).ready(function() {
+    $(function() {
+        $(document).ready(function() {
             var ratio = window.devicePixelRatio || 1;
             var width = screen.width * ratio;
             var height = screen.height * ratio;
-                $.ajax({
+            $.ajax({
                   url: '/tellRes',
                   contentType: "application/json; charset=utf-8",
                   type: "POST",
                   data: JSON.stringify({ "width": width, "height" : height }),
                   success: function () {
                     console.log(JSON.stringify({ "width": width, "height" : height }));},
-                  });
-                  dataType:"json"
             });
+            dataType:"json"
         });
+    });
 
         function launchIntoFullscreen(element) {
               if(element.requestFullscreen) {
