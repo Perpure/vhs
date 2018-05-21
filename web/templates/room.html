@@ -139,46 +139,44 @@
         });
     });
 
-        function launchIntoFullscreen(element) {
-              if(element.requestFullscreen) {
-                element.requestFullscreen();
-              } else if(element.mozRequestFullScreen) {
-                element.mozRequestFullScreen();
-              } else if(element.webkitRequestFullscreen) {
-                element.webkitRequestFullscreen();
-              } else if(element.msRequestFullscreen) {
-                element.msRequestFullscreen();
-              }
-            }
+    function launchIntoFullscreen(element) {
+        if(element.requestFullscreen) {
+            element.requestFullscreen();
+        } else if(element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        } else if(element.webkitRequestFullscreen) {
+            element.webkitRequestFullscreen();
+        } else if(element.msRequestFullscreen) {
+            element.msRequestFullscreen();
+        }
+    }
 </script>
     
 {%else%}
 {% if room.video_id %}
 <script>
-var show=document.getElementById("showRes");
-show.addEventListener('click',function(){
-    var hash=window.location.href;
-    var sl=0;
+    $('#showRes').click(function(){
+        var hash=window.location.href;
+        var sl=0;
         for(let i=0;i<hash.length;i++)
             if(hash[i]=='/')sl=i;
-    hash=hash.substring(sl+1);
-    $.ajax({
-                       url:"/showRes/"+hash,
-                       type:"GET",
-                       dataType:"text",
-                       success:function(response){},
-                       error:function(){}
-                    });
-    var time=16;
-    var coud=document.getElementById("cod");
-    coud.style.marginTop="10px";
-    setTimeout(function step(){
+        hash=hash.substring(sl+1);
+        $.ajax({
+            url:"/showRes/"+hash,
+            type:"GET",
+            dataType:"text",
+            success:function(response){},
+            error:function(){}
+        });
+        var time=16;
+        $('#cod').css("margin-top","10px");
+        setTimeout(function step(){
             time--;
-            coud.innerHTML=time;
+            $('#cod').html("<h5>Показ начнётся через: </h5>"+time+" с");
             if(time)setTimeout(step,1000);
-            else coud.innerHTML="";
-    },1000);
-});
+            else $('#cod').empty();
+        },1000);
+    });
 </script>
 {% endif %}
 {% endif %}
