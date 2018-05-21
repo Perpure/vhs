@@ -96,7 +96,11 @@
             width: k+"%"
         });
         $('#ReVi').get(0).play();
-        $('#ReVi').on('ended',function(){ $('#ReVi').css("display","none"); });
+        $('#ReVi').on('ended',function(){ 
+            $('#ReVi').hide(); 
+            $('#Footer').hide();
+        });
+        $('#Footer').hide();
     }
 
     setTimeout(function step(){
@@ -108,8 +112,8 @@
             {
                 if(response.substr(0,9)=="calibrate"){
                     $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; background:'+response.substr(9)+';"></div>');
-                    $('#Footer').prop({"hidden":true})
-                    $('#Header').prop({"hidden":true})
+                    $('#Footer').hide();
+                    $('#Header').hide();
                 ;}
 
                 if(response.substr(0,6)=="result"){
@@ -124,21 +128,18 @@
         setTimeout(step,speed);
     },speed);
 
-
-    $(function() {
-        $(document).ready(function() {
-            var ratio = window.devicePixelRatio || 1;
-            var width = screen.width * ratio;
-            var height = screen.height * ratio;
-            $.ajax({
-                  url: '/tellRes',
-                  contentType: "application/json; charset=utf-8",
-                  type: "POST",
-                  data: JSON.stringify({ "width": width, "height" : height }),
-                  success: function () {
-                    console.log(JSON.stringify({ "width": width, "height" : height }));},
-            });
-            dataType:"json"
+    $(document).ready(function() {
+        var ratio = window.devicePixelRatio || 1;
+        var width = screen.width * ratio;
+        var height = screen.height * ratio;
+        $.ajax({
+            url: '/tellRes',
+            contentType: "application/json; charset=utf-8",
+            type: "POST",
+            dataType:"json",
+            data: JSON.stringify({ "width": width, "height" : height }),
+            success: function () {
+                console.log(JSON.stringify({ "width": width, "height" : height }));},
         });
     });
 
