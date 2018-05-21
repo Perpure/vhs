@@ -65,10 +65,23 @@
 <hr>
 <p>После того, как вы пригласили участников, разместите их устройства на площади для показа, открыв страницу комнаты. На странице капитана (создавший комнату пользователь) нажмите на кнопку калибровки, после чего на всех устройствах откроется цветная сплошная заливка. Нажмите на кнопку загрузки файла и сделайте фотографию устройств, желательно под прямым углом. Если что-то пошло не так, вы можете убрать лишнее освещение, сделать экран на телефонах ярче. После этого выберите желаемое для показа видео и нажмите на кнопку результата. Все устройства начнут воспроизведение.</p>
 {% if room.capitan_id != anon.id %}
-{% if room.video_id %}
-<video class="ResultVideo" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
+    {% if room.video_id %}
+    <video class="ResultVideo" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
+    {% endif %}
 {% endif %}
 <script>
+    function countDown(Time)
+    {
+        $('#cod').css("margin-top","10px");
+        setTimeout(function step(){
+            Time--;
+            $('#cod').html("<h5>Показ начнётся через: </h5>"+Time+" с");
+            if(Time)setTimeout(step,1000);
+            else $('#cod').empty();
+        },1000);
+    }
+    
+    {% if room.capitan_id != anon.id %}
     var speed=4000;
     var prev = "None";
 
@@ -106,13 +119,7 @@
                     setTimeout(Result,response.substr(6));
                     prev = "result";
                     var time=Math.round(response.substr(6)/1000);
-                    $('#cod').css("margin-top","10px");
-                    setTimeout(function step(){
-                        time--;
-                        $('#cod').html("<h5>Показ начнётся через: </h5>"+time+" с");
-                        if(time)setTimeout(step,1000);
-                        else $('#cod').empty();
-                    },1000);
+                    countDown(time);
                 }
 
             },
@@ -154,7 +161,6 @@
     
 {%else%}
 {% if room.video_id %}
-<script>
     $('#showRes').click(function(){
         var hash=window.location.href;
         var sl=0;
@@ -168,14 +174,8 @@
             success:function(response){},
             error:function(){}
         });
-        var time=16;
-        $('#cod').css("margin-top","10px");
-        setTimeout(function step(){
-            time--;
-            $('#cod').html("<h5>Показ начнётся через: </h5>"+time+" с");
-            if(time)setTimeout(step,1000);
-            else $('#cod').empty();
-        },1000);
+        var time=15;
+        countDown(time);
     });
 </script>
 {% endif %}
