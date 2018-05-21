@@ -98,18 +98,18 @@ $('#like').click(function(){
                     $("span.dis").html(dislikes)
                     console.log(parsedJson)
                     calc();                    
-                    },
+                    if(cur!=$("span.lik").html()){
+                        var stl=window.getComputedStyle(lk);
+                        if(stl.backgroundImage[stl.backgroundImage.length-7]=='L')lk.style.backgroundImage="url(/static/lik1.png)";
+                        else{
+                            lk.style.backgroundImage="url(/static/lik1L.png)";
+                            dlk.style.backgroundImage="url(/static/dis1.png)";
+                        }
+                    }
+               },
                error:function(){
                     alert('Произошла ошибка')}
             });
-            if(cur!=$("span.lik").html()){
-                var stl=window.getComputedStyle(lk);
-                if(stl.backgroundImage[stl.backgroundImage.length-7]=='L')lk.style.backgroundImage="url(/static/lik1.png)";
-                else{
-                    lk.style.backgroundImage="url(/static/lik1L.png)";
-                    dlk.style.backgroundImage="url(/static/dis1.png)";
-                }
-            }
 });
 
 $('#dislike').click(function(){
@@ -128,18 +128,18 @@ $('#dislike').click(function(){
                     $("span.dis").html(dislikes)
                     console.log(parsedJson)
                     calc();    
-                    },
+                    if(cur!=$("span.dis").html()){
+                        var stl=window.getComputedStyle(dlk);
+                        if(stl.backgroundImage[stl.backgroundImage.length-7]=='D')dlk.style.backgroundImage="url(/static/dis1.png)";
+                        else{            
+                            dlk.style.backgroundImage="url(/static/dis1D.png)";
+                            lk.style.backgroundImage="url(/static/lik1.png)";
+                        }
+                    }
+               },
                error:function(){
                     alert('Произошла ошибка')}
             });
-            if(cur!=$("span.dis").html()){
-                var stl=window.getComputedStyle(dlk);
-                if(stl.backgroundImage[stl.backgroundImage.length-7]=='D')dlk.style.backgroundImage="url(/static/dis1.png)";
-                else{            
-                    dlk.style.backgroundImage="url(/static/dis1D.png)";
-                    lk.style.backgroundImage="url(/static/lik1.png)";
-                }
-            }
 });
 
 
