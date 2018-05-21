@@ -402,6 +402,11 @@ main
     width:100%;
 }
 
+.titling
+{
+    height:50px;
+}
+
 .liking,.infoOne
 {
     display:inline-block;
@@ -794,6 +799,19 @@ footer
         margin-bottom:10px;
     }
 
+    .commArea,.Comment,.infoOne
+    {
+        width:100%;
+    }
+    .Comment
+    {
+        max-width:100%;
+        text-align:left;
+    }
+    .titling,.infoOne
+    {   
+        text-align:left;
+    }
 }
 
 
