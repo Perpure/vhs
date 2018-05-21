@@ -4,9 +4,11 @@
     data-setup='{"controls": true, "autoplay": false, "preload": "auto"}'>
          <source src="{{url_for('get_video', vid=vid)}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
     </video>
+<div class="titling">
 <p class="videoTitle">{{ video.title }}</p>
 <p class="vidViews">Просмотры: {{ video.viewers | length }}</p>
-<br>
+</div>
+
 <div class="infoOne">
 <div>
     <img src="../static/images/{{ usr.avatar }}" alt="" class="authAva">
@@ -17,33 +19,36 @@
 </div>
 </div>
 
-{%if user%}
+
 <div class="liking">
         <div class="lineLike">        
             <div id="likSh" class="likeShow"></div>
             <div id="disSh" class="disShow"></div>
         </div>
+
         <div class="dlc">
             <input class="Like" id="like" name="like" type="submit" value="Нравится">
             <span class="lik" id="lik">{{ video.likes | length }}</span>
             <input class="Dislike" id="dislike" name="dislike" type="submit" value="НЕ нравится">
             <span class="dis" id="dis">{{ video.dislikes | length }}</span>
+
         </div>
+
 </div>
-{%endif%}
+
 
 <div class="tags">
 {% for tag in video.tags %}
-<span class="Tag">
-    {{ '#'+tag.text }}
-</span>
+<span class="Tag">#{{ tag.text }}</span>
 {% endfor %}
 </div>
 
 {%if not user%}
 <br><a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы оценить видео
 {%endif%}
+
 <div class="cSect">
+
 <p>Комментарии</p>
 {%if user %}
 
@@ -51,8 +56,9 @@
 <br>
 <input type="submit" value="Запостить" id="addC">
 {%endif%}
+
 <div id="CSect">
-{% for comment in video.comments %}
+{% for comment in video.comments|sort(attribute="id")|reverse %}
 <div class="Comment">
     <img src="../static/images/{{ user.avatar }}" alt="" class="commAva">
     <div class="commTxt">

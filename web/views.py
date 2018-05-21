@@ -1,6 +1,6 @@
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
-    UserProfileForm, AddRoomForm, AddCommentForm, SearchingVideoForm, LikeForm, DislikeForm
+    UserProfileForm, AddRoomForm, SearchingVideoForm, VideoToRoomForm
 from web.models import User, Video, Room, Color, Comment, Geotag, Tag, AnonUser
 from web.helper import read_image, read_video, allowed_image, allowed_file, cur_user, is_true_pixel, \
     read_multi, parse, requiresauth, anon_user
@@ -15,6 +15,7 @@ from string import ascii_letters
 from werkzeug.exceptions import Aborter
 from PIL import Image, ImageDraw
 import os
+from datetime import datetime
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -56,9 +57,6 @@ def viewroom():
     return render_template('viewroom.html', user=cur_user(), join_form=join_form,
                            rooms=Room.get(), anon=user)
 
-@app.route('/addroom/<string:token>', methods=['GET', 'POST'])
-def addroom(token):
-    return render_template('addroom.html', user=cur_user(), token=token)
 
 
 @app.route('/room/<string:token>', methods=['GET', 'POST'])
@@ -75,7 +73,9 @@ def room(token):
         if Room_Form.validate_on_submit():
             for i in range(len(room.color_user.split(';'))):
                 ID = room.color_user.split(';')[i].split(',')[0]
-                AnonUser.get(id=ID).action = "calibrate"
+                anon=AnonUser.get(id=ID)
+                print(anon.color)
+                anon.action = "calibrate"+anon.color
             db.session.commit()
 
         if not ((room in user.rooms)):
@@ -297,39 +297,16 @@ def play(vid):
         return abort(404)
     
     user = cur_user()
-    usr = User.get(login=video.user_login)
-    form = AddCommentForm()
-    like_form = LikeForm()
-    dislike_form = DislikeForm()
 
     if user and user not in video.viewers:
         video.add_viewer(user)
-
-    if like_form.like.data:
-        video.add_like(user)
-        if user in video.dislikes:
-            video.dislikes.remove(user)
-            db.session.add(user)
-            db.session.commit()
-
-    if dislike_form.dislike.data:
-        video.add_dislike(user)
-        if user in video.likes:
-            video.likes.remove(user)
-            db.session.add(user)
-            db.session.commit()
-
-    if form.validate_on_submit():
-        comment = Comment(form.message.data, video.id, user.id)
-        comment.save()
 
     likened = 0
     if user in video.likes:
         likened = 1
     if user in video.dislikes:
         likened = -1
-    return render_template('play.html', user=user, vid=vid, video=video, form=form, usr=usr,
-                           like_form=like_form, dislike_form=dislike_form,lkd=likened)
+    return render_template('play.html', user=user, vid=vid, video=video,lkd=likened)
 
 
 @app.route('/video/map', methods=["GET"])
