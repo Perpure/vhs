@@ -297,19 +297,16 @@ def play(vid):
         return abort(404)
     
     user = cur_user()
-    form = VideoToRoomForm(csrf_enabled=False)
 
     if user and user not in video.viewers:
         video.add_viewer(user)
 
-    if form.validate_on_submit():
-        anon = anon_user()
-        room = Room(video.title + " " + datetime.now().isoformat(), anon.id)
-        room.save(video.id)
-
-        return redirect(url_for("room", token=room.token))
-
-    return render_template('play.html', user=user, vid=vid, video=video, form=form)
+    likened = 0
+    if user in video.likes:
+        likened = 1
+    if user in video.dislikes:
+        likened = -1
+    return render_template('play.html', user=user, vid=vid, video=video,lkd=likened)
 
 
 @app.route('/video/map', methods=["GET"])

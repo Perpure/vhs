@@ -50,14 +50,14 @@ for(var j=0;j<clast.length;j++){
         if(screen.width<570)
         {
             var ins=this.getElementsByClassName("subBtn");
-            this.style.marginBottom=ins.length*50+10+"px";
+            this.style.height=ins.length*50+60+"px";
         }
     });
     clast[j].addEventListener('mouseout',function()
     {   
         if(screen.width<570)
         {
-            this.style.marginBottom=0;
+            this.style.height=50+"px";
         }
     });
     }

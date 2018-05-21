@@ -111,16 +111,17 @@ def likeVideo(vid):
     user = cur_user()
     video = Video.get(video_id=vid)
     
-    if user in video.likes:
-        video.likes.remove(user)
-        db.session.add(user)
-        db.session.commit()
-    else:
-        video.add_like(user)
-        if user in video.dislikes:
-            video.dislikes.remove(user)
+    if user:
+        if user in video.likes:
+            video.likes.remove(user)
             db.session.add(user)
             db.session.commit()
+        else:
+            video.add_like(user)
+            if user in video.dislikes:
+                video.dislikes.remove(user)
+                db.session.add(user)
+                db.session.commit()
     return jsonify([{"likes": str(len(video.likes)),
                      "dislikes": str(len(video.dislikes))}])
 
@@ -129,17 +130,18 @@ def likeVideo(vid):
 def dislikeVideo(vid):
     user = cur_user()
     video = Video.get(video_id=vid)
-    
-    if user in video.dislikes:
-            video.dislikes.remove(user)
-            db.session.add(user)
-            db.session.commit()
-    else:
-        video.add_dislike(user)
-        if user in video.likes:
-            video.likes.remove(user)
-            db.session.add(user)
-            db.session.commit()
+
+    if user:
+        if user in video.dislikes:
+                video.dislikes.remove(user)
+                db.session.add(user)
+                db.session.commit()
+        else:
+            video.add_dislike(user)
+            if user in video.likes:
+                video.likes.remove(user)
+                db.session.add(user)
+                db.session.commit()
     return jsonify([{"likes": str(len(video.likes)),
                      "dislikes": str(len(video.dislikes))}])
 
