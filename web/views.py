@@ -299,38 +299,16 @@ def play(vid):
         return abort(404)
     
     user = cur_user()
-    form = AddCommentForm()
-    like_form = LikeForm()
-    dislike_form = DislikeForm()
 
     if user and user not in video.viewers:
         video.add_viewer(user)
-
-    if like_form.like.data:
-        video.add_like(user)
-        if user in video.dislikes:
-            video.dislikes.remove(user)
-            db.session.add(user)
-            db.session.commit()
-
-    if dislike_form.dislike.data:
-        video.add_dislike(user)
-        if user in video.likes:
-            video.likes.remove(user)
-            db.session.add(user)
-            db.session.commit()
-
-    if form.validate_on_submit():
-        comment = Comment(form.message.data, video.id, user.id)
-        comment.save()
 
     likened = 0
     if user in video.likes:
         likened = 1
     if user in video.dislikes:
         likened = -1
-    return render_template('play.html', user=user, vid=vid, video=video, form=form,
-                           like_form=like_form, dislike_form=dislike_form,lkd=likened)
+    return render_template('play.html', user=user, vid=vid, video=video,lkd=likened)
 
 
 @app.route('/video/map', methods=["GET"])
