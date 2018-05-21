@@ -166,10 +166,7 @@
         hash=hash.substring(sl+1);
         $.ajax({
             url:"/showRes/"+hash,
-            type:"GET",
-            dataType:"text",
-            success:function(response){},
-            error:function(){}
+            type:"GET"
         });
         var time=15;
         countDown(time);
