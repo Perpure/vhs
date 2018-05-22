@@ -301,6 +301,7 @@ def play(vid):
         return abort(404)
     
     user = cur_user()
+    usr = User.get(login=video.user_login)
 
     if user and user not in video.viewers:
         video.add_viewer(user)
@@ -310,7 +311,7 @@ def play(vid):
         likened = 1
     if user in video.dislikes:
         likened = -1
-    return render_template('play.html', user=user, vid=vid, video=video, lkd=likened)
+    return render_template('play.html', user=user, vid=vid, video=video, lkd=likened,usr=usr)
 
 
 @app.route('/video/map', methods=["GET"])

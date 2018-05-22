@@ -492,16 +492,32 @@ main
 
 .commAva
 {
-    height:100%;
+    height:100px;
+    width:100px;
     margin-right:15px;
     vertical-align:top;
+    overflow:hidden;
+    display:inline-block;
+}
+
+.commAvaIn
+{
+    height:100%;
 }
 
 .authAva
 {
     height:50px;
+    width:50px;
     margin-right:15px;
     vertical-align:top;
+    overflow:hidden;
+    display:inline-block;
+}
+
+.authAvaIn
+{
+    height:100%;
 }
 
 .inAuth

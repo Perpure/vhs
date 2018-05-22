@@ -3,6 +3,7 @@ from web import app
 import shutil
 import hashlib
 import os
+from random import randint
 from datetime import datetime
 from flask import session
 from random import random
@@ -200,6 +201,7 @@ class User(db.Model):
     password = db.Column(db.String(64), nullable=False)
     name = db.Column(db.String(32), nullable=False)
     channel_info = db.Column(db.String(64))
+    avatar = db.Column(db.String(64))
     action = db.Column(db.String(64))
     device_width = db.Column(db.Integer)
     device_height = db.Column(db.Integer)
@@ -231,6 +233,7 @@ class User(db.Model):
         """
         self.password = hashlib.sha512(
             password.encode("utf-8")).hexdigest()
+        self.avatar = str(randint(1, 20)) + ".jpg"
         db.session.add(self)
         db.session.commit()
 
