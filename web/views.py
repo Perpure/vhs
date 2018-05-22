@@ -63,50 +63,40 @@ def viewroom():
 def room(token):
     user = anon_user()
     Room_Form = RoomForm()
-    calibrate_url = None
-    result_url = None
-    color = None
     if user:
         room = Room.get(token=token)
         room_map_url = token + '_map'
 
-        if Room_Form.validate_on_submit():
-            for i in range(len(room.color_user.split(';'))):
-                ID = room.color_user.split(';')[i].split(',')[0]
-                anon = AnonUser.get(id=ID)
-                print(anon.color)
-                anon.action = "calibrate"
-            db.session.commit()
-
         if not ((room in user.rooms)):
             color_id = len(room.user)
+            col = Color.query.get(color_id)
             user.rooms.append(room)
             rac = RoomAnonColor()
-            rac.anon.append(user)
-            rac.color.append(Color.query.get(color_id))
-            rac.room.append(room)
+            user.rac.append(rac)
+            col.rac.append(rac)
+            room.rac.append(rac)
             db.session.add(rac)
-            print(rac)
-            print(rac.room[0].token)
-            print('|||||||||||||||||||||||||||||||||||||||||||||||||||||||||')
             db.session.commit()
 
         users = room.user
+
+        if Room_Form.validate_on_submit():
+            for member in users[1:]:
+                member.action = "calibrate"
+            db.session.commit()
+
         for member in users[1:]:
-            colors = room.color_user.split(';')
-            for i in range(len(colors)):
-                if colors[i].split(',')[0] == str(member.id):
-                    color = Color.get(id=colors[i].split(',')[1]).color
-                    member.color = color
-                    db.session.commit()
-                    break
+            rac = RoomAnonColor.query.filter_by(room_id=room.id,
+                                                anon_id=member.id).first()
+            member.color = rac.color.color
+            db.session.commit()
         image_form = UploadImageForm(csrf_enabled=False)
         if image_form.validate_on_submit():
             if 'image' not in request.files:
                 return render_template('room.html', room=room, user=cur_user(),
-                                       calibrate_url=calibrate_url, color=user.color, users=users,
+                                       color=user.color, users=users,
                                        image_form=UploadImageForm(csrf_enabled=False),
-                                       result_url=result_url, Room_Form=Room_Form, loaded=False,
+                                       Room_Form=Room_Form, loaded=False,
                                        room_map=room_map_url, anon=user, count=len(users))
 
             file = request.files['image']
@@ -114,7 +104,7 @@ def room(token):
                 return render_template('room.html', room=room, user=cur_user(),
                                        calibrate_url=calibrate_url, color=user.color, users=users,
                                        image_form=UploadImageForm(csrf_enabled=False),
-                                       result_url=result_url, Room_Form=Room_Form, loaded=False,
+                                       Room_Form=Room_Form, loaded=False,
                                        room_map=room_map_url, anon=user, count=len(users))
 
             if file and allowed_image(file.filename):
@@ -122,21 +112,18 @@ def room(token):
                 try:
                     parse(room, users[1:], basedir + '/images/' + room.token + '.jpg')
                 except:
-                    return render_template('room.html', room=room, user=cur_user(),
-                                               calibrate_url=calibrate_url, color=user.color, users=users,
-                                               image_form=image_form, result_url=result_url, count=len(users),
+                    return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users,
+                                               image_form=image_form, count=len(users),
                                                Room_Form=Room_Form, loaded=True, room_map=room_map_url, anon=user,
                                                msg="Мы не смогли идентифицировать устройства, попробуйте загрузить другую фотографию.")
-                return render_template('room.html', room=room, user=cur_user(),
-                                       calibrate_url=calibrate_url, color=user.color, users=users,
-                                       image_form=image_form, result_url=result_url, anon=user,
+                return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users,
+                                       image_form=image_form, anon=user,
                                        Room_Form=Room_Form, loaded=True, room_map=room_map_url, count=len(users))
 
     else:
         return redirect(url_for('log'))
-    return render_template('room.html', room=room, user=cur_user(),
-                           calibrate_url=calibrate_url, color=user.color, users=users, count=len(users),
-                           image_form=image_form, result_url=result_url, Room_Form=Room_Form, loaded=False, anon=user,
+    return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users, count=len(users),
+                           image_form=image_form, Room_Form=Room_Form, loaded=False, anon=user,
                            room_map=room_map_url, map_ex=os.path.exists(basedir + '/images/' + room.token + '_map.jpg'))
 
 @app.route('/room/<string:token>/choose_video/<string:vid_id>', methods=['GET', 'POST'])

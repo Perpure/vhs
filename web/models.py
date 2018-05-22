@@ -12,20 +12,6 @@ UserToRoom = db.Table('UserToRoom', db.Model.metadata,
     db.Column('Room_id', db.Integer, db.ForeignKey('Room.id'))
 )
 
-RacToRoom = db.Table('RacToRoom', db.Model.metadata,
-    db.Column('Rac_id', db.Integer, db.ForeignKey('RoomAnonColor.id')),
-    db.Column('Room_id', db.Integer, db.ForeignKey('Room.id'))
-)
-
-RacToAnon = db.Table('RacToAnon', db.Model.metadata,
-    db.Column('Rac_id', db.Integer, db.ForeignKey('RoomAnonColor.id')),
-    db.Column('AnonUser_id', db.String(32), db.ForeignKey('AnonUser.id'))
-)
-
-RacToColor = db.Table('RacToColor', db.Model.metadata,
-    db.Column('Rac_id', db.Integer, db.ForeignKey('RoomAnonColor.id')),
-    db.Column('Color_id', db.Integer, db.ForeignKey('Color.id'))
-)
 
 ColorToRoom = db.Table('ColorToRoom', db.Model.metadata,
     db.Column('Color_id', db.Integer, db.ForeignKey('Color.id')),
@@ -221,7 +207,7 @@ class User(db.Model):
     top = db.Column(db.Integer)
     left = db.Column(db.Integer)
     res_k = db.Column(db.Integer)
-
+    
     videos = db.relationship("Video", 
                             backref="user",
                             lazy="joined")
@@ -299,6 +285,7 @@ class Room(db.Model):
                             secondary=ColorToRoom,
                             backref="Room",
                             lazy="joined")
+    rac = db.relationship('RoomAnonColor', backref='room', lazy=True)
 
     def __init__(self, token, capitan_id):
     	self.token = token
@@ -323,6 +310,7 @@ class Color(db.Model):
     __tablename__ = 'Color'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     color = db.Column(db.String(64), nullable=False)
+    rac = db.relationship('RoomAnonColor', backref='color', lazy=True)
 
     @staticmethod
     def get(id=None):
@@ -334,18 +322,9 @@ class Color(db.Model):
 class RoomAnonColor(db.Model):
     __tablename__ = 'RoomAnonColor'
     id = db.Column(db.Integer, primary_key=True)
-    room = db.relationship("Room",
-                              secondary = RacToRoom,
-                              backref = "rac",
-                              lazy = "joined")
-    anon = db.relationship("AnonUser",
-                              secondary = RacToAnon,
-                              backref = "rac",
-                              lazy = "joined")
-    color = db.relationship("Color",
-                               secondary = RacToColor,
-                               backref = "rac",
-                               lazy = "joined")
+    room_id = db.Column(db.Integer, db.ForeignKey('Room.id'))
+    anon_id = db.Column(db.String(32), db.ForeignKey('AnonUser.id'))
+    color_id = db.Column(db.Integer, db.ForeignKey('Color.id'))
 
 
 class AnonUser(db.Model):
@@ -362,6 +341,7 @@ class AnonUser(db.Model):
     top = db.Column(db.Integer)
     left = db.Column(db.Integer)
     res_k = db.Column(db.Integer)
+    rac = db.relationship('RoomAnonColor', backref='anon', lazy=True)
     rooms = db.relationship("Room",
                             secondary = UserToRoom,
                             backref = "user",

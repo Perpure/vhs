@@ -2,7 +2,7 @@
 {% block content %}
 <h1>Комната {{room.token}}</h1>
 {% if room.capitan_id == anon.id %}
-{% if room.color_user %}
+{% if count > 1 %}
 <form action="" method="post">
     {{Room_Form.hidden_tag()}}
     {{ Room_Form.submit }}
