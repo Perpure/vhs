@@ -9,6 +9,11 @@ html
     display: none; 
 }
 
+search
+{
+    display:none;
+}
+
 body
 {
   font-family: 'Roboto', sans-serif;
