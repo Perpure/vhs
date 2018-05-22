@@ -65,7 +65,7 @@ def askAct():
             db.session.commit()
             return jsonify({"action": action,
                             "color": user.color})
-        elif action != '':
+        elif action == 'result':
             user.action = ''
             db.session.add(user)
             db.session.commit()
@@ -83,6 +83,11 @@ def askAct():
                             "top": user.top,
                             "left": user.left,
                             "width": user.res_k})
+        elif action == 'refresh':
+            user.action = ''
+            db.session.add(user)
+            db.session.commit()
+            return jsonify({"action": action})
     return jsonify({"action": ''})
 
 

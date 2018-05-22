@@ -130,9 +130,12 @@ def room(token):
 def choosed_video(token,vid_id):
     user = anon_user()
     room = Room.get(token=token)
+    users = room.user
+    for member in users[1:]:
+        member.action = "refresh"
     if user.id == room.capitan_id:
         room.video_id = vid_id
-        db.session.commit()
+    db.session.commit()
     return redirect(url_for('room', token=token))
 
 @app.route('/room/<string:token>/choose_video', methods=['GET', 'POST'])
@@ -140,21 +143,8 @@ def choose_video(token):
     user = anon_user()
     room = Room.get(token=token)
     cap = room.capitan_id
-    form = SearchingVideoForm()
-    if form.validate_on_submit():
-        sort = ""
 
-        if form.date.data:
-            sort += "date"
-        if form.views.data:
-            sort += "views"
-        if form.search.data:
-            return render_template('choose_video.html', form=form, user=cur_user(), items=Video.get(search=form.search.data,
-                                                                                            sort=sort), cap=cap, room=room, anon=user)
-
-        return render_template('choose_video.html', form=form, user=cur_user(), items=Video.get(sort=sort), cap=cap, room=room, anon=user)
-
-    return render_template('choose_video.html', form=form, user=cur_user(), items=Video.get(), cap=cap, room=room, anon=user)
+    return render_template('choose_video.html', user=cur_user(), items=Video.get(), cap=cap, room=room, anon=user)
 
 @app.route('/upload', methods=['GET', 'POST'])
 @requiresauth
