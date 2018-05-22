@@ -336,6 +336,7 @@ class AnonUser(db.Model):
                             lazy = "joined")
     
     room_capitan = db.relationship("Room", backref='captain')
+
     def __init__(self):
         """
         Сохраняет анонимного пользователя.

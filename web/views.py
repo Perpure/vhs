@@ -42,6 +42,7 @@ def createroom():
         return redirect(url_for('room', token=add_room_form.token.data))
     return render_template('create_room.html', add_room_form=add_room_form)
 
+
 @app.route('/viewroom', methods=['GET', 'POST'])
 def viewroom():
     user = anon_user()
@@ -54,8 +55,11 @@ def viewroom():
             return redirect(url_for('room', token=join_form.token.data))
     rooms = user.rooms
 
+    rooms_list = Room.get()
+    rooms_list = rooms_list[::-1]
+
     return render_template('viewroom.html', user=cur_user(), join_form=join_form,
-                           rooms=Room.get(), anon=user)
+                           rooms=rooms_list, anon=user)
 
 
 
@@ -306,7 +310,7 @@ def play(vid):
         likened = 1
     if user in video.dislikes:
         likened = -1
-    return render_template('play.html', user=user, vid=vid, video=video,lkd=likened)
+    return render_template('play.html', user=user, vid=vid, video=video, lkd=likened)
 
 
 @app.route('/video/map', methods=["GET"])
