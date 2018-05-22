@@ -64,10 +64,7 @@ def askAct():
             db.session.add(user)
             db.session.commit()
             return jsonify({"action": action,
-                            "color": user.color,
-                            "top": user.top,
-                            "left": user.left,
-                            "width": user.width})
+                            "color": user.color})
         elif action != '':
             user.action = ''
             db.session.add(user)
@@ -85,7 +82,7 @@ def askAct():
                             "time": time,
                             "top": user.top,
                             "left": user.left,
-                            "width": user.width})
+                            "width": user.res_k})
     return jsonify({"action": ''})
 
 
@@ -185,14 +182,14 @@ def startSearch():
 @app.route('/showRes/<string:token>', methods=['GET', 'POST'])
 def showRes(token):
     room = Room.query.filter_by(token=token).first()  
+    users = room.user
     time=datetime.now(tz=None)
     hr=time.hour
     mt=time.minute
     sc=time.second
     ms=round(time.microsecond/1000)
     zero=hr*3600000+mt*60000+sc*1000+ms
-    roomers=room.color_user.split(';')
-    for i in range(len(roomers)):
+    for member in users[1:]:
                 time=datetime.now(tz=None)
                 hr=time.hour
                 mt=time.minute
@@ -200,10 +197,8 @@ def showRes(token):
                 ms=round(time.microsecond/1000)
                 now=hr*3600000+mt*60000+sc*1000+ms
                 now+=15000-(now-zero)
-                ID = roomers[i].split(',')[0]
-                anon = AnonUser.query.get(ID).first()
-                anon.action = "result"
-                anon.time = now
+                member.action = "result"
+                member.time = now
     db.session.commit()
     return 0
 

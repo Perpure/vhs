@@ -86,15 +86,7 @@
 
     function Result()
     {
-        var tp={{ anon.top }};
-        var lft={{ anon.left }};
-        var k={{ anon.res_k }};
-        $('#ReVi').css({
-            display: 'block',
-            top: tp + "%",
-            left: lft + "%",
-            width: k+"%"
-        });
+        $('#ReVi').show();
         $('#ReVi').get(0).play();
         $('#ReVi').on('ended',function(){ 
             $('#ReVi').hide(); 
@@ -107,18 +99,22 @@
         $.ajax({
             url:"/askAct",
             type:"GET",
-            dataType:"text",
+            dataType:"json",
             success:function(response)
             {
-                if(response.substr(0,9)=="calibrate"){
-                    $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; background:'+response.substr(9)+';"></div>');
+                if(response.action=="calibrate"){
+                    $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; background:'+response.color+';"></div>');
                     $('#Footer').hide();
                     $('#Header').hide();
                 ;}
-
-                if(response.substr(0,6)=="result"){
-                    setTimeout(Result,response.substr(6));
-                    var time=Math.round(response.substr(6)/1000);
+                if(response.action=="result"){
+                    setTimeout(Result,response.time);    
+                    $('#ReVi').css({
+                        top: response.top + "%",
+                        left: response.left + "%",
+                        width: response.width+"%"
+                    })
+                    var time=Math.round(response.time/1000);
                     countDown(time);
                 }
 
