@@ -14,6 +14,7 @@
     <div id="Calibr"> {{ image_form.submit }} </div>
 {% if room.video_id %}
 <button class="result" id="showRes" type="button">Начать демонстрацию</button>
+<div id="cod"></div>
 {% endif %}
     {% if map_ex %}
     
@@ -50,6 +51,9 @@
 <hr>
 <p>Пригласите участников в комнату</p>
 {% endif %}
+{% if room.capitan_id != anon.id %}
+<div id="cod"></div>
+{% endif %}
 {% if map_ex %}
 <hr>
 <img src="{{url_for('get_multi', pid=room_map)}}" style="width:100%">
@@ -61,106 +65,112 @@
 <hr>
 <p>После того, как вы пригласили участников, разместите их устройства на площади для показа, открыв страницу комнаты. На странице капитана (создавший комнату пользователь) нажмите на кнопку калибровки, после чего на всех устройствах откроется цветная сплошная заливка. Нажмите на кнопку загрузки файла и сделайте фотографию устройств, желательно под прямым углом. Если что-то пошло не так, вы можете убрать лишнее освещение, сделать экран на телефонах ярче. После этого выберите желаемое для показа видео и нажмите на кнопку результата. Все устройства начнут воспроизведение.</p>
 {% if room.capitan_id != anon.id %}
-{% if room.video_id %}
-<video class="ResultVideo" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
+    {% if room.video_id %}
+    <video class="ResultVideo" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
+    {% endif %}
 {% endif %}
-    <script>
-        var speed=4000;
-        var prev = "None";
-
-        function Result()
-        {
-            var buddy=document.getElementById("Body");
-            var ftt=document.getElementById("Footer");
-            var tp={{ anon.top }};
-            var lft={{ anon.left }};
-            var k={{ anon.res_k }};
-            var RV=document.getElementById("ReVi");
-            RV.style.display="block";
-            RV.play();
-            RV.style.top=tp+"%";
-            RV.style.left=lft+"%";
-            RV.style.width=k+"%";
-            RV.addEventListener('ended',function(){RV.style.display="none";});
-            ftt.style.display="none";
-        }
-
+<script>
+    function countDown(Time)
+    {
+        $('#cod').css("margin-top","10px");
         setTimeout(function step(){
-            $.ajax({
-                       url:"/askAct",
-                       type:"GET",
-                       dataType:"text",
-                       success:function(response)
-                       {
-                            console.log(response);
-                            if(response.substr(0,9)=="calibrate"){
-                            prev = "calibrate";
-                            $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; background:'+response.substr(9)+';"></div>');
-                            $('#Footer').prop({"hidden":true})
-                            $('#Header').prop({"hidden":true})
-                            prev = "calibrate"
-                            ;}
-                            if(response.substr(0,6)=="result"){
-                            console.log(1212);
-                            setTimeout(Result,response.substr(6));
-                            prev = "result";
-                            }
+            Time--;
+            $('#cod').html("<h5>Показ начнётся через: </h5>"+Time+" с");
+            if(Time)setTimeout(step,1000);
+            else $('#cod').empty();
+        },1000);
+    }
+    
+    {% if room.capitan_id != anon.id %}
+    var speed=4000;
 
-                       },
-                       error:function(){}
-                    });
-            setTimeout(step,speed);
-        },speed);
-
-
-        $(function() {
-            $(document).ready(function() {
-            var ratio = window.devicePixelRatio || 1;
-            var width = screen.width * ratio;
-            var height = screen.height * ratio;
-                $.ajax({
-                  url: '/tellRes',
-                  contentType: "application/json; charset=utf-8",
-                  type: "POST",
-                  data: JSON.stringify({ "width": width, "height" : height }),
-                  success: function () {
-                    console.log(JSON.stringify({ "width": width, "height" : height }));},
-                  });
-                  dataType:"json"
-            });
+    function Result()
+    {
+        var tp={{ anon.top }};
+        var lft={{ anon.left }};
+        var k={{ anon.res_k }};
+        $('#ReVi').css({
+            display: 'block',
+            top: tp + "%",
+            left: lft + "%",
+            width: k+"%"
         });
+        $('#ReVi').get(0).play();
+        $('#ReVi').on('ended',function(){ 
+            $('#ReVi').hide(); 
+            $('#Footer').show();
+        });
+        $('#Footer').hide();
+    }
 
-        function launchIntoFullscreen(element) {
-              if(element.requestFullscreen) {
-                element.requestFullscreen();
-              } else if(element.mozRequestFullScreen) {
-                element.mozRequestFullScreen();
-              } else if(element.webkitRequestFullscreen) {
-                element.webkitRequestFullscreen();
-              } else if(element.msRequestFullscreen) {
-                element.msRequestFullscreen();
-              }
-            }
+    setTimeout(function step(){
+        $.ajax({
+            url:"/askAct",
+            type:"GET",
+            dataType:"text",
+            success:function(response)
+            {
+                if(response.substr(0,9)=="calibrate"){
+                    $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; background:'+response.substr(9)+';"></div>');
+                    $('#Footer').hide();
+                    $('#Header').hide();
+                ;}
+
+                if(response.substr(0,6)=="result"){
+                    setTimeout(Result,response.substr(6));
+                    var time=Math.round(response.substr(6)/1000);
+                    countDown(time);
+                }
+
+            },
+            error:function(){}
+        });
+        setTimeout(step,speed);
+    },speed);
+
+    $(document).ready(function() {
+        var ratio = window.devicePixelRatio || 1;
+        var width = screen.width * ratio;
+        var height = screen.height * ratio;
+        $.ajax({
+            url: '/tellRes',
+            contentType: "application/json; charset=utf-8",
+            type: "POST",
+            dataType:"json",
+            data: JSON.stringify({ "width": width, "height" : height }),
+            success: function () {
+                console.log(JSON.stringify({ "width": width, "height" : height }));},
+        });
+    });
+
+    function launchIntoFullscreen(element) {
+        if(element.requestFullscreen) {
+            element.requestFullscreen();
+        } else if(element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        } else if(element.webkitRequestFullscreen) {
+            element.webkitRequestFullscreen();
+        } else if(element.msRequestFullscreen) {
+            element.msRequestFullscreen();
+        }
+    }
 </script>
     
 {%else%}
 {% if room.video_id %}
-<script>
-var show=document.getElementById("showRes");
-show.addEventListener('click',function(){
-    var hash=window.location.href;
-    var sl=0;
+    $('#showRes').click(function(){
+        var hash=window.location.href;
+        var sl=0;
         for(let i=0;i<hash.length;i++)
             if(hash[i]=='/')sl=i;
-    hash=hash.substring(sl+1);
-    $.ajax({
-                       url:"/showRes/"+hash,
-                       type:"GET",
-                       dataType:"text",
-                       success:function(response){},
-                       error:function(){}
-                    });
-});
+        hash=hash.substring(sl+1);
+        $.ajax({
+            url:"/showRes/"+hash,
+            type:"GET"
+        });
+        var time=15;
+        countDown(time);
+    });
 </script>
 {% endif %}
 {% endif %}

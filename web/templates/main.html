@@ -1,16 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <div>
         <div class="showType" id="showMap">
-            <label class="labelnoselect" for="show_video_map">Отображать на карте</label>
+            <label class="labelnoselect typeLabel" for="show_video_map">Отображать на карте</label>
             <input name="selector" id="show_video_map" type="radio" class="showRad">
         </div>
         <div class="showType showInv" id="showTab">
-            <label class="labelnoselect" for="show_video_table">Отображать в виде таблицы</label>
+            <label class="labelnoselect typeLabel" for="show_video_table">Отображать в виде таблицы</label>
             <input name="selector" id="show_video_table" type="radio" checked class="showRad">
         </div>
-    </div>
 
     <div id="video_table">
 {% for item in items %}    
