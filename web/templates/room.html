@@ -74,13 +74,15 @@
             var ftt=document.getElementById("Footer");
             var tp={{ anon.top }};
             var lft={{ anon.left }};
-            var k={{ anon.res_k }};
+            var kx={{ anon.res_kx }};
+            var ky={{ anon.res_ky }};
             var RV=document.getElementById("ReVi");
             RV.style.display="block";
             RV.play();
             RV.style.top=tp+"%";
             RV.style.left=lft+"%";
-            RV.style.width=k+"%";
+            RV.style.width=kx+"%";
+            RV.style.height=ky+"%";
             RV.addEventListener('ended',function(){RV.style.display="none";});
             ftt.style.display="none";
         }

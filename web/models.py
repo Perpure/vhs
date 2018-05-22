@@ -329,7 +329,8 @@ class AnonUser(db.Model):
     color = db.Column(db.String(64))
     top = db.Column(db.Integer)
     left = db.Column(db.Integer)
-    res_k = db.Column(db.Integer)
+    res_kx = db.Column(db.Integer)
+    res_ky = db.Column(db.Integer)
     rooms = db.relationship("Room",
                             secondary = UserToRoom,
                             backref = "user",

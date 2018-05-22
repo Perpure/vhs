@@ -81,7 +81,7 @@ def parse(room, users, impath):
         hue = cv2.cvtColor(hsv_color, cv2.COLOR_BGR2HSV).flatten()[0] 
 
         # Создаём минимальный предел
-        h_min = np.array([max(hue - 10, 0), 100, 100], dtype=np.uint8) 
+        h_min = np.array([max(hue - 10, 0), 90, 90], dtype=np.uint8) 
         # И максимальный
         h_max = np.array([min(hue + 10, 179), 255, 255], dtype=np.uint8) 
 
@@ -119,20 +119,26 @@ def parse(room, users, impath):
         draw.polygon(np.int0(cv2.boxPoints(rect)).flatten().tolist(), fill=color)
         
         #Считаем-с
-        firsty = int(rect[0][1] - rect[1][1] / 2)        
+        firsty = int(rect[0][1] - rect[1][1] / 2)
         lasty = int(rect[0][1] + rect[1][1] / 2)
         firstx = int(rect[0][0] - rect[1][0] / 2)
         lastx = int(rect[0][0] + rect[1][0] / 2)
+        print('--------------------------------------------------')
+        print(rect)
+        print(color, user)
+        print(resolution)
+        print(minX,minY)
         print(firstx, firsty, ';', lastx, lasty)
         width = ( resolution[0] / (lastx - firstx) ) * 100
         height = ( resolution[1] / (lasty - firsty) ) * 100
-        res_k = max(width, height)
 
-        left = - ( firstx / resolution[0] )
-        top = - ( firsty / resolution[1] )
+        left = - ( firstx / resolution[0] ) * width
+        top = - ( firsty / resolution[1] ) * height
 
+        print(top, left)
         #Записываем-с
-        user.res_k = int(res_k)
+        user.res_kx = int(width)
+        user.res_ky = int(height)
         user.top = int(top)
         user.left = int(left)
 
