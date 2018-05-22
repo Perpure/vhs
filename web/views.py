@@ -115,14 +115,7 @@ def room(token):
 
             if file and allowed_image(file.filename):
                 file.save(basedir + '/images/' + room.token + '.' + file.filename.split('.')[-1].lower())
-                try:
-                    parse(room, users[1:], basedir + '/images/' + room.token + '.jpg')
-                except:
-                    return render_template('room.html', room=room, user=cur_user(),
-                                               calibrate_url=calibrate_url, color=user.color, users=users,
-                                               image_form=image_form, result_url=result_url, count=len(users),
-                                               Room_Form=Room_Form, loaded=True, room_map=room_map_url, anon=user,
-                                               msg="Мы не смогли идентифицировать устройства, попробуйте загрузить другую фотографию.")
+                parse(room, users[1:], basedir + '/images/' + room.token + '.jpg')
                 return render_template('room.html', room=room, user=cur_user(),
                                        calibrate_url=calibrate_url, color=user.color, users=users,
                                        image_form=image_form, result_url=result_url, anon=user,
