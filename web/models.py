@@ -287,9 +287,9 @@ class Room(db.Model):
                             lazy="joined")
 
     def __init__(self, token, capitan_id):
-    	self.token = token
-    	self.capitan_id = capitan_id
-    	self.date = datetime.now(tz=None)
+        self.token = token
+        self.capitan_id = capitan_id
+        self.date = datetime.now(tz=None)
 
     def save(self, vid):
         self.video_id = vid
