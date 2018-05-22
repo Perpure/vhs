@@ -1,7 +1,7 @@
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
     UserProfileForm, AddRoomForm, SearchingVideoForm, VideoToRoomForm
-from web.models import User, Video, Room, Color, Comment, Geotag, Tag, AnonUser, RoomAnonColor
+from web.models import User, Video, Room, Color, Comment, Geotag, Tag, AnonUser, ColorConnector
 from web.helper import read_image, read_video, allowed_image, allowed_file, cur_user, is_true_pixel, \
     read_multi, parse, requiresauth, anon_user
 from web.video_handler import save_video
@@ -69,12 +69,11 @@ def room(token):
 
         if not ((room in user.rooms)):
             color_id = len(room.user)
+            if color_id > 6:
+                return redirect(url_for('viewroom'))
             col = Color.query.get(color_id)
             user.rooms.append(room)
-            rac = RoomAnonColor()
-            user.rac.append(rac)
-            col.rac.append(rac)
-            room.rac.append(rac)
+            rac = ColorConnector(anon=user, room=room, color=col)
             db.session.add(rac)
             db.session.commit()
 
@@ -86,8 +85,8 @@ def room(token):
             db.session.commit()
 
         for member in users[1:]:
-            rac = RoomAnonColor.query.filter_by(room_id=room.id,
-                                                anon_id=member.id).first()
+            rac = ColorConnector.query.filter_by(room=room,
+                                                 anon=member).first()
             member.color = rac.color.color
             db.session.commit()
         image_form = UploadImageForm(csrf_enabled=False)

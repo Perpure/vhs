@@ -285,7 +285,7 @@ class Room(db.Model):
                             secondary=ColorToRoom,
                             backref="Room",
                             lazy="joined")
-    rac = db.relationship('RoomAnonColor', backref='room', lazy=True)
+    color_connector = db.relationship('ColorConnector', backref='room', lazy=True)
 
     def __init__(self, token, capitan_id):
     	self.token = token
@@ -310,7 +310,7 @@ class Color(db.Model):
     __tablename__ = 'Color'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     color = db.Column(db.String(64), nullable=False)
-    rac = db.relationship('RoomAnonColor', backref='color', lazy=True)
+    color_connector = db.relationship('ColorConnector', backref='color', lazy=True)
 
     @staticmethod
     def get(id=None):
@@ -319,8 +319,8 @@ class Color(db.Model):
         return Color.query.all()
 
 
-class RoomAnonColor(db.Model):
-    __tablename__ = 'RoomAnonColor'
+class ColorConnector(db.Model):
+    __tablename__ = 'ColorConector'
     id = db.Column(db.Integer, primary_key=True)
     room_id = db.Column(db.Integer, db.ForeignKey('Room.id'))
     anon_id = db.Column(db.String(32), db.ForeignKey('AnonUser.id'))
@@ -341,7 +341,7 @@ class AnonUser(db.Model):
     top = db.Column(db.Integer)
     left = db.Column(db.Integer)
     res_k = db.Column(db.Integer)
-    rac = db.relationship('RoomAnonColor', backref='anon', lazy=True)
+    color_connector = db.relationship('ColorConnector', backref='anon', lazy=True)
     rooms = db.relationship("Room",
                             secondary = UserToRoom,
                             backref = "user",
