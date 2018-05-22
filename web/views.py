@@ -57,6 +57,8 @@ def viewroom():
 
     rooms_list = Room.get()
     rooms_list = rooms_list[::-1]
+    for room in rooms_list:
+        room.set_date(room.date)
 
     return render_template('viewroom.html', user=cur_user(), join_form=join_form,
                            rooms=rooms_list, anon=user)

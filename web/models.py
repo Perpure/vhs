@@ -280,6 +280,7 @@ class Room(db.Model):
     __tablename__ = 'Room'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     date = db.Column(db.DateTime, nullable=False)
+    format_date = db.Column(db.String(64))
     video_id = db.Column(db.String(32))
     capitan_id = db.Column(db.Integer, db.ForeignKey('AnonUser.id'))
     token = db.Column(db.String(64), nullable=False)
@@ -293,12 +294,28 @@ class Room(db.Model):
         self.token = token
         self.capitan_id = capitan_id
         self.date = datetime.now(tz=None)
+        self.format_date = str(self.date)
 
     def save(self, vid):
         self.video_id = vid
         db.session.add(self)
         db.session.commit()
-    
+
+    def set_date(self, date):
+        data = str(date).split(":")
+        min = data[1]
+        hour = data[0].split(" ")
+        hour = str(hour[1])
+        data = data[0].split(" ")
+        data = str(data[0])
+        data = data.split("-")
+        day = data[2]
+        mounth = data[1]
+        year = data[0]
+        self.format_date = hour + ":" + min + " " + day + "." + mounth + "." + year
+        db.session.add(self)
+        db.session.commit()
+
     @staticmethod
     def get(id=None, token=None):
         if token:
