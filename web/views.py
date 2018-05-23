@@ -31,11 +31,11 @@ def createroom():
     add_room_form = AddRoomForm(csrf_enabled=False, prefix="Submit_Add")
 
     if add_room_form.validate_on_submit():
-        token = add_room_form.token.data
-        room = Room(token=token, capitan_id=user.id)
+        name = add_room_form.token.data
+        room = Room(name=name, capitan_id=user.id)
         db.session.add(room)
         db.session.commit()
-        return redirect(url_for('room', token=add_room_form.token.data))
+        return redirect(url_for('room', room_id=room.id))
     return render_template('create_room.html', add_room_form=add_room_form)
 
 @app.route('/viewroom', methods=['GET', 'POST'])
@@ -46,20 +46,21 @@ def viewroom():
     db.session.commit()
 
     if join_form.validate_on_submit():
-        if Room.get(token=str(join_form.token.data)):
-            return redirect(url_for('room', token=join_form.token.data))
+        room = Room.query.filter_by(name=str(join_form.token.data)).first()
+        if room:
+            return redirect(url_for('room', room_id=room.id))
     return render_template('viewroom.html', user=cur_user(), join_form=join_form,
                            rooms=Room.get(), anon=user)
 
 
 
-@app.route('/room/<string:token>', methods=['GET', 'POST'])
-def room(token):
+@app.route('/room/<int:room_id>', methods=['GET', 'POST'])
+def room(room_id):
     user = anon_user()
     Room_Form = RoomForm()
-    room = Room.query.filter_by(token=token).first()
+    room = Room.query.get(room_id)
     if room:
-        room_map_url = token + '_map'
+        room_map_url = str(room_id) + '_map'
         raw_user_rooms = RoomDeviceColorConnector.query.filter_by(anon=user)
         user_rooms = [rac.room for rac in raw_user_rooms]
         users = room.get_devices()
@@ -91,14 +92,14 @@ def room(token):
             return image_loaded(request, room, user, users, UploadImageForm(csrf_enabled=False), image_form, Room_Form)
         return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users, count=len(users)+1,
                                image_form=image_form, Room_Form=Room_Form, loaded=False, anon=user,
-                               room_map=room_map_url, map_ex=os.path.exists(basedir + '/images/' + room.token + '_map.jpg'))
+                               room_map=room_map_url, map_ex=os.path.exists(basedir + '/images/' + str(room.id) + '_map.jpg'))
     else:
         return redirect(url_for('viewroom'))
     
-@app.route('/room/<string:token>/choose_video/<string:vid_id>', methods=['GET', 'POST'])
-def choosed_video(token,vid_id):
+@app.route('/room/<int:room_id>/choose_video/<string:vid_id>', methods=['GET', 'POST'])
+def choosed_video(room_id, vid_id):
     user = anon_user()
-    room = Room.query.filter_by(token=token).first()
+    room = Room.query.get(room_id)
     vid = Video.query.get(vid_id)
     if vid and room:
         users = room.get_devices()
@@ -107,14 +108,14 @@ def choosed_video(token,vid_id):
         if user.id == room.capitan_id:
             room.video_id = vid_id
         db.session.commit()
-        return redirect(url_for('room', token=token))
+        return redirect(url_for('room', room_id=room_id))
     else:
         return redirect(url_for('viewroom'))
 
-@app.route('/room/<string:token>/choose_video', methods=['GET', 'POST'])
-def choose_video(token):
+@app.route('/room/<int:room_id>/choose_video', methods=['GET', 'POST'])
+def choose_video(room_id):
     user = anon_user()
-    room = Room.query.filter_by(token=token).first()
+    room = Room.query.get(room_id)
     cap = room.capitan_id
     if room:
         return render_template('choose_video.html', user=cur_user(), items=Video.get(), cap=cap, room=room, anon=user)

@@ -160,7 +160,7 @@ def dislikeVideo(vid):
 @app.route('/tellRes', methods=['GET', 'POST'])
 def tellRes():
     if 'anon_id' in session:
-        user = AnonUser.query.filter_by(id=session['anon_id']).first()
+        user = AnonUser.query.get(session['anon_id'])
         if request.method == 'POST':
             width = request.json['width']
             height = request.json['height']
@@ -184,9 +184,9 @@ def startSearch():
     return render_template('main.html', user=cur_user(), items=Video.get())
 
 
-@app.route('/showRes/<string:token>', methods=['GET', 'POST'])
-def showRes(token):
-    room = Room.query.filter_by(token=token).first()  
+@app.route('/showRes/<int:room_id>', methods=['GET', 'POST'])
+def showRes(room_id):
+    room = Room.query.get(room_id)
     users = room.get_devices()
     time=datetime.now(tz=None)
     hr=time.hour
