@@ -1,5 +1,5 @@
 from web import app, db
-from web.helper import read_image, read_video, cur_user, is_true_pixel, read_multi, get_users
+from web.helper import read_image, read_video, cur_user, is_true_pixel, read_multi
 from web.models import Video, Comment, User, Room, AnonUser, RoomDeviceColorConnector
 from datetime import datetime
 
@@ -187,7 +187,7 @@ def startSearch():
 @app.route('/showRes/<string:token>', methods=['GET', 'POST'])
 def showRes(token):
     room = Room.query.filter_by(token=token).first()  
-    users = get_users(room)
+    users = room.get_devices()
     time=datetime.now(tz=None)
     hr=time.hour
     mt=time.minute

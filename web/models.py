@@ -269,7 +269,7 @@ class Room(db.Model):
     video_id = db.Column(db.String(32))
     capitan_id = db.Column(db.Integer, db.ForeignKey('AnonUser.id'))
     token = db.Column(db.String(64), nullable=False)
-    color_connector = db.relationship('RoomDeviceColorConnector', backref='room', lazy=True)
+    devices_in_room = db.relationship('RoomDeviceColorConnector', backref='room', lazy=True)
 
     def __init__(self, token, capitan_id):
         self.token = token
@@ -280,7 +280,11 @@ class Room(db.Model):
         self.video_id = vid
         db.session.add(self)
         db.session.commit()
-    
+
+    def get_devices(self):
+        raw_users = RoomDeviceColorConnector.query.filter_by(room=self)
+        return [rac.anon for rac in raw_users]
+
     @staticmethod
     def get(id=None, token=None):
         if token:

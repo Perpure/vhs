@@ -3,7 +3,7 @@ from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, Upl
     UserProfileForm, AddRoomForm, SearchingVideoForm, VideoToRoomForm
 from web.models import User, Video, Room, Color, Comment, Geotag, Tag, AnonUser, RoomDeviceColorConnector
 from web.helper import read_image, read_video, allowed_image, allowed_file, cur_user, is_true_pixel, \
-    read_multi, parse, requiresauth, anon_user, get_users, image_loaded
+    read_multi, parse, requiresauth, anon_user, image_loaded
 from web.video_handler import save_video
 from wtforms.validators import ValidationError
 from config import basedir, ALLOWED_EXTENSIONS
@@ -62,7 +62,7 @@ def room(token):
         room_map_url = token + '_map'
         raw_user_rooms = RoomDeviceColorConnector.query.filter_by(anon=user)
         user_rooms = [rac.room for rac in raw_user_rooms]
-        users = get_users(room)
+        users = room.get_devices()
 
         if (not(room in user_rooms)) and (room.captain != user):
             color_id = len(users) + 1
@@ -73,7 +73,7 @@ def room(token):
             db.session.add(rac)
             db.session.commit()
 
-        users = get_users(room)
+        users = room.get_devices()
 
         if Room_Form.validate_on_submit():
             for member in users:
@@ -101,7 +101,7 @@ def choosed_video(token,vid_id):
     room = Room.query.filter_by(token=token).first()
     vid = Video.query.get(vid_id)
     if vid and room:
-        users = get_users(room)
+        users = room.get_devices()
         for member in users:
             member.action = "refresh"
         if user.id == room.capitan_id:

@@ -12,10 +12,6 @@ import cv2
 import os
 
 
-def get_users(room):
-    raw_users = RoomDeviceColorConnector.query.filter_by(room=room)
-    return [rac.anon for rac in raw_users]
-
 def allowed_image(filename):
     return ('.' in filename and
             filename.split('.')[-1].lower() in app.config["ALLOWED_IMAGE_EXTENSIONS"])
