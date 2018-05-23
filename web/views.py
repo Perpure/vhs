@@ -3,7 +3,7 @@ from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, Upl
     UserProfileForm, AddRoomForm, SearchingVideoForm, VideoToRoomForm
 from web.models import User, Video, Room, Color, Comment, Geotag, Tag, AnonUser, RoomDeviceColorConnector
 from web.helper import read_image, read_video, allowed_image, allowed_file, cur_user, is_true_pixel, \
-    read_multi, parse, requiresauth, anon_user
+    read_multi, parse, requiresauth, anon_user, get_users, image_loaded
 from web.video_handler import save_video
 from wtforms.validators import ValidationError
 from config import basedir, ALLOWED_EXTENSIONS
@@ -62,8 +62,7 @@ def room(token):
         room_map_url = token + '_map'
         raw_user_rooms = RoomDeviceColorConnector.query.filter_by(anon=user)
         user_rooms = [rac.room for rac in raw_user_rooms]
-        raw_users = RoomDeviceColorConnector.query.filter_by(room=room)
-        users = [rac.anon for rac in raw_users]
+        users = get_users(room)
 
         if (not(room in user_rooms)) and (room.captain != user):
             color_id = len(users) + 1
@@ -74,8 +73,7 @@ def room(token):
             db.session.add(rac)
             db.session.commit()
 
-        raw_users = RoomDeviceColorConnector.query.filter_by(room=room)
-        users = [rac.anon for rac in raw_users]
+        users = get_users(room)
 
         if Room_Form.validate_on_submit():
             for member in users:
@@ -90,48 +88,20 @@ def room(token):
 
         image_form = UploadImageForm(csrf_enabled=False)
         if image_form.validate_on_submit():
-            if 'image' not in request.files:
-                return render_template('room.html', room=room, user=cur_user(),
-                                       color=user.color, users=users,
-                                       image_form=UploadImageForm(csrf_enabled=False),
-                                       Room_Form=Room_Form, loaded=False,
-                                       room_map=room_map_url, anon=user, count=len(users)+1)
-
-            file = request.files['image']
-            if file.filename == '':
-                return render_template('room.html', room=room, user=cur_user(),
-                                       calibrate_url=calibrate_url, color=user.color, users=users,
-                                       image_form=UploadImageForm(csrf_enabled=False),
-                                       Room_Form=Room_Form, loaded=False,
-                                       room_map=room_map_url, anon=user, count=len(users)+1)
-
-            if file and allowed_image(file.filename):
-                file.save(basedir + '/images/' + room.token + '.' + file.filename.split('.')[-1].lower())
-                try:
-                    parse(room, users, basedir + '/images/' + room.token + '.jpg')
-                except:
-                    return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users,
-                                               image_form=image_form, count=len(users),
-                                               Room_Form=Room_Form, loaded=True, room_map=room_map_url, anon=user,
-                                               msg="Мы не смогли идентифицировать устройства, попробуйте загрузить другую фотографию.")
-                return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users,
-                                       image_form=image_form, anon=user,
-                                       Room_Form=Room_Form, loaded=True, room_map=room_map_url, count=len(users)+1)
-
+            return image_loaded(request, room, user, users, UploadImageForm(csrf_enabled=False), image_form, Room_Form)
+        return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users, count=len(users)+1,
+                               image_form=image_form, Room_Form=Room_Form, loaded=False, anon=user,
+                               room_map=room_map_url, map_ex=os.path.exists(basedir + '/images/' + room.token + '_map.jpg'))
     else:
         return redirect(url_for('viewroom'))
-    return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users, count=len(users)+1,
-                           image_form=image_form, Room_Form=Room_Form, loaded=False, anon=user,
-                           room_map=room_map_url, map_ex=os.path.exists(basedir + '/images/' + room.token + '_map.jpg'))
-
+    
 @app.route('/room/<string:token>/choose_video/<string:vid_id>', methods=['GET', 'POST'])
 def choosed_video(token,vid_id):
     user = anon_user()
     room = Room.query.filter_by(token=token).first()
     vid = Video.query.get(vid_id)
     if vid and room:
-        raw_users = RoomDeviceColorConnector.query.filter_by(room=room)
-        users = [rac.anon for rac in raw_users]
+        users = get_users(room)
         for member in users:
             member.action = "refresh"
         if user.id == room.capitan_id:
