@@ -1,6 +1,6 @@
 from web import app, db
 from web.helper import read_image, read_video, cur_user, is_true_pixel, read_multi
-from web.models import Video, Comment, User, Room, AnonUser
+from web.models import Video, Comment, User, Room, AnonUser, RoomDeviceColorConnector
 from datetime import datetime
 
 from flask import url_for, redirect, make_response, request, jsonify, session, render_template
@@ -187,14 +187,15 @@ def startSearch():
 @app.route('/showRes/<string:token>', methods=['GET', 'POST'])
 def showRes(token):
     room = Room.query.filter_by(token=token).first()  
-    users = room.user
+    raw_users = RoomDeviceColorConnector.query.filter_by(room=room)
+    users = [rac.anon for rac in raw_users]
     time=datetime.now(tz=None)
     hr=time.hour
     mt=time.minute
     sc=time.second
     ms=round(time.microsecond/1000)
     zero=hr*3600000+mt*60000+sc*1000+ms
-    for member in users[1:]:
+    for member in users:
                 time=datetime.now(tz=None)
                 hr=time.hour
                 mt=time.minute

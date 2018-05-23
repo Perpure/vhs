@@ -44,7 +44,7 @@
 </form>
 {% endif %}
 {% endif %}
-{% if room.color_user %}
+{% if count > 1 %}
 <hr>
 <h5>Количество участников: {{count}}</h5>
 {% else %}
@@ -75,7 +75,7 @@
         $('#cod').css("margin-top","10px");
         setTimeout(function step(){
             Time--;
-            $('#cod').html("<h5>Показ начнётся через: </h5>"+Time+" с");
+            $('#cod').html("<h5>Показ начнётся через: " + Time + "с</h5>");
             if(Time)setTimeout(step,1000);
             else $('#cod').empty();
         },1000);
