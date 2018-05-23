@@ -90,10 +90,10 @@ def askNewComm(vid):
 def getNewComm(vid, cont):
     comms = Video.get(video_id=vid).comments
     comms.sort(key=lambda x: x.id)
-    result=""
+    result=[]
     for i in range(cont,len(comms)):
-        result+=str(comms[i].user.login)+",,"+str(comms[i].user.name)+".."+str(comms[i].text)+";;"
-    return result
+        result.append({"login":comms[i].user.login,"name":comms[i].user.name,"text":comms[i].text,"ava":comms[i].user.avatar})
+    return jsonify(result)
 
 
 @app.route('/postComm/<string:vid>/<string:text>', methods=['GET', 'POST'])
