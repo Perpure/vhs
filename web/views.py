@@ -1,9 +1,9 @@
 from web import app, db
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
     UserProfileForm, AddRoomForm, SearchingVideoForm, VideoToRoomForm
-from web.models import User, Video, Room, Color, Comment, Geotag, Tag, AnonUser
+from web.models import User, Video, Room, Color, Comment, Geotag, Tag, AnonUser, RoomDeviceColorConnector
 from web.helper import read_image, read_video, allowed_image, allowed_file, cur_user, is_true_pixel, \
-    read_multi, parse, requiresauth, anon_user
+    read_multi, parse, requiresauth, anon_user, image_loaded
 from web.video_handler import save_video
 from wtforms.validators import ValidationError
 from config import basedir, ALLOWED_EXTENSIONS
@@ -33,11 +33,7 @@ def createroom():
     if add_room_form.validate_on_submit():
         token = add_room_form.token.data
         room = Room(token=token, capitan_id=user.id)
-        for i in range(1, 7):
-            room.Color.append(Color.get(id=str(i)))
         db.session.add(room)
-        db.session.commit()
-        user.rooms.append(room)
         db.session.commit()
         return redirect(url_for('room', token=add_room_form.token.data))
     return render_template('create_room.html', add_room_form=add_room_form)
@@ -52,8 +48,6 @@ def viewroom():
     if join_form.validate_on_submit():
         if Room.get(token=str(join_form.token.data)):
             return redirect(url_for('room', token=join_form.token.data))
-    rooms = user.rooms
-
     return render_template('viewroom.html', user=cur_user(), join_form=join_form,
                            rooms=Room.get(), anon=user)
 
@@ -63,100 +57,69 @@ def viewroom():
 def room(token):
     user = anon_user()
     Room_Form = RoomForm()
-    calibrate_url = None
-    result_url = None
-    color = None
-    if user:
-        room = Room.get(token=token)
+    room = Room.query.filter_by(token=token).first()
+    if room:
         room_map_url = token + '_map'
+        raw_user_rooms = RoomDeviceColorConnector.query.filter_by(anon=user)
+        user_rooms = [rac.room for rac in raw_user_rooms]
+        users = room.get_devices()
+
+        if (not(room in user_rooms)) and (room.captain != user):
+            color_id = len(users) + 1
+            if color_id > 6:
+                return redirect(url_for('viewroom'))
+            col = Color.query.get(color_id)
+            rac = RoomDeviceColorConnector(anon=user, room=room, color=col)
+            db.session.add(rac)
+            db.session.commit()
+
+        users = room.get_devices()
 
         if Room_Form.validate_on_submit():
-            for i in range(len(room.color_user.split(';'))):
-                ID = room.color_user.split(';')[i].split(',')[0]
-                anon=AnonUser.get(id=ID)
-                print(anon.color)
-                anon.action = "calibrate"+anon.color
+            for member in users:
+                member.action = "calibrate"
             db.session.commit()
 
-        if not ((room in user.rooms)):
-            user.rooms.append(room)
-            if room.color_user:
-                color_id = len(room.color_user.split(';')) + 1
-                room.color_user += ';' + str(user.id) + ',' + str(color_id)
-            else:
-                room.color_user = str(user.id) + ',1'
+        for member in users:
+            rac = RoomDeviceColorConnector.query.filter_by(room=room,
+                                                           anon=member).first()
+            member.color = rac.color.color
             db.session.commit()
 
-        users = room.user
-        for member in users[1:]:
-            colors = room.color_user.split(';')
-            for i in range(len(colors)):
-                if colors[i].split(',')[0] == str(member.id):
-                    color = Color.get(id=colors[i].split(',')[1]).color
-                    member.color = color
-                    db.session.commit()
-                    break
         image_form = UploadImageForm(csrf_enabled=False)
         if image_form.validate_on_submit():
-            if 'image' not in request.files:
-                return render_template('room.html', room=room, user=cur_user(),
-                                       calibrate_url=calibrate_url, color=user.color, users=users,
-                                       image_form=UploadImageForm(csrf_enabled=False),
-                                       result_url=result_url, Room_Form=Room_Form, loaded=False,
-                                       room_map=room_map_url, anon=user, count=len(users))
-
-            file = request.files['image']
-            if file.filename == '':
-                return render_template('room.html', room=room, user=cur_user(),
-                                       calibrate_url=calibrate_url, color=user.color, users=users,
-                                       image_form=UploadImageForm(csrf_enabled=False),
-                                       result_url=result_url, Room_Form=Room_Form, loaded=False,
-                                       room_map=room_map_url, anon=user, count=len(users))
-
-            if file and allowed_image(file.filename):
-                file.save(basedir + '/images/' + room.token + '.' + file.filename.split('.')[-1].lower())
-                parse(room, users[1:], basedir + '/images/' + room.token + '.jpg')
-                return render_template('room.html', room=room, user=cur_user(),
-                                       calibrate_url=calibrate_url, color=user.color, users=users,
-                                       image_form=image_form, result_url=result_url, anon=user,
-                                       Room_Form=Room_Form, loaded=True, room_map=room_map_url, count=len(users))
-
+            return image_loaded(request, room, user, users, UploadImageForm(csrf_enabled=False), image_form, Room_Form)
+        return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users, count=len(users)+1,
+                               image_form=image_form, Room_Form=Room_Form, loaded=False, anon=user,
+                               room_map=room_map_url, map_ex=os.path.exists(basedir + '/images/' + room.token + '_map.jpg'))
     else:
-        return redirect(url_for('log'))
-    return render_template('room.html', room=room, user=cur_user(),
-                           calibrate_url=calibrate_url, color=user.color, users=users, count=len(users),
-                           image_form=image_form, result_url=result_url, Room_Form=Room_Form, loaded=False, anon=user,
-                           room_map=room_map_url, map_ex=os.path.exists(basedir + '/images/' + room.token + '_map.jpg'))
-
+        return redirect(url_for('viewroom'))
+    
 @app.route('/room/<string:token>/choose_video/<string:vid_id>', methods=['GET', 'POST'])
 def choosed_video(token,vid_id):
     user = anon_user()
-    room = Room.get(token=token)
-    if user.id == room.capitan_id:
-        room.video_id = vid_id
+    room = Room.query.filter_by(token=token).first()
+    vid = Video.query.get(vid_id)
+    if vid and room:
+        users = room.get_devices()
+        for member in users:
+            member.action = "refresh"
+        if user.id == room.capitan_id:
+            room.video_id = vid_id
         db.session.commit()
-    return redirect(url_for('room', token=token))
+        return redirect(url_for('room', token=token))
+    else:
+        return redirect(url_for('viewroom'))
 
 @app.route('/room/<string:token>/choose_video', methods=['GET', 'POST'])
 def choose_video(token):
     user = anon_user()
-    room = Room.get(token=token)
+    room = Room.query.filter_by(token=token).first()
     cap = room.capitan_id
-    form = SearchingVideoForm()
-    if form.validate_on_submit():
-        sort = ""
-
-        if form.date.data:
-            sort += "date"
-        if form.views.data:
-            sort += "views"
-        if form.search.data:
-            return render_template('choose_video.html', form=form, user=cur_user(), items=Video.get(search=form.search.data,
-                                                                                            sort=sort), cap=cap, room=room, anon=user)
-
-        return render_template('choose_video.html', form=form, user=cur_user(), items=Video.get(sort=sort), cap=cap, room=room, anon=user)
-
-    return render_template('choose_video.html', form=form, user=cur_user(), items=Video.get(), cap=cap, room=room, anon=user)
+    if room:
+        return render_template('choose_video.html', user=cur_user(), items=Video.get(), cap=cap, room=room, anon=user)
+    else:
+        return redirect(url_for('viewroom'))
 
 @app.route('/upload', methods=['GET', 'POST'])
 @requiresauth
@@ -290,19 +253,16 @@ def play(vid):
         return abort(404)
     
     user = cur_user()
-    form = VideoToRoomForm(csrf_enabled=False)
 
     if user and user not in video.viewers:
         video.add_viewer(user)
 
-    if form.validate_on_submit():
-        anon = anon_user()
-        room = Room(video.title + " " + datetime.now().isoformat(), anon.id)
-        room.save(video.id)
-
-        return redirect(url_for("room", token=room.token))
-
-    return render_template('play.html', user=user, vid=vid, video=video, form=form)
+    likened = 0
+    if user in video.likes:
+        likened = 1
+    if user in video.dislikes:
+        likened = -1
+    return render_template('play.html', user=user, vid=vid, video=video,lkd=likened)
 
 
 @app.route('/video/map', methods=["GET"])

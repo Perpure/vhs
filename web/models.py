@@ -6,18 +6,7 @@ import os
 from datetime import datetime
 from flask import session
 from random import random
-
-UserToRoom = db.Table('UserToRoom', db.Model.metadata,
-    db.Column('AnonUser_id', db.String(32), db.ForeignKey('AnonUser.id')),
-    db.Column('Room_id', db.Integer, db.ForeignKey('Room.id'))
-)
-
-
-ColorToRoom = db.Table('ColorToRoom', db.Model.metadata,
-    db.Column('Color_id', db.Integer, db.ForeignKey('Color.id')),
-    db.Column('Room_id', db.Integer, db.ForeignKey('Room.id'))
-)
-
+from uuid import uuid4
 
 Views = db.Table('Views', db.Model.metadata,
     db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
@@ -207,7 +196,7 @@ class User(db.Model):
     top = db.Column(db.Integer)
     left = db.Column(db.Integer)
     res_k = db.Column(db.Integer)
-
+    
     videos = db.relationship("Video", 
                             backref="user",
                             lazy="joined")
@@ -280,22 +269,22 @@ class Room(db.Model):
     video_id = db.Column(db.String(32))
     capitan_id = db.Column(db.Integer, db.ForeignKey('AnonUser.id'))
     token = db.Column(db.String(64), nullable=False)
-    color_user = db.Column(db.Text())
-    Color = db.relationship("Color",
-                            secondary=ColorToRoom,
-                            backref="Room",
-                            lazy="joined")
+    devices_in_room = db.relationship('RoomDeviceColorConnector', backref='room', lazy=True)
 
     def __init__(self, token, capitan_id):
-    	self.token = token
-    	self.capitan_id = capitan_id
-    	self.date = datetime.now(tz=None)
+        self.token = token
+        self.capitan_id = capitan_id
+        self.date = datetime.now(tz=None)
 
     def save(self, vid):
         self.video_id = vid
         db.session.add(self)
         db.session.commit()
-    
+
+    def get_devices(self):
+        raw_users = RoomDeviceColorConnector.query.filter_by(room=self)
+        return [rac.anon for rac in raw_users]
+
     @staticmethod
     def get(id=None, token=None):
         if token:
@@ -309,12 +298,21 @@ class Color(db.Model):
     __tablename__ = 'Color'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     color = db.Column(db.String(64), nullable=False)
+    anons_rooms = db.relationship('RoomDeviceColorConnector', backref='color', lazy=True)
 
     @staticmethod
     def get(id=None):
         if id:
             return Color.query.get(id)
         return Color.query.all()
+
+
+class RoomDeviceColorConnector(db.Model):
+    __tablename__ = 'RoomDeviceColorConnector'
+    id = db.Column(db.Integer, primary_key=True)
+    room_id = db.Column(db.Integer, db.ForeignKey('Room.id'))
+    anon_id = db.Column(db.String(32), db.ForeignKey('AnonUser.id'))
+    color_id = db.Column(db.Integer, db.ForeignKey('Color.id'))
 
 
 class AnonUser(db.Model):
@@ -324,23 +322,21 @@ class AnonUser(db.Model):
     __tablename__ = 'AnonUser'
     id = db.Column(db.String(32), primary_key=True)
     action = db.Column(db.String(64))
+    time = db.Column(db.Integer)
     device_width = db.Column(db.Integer)
     device_height = db.Column(db.Integer)
     color = db.Column(db.String(64))
     top = db.Column(db.Integer)
     left = db.Column(db.Integer)
     res_k = db.Column(db.Integer)
-    rooms = db.relationship("Room",
-                            secondary = UserToRoom,
-                            backref = "user",
-                            lazy = "joined")
-    
+    rooms_colors = db.relationship('RoomDeviceColorConnector', backref='anon', lazy=True)    
     room_capitan = db.relationship("Room", backref='captain')
+
     def __init__(self):
         """
         Сохраняет анонимного пользователя.
         """
-        self.id = hashlib.md5((datetime.now(tz=None).isoformat() + str(random())).encode("utf-8")).hexdigest()
+        self.id = str(uuid4())
         db.session.add(self)
         db.session.commit()
 

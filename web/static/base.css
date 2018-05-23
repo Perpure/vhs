@@ -84,14 +84,14 @@ input[type="file"]
 {
     opacity:0;
     width:300px;
-    height:150px;
+    height:60px;
 }
 
 .Loader
 {
     width:300px;
-    height:150px;
-    background-image:url("Loader2.png");
+    height:60px;
+    background-image:url("Loader3.png");
     background-repeat:no-repeat;
     margin-bottom:10px;
 }
@@ -210,6 +210,7 @@ textarea
     top:50px;
     left:0;
     padding-top:10px;
+    z-index:5;
 }
 
 .subBtn
@@ -328,6 +329,11 @@ main
     padding:5px;
 }
 
+.typeLabel
+{
+    width:100%;
+}
+
 .showType:hover > label
 {
     cursor:pointer;
@@ -394,6 +400,11 @@ main
 {
     margin:0 auto;
     width:100%;
+}
+
+.titling
+{
+    height:50px;
 }
 
 .liking,.infoOne
@@ -777,6 +788,30 @@ footer
       width:35%;
     }
     
+    .Content
+    {
+      text-align:center;
+    }
+
+    .showType
+    {
+      margin:0 auto;
+        margin-bottom:10px;
+    }
+
+    .commArea,.Comment,.infoOne
+    {
+        width:100%;
+    }
+    .Comment
+    {
+        max-width:100%;
+        text-align:left;
+    }
+    .titling,.infoOne
+    {   
+        text-align:left;
+    }
 }
 
 
