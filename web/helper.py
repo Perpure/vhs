@@ -63,7 +63,6 @@ def is_true_pixel(r, g, b, R, G, B):
 def calibrate_resolution(resolution, w, h):
     width = resolution[0]
     height = resolution[1]
-    print('!!!!!!!!!!!!!!!!!!1', width, height)
     if (width/height) > (w/h):
         while True:
             e = abs((width/height) - (w/h))
@@ -151,12 +150,6 @@ def parse(room, users, impath):
             lasty = int(rect[0][1] + rect[1][1] / 2) + deltay
             firstx = int(rect[0][0] - rect[1][0] / 2) + deltax
             lastx = int(rect[0][0] + rect[1][0] / 2) + deltax
-        print('--------------------------------------------------')
-        print(rect)
-        print(color, user)
-        print(resolution, new_resolution)
-        print(minX,minY)
-        print(firstx, firsty, ';', lastx, lasty)
         width = ( new_resolution[0] / (lastx - firstx) ) * 100
 
         left = - ( firstx / new_resolution[0] ) * width
