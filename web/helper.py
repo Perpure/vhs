@@ -141,10 +141,16 @@ def parse(room, users, impath):
         draw.polygon(np.int0(cv2.boxPoints(rect)).flatten().tolist(), fill=color)
         
         #Считаем-с
-        firsty = int(rect[0][1] - rect[1][1] / 2) + deltay
-        lasty = int(rect[0][1] + rect[1][1] / 2) + deltay
-        firstx = int(rect[0][0] - rect[1][0] / 2) + deltax
-        lastx = int(rect[0][0] + rect[1][0] / 2) + deltax
+        if rect[2] < -85 and rect[2] > -95:
+            firsty = int(rect[0][1] - rect[1][0] / 2) + deltay
+            lasty = int(rect[0][1] + rect[1][0] / 2) + deltay
+            firstx = int(rect[0][0] - rect[1][1] / 2) + deltax
+            lastx = int(rect[0][0] + rect[1][1] / 2) + deltax
+        else:
+            firsty = int(rect[0][1] - rect[1][1] / 2) + deltay
+            lasty = int(rect[0][1] + rect[1][1] / 2) + deltay
+            firstx = int(rect[0][0] - rect[1][0] / 2) + deltax
+            lastx = int(rect[0][0] + rect[1][0] / 2) + deltax
         print('--------------------------------------------------')
         print(rect)
         print(color, user)

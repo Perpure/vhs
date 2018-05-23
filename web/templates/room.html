@@ -86,11 +86,13 @@
 
     function Result()
     {
+        $('#Body').css('overflow', 'hidden')
         $('#ReVi').show();
         $('#ReVi').get(0).play();
         $('#ReVi').on('ended',function(){ 
             $('#ReVi').hide(); 
             $('#Footer').show();
+            $('#Body').css('overflow', 'auto')
         });
         $('#Footer').hide();
     }
@@ -103,17 +105,28 @@
             success:function(response)
             {
                 if(response.action=="calibrate"){
+                    $('#Body').css('overflow', 'hidden');
                     $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; background:'+response.color+';"></div>');
                     $('#Footer').hide();
                     $('#Header').hide();
                 ;}
                 if(response.action=="result"){
-                    setTimeout(Result,response.time);    
+                    $('#Body').css('overflow', 'hidden');
+                    setTimeout(Result,response.time);
+                    console.log($('#ReVi').width());
+                    console.log($('#ReVi').height());
                     $('#ReVi').css({
                         top: response.top + "%",
                         left: response.left + "%",
-                        width: response.width+"%"
-                    })
+                        width: response.width+"%",
+                    });
+                    console.log($('#ReVi').width());
+                    console.log($('#ReVi').height());
+                    $('#ReVi').css({
+                        top: $('#ReVi').height() * ( response.top / response.width ) + "px",
+                        left: $('#ReVi').width() * ( response.left / response.width ) + "px",
+                        width: response.width+"%",
+                    });
                     var time=Math.round(response.time/1000);
                     countDown(time);
                 }
