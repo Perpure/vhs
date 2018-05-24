@@ -163,20 +163,20 @@ def parse(room, users, impath):
 
         db.session.commit()
     
-    del draw      
-        
-    room_map.save(os.path.join(basedir, 'images', room.token + '_map.jpg'))   
+    del draw
+
+    room_map.save(os.path.join(basedir, 'images', str(room.id) + '_map.jpg'))   
 
 
 def image_loaded(request, room, user, users, null_form, image_form, Room_Form):
-    token = room.token
-    room_map_url = token + '_map'
+    room_id = room.id
+    room_map_url = str(room_id) + '_map'
     if 'image' not in request.files:
         return render_template('room.html', room=room, user=cur_user(),
                                color=user.color, users=users,
                                image_form=null_form,
                                Room_Form=Room_Form, loaded=False,
-                               map_ex=os.path.exists(basedir + '/images/' + token + '_map.jpg'),
+                               map_ex=os.path.exists(basedir + '/images/' + str(room_id) + '_map.jpg'),
                                room_map=room_map_url, anon=user, count=len(users)+1)
 
     file = request.files['image']
@@ -185,23 +185,23 @@ def image_loaded(request, room, user, users, null_form, image_form, Room_Form):
                                calibrate_url=calibrate_url, color=user.color, users=users,
                                image_form=null_form,
                                Room_Form=Room_Form, loaded=False, 
-                               map_ex=os.path.exists(basedir + '/images/' + token + '_map.jpg'),
+                               map_ex=os.path.exists(basedir + '/images/' + str(room_id) + '_map.jpg'),
                                room_map=room_map_url, anon=user, count=len(users)+1)
 
     if file and allowed_image(file.filename):
-        file.save(basedir + '/images/' + room.token + '.' + file.filename.split('.')[-1].lower())
+        file.save(basedir + '/images/' + str(room_id) + '.' + file.filename.split('.')[-1].lower())
         try:
-            parse(room, users, basedir + '/images/' + room.token + '.jpg')
+            parse(room, users, basedir + '/images/' + str(room_id) + '.jpg')
         except:
             return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users,
                                        image_form=image_form, count=len(users),
                                        Room_Form=Room_Form, loaded=True, room_map=room_map_url, anon=user,
                                        msg="Мы не смогли идентифицировать устройства, попробуйте загрузить другую фотографию.",
-                                       map_ex=os.path.exists(basedir + '/images/' + token + '_map.jpg'))
+                                       map_ex=os.path.exists(basedir + '/images/' + str(room_id) + '_map.jpg'))
         return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users,
                                image_form=image_form, anon=user,
                                Room_Form=Room_Form, loaded=True, room_map=room_map_url, count=len(users)+1,
-                               map_ex=os.path.exists(basedir + '/images/' + token + '_map.jpg'))
+                               map_ex=os.path.exists(basedir + '/images/' + str(room_id) + '_map.jpg'))
 
 
 def cur_user():
@@ -213,7 +213,7 @@ def cur_user():
 def anon_user():
     user = None
     if 'anon_id' in session:
-        user = AnonUser.get(id=session['anon_id'])
+        user = AnonUser.query.get(session['anon_id'])
     if not user:
         user = AnonUser()
         session['anon_id'] = user.id

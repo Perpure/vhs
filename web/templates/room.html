@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Комната {{room.token}}</h1>
+<h1>Комната {{room.name}}</h1>
 {% if room.capitan_id == anon.id %}
 {% if count > 1 %}
 <form action="" method="post">
@@ -34,12 +34,12 @@
             <img src="{{url_for('get_image', pid=room.video_id)}}" alt="" class="preview">
             </a>
         </div>
-<form action="{{url_for('choose_video', token=room.token)}}">
+<form action="{{url_for('choose_video', room_id=room.id)}}">
 <button>Выбрать другое видео для демонстрации</button>
 </form>
 {% else %}
 <hr>
-<form action="{{url_for('choose_video', token=room.token)}}">
+<form action="{{url_for('choose_video', room_id=room.id)}}">
 <button>Выберите видео для демонстрации</button>
 </form>
 {% endif %}
