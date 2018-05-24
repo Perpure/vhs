@@ -2,10 +2,10 @@ from config import basedir
 from web import db, app
 from web.models import User
 from PIL import Image, ImageDraw, ImageEnhance
-from web.models import User, AnonUser
+from web.models import User, AnonUser, RoomDeviceColorConnector
 from web import app
 from functools import wraps
-from flask import session, redirect, url_for
+from flask import session, redirect, url_for, render_template
 import numpy as np
 import math
 import cv2
@@ -139,6 +139,42 @@ def parse(room, users, impath):
     del draw      
         
     room_map.save(os.path.join(basedir, 'images', room.token + '_map.jpg'))   
+
+
+def image_loaded(request, room, user, users, null_form, image_form, Room_Form):
+    token = room.token
+    room_map_url = token + '_map'
+    if 'image' not in request.files:
+        return render_template('room.html', room=room, user=cur_user(),
+                               color=user.color, users=users,
+                               image_form=null_form,
+                               Room_Form=Room_Form, loaded=False,
+                               map_ex=os.path.exists(basedir + '/images/' + token + '_map.jpg'),
+                               room_map=room_map_url, anon=user, count=len(users)+1)
+
+    file = request.files['image']
+    if file.filename == '':
+        return render_template('room.html', room=room, user=cur_user(),
+                               calibrate_url=calibrate_url, color=user.color, users=users,
+                               image_form=null_form,
+                               Room_Form=Room_Form, loaded=False, 
+                               map_ex=os.path.exists(basedir + '/images/' + token + '_map.jpg'),
+                               room_map=room_map_url, anon=user, count=len(users)+1)
+
+    if file and allowed_image(file.filename):
+        file.save(basedir + '/images/' + room.token + '.' + file.filename.split('.')[-1].lower())
+        try:
+            parse(room, users, basedir + '/images/' + room.token + '.jpg')
+        except:
+            return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users,
+                                       image_form=image_form, count=len(users),
+                                       Room_Form=Room_Form, loaded=True, room_map=room_map_url, anon=user,
+                                       msg="Мы не смогли идентифицировать устройства, попробуйте загрузить другую фотографию.",
+                                       map_ex=os.path.exists(basedir + '/images/' + token + '_map.jpg'))
+        return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users,
+                               image_form=image_form, anon=user,
+                               Room_Form=Room_Form, loaded=True, room_map=room_map_url, count=len(users)+1,
+                               map_ex=os.path.exists(basedir + '/images/' + token + '_map.jpg'))
 
 
 def cur_user():
