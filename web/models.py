@@ -187,7 +187,7 @@ class User(db.Model):
     __tablename__ = 'User'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     login = db.Column(db.String(32), unique=True, nullable=False)
-    password = db.Column(db.String(64), nullable=False)
+    password = db.Column(db.String(), nullable=False)
     name = db.Column(db.String(32), nullable=False)
     channel_info = db.Column(db.String(64))
     avatar = db.Column(db.String(64))
@@ -270,7 +270,7 @@ class Room(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     date = db.Column(db.DateTime, nullable=False)
     video_id = db.Column(db.String(32))
-    capitan_id = db.Column(db.Integer, db.ForeignKey('AnonUser.id'))
+    capitan_id = db.Column(db.String(), db.ForeignKey('AnonUser.id'))
     token = db.Column(db.String(64), nullable=False)
     devices_in_room = db.relationship('RoomDeviceColorConnector', backref='room', lazy=True)
 
@@ -314,7 +314,7 @@ class RoomDeviceColorConnector(db.Model):
     __tablename__ = 'RoomDeviceColorConnector'
     id = db.Column(db.Integer, primary_key=True)
     room_id = db.Column(db.Integer, db.ForeignKey('Room.id'))
-    anon_id = db.Column(db.String(32), db.ForeignKey('AnonUser.id'))
+    anon_id = db.Column(db.String(), db.ForeignKey('AnonUser.id'))
     color_id = db.Column(db.Integer, db.ForeignKey('Color.id'))
 
 
@@ -323,7 +323,7 @@ class AnonUser(db.Model):
     Таблица для анонимного пользователя.
     """
     __tablename__ = 'AnonUser'
-    id = db.Column(db.String(32), primary_key=True)
+    id = db.Column(db.String(), primary_key=True)
     action = db.Column(db.String(64))
     time = db.Column(db.Integer)
     device_width = db.Column(db.Integer)

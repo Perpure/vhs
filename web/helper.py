@@ -60,7 +60,25 @@ def is_true_pixel(r, g, b, R, G, B):
     k=60
     return (r in range(R-k, R+k))and(g in range(G-k, G+k))and(b in range(B-k, B+k))
 
-
+def calibrate_resolution(resolution, w, h):
+    width = resolution[0]
+    height = resolution[1]
+    if (width/height) > (w/h):
+        while True:
+            e = abs((width/height) - (w/h))
+            height+=2
+            if e < abs((width/height) - (w/h)):
+                height-=2
+                return [width, height]
+    if (width/height) < (w/h):
+        while True:
+            e = abs((width/height) - (w/h))
+            width+=2
+            if e < abs((w/h) - (width/height)):
+                width-=2
+                return [width, height]
+    return [width, height]
+            
 def parse(room, users, impath):
     img = cv2.imread(impath) # Читаем изображение
     hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV) # Меняем цветовую схему с BGR на HSV
@@ -104,6 +122,9 @@ def parse(room, users, impath):
         
     # Находим разрешение
     resolution = (maxX - minX, maxY - minY)
+    new_resolution = calibrate_resolution(resolution, 16, 9)
+    deltax = (new_resolution[0] - resolution[0]) / 2
+    deltay = (new_resolution[1] - resolution[1]) / 2
 
     room_map = Image.new('RGB', resolution, (255, 255, 255))
     draw = ImageDraw.Draw(room_map)
@@ -119,18 +140,24 @@ def parse(room, users, impath):
         draw.polygon(np.int0(cv2.boxPoints(rect)).flatten().tolist(), fill=color)
         
         #Считаем-с
-        firsty = int(rect[0][1] - rect[1][1] / 2)        
+        if rect[2] < -85 and rect[2] > -95:
+            firsty = int(rect[0][1] - rect[1][0] / 2) + deltay
+            lasty = int(rect[0][1] + rect[1][0] / 2) + deltay
+            firstx = int(rect[0][0] - rect[1][1] / 2) + deltax
+            lastx = int(rect[0][0] + rect[1][1] / 2) + deltax
+        else:
+            firsty = int(rect[0][1] - rect[1][1] / 2) + deltay
+            lasty = int(rect[0][1] + rect[1][1] / 2) + deltay
+            firstx = int(rect[0][0] - rect[1][0] / 2) + deltax
+            lastx = int(rect[0][0] + rect[1][0] / 2) + deltax
+        width = ( new_resolution[0] / (lastx - firstx) ) * 100
 
-        firstx = int(rect[0][0] - rect[1][0] / 2)
-        lastx = int(rect[0][0] + rect[1][0] / 2)
+        left = - ( firstx / new_resolution[0] ) * width
+        top = - ( firsty / new_resolution[1] ) * width
 
-        res_k = ( resolution[0] / (lastx - firstx) ) * 100
-
-        left = - ( (firstx / resolution[0]) * res_k )
-        top = - ( (firsty / resolution[1]) * res_k )
-
+        print(top, left)
         #Записываем-с
-        user.res_k = int(res_k)
+        user.res_k = int(width)
         user.top = int(top)
         user.left = int(left)
 
