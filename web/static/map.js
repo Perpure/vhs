@@ -55,13 +55,14 @@ function map_init () {
     map = new ymaps.Map("map", {
             center: [55, 47],
             zoom: 6,
-            controls: [],
+            controls: ['zoomControl'],
         },
         {
             autoFitToViewport: 'always'
         }
     );
 
+    map.events.add('wheel', function(e) {e.preventDefault();});
     map.events.add('click', function(e) {
         if (moveable_gt) {
             moveable_gt.geometry.setCoordinates(e.get('coords'));
