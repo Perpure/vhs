@@ -163,8 +163,8 @@ def parse(room, users, impath):
 
         db.session.commit()
     
-    del draw      
-    print('11111111111111111111111111111111111111111111111111111111111111')
+    del draw
+
     room_map.save(os.path.join(basedir, 'images', str(room.id) + '_map.jpg'))   
 
 
