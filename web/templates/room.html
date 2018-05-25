@@ -106,6 +106,7 @@
                 if(response.action=="calibrate"){
                     $('#Body').css('overflow', 'hidden');
                     $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; background:'+response.color+';"></div>');
+                    $('#calibrImage').click(fullscreen);
                     $('#Footer').hide();
                     $('#Header').hide();
                 ;}
