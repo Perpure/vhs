@@ -64,7 +64,7 @@ def room(room_id):
         raw_user_rooms = RoomDeviceColorConnector.query.filter_by(anon=user)
         user_rooms = [rac.room for rac in raw_user_rooms]
         users = room.get_devices()
-
+        
         if (not(room in user_rooms)) and (room.captain != user):
             color_id = len(users) + 1
             if color_id > 6:
@@ -72,6 +72,10 @@ def room(room_id):
             col = Color.query.get(color_id)
             rac = RoomDeviceColorConnector(anon=user, room=room, color=col)
             db.session.add(rac)
+            for member in users:
+                member.action="update"
+            capt=AnonUser.get(room.capitan_id)
+            capt.action="update"
             db.session.commit()
 
         users = room.get_devices()
