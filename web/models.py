@@ -267,7 +267,6 @@ class Room(db.Model):
     __tablename__ = 'Room'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     date = db.Column(db.DateTime, nullable=False)
-    format_date = db.Column(db.String(64))
     video_id = db.Column(db.String(32))
     capitan_id = db.Column(db.String(), db.ForeignKey('AnonUser.id'))
     name = db.Column(db.String(64), nullable=False)
@@ -283,8 +282,8 @@ class Room(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def set_date(self, date):
-        self.format_date = date.strftime("%H:%M %d.%m.%Y")
+    def get_format_date(self):
+        return self.date.strftime("%H:%M %d.%m.%Y")
 
     def get_devices(self):
         raw_users = RoomDeviceColorConnector.query.filter_by(room=self)

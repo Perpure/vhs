@@ -52,11 +52,8 @@ def viewroom():
         if room:
             return redirect(url_for('room', room_id=room.id))
 
-    rooms = Room.get()
-    for room in rooms:
-        room.set_date(room.date)
     return render_template('viewroom.html', user=cur_user(), join_form=join_form,
-                           rooms=rooms, anon=user)
+                           rooms=Room.get()[::-1], anon=user)
 
 
 @app.route('/room/<int:room_id>', methods=['GET', 'POST'])
