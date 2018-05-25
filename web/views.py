@@ -22,6 +22,7 @@ from datetime import datetime
 def main():
     return render_template('main.html', user=cur_user(), items=Video.get())
 
+
 @app.route('/createroom', methods=['GET', 'POST'])
 def createroom():
     user = anon_user()
@@ -50,9 +51,11 @@ def viewroom():
         room = Room.query.filter_by(name=str(join_form.token.data)).first()
         if room:
             return redirect(url_for('room', room_id=room.id))
+    rooms = Room.get()
+    for room in rooms:
+        room.set_date(room.date)
     return render_template('viewroom.html', user=cur_user(), join_form=join_form,
-                           rooms=Room.get(), anon=user)
-
+                           rooms=rooms, anon=user)
 
 
 @app.route('/room/<int:room_id>', methods=['GET', 'POST'])
@@ -66,7 +69,7 @@ def room(room_id):
         user_rooms = [rac.room for rac in raw_user_rooms]
         users = room.get_devices()
 
-        if (not(room in user_rooms)) and (room.captain != user):
+        if (not (room in user_rooms)) and (room.captain != user):
             color_id = len(users) + 1
             if color_id > 6:
                 return redirect(url_for('viewroom'))
@@ -88,24 +91,18 @@ def room(room_id):
             member.color = rac.color.color
             db.session.commit()
 
-        users = room.user
-        for member in users[1:]:
-            colors = room.color_user.split(';')
-            for i in range(len(colors)):
-                if colors[i].split(',')[0] == str(member.id):
-                    color = Color.get(id=colors[i].split(',')[1]).color
-                    member.color = color
-                    db.session.commit()
-                    break
         image_form = UploadImageForm(csrf_enabled=False)
         if image_form.validate_on_submit():
             return image_loaded(request, room, user, users, UploadImageForm(csrf_enabled=False), image_form, Room_Form)
-        return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users, count=len(users)+1,
+        return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users,
+                               count=len(users) + 1,
                                image_form=image_form, Room_Form=Room_Form, loaded=False, anon=user,
-                               room_map=room_map_url, map_ex=os.path.exists(basedir + '/images/' + str(room.id) + '_map.jpg'))
+                               room_map=room_map_url,
+                               map_ex=os.path.exists(basedir + '/images/' + str(room.id) + '_map.jpg'))
     else:
         return redirect(url_for('viewroom'))
-    
+
+
 @app.route('/room/<int:room_id>/choose_video/<string:vid_id>', methods=['GET', 'POST'])
 def choosed_video(room_id, vid_id):
     user = anon_user()
@@ -122,6 +119,7 @@ def choosed_video(room_id, vid_id):
     else:
         return redirect(url_for('viewroom'))
 
+
 @app.route('/room/<int:room_id>/choose_video', methods=['GET', 'POST'])
 def choose_video(room_id):
     user = anon_user()
@@ -132,6 +130,7 @@ def choose_video(room_id):
     else:
         return redirect(url_for('viewroom'))
 
+
 @app.route('/upload', methods=['GET', 'POST'])
 @requiresauth
 def upload():
@@ -140,7 +139,7 @@ def upload():
     :return: Страница загрузки
     """
     user = cur_user()
-    
+
     form = UploadVideoForm(csrf_enabled=False)
 
     if form.validate_on_submit():
@@ -260,9 +259,9 @@ def cabinet(usr):
 def play(vid):
     video = Video.get(video_id=vid)
     if not video:
-        abort = Aborter() 
+        abort = Aborter()
         return abort(404)
-    
+
     user = cur_user()
     usr = User.get(login=video.user_login)
 
@@ -274,7 +273,7 @@ def play(vid):
         likened = 1
     if user in video.dislikes:
         likened = -1
-    return render_template('play.html', user=user, vid=vid, video=video, lkd=likened,usr=usr)
+    return render_template('play.html', user=user, vid=vid, video=video, lkd=likened, usr=usr)
 
 
 @app.route('/video/map', methods=["GET"])
