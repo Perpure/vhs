@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<h5>Присоединиться к комнате по токену</h5>
+<h5>Присоединиться к комнате по названию</h5>
     <form action="" method="post">
     {{join_form.hidden_tag()}}
         <div>{{ join_form.token.label}}</div>
@@ -16,8 +16,8 @@
     {% if rooms %}
     <h5>Все комнаты:</h5>
     {% for room in rooms %}
-        <p><a href="{{url_for('room', token=room.token)}}">{{room.token}}</a>
-        <p class="videoDate">Создана: {{ room.format_date }}</p>
+        <p><a href="{{url_for('room', room_id=room.id)}}">{{room.name}}</a>
+	<p class="videoDate">Создана: {{ room.format_date }}</p>
     {% endfor %}
     {% endif %}
 {% endblock %}

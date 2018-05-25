@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Комната {{room.token}}</h1>
+<h1>Комната {{room.name}}</h1>
 {% if room.capitan_id == anon.id %}
-{% if room.color_user %}
+{% if count > 1 %}
 <form action="" method="post">
     {{Room_Form.hidden_tag()}}
     {{ Room_Form.submit }}
@@ -34,17 +34,17 @@
             <img src="{{url_for('get_image', pid=room.video_id)}}" alt="" class="preview">
             </a>
         </div>
-<form action="{{url_for('choose_video', token=room.token)}}">
+<form action="{{url_for('choose_video', room_id=room.id)}}">
 <button>Выбрать другое видео для демонстрации</button>
 </form>
 {% else %}
 <hr>
-<form action="{{url_for('choose_video', token=room.token)}}">
+<form action="{{url_for('choose_video', room_id=room.id)}}">
 <button>Выберите видео для демонстрации</button>
 </form>
 {% endif %}
 {% endif %}
-{% if room.color_user %}
+{% if count > 1 %}
 <hr>
 <h5>Количество участников: {{count}}</h5>
 {% else %}
@@ -75,7 +75,7 @@
         $('#cod').css("margin-top","10px");
         setTimeout(function step(){
             Time--;
-            $('#cod').html("<h5>Показ начнётся через: </h5>"+Time+" с");
+            $('#cod').html("<h5>Показ начнётся через: " + Time + "с</h5>");
             if(Time)setTimeout(step,1000);
             else $('#cod').empty();
         },1000);
@@ -86,19 +86,13 @@
 
     function Result()
     {
-        var tp={{ anon.top }};
-        var lft={{ anon.left }};
-        var k={{ anon.res_k }};
-        $('#ReVi').css({
-            display: 'block',
-            top: tp + "%",
-            left: lft + "%",
-            width: k+"%"
-        });
+        $('#Body').css('overflow', 'hidden')
+        $('#ReVi').show();
         $('#ReVi').get(0).play();
         $('#ReVi').on('ended',function(){ 
             $('#ReVi').hide(); 
             $('#Footer').show();
+            $('#Body').css('overflow', 'auto')
         });
         $('#Footer').hide();
     }
@@ -107,21 +101,36 @@
         $.ajax({
             url:"/askAct",
             type:"GET",
-            dataType:"text",
+            dataType:"json",
             success:function(response)
             {
-                if(response.substr(0,9)=="calibrate"){
-                    $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; background:'+response.substr(9)+';"></div>');
+                if(response.action=="calibrate"){
+                    $('#Body').css('overflow', 'hidden');
+                    $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; background:'+response.color+';"></div>');
                     $('#Footer').hide();
                     $('#Header').hide();
                 ;}
-
-                if(response.substr(0,6)=="result"){
-                    setTimeout(Result,response.substr(6));
-                    var time=Math.round(response.substr(6)/1000);
+                if(response.action=="result"){
+                    $('#Body').css('overflow', 'hidden');
+                    setTimeout(Result,response.time);
+                    console.log($('#ReVi').width());
+                    console.log($('#ReVi').height());
+                    $('#ReVi').css({
+                        top: response.top + "%",
+                        left: response.left + "%",
+                        width: response.width+"%",
+                    });
+                    $('#ReVi').css({
+                        top: $('#ReVi').height() * ( response.top / response.width ) + "px",
+                        left: $('#ReVi').width() * ( response.left / response.width ) + "px",
+                        width: response.width+"%",
+                    });
+                    var time=Math.round(response.time/1000);
                     countDown(time);
                 }
-
+                if(response.action=="refresh"){
+                    location.reload();
+                }
             },
             error:function(){}
         });

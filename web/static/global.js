@@ -122,15 +122,11 @@ date.addEventListener('click',swit);
                        {
                             var placer="";
                             var plus=false;
-                            for(var i=0;i<response.length;i++)
-                            {
-                                if(response[i]=='<' && response[i+1]=='m' && response[i+2]=='a' && response[i+3]=='i')plus=true;
-                                if(plus)placer+=response[i];
-                                if(response[i+2]=='/' && response[i+3]=='m' && plus)i=response.length;
-                            }
-                            placer=placer.substr(17);
-                            var mn=document.getElementById("Main");
-                            mn.innerHTML=placer;                            
+                            response=$.parseHTML(response);
+                            var tempDom = $('search').append(response);
+                            var maine=$('#Main', tempDom);
+                            $(tempDom).empty();
+                            $("#Main").html($(maine).html());
                        },
                        error:function(){}
         });

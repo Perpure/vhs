@@ -20,26 +20,12 @@ setTimeout(function step(){
                 $.ajax({
                     url:"/getNewComm/"+hash+"/"+curComms,
                     type:"GET",
-                    dataType:"text",
+                    dataType:"json",
                     success:function(response1)
                     {
-                        var cur=0;
-                        var cur1=0;
-                        for(var i=0;i<def;i++)
-                        {
-                            while(response1[cur1]!="," || response1[cur1+1]!=",")
-                                cur1++;
-                            var login=response1.substr(cur,cur1-cur);
-                            cur=cur1+2;
-                            while(response1[cur1]!="." || response1[cur1+1]!=".")
-                                cur1++;
-                            var name=response1.substr(cur,cur1-cur);
-                            cur=cur1+2;
-                            while(response1[cur1]!=";" || response1[cur1+1]!=";")
-                                cur1++;
-                            var text=response1.substr(cur,cur1-cur);
-                            commSection.innerHTML='<div class="Comment"><img src="../static/a.png" alt="" class="commAva"><div class="commTxt"><p class="commAuth"><a href="/cabinet/'+login+'" class="Link">'+name+'</a></p><p>'+text+'</p></div></div>'+commSection.innerHTML;
-                        }
+                        response1.forEach(function(element){
+                            $("#CSect").get(0).innerHTML='<div class="Comment"><div class="commAva"><img src="../static/images/'+element.ava+'" alt="" class="commAvaIn"></div><div class="commTxt"><p class="commAuth"><a href="/cabinet/'+element.login+'" class="Link">'+element.name+'</a></p><p>'+element.text+'</p></div></div>'+$("#CSect").get(0).innerHTML;                        
+                        });
                     },
                     error:function(){}
                 });
