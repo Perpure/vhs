@@ -14,6 +14,9 @@ class RoomForm(FlaskForm):
 
 
 class UploadImageForm(FlaskForm):
+    class Meta:
+        csrf = False
+
     image = FileField("Выберите файл")
     submit = SubmitField("Инициализировать фотографию")
 
@@ -66,6 +69,9 @@ class RegForm(FlaskForm):
 
 
 class JoinForm(FlaskForm):
+    class Meta:
+        csrf = False
+
     token = StringField("Название комнаты", validators=[not_exist_token, Length(2, message='Название слишком короткое')])
     submit = SubmitField("Присоединиться")
 
@@ -81,6 +87,9 @@ class LogForm(FlaskForm):
 
 class UploadVideoForm(FlaskForm):
     """Форма загрузки видео"""
+    class Meta:
+        csrf = False
+
     title = StringField("Введите название видео", validators=[Length(3, message='Название слишком короткое')])
     video = FileField("Выберите файл")
     geotag_data = HiddenField(validators=[have_geodata])
@@ -115,6 +124,9 @@ class VideoToRoomForm(FlaskForm):
 
 
 class AddRoomForm(FlaskForm):
+    class Meta:
+        csrf = False
+
     token = StringField("Название комнаты", validators=[DataRequired(message='Введите название комнаты'),
                                                         exist_token,
                                                         Length(2, message='Текст слишком короткий')])
