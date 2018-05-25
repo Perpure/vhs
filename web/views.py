@@ -29,7 +29,7 @@ def createroom():
     user.action = ""
     db.session.commit()
 
-    add_room_form = AddRoomForm(csrf_enabled=False, prefix="Submit_Add")
+    add_room_form = AddRoomForm(prefix="Submit_Add")
 
     if add_room_form.validate_on_submit():
         name = add_room_form.token.data
@@ -43,7 +43,7 @@ def createroom():
 @app.route('/viewroom', methods=['GET', 'POST'])
 def viewroom():
     user = anon_user()
-    join_form = JoinForm(csrf_enabled=False, prefix="Submit_Join")
+    join_form = JoinForm(prefix="Submit_Join")
     user.action = ""
     db.session.commit()
 
@@ -51,6 +51,7 @@ def viewroom():
         room = Room.query.filter_by(name=str(join_form.token.data)).first()
         if room:
             return redirect(url_for('room', room_id=room.id))
+
     rooms = Room.get()
     for room in rooms:
         room.set_date(room.date)
@@ -91,9 +92,9 @@ def room(room_id):
             member.color = rac.color.color
             db.session.commit()
 
-        image_form = UploadImageForm(csrf_enabled=False)
+        image_form = UploadImageForm()
         if image_form.validate_on_submit():
-            return image_loaded(request, room, user, users, UploadImageForm(csrf_enabled=False), image_form, Room_Form)
+            return image_loaded(request, room, user, users, UploadImageForm(), image_form, Room_Form)
         return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users,
                                count=len(users) + 1,
                                image_form=image_form, Room_Form=Room_Form, loaded=False, anon=user,
@@ -140,7 +141,7 @@ def upload():
     """
     user = cur_user()
 
-    form = UploadVideoForm(csrf_enabled=False)
+    form = UploadVideoForm()
 
     if form.validate_on_submit():
         if 'video' not in request.files:
