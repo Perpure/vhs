@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="container">
         <div class="content">
             <div class="conbu">
          <div class="z1 z2" onclick="func(this)">Информация о пользователе</div>
@@ -24,7 +23,6 @@
         </div>
          <div class="con">
              <div class="content0">
-             <!--(Тут будут видео)            -->
              {% for item in items %}
         <div class="video">
             <a href="/play/{{item.id}}" class="Link">
@@ -66,7 +64,8 @@
                  <br>
                 </div>
                 <div class="set">
-                 {{ form.channel_info.label }}
+                 {{ form.channel_info.label }} 
+                 <br>
                  {{ form.channel_info }}
                  {% if form.channel_info.errors %}
                     {% for error in form.channel_info.errors %}
@@ -93,7 +92,6 @@
         </form>
         {% endif %}
     </div>
-            </div>
     <script>
         'use strict'
     function func(a){

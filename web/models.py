@@ -211,7 +211,7 @@ class User(db.Model):
     def __init__(self, login):
         self.login = login
         self.name = login
-        self.channel_info = "channel_info"
+        self.channel_info = "Заполните информацию о канале"
 
     def save(self, password):
         """

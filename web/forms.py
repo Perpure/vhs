@@ -104,7 +104,7 @@ class UserProfileForm(FlaskForm):
                                                                     Optional()])
     change_avatar = FileField("Изменить аватар профиля:")
     change_background = FileField("Изменить фон канала:")
-    channel_info = StringField("Указать информацию о канале:",
+    channel_info = TextAreaField("Указать информацию о канале:",
                                validators=[Length(8, message='Текст слишком короткий'), Optional()])
     current_password = PasswordField("Введите свой текущий пароль для подтверждения изменений:",
                                      validators=[Length(8, message='Пароль слишком короткий'), match])
