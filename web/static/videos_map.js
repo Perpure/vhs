@@ -48,6 +48,8 @@ function init_all() {
     });
     map.events.add('wheel', function(e) {e.preventDefault();});
 
+    map.events.add('wheel', function(e){e.preventDefault();});
+
     $('#show_video_map').change(function () {
         $('#video_table').hide();
         $('#videos_map').css('width', width);

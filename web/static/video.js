@@ -42,11 +42,12 @@ var plate=document.getElementById("txtPlate");
 if(addCom!=null)addCom.addEventListener('click',function(){
             var txt=plate.value;
             $.ajax({
-               url:"/postComm/"+hash+"/"+txt,
+               url:"/postComm/"+hash+"/",
                type:"GET",
                dataType:"text",
                success:function(response){},
-               error:function(){}
+               error:function(){},
+               data:{comm: txt}
             });
             plate.value="";
 });

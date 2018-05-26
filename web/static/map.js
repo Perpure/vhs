@@ -73,6 +73,7 @@ function map_init () {
         create_geotag(e.get('coords'));
         e.preventDefault();
     });
+    map.events.add('wheel', function(e) {e.preventDefault();});
 }
 
 

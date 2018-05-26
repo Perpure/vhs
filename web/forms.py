@@ -5,6 +5,7 @@ from wtforms import StringField, PasswordField, SubmitField, TextAreaField, Sele
 from wtforms.validators import Length, EqualTo, ValidationError, DataRequired, Optional
 from web.models import User , Room
 from .helper import cur_user
+import re
 from flask.json import JSONDecoder
 from wtforms.widgets import CheckboxInput, ListWidget
 
@@ -41,6 +42,11 @@ def not_exist_token(form,field):
         raise ValidationError("Такой комнаты нет")
 
 
+def check_correct_name(form, field):
+    if not re.match(r'[a-zA-Z0-9_]', field.data):
+        raise ValidationError("В имени пользователя могут быть только цифры, латинские буквы и нижние подчёркивания")
+
+
 def match(form, field):
     user = None
     if cur_user():
@@ -59,7 +65,7 @@ def have_geodata(form, field):
 
 class RegForm(FlaskForm):
     login_reg = StringField("Имя пользователя", validators=[Length(5, message='Логин слишком короткий'),
-                                                            not_exist])
+                                                            not_exist, check_correct_name])
     password_reg = PasswordField("Пароль", validators=[Length(8, message='Пароль слишком короткий')])
     confirm_reg = PasswordField("Повторите пароль",
                                 validators=[Length(8, message='Пароль слишком короткий'),
@@ -78,7 +84,8 @@ class JoinForm(FlaskForm):
 
 class LogForm(FlaskForm):
     """Форма авторизации"""
-    login_log = StringField("Имя пользователя", validators=[Length(5, message='Логин слишком короткий'), exist])
+    login_log = StringField("Имя пользователя", validators=[Length(5, message='Логин слишком короткий'),
+                                                            check_correct_name, exist])
     password_log = PasswordField("Пароль", validators=[Length(8, message='Пароль слишком короткий'),
                                                        match])
     submit_log = SubmitField("Войти")
