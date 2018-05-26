@@ -180,12 +180,6 @@ def upload():
     return render_template('upload_video.html', form=form, user=cur_user(), formats=app.config['ALLOWED_EXTENSIONS'])
 
 
-@app.route('/result/', methods=['GET', 'POST'])
-def result():
-    user = cur_user()
-    return render_template('rezult.html', pid='1', top=user.top, left=user.left, width=user.res_k)
-
-
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():
     """
