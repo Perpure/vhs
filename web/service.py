@@ -54,9 +54,10 @@ def get_video_data_search():
                      "geotags" : [(gt.longitude , gt.latitude) for gt in video.geotags]} for video in videos])
     
 
-@app.route('/askAct', methods=['GET', 'POST'])
-def askAct():
+@app.route('/askAct/<int:room_id>', methods=['GET', 'POST'])
+def askAct(room_id):
     if 'anon_id' in session:
+        room = Room.query.get(room_id)
         user = AnonUser.query.get(session['anon_id'])
         action = user.action
         if action == 'calibrate':
@@ -88,6 +89,12 @@ def askAct():
             db.session.add(user)
             db.session.commit()
             return jsonify({"action": action})
+        elif action == 'update':
+            user.action = ''
+            db.session.add(user)
+            db.session.commit()
+            users = room.get_devices()
+            return jsonify({"action": action,"count":len(users)+1})
     return jsonify({"action": ''})
 
 
@@ -205,5 +212,5 @@ def showRes(room_id):
                 member.action = "result"
                 member.time = now
     db.session.commit()
-    return 0
+    return ""
 

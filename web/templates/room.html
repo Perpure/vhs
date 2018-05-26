@@ -2,12 +2,10 @@
 {% block content %}
 <h1>Комната {{room.name}}</h1>
 {% if room.capitan_id == anon.id %}
-{% if count > 1 %}
 <form action="" method="post">
     {{Room_Form.hidden_tag()}}
     {{ Room_Form.submit }}
 </form>
-{% endif %}
 <h5>Загрузите калибровочное фото</h5>
 <form action="" method="post" enctype="multipart/form-data">
     <div class="Loader"><div><input id="image" name="image" type="file" accept="image/*" capture></div></div>
@@ -24,7 +22,7 @@
 {% endif %}
 {% if room.capitan_id != anon.id %}
 <hr>
-<button onclick="launchIntoFullscreen(document.documentElement);" class="fullscreenB">Перейти в полноэкранный режим</button>
+<button onclick="fullscreen();" class="fullscreenB">Перейти в полноэкранный режим</button>
 {% endif %}
 {% if room.capitan_id == anon.id %}
 {% if room.video_id %}
@@ -46,10 +44,10 @@
 {% endif %}
 {% if count > 1 %}
 <hr>
-<h5>Количество участников: {{count}}</h5>
+<h5>Количество участников: <span id="countUsers">{{count}}</span></h5>
 {% else %}
 <hr>
-<p>Пригласите участников в комнату</p>
+<p id="countUsers">Пригласите участников в комнату</p>
 {% endif %}
 {% if room.capitan_id != anon.id %}
 <div id="cod"></div>
@@ -81,7 +79,8 @@
         },1000);
     }
     
-    {% if room.capitan_id != anon.id %}
+    var ID={{ room.id }};
+    
     var speed=4000;
 
     function Result()
@@ -99,7 +98,7 @@
 
     setTimeout(function step(){
         $.ajax({
-            url:"/askAct",
+            url:"/askAct/"+ID,
             type:"GET",
             dataType:"json",
             success:function(response)
@@ -107,6 +106,7 @@
                 if(response.action=="calibrate"){
                     $('#Body').css('overflow', 'hidden');
                     $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; background:'+response.color+';"></div>');
+                    $('#calibrImage').click(fullscreen);
                     $('#Footer').hide();
                     $('#Header').hide();
                 ;}
@@ -131,6 +131,14 @@
                 if(response.action=="refresh"){
                     location.reload();
                 }
+                if(response.action=="update"){
+                    {% if room.capitan_id == anon.id %}
+                    $("#submit").show();
+                    $("#countUsers").html("Количество участников: "+response.count);                  
+                    {% else %}
+                    $("#countUsers").html(response.count);
+                    {% endif %}
+                }
             },
             error:function(){}
         });
@@ -152,20 +160,39 @@
         });
     });
 
-    function launchIntoFullscreen(element) {
-        if(element.requestFullscreen) {
-            element.requestFullscreen();
-        } else if(element.mozRequestFullScreen) {
-            element.mozRequestFullScreen();
-        } else if(element.webkitRequestFullscreen) {
-            element.webkitRequestFullscreen();
-        } else if(element.msRequestFullscreen) {
-            element.msRequestFullscreen();
+    function fullscreen() {
+        var isInFullScreen = (document.fullscreenElement && document.fullscreenElement !== null) ||
+            (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
+            (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
+            (document.msFullscreenElement && document.msFullscreenElement !== null);
+
+        var docElm = document.documentElement;
+        if (!isInFullScreen) {
+            if (docElm.requestFullscreen) {
+                docElm.requestFullscreen();
+            } else if (docElm.mozRequestFullScreen) {
+                docElm.mozRequestFullScreen();
+            } else if (docElm.webkitRequestFullScreen) {
+                docElm.webkitRequestFullScreen();
+            } else if (docElm.msRequestFullscreen) {
+                docElm.msRequestFullscreen();
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
         }
     }
-</script>
-    
-{%else%}
+{% if room.capitan_id == anon.id %}
+{% if count == 1 %}
+    $('#submit').hide();
+{% endif %}
 {% if room.video_id %}
     $('#showRes').click(function(){
         var hash=window.location.href;
@@ -180,8 +207,8 @@
         var time=15;
         countDown(time);
     });
+{% endif %}
+{% endif %}
 </script>
-{% endif %}
-{% endif %}
 {% endblock %}
 

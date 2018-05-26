@@ -74,6 +74,10 @@ def room(room_id):
             col = Color.query.get(color_id)
             rac = RoomDeviceColorConnector(anon=user, room=room, color=col)
             db.session.add(rac)
+            for member in users:
+                member.action="update"
+            capt=AnonUser.get(room.capitan_id)
+            capt.action="update"
             db.session.commit()
 
         users = room.get_devices()
