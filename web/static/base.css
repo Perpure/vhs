@@ -646,6 +646,14 @@ footer
     margin:0 auto;
 }
 
+.instr
+{
+    display:none;
+    padding-top:10px;
+    padding-left:20px;
+    text-align:left;
+}
+
 .token
 {
     width:70%;
