@@ -62,7 +62,7 @@
 {% endif %}
 <hr>
 <button id="instructionBtn" >Инструкция</button>
-<ol id="instruction" class="instr" style="display: none;">
+<ol id="instruction" class="instr">
 <li>Пригласите участников.</li>
 <li>Выберите видео для демонстрации.</li>
 <li>Разместите устройства на площади для показа.</li>
@@ -124,6 +124,7 @@
                     $('#Footer').hide();
                     $('#Header').hide();
                 ;}
+    console.log(response.action);
                 if(response.action=="result"){
                     $('#Body').css('overflow', 'hidden');
                     setTimeout(Result,response.time);
@@ -139,6 +140,7 @@
                         left: $('#ReVi').width() * ( response.left / response.width ) + "px",
                         width: response.width+"%",
                     });
+                    if(response.noSound)$("#ReVi").prop('muted', true);
                     var time=Math.round(response.time/1000);
                     countDown(time);
                 }

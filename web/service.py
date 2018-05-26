@@ -66,7 +66,9 @@ def askAct(room_id):
             db.session.commit()
             return jsonify({"action": action,
                             "color": user.color})
-        elif action == 'result':
+        elif action == 'result' or action == 'resultS':
+            noSound=True
+            if(action=='resultS'):noSound=False
             user.action = ''
             db.session.add(user)
             db.session.commit()
@@ -83,7 +85,8 @@ def askAct(room_id):
                             "time": time,
                             "top": user.top,
                             "left": user.left,
-                            "width": user.res_k})
+                            "width": user.res_k,
+                            "noSound":noSound})
         elif action == 'refresh':
             user.action = ''
             db.session.add(user)
@@ -211,6 +214,7 @@ def showRes(room_id):
                 now+=15000-(now-zero)
                 member.action = "result"
                 member.time = now
+    users[0].action="resultS"
     db.session.commit()
     return ""
 
