@@ -50,14 +50,14 @@ for(var j=0;j<clast.length;j++){
         if(screen.width<570)
         {
             var ins=this.getElementsByClassName("subBtn");
-            this.style.marginBottom=ins.length*50+10+"px";
+            this.style.height=ins.length*50+60+"px";
         }
     });
     clast[j].addEventListener('mouseout',function()
     {   
         if(screen.width<570)
         {
-            this.style.marginBottom=0;
+            this.style.height=50+"px";
         }
     });
     }
@@ -122,15 +122,11 @@ date.addEventListener('click',swit);
                        {
                             var placer="";
                             var plus=false;
-                            for(var i=0;i<response.length;i++)
-                            {
-                                if(response[i]=='<' && response[i+1]=='m' && response[i+2]=='a' && response[i+3]=='i')plus=true;
-                                if(plus)placer+=response[i];
-                                if(response[i+2]=='/' && response[i+3]=='m' && plus)i=response.length;
-                            }
-                            placer=placer.substr(17);
-                            var mn=document.getElementById("Main");
-                            mn.innerHTML=placer;                            
+                            response=$.parseHTML(response);
+                            var tempDom = $('search').append(response);
+                            var maine=$('#Main', tempDom);
+                            $(tempDom).empty();
+                            $("#Main").html($(maine).html());
                        },
                        error:function(){}
         });

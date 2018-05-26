@@ -3,19 +3,11 @@ from web import app
 import shutil
 import hashlib
 import os
+from random import randint
 from datetime import datetime
 from flask import session
 from random import random
-
-UserToRoom = db.Table('UserToRoom', db.Model.metadata,
-                      db.Column('AnonUser_id', db.String(32), db.ForeignKey('AnonUser.id')),
-                      db.Column('Room_id', db.Integer, db.ForeignKey('Room.token'))
-                      )
-
-ColorToRoom = db.Table('ColorToRoom', db.Model.metadata,
-                       db.Column('Color_id', db.Integer, db.ForeignKey('Color.id')),
-                       db.Column('Room_id', db.Integer, db.ForeignKey('Room.token'))
-                       )
+from uuid import uuid4
 
 Views = db.Table('Views', db.Model.metadata,
                  db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
@@ -193,9 +185,10 @@ class User(db.Model):
     __tablename__ = 'User'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     login = db.Column(db.String(32), unique=True, nullable=False)
-    password = db.Column(db.String(64), nullable=False)
+    password = db.Column(db.String(), nullable=False)
     name = db.Column(db.String(32), nullable=False)
     channel_info = db.Column(db.String(64))
+    avatar = db.Column(db.String(64))
     action = db.Column(db.String(64))
     device_width = db.Column(db.Integer)
     device_height = db.Column(db.Integer)
@@ -218,7 +211,7 @@ class User(db.Model):
     def __init__(self, login):
         self.login = login
         self.name = login
-        self.channel_info = "channel_info"
+        self.channel_info = "Заполните информацию о канале"
 
     def save(self, password):
         """
@@ -227,6 +220,7 @@ class User(db.Model):
         """
         self.password = hashlib.sha512(
             password.encode("utf-8")).hexdigest()
+        self.avatar = str(randint(1, 20)) + ".jpg"
         db.session.add(self)
         db.session.commit()
 
@@ -271,16 +265,12 @@ class User(db.Model):
 
 class Room(db.Model):
     __tablename__ = 'Room'
-    token = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     date = db.Column(db.DateTime, nullable=False)
     video_id = db.Column(db.String(32))
-    capitan_id = db.Column(db.Integer, db.ForeignKey('AnonUser.id'))
+    capitan_id = db.Column(db.String(), db.ForeignKey('AnonUser.id'))
     name = db.Column(db.String(64), nullable=False)
-    color_user = db.Column(db.Text())
-    Color = db.relationship("Color",
-                            secondary=ColorToRoom,
-                            backref="Room",
-                            lazy="joined")
+    devices_in_room = db.relationship('RoomDeviceColorConnector', backref='room', lazy=True)
 
     def __init__(self, name, capitan_id):
         self.name = name
@@ -291,13 +281,20 @@ class Room(db.Model):
         self.video_id = vid
         db.session.add(self)
         db.session.commit()
-    
+
+    def get_format_date(self):
+        return self.date.strftime("%H:%M %d.%m.%Y")
+
+    def get_devices(self):
+        raw_users = RoomDeviceColorConnector.query.filter_by(room=self)
+        return [rac.anon for rac in raw_users]
+
     @staticmethod
-    def get(token=None, name=None):
+    def get(id=None, name=None):
         if name:
             return Room.query.filter_by(name=name).first()
-        if token:
-            return Room.query.get(token)
+        if id:
+            return Room.query.get(id)
         return Room.query.all()
 
 
@@ -305,6 +302,7 @@ class Color(db.Model):
     __tablename__ = 'Color'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     color = db.Column(db.String(64), nullable=False)
+    anons_rooms = db.relationship('RoomDeviceColorConnector', backref='color', lazy=True)
 
     @staticmethod
     def get(id=None):
@@ -313,31 +311,36 @@ class Color(db.Model):
         return Color.query.all()
 
 
+class RoomDeviceColorConnector(db.Model):
+    __tablename__ = 'RoomDeviceColorConnector'
+    id = db.Column(db.Integer, primary_key=True)
+    room_id = db.Column(db.Integer, db.ForeignKey('Room.id'))
+    anon_id = db.Column(db.String(), db.ForeignKey('AnonUser.id'))
+    color_id = db.Column(db.Integer, db.ForeignKey('Color.id'))
+
+
 class AnonUser(db.Model):
     """
     Таблица для анонимного пользователя.
     """
     __tablename__ = 'AnonUser'
-    id = db.Column(db.String(32), primary_key=True)
+    id = db.Column(db.String(), primary_key=True)
     action = db.Column(db.String(64))
+    time = db.Column(db.Integer)
     device_width = db.Column(db.Integer)
     device_height = db.Column(db.Integer)
     color = db.Column(db.String(64))
     top = db.Column(db.Integer)
     left = db.Column(db.Integer)
     res_k = db.Column(db.Integer)
-    rooms = db.relationship("Room",
-                            secondary=UserToRoom,
-                            backref="user",
-                            lazy="joined")
-
+    rooms_colors = db.relationship('RoomDeviceColorConnector', backref='anon', lazy=True)
     room_capitan = db.relationship("Room", backref='captain')
 
     def __init__(self):
         """
         Сохраняет анонимного пользователя.
         """
-        self.id = hashlib.md5((datetime.now(tz=None).isoformat() + str(random())).encode("utf-8")).hexdigest()
+        self.id = str(uuid4())
         db.session.add(self)
         db.session.commit()
 

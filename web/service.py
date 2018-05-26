@@ -1,6 +1,6 @@
 from web import app, db
 from web.helper import read_image, read_video, cur_user, is_true_pixel, read_multi
-from web.models import Video, Comment, User, Room, AnonUser
+from web.models import Video, Comment, User, Room, AnonUser, RoomDeviceColorConnector
 from datetime import datetime
 
 from flask import url_for, redirect, make_response, request, jsonify, session, render_template
@@ -54,17 +54,21 @@ def get_video_data_search():
                      "geotags" : [(gt.longitude , gt.latitude) for gt in video.geotags]} for video in videos])
     
 
-@app.route('/askAct', methods=['GET', 'POST'])
-def askAct():
+@app.route('/askAct/<int:room_id>', methods=['GET', 'POST'])
+def askAct(room_id):
     if 'anon_id' in session:
-        user = AnonUser.query.filter_by(id=session['anon_id']).first()
+        room = Room.query.get(room_id)
+        user = AnonUser.query.get(session['anon_id'])
         action = user.action
-        if action[:9] == 'calibrate':
+        if action == 'calibrate':
             user.action = ''
             db.session.add(user)
             db.session.commit()
-            return action
-        elif action != '':
+            return jsonify({"action": action,
+                            "color": user.color})
+        elif action == 'result' or action == 'resultS':
+            noSound=True
+            if(action=='resultS'):noSound=False
             user.action = ''
             db.session.add(user)
             db.session.commit()
@@ -74,10 +78,27 @@ def askAct():
             sc=time.second
             ms=round(time.microsecond/1000)
             new=hr*3600000+mt*60000+sc*1000+ms
-            old=action[6:]
-            action="result"+str(int(old)-new)
-            return action
-    return ''
+            action="result"
+            old = user.time
+            time=str(old-new)
+            return jsonify({"action": action,
+                            "time": time,
+                            "top": user.top,
+                            "left": user.left,
+                            "width": user.res_k,
+                            "noSound":noSound})
+        elif action == 'refresh':
+            user.action = ''
+            db.session.add(user)
+            db.session.commit()
+            return jsonify({"action": action})
+        elif action == 'update':
+            user.action = ''
+            db.session.add(user)
+            db.session.commit()
+            users = room.get_devices()
+            return jsonify({"action": action,"count":len(users)+1})
+    return jsonify({"action": ''})
 
 
 @app.route('/askNewComm/<string:vid>', methods=['GET', 'POST'])
@@ -90,10 +111,10 @@ def askNewComm(vid):
 def getNewComm(vid, cont):
     comms = Video.get(video_id=vid).comments
     comms.sort(key=lambda x: x.id)
-    result=""
+    result=[]
     for i in range(cont,len(comms)):
-        result+=str(comms[i].user.login)+",,"+str(comms[i].user.name)+".."+str(comms[i].text)+";;"
-    return result
+        result.append({"login":comms[i].user.login,"name":comms[i].user.name,"text":comms[i].text,"ava":comms[i].user.avatar})
+    return jsonify(result)
 
 
 @app.route('/postComm/<string:vid>/', methods=['GET'])
@@ -112,16 +133,17 @@ def likeVideo(vid):
     user = cur_user()
     video = Video.get(video_id=vid)
     
-    if user in video.likes:
-        video.likes.remove(user)
-        db.session.add(user)
-        db.session.commit()
-    else:
-        video.add_like(user)
-        if user in video.dislikes:
-            video.dislikes.remove(user)
+    if user:
+        if user in video.likes:
+            video.likes.remove(user)
             db.session.add(user)
             db.session.commit()
+        else:
+            video.add_like(user)
+            if user in video.dislikes:
+                video.dislikes.remove(user)
+                db.session.add(user)
+                db.session.commit()
     return jsonify([{"likes": str(len(video.likes)),
                      "dislikes": str(len(video.dislikes))}])
 
@@ -130,17 +152,18 @@ def likeVideo(vid):
 def dislikeVideo(vid):
     user = cur_user()
     video = Video.get(video_id=vid)
-    
-    if user in video.dislikes:
-            video.dislikes.remove(user)
-            db.session.add(user)
-            db.session.commit()
-    else:
-        video.add_dislike(user)
-        if user in video.likes:
-            video.likes.remove(user)
-            db.session.add(user)
-            db.session.commit()
+
+    if user:
+        if user in video.dislikes:
+                video.dislikes.remove(user)
+                db.session.add(user)
+                db.session.commit()
+        else:
+            video.add_dislike(user)
+            if user in video.likes:
+                video.likes.remove(user)
+                db.session.add(user)
+                db.session.commit()
     return jsonify([{"likes": str(len(video.likes)),
                      "dislikes": str(len(video.dislikes))}])
 
@@ -148,7 +171,7 @@ def dislikeVideo(vid):
 @app.route('/tellRes', methods=['GET', 'POST'])
 def tellRes():
     if 'anon_id' in session:
-        user = AnonUser.query.filter_by(id=session['anon_id']).first()
+        user = AnonUser.query.get(session['anon_id'])
         if request.method == 'POST':
             width = request.json['width']
             height = request.json['height']
@@ -172,17 +195,17 @@ def startSearch():
     return render_template('main.html', user=cur_user(), items=Video.get())
 
 
-@app.route('/showRes/<string:token>', methods=['GET', 'POST'])
-def showRes(token):
-    room = Room.query.filter_by(token=token).first()  
+@app.route('/showRes/<int:room_id>', methods=['GET', 'POST'])
+def showRes(room_id):
+    room = Room.query.get(room_id)
+    users = room.get_devices()
     time=datetime.now(tz=None)
     hr=time.hour
     mt=time.minute
     sc=time.second
     ms=round(time.microsecond/1000)
     zero=hr*3600000+mt*60000+sc*1000+ms
-    roomers=room.color_user.split(';')
-    for i in range(len(roomers)):
+    for member in users:
                 time=datetime.now(tz=None)
                 hr=time.hour
                 mt=time.minute
@@ -190,8 +213,9 @@ def showRes(token):
                 ms=round(time.microsecond/1000)
                 now=hr*3600000+mt*60000+sc*1000+ms
                 now+=15000-(now-zero)
-                ID = roomers[i].split(',')[0]
-                AnonUser.query.filter_by(id=ID).first().action = "result"+str(now)
+                member.action = "result"
+                member.time = now
+    users[0].action="resultS"
     db.session.commit()
-    return 0
+    return ""
 

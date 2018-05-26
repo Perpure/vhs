@@ -46,6 +46,7 @@ function init_all() {
             minZoom : 23,
             controls : ['zoomControl']
     });
+    map.events.add('wheel', function(e) {e.preventDefault();});
 
     map.events.add('wheel', function(e){e.preventDefault();});
 

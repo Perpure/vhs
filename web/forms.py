@@ -15,6 +15,9 @@ class RoomForm(FlaskForm):
 
 
 class UploadImageForm(FlaskForm):
+    class Meta:
+        csrf = False
+
     image = FileField("Выберите файл")
     submit = SubmitField("Инициализировать фотографию")
 
@@ -30,12 +33,12 @@ def exist(form, field):
 
 
 def exist_token(form,field):
-    if Room.get(name=field.data):
+    if Room.query.filter_by(name=field.data).first():
         raise ValidationError("Такая комната уже существует")
 
 
 def not_exist_token(form,field):
-    if not Room.get(token=field.data):
+    if not Room.query.filter_by(name=field.data).first():
         raise ValidationError("Такой комнаты нет")
 
 
@@ -72,7 +75,10 @@ class RegForm(FlaskForm):
 
 
 class JoinForm(FlaskForm):
-    token = StringField("Токен", validators=[not_exist_token])
+    class Meta:
+        csrf = False
+
+    token = StringField("Название комнаты", validators=[not_exist_token, Length(2, message='Название слишком короткое')])
     submit = SubmitField("Присоединиться")
 
 
@@ -88,6 +94,9 @@ class LogForm(FlaskForm):
 
 class UploadVideoForm(FlaskForm):
     """Форма загрузки видео"""
+    class Meta:
+        csrf = False
+
     title = StringField("Введите название видео", validators=[Length(3, message='Название слишком короткое')])
     video = FileField("Выберите файл")
     geotag_data = HiddenField(validators=[have_geodata])
@@ -102,7 +111,7 @@ class UserProfileForm(FlaskForm):
                                                                     Optional()])
     change_avatar = FileField("Изменить аватар профиля:")
     change_background = FileField("Изменить фон канала:")
-    channel_info = StringField("Указать информацию о канале:",
+    channel_info = TextAreaField("Указать информацию о канале:",
                                validators=[Length(8, message='Текст слишком короткий'), Optional()])
     current_password = PasswordField("Введите свой текущий пароль для подтверждения изменений:",
                                      validators=[Length(8, message='Пароль слишком короткий'), match])
@@ -122,7 +131,10 @@ class VideoToRoomForm(FlaskForm):
 
 
 class AddRoomForm(FlaskForm):
+    class Meta:
+        csrf = False
+
     token = StringField("Название комнаты", validators=[DataRequired(message='Введите название комнаты'),
                                                         exist_token,
-                                                        Length(5, message='Текст слишком короткий')])
+                                                        Length(2, message='Текст слишком короткий')])
     submit = SubmitField("Создать")

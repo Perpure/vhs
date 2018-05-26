@@ -2,10 +2,10 @@ from config import basedir
 from web import db, app
 from web.models import User
 from PIL import Image, ImageDraw, ImageEnhance
-from web.models import User, AnonUser
+from web.models import User, AnonUser, RoomDeviceColorConnector
 from web import app
 from functools import wraps
-from flask import session, redirect, url_for
+from flask import session, redirect, url_for, render_template
 import numpy as np
 import math
 import cv2
@@ -60,7 +60,25 @@ def is_true_pixel(r, g, b, R, G, B):
     k=60
     return (r in range(R-k, R+k))and(g in range(G-k, G+k))and(b in range(B-k, B+k))
 
-
+def calibrate_resolution(resolution, w, h):
+    width = resolution[0]
+    height = resolution[1]
+    if (width/height) > (w/h):
+        while True:
+            e = abs((width/height) - (w/h))
+            height+=2
+            if e < abs((width/height) - (w/h)):
+                height-=2
+                return [width, height]
+    if (width/height) < (w/h):
+        while True:
+            e = abs((width/height) - (w/h))
+            width+=2
+            if e < abs((w/h) - (width/height)):
+                width-=2
+                return [width, height]
+    return [width, height]
+            
 def parse(room, users, impath):
     img = cv2.imread(impath) # Читаем изображение
     hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV) # Меняем цветовую схему с BGR на HSV
@@ -104,6 +122,9 @@ def parse(room, users, impath):
         
     # Находим разрешение
     resolution = (maxX - minX, maxY - minY)
+    new_resolution = calibrate_resolution(resolution, 16, 9)
+    deltax = (new_resolution[0] - resolution[0]) / 2
+    deltay = (new_resolution[1] - resolution[1]) / 2
 
     room_map = Image.new('RGB', resolution, (255, 255, 255))
     draw = ImageDraw.Draw(room_map)
@@ -119,26 +140,68 @@ def parse(room, users, impath):
         draw.polygon(np.int0(cv2.boxPoints(rect)).flatten().tolist(), fill=color)
         
         #Считаем-с
-        firsty = int(rect[0][1] - rect[1][1] / 2)        
+        if rect[2] < -85 and rect[2] > -95:
+            firsty = int(rect[0][1] - rect[1][0] / 2) + deltay
+            lasty = int(rect[0][1] + rect[1][0] / 2) + deltay
+            firstx = int(rect[0][0] - rect[1][1] / 2) + deltax
+            lastx = int(rect[0][0] + rect[1][1] / 2) + deltax
+        else:
+            firsty = int(rect[0][1] - rect[1][1] / 2) + deltay
+            lasty = int(rect[0][1] + rect[1][1] / 2) + deltay
+            firstx = int(rect[0][0] - rect[1][0] / 2) + deltax
+            lastx = int(rect[0][0] + rect[1][0] / 2) + deltax
+        width = ( new_resolution[0] / (lastx - firstx) ) * 100
 
-        firstx = int(rect[0][0] - rect[1][0] / 2)
-        lastx = int(rect[0][0] + rect[1][0] / 2)
+        left = - ( firstx / new_resolution[0] ) * width
+        top = - ( firsty / new_resolution[1] ) * width
 
-        res_k = ( resolution[0] / (lastx - firstx) ) * 100
-
-        left = - ( (firstx / resolution[0]) * res_k )
-        top = - ( (firsty / resolution[1]) * res_k )
-
+        print(top, left)
         #Записываем-с
-        user.res_k = int(res_k)
+        user.res_k = int(width)
         user.top = int(top)
         user.left = int(left)
 
         db.session.commit()
     
-    del draw      
-        
-    room_map.save(os.path.join(basedir, 'images', room.token + '_map.jpg'))   
+    del draw
+
+    room_map.save(os.path.join(basedir, 'images', str(room.id) + '_map.jpg'))   
+
+
+def image_loaded(request, room, user, users, null_form, image_form, Room_Form):
+    room_id = room.id
+    room_map_url = str(room_id) + '_map'
+    if 'image' not in request.files:
+        return render_template('room.html', room=room, user=cur_user(),
+                               color=user.color, users=users,
+                               image_form=null_form,
+                               Room_Form=Room_Form, loaded=False,
+                               map_ex=os.path.exists(basedir + '/images/' + str(room_id) + '_map.jpg'),
+                               room_map=room_map_url, anon=user, count=len(users)+1)
+
+    file = request.files['image']
+    if file.filename == '':
+        return render_template('room.html', room=room, user=cur_user(),
+                               calibrate_url=calibrate_url, color=user.color, users=users,
+                               image_form=null_form,
+                               Room_Form=Room_Form, loaded=False, 
+                               map_ex=os.path.exists(basedir + '/images/' + str(room_id) + '_map.jpg'),
+                               room_map=room_map_url, anon=user, count=len(users)+1)
+
+    if file and allowed_image(file.filename):
+        file.save(basedir + '/images/' + str(room_id) + '.' + file.filename.split('.')[-1].lower())
+        try:
+            parse(room, users, basedir + '/images/' + str(room_id) + '.jpg')
+        except:
+            return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users,
+                                       image_form=image_form, count=len(users),
+                                       Room_Form=Room_Form, loaded=True, room_map=room_map_url, anon=user,
+                                       msg="Мы не смогли идентифицировать устройства, попробуйте загрузить другую фотографию.",
+                                       map_ex=os.path.exists(basedir + '/images/' + str(room_id) + '_map.jpg'))
+        return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users,
+                               image_form=image_form, anon=user,
+                               Room_Form=Room_Form, loaded=True, room_map=room_map_url, count=len(users)+1,
+                               map_ex=os.path.exists(basedir + '/images/' + str(room_id) + '_map.jpg'))
 
 
 def cur_user():
@@ -150,7 +213,7 @@ def cur_user():
 def anon_user():
     user = None
     if 'anon_id' in session:
-        user = AnonUser.get(id=session['anon_id'])
+        user = AnonUser.query.get(session['anon_id'])
     if not user:
         user = AnonUser()
         session['anon_id'] = user.id

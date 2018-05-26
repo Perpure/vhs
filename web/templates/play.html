@@ -1,15 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
-    <video id="my-video" class="video-js" poster="{{url_for('get_image', pid=vid)}}"
+    <video id="my-video" class="video-js vjs-fluid vjs-paused preview-player-dimensions vjs-controls-enabled vjs-workinghover vjs-v6 vjs-mux vjs-user-active" poster="{{url_for('get_image', pid=vid)}}"
     data-setup='{"controls": true, "autoplay": false, "preload": "auto"}'>
          <source src="{{url_for('get_video', vid=vid)}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
     </video>
+<div class="titling">
 <p class="videoTitle">{{ video.title }}</p>
 <p class="vidViews">Просмотры: {{ video.viewers | length }}</p>
-<br>
+</div>
+
 <div class="infoOne">
 <div>
-    <img src="../static/a.png" alt="" class="authAva">
+    <div class="authAva"><img src="../static/images/{{ usr.avatar }}" alt="" class="authAvaIn"></div>
     <div class="inAuth">    
         <b><a href="{{url_for('cabinet', usr=video.user_login)}}" class="Link">{{video.user.name}}</a></b>
         <p class="videoDate" id="Dating">{{video.date}}</p>
@@ -17,26 +19,27 @@
 </div>
 </div>
 
-{%if user%}
+
 <div class="liking">
         <div class="lineLike">        
             <div id="likSh" class="likeShow"></div>
             <div id="disSh" class="disShow"></div>
         </div>
+
         <div class="dlc">
             <input class="Like" id="like" name="like" type="submit" value="Нравится">
             <span class="lik" id="lik">{{ video.likes | length }}</span>
             <input class="Dislike" id="dislike" name="dislike" type="submit" value="НЕ нравится">
             <span class="dis" id="dis">{{ video.dislikes | length }}</span>
+
         </div>
+
 </div>
-{%endif%}
+
 
 <div class="tags">
 {% for tag in video.tags %}
-<span class="Tag">
-    {{ '#'+tag.text }}
-</span>
+<span class="Tag">#{{ tag.text }}</span>
 {% endfor %}
 </div>
 
@@ -45,10 +48,6 @@
 {%endif%}
 
 <div class="cSect">
-
-<form action="" method="POST">
-    {{ form.submit }}
-</form>
 
 <p>Комментарии</p>
 {%if user %}
@@ -61,7 +60,7 @@
 <div id="CSect">
 {% for comment in video.comments|sort(attribute="id")|reverse %}
 <div class="Comment">
-    <img src="../static/a.png" alt="" class="commAva">
+    <div class="commAva"><img src="../static/images/{{ comment.user.avatar }}" alt="" class="commAvaIn"></div>
     <div class="commTxt">
         <p class="commAuth"><a href="{{url_for('cabinet', usr=comment.user.login)}}" class="Link">{{ comment.user.name }}</a></p>
         <p>{{ comment.text }}</p>
@@ -72,7 +71,7 @@
 </div>
 
 <script src="{{ url_for('static', filename='video.js') }}"></script>
-<script src="http://vjs.zencdn.net/6.6.3/video.js"></script>
+<script src="https://vjs.zencdn.net/7.0.3/video.min.js"></script>
 <style>
     .Like
     {

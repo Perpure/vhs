@@ -62,6 +62,7 @@ function map_init () {
         }
     );
 
+    map.events.add('wheel', function(e) {e.preventDefault();});
     map.events.add('click', function(e) {
         if (moveable_gt) {
             moveable_gt.geometry.setCoordinates(e.get('coords'));
