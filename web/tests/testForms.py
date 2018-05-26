@@ -184,7 +184,7 @@ class TestUploadVideoForm(unittest.TestCase):
     def test_should_has_need_fields(self):
         self.assertTrue(hasattr(self.form, "title"))
         self.assertTrue(hasattr(self.form, "video"))
-        self.assertTrue(hasattr(self.form, "geotag_is_needed"))
+        # self.assertTrue(hasattr(self.form, "geotag_is_needed"))
         self.assertTrue(hasattr(self.form, "geotag_data"))
         self.assertTrue(hasattr(self.form, "submit"))
 
@@ -194,8 +194,8 @@ class TestUploadVideoForm(unittest.TestCase):
     def test_should_video_field_is_file_field(self):
         self.assertIsInstance(self.form.video, FileField)
 
-    def test_should_geotag_is_needed_field_is_boolean_field(self):
-        self.assertIsInstance(self.form.geotag_is_needed, BooleanField)
+    # def test_should_geotag_is_needed_field_is_boolean_field(self):
+    #     self.assertIsInstance(self.form.geotag_is_needed, BooleanField)
 
     def test_should_submit_field_is_string_field(self):
         self.assertIsInstance(self.form.submit, SubmitField)

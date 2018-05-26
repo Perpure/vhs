@@ -1,34 +1,108 @@
 {% extends "base.html" %}
 {% block content %}
-    <video height="400" controls="controls">
+    <video id="my-video" class="video-js vjs-fluid vjs-paused preview-player-dimensions vjs-controls-enabled vjs-workinghover vjs-v6 vjs-mux vjs-user-active" poster="{{url_for('get_image', pid=vid)}}"
+    data-setup='{"controls": true, "autoplay": false, "preload": "auto"}'>
          <source src="{{url_for('get_video', vid=vid)}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
     </video>
+<div class="titling">
 <p class="videoTitle">{{ video.title }}</p>
-<p class="videoDate">Добавлено {{video.date}}</p>
-{%if user %}
-<form action="" method="post">
-        <div>{{ form.message.label }}</div>
-        <div>{{ form.message(rows=5, cols=60) }}</div>
-        {% if form.message.errors %}
-            {% for error in form.message.errors %}
-            <div style="color: red;">{{ error }}</div>
-            {% endfor %}
-        {% endif %}
-        {{ form.submit }}
-</form>
+<p class="vidViews">Просмотры: {{ video.viewers | length }}</p>
+</div>
 
-{% else %}
-<a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы комментировать
+<div class="infoOne">
+<div>
+    <div class="authAva"><img src="../static/images/{{ usr.avatar }}" alt="" class="authAvaIn"></div>
+    <div class="inAuth">    
+        <b><a href="{{url_for('cabinet', usr=video.user_login)}}" class="Link">{{video.user.name}}</a></b>
+        <p class="videoDate" id="Dating">{{video.date}}</p>
+    </div>
+</div>
+</div>
+
+
+<div class="liking">
+        <div class="lineLike">        
+            <div id="likSh" class="likeShow"></div>
+            <div id="disSh" class="disShow"></div>
+        </div>
+
+        <div class="dlc">
+            <input class="Like" id="like" name="like" type="submit" value="Нравится">
+            <span class="lik" id="lik">{{ video.likes | length }}</span>
+            <input class="Dislike" id="dislike" name="dislike" type="submit" value="НЕ нравится">
+            <span class="dis" id="dis">{{ video.dislikes | length }}</span>
+
+        </div>
+
+</div>
+
+
+<div class="tags">
+{% for tag in video.tags %}
+<span class="Tag">#{{ tag.text }}</span>
+{% endfor %}
+</div>
+
+{%if not user%}
+<br><a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы оценить видео
 {%endif%}
-<p>Просмотры: {{ video.viewers | length }}</p>
+
+<div class="cSect">
+
 <p>Комментарии</p>
-{% for comment in video.comments %}
+{%if user %}
+
+<textarea id="txtPlate" class="commArea" maxlength="200"></textarea>
+<br>
+<input type="submit" value="Запостить" id="addC">
+{%endif%}
+
+<div id="CSect">
+{% for comment in video.comments|sort(attribute="id")|reverse %}
 <div class="Comment">
-    <img src="../static/a.png" alt="" class="commAva">
+    <div class="commAva"><img src="../static/images/{{ comment.user.avatar }}" alt="" class="commAvaIn"></div>
     <div class="commTxt">
-        <p>{{ comment.user.login }}</p>
+        <p class="commAuth"><a href="{{url_for('cabinet', usr=comment.user.login)}}" class="Link">{{ comment.user.name }}</a></p>
         <p>{{ comment.text }}</p>
     </div>
 </div>
 {% endfor %}
+</div>
+</div>
+
+<script src="{{ url_for('static', filename='video.js') }}"></script>
+<script src="https://vjs.zencdn.net/7.0.3/video.min.js"></script>
+<style>
+    .Like
+    {
+        {%if lkd!=1 %}
+            background-image:url({{ url_for('static', filename='lik1.png') }});
+        {%else%}
+            background-image:url({{ url_for('static', filename='lik1L.png') }});
+        {%endif%}
+    }
+    .Dislike
+    {
+        {%if lkd!=-1 %}
+            background-image:url({{ url_for('static', filename='dis1.png') }});
+        {%else%}
+            background-image:url({{ url_for('static', filename='dis1D.png') }});
+        {%endif%}
+    }
+
+    .Like:hover,.Dislike:hover
+{
+    background-size:41%;
+}    
+
+    .Like:hover
+    {
+        background-image:url({{ url_for('static', filename='lik1H.png') }});
+    }
+    .Dislike:hover
+    {
+        background-image:url({{ url_for('static', filename='dis1H.png') }});
+    }
+</style>
 {% endblock %}
+

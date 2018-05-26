@@ -1,65 +1,237 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Комната {{room.token}}</h1>
-{% if room.capitan_id == user.id %}
-{% if room.color_user %}
+<h1>Комната {{room.name}}</h1>
+{% if room.capitan_id == anon.id %}
 <form action="" method="post">
     {{Room_Form.hidden_tag()}}
-    <a href="{{calibrate_url}}">{{ Room_Form.submit }}</a>
+    {{ Room_Form.submit }}
 </form>
-{% endif %}
 <h5>Загрузите калибровочное фото</h5>
 <form action="" method="post" enctype="multipart/form-data">
-    <div class="Loader"><div> <input id="image" name="image" type="file" accept="image/*" capture> > </div></div>
+    <div class="Loader"><div><input id="image" name="image" type="file" accept="image/*" capture></div></div>
     <div id="Calibr"> {{ image_form.submit }} </div>
+{% if room.video_id %}
+<button class="result" id="showRes" type="button">Начать демонстрацию</button>
+<div id="cod"></div>
+{% endif %}
+    {% if map_ex %}
+    
+    {% endif %}
 </form>
-{% if room.color_user %}
-{% else %}
-<p>Пригласите участников в комнату</p>
-{% endif %}
-{% endif %}
-<p><a href="{{result_url}}"><button class="result">Начать демонстрацию</button></a></p>
-<hr>
-<h5>Участники</h5>
-{% for i in users %}
-<p>{{i.login}}</p>
-{% endfor %}
-<hr>
-<p>После того, как вы пригласили участников, разместите их устройства на площади для показа, открыв страницу комнаты. На странице капитана (создавший комнату пользователь) нажмите на кнопку калибровки, после чего на всех устройствах откроется цветная сплошная заливка. Нажмите на кнопку загрузки файла и сделайте фотографию устройств, желательно под прямым углом. Если что-то пошло не так, вы можете убрать лишнее освещение, сделать экран на телефонах ярче. После этого выберите желаемое для показа видео и нажмите на кнопку результата. Все устройства начнут воспроизведение.</p>
-{% if room.capitan_id != user.id %}
-    <script>
-        let speed=3000;
-        setTimeout(function step(){
-            $.ajax({
-                       url:"/askAct",
-                       type:"GET",
-                       dataType:"text",
-                       success:function(response)
-                       {
-                            if(response=="calibrate")window.location ="{{calibrate_url}}";
-                       },
-                       error:function(){}
-                    });
-            setTimeout(step,speed);
-        },speed);
 
-        $(function() {
-            $(document).ready(function() {
-            var ratio = window.devicePixelRatio || 1;
-            var width = screen.width * ratio;
-            var height = screen.height * ratio;
-                $.ajax({
-                  url: '/tellRes',
-                  contentType: "application/json; charset=utf-8",
-                  type: "POST",
-                  data: JSON.stringify({ "width": width, "height" : height }),
-                  success: function () {
-                    console.log(JSON.stringify({ "width": width, "height" : height }));},
-                  });
-                  dataType:"json"
-            });
-        });
-    </script>
 {% endif %}
+{% if room.capitan_id != anon.id %}
+<hr>
+<button onclick="fullscreen();" class="fullscreenB">Перейти в полноэкранный режим</button>
+{% endif %}
+{% if room.capitan_id == anon.id %}
+{% if room.video_id %}
+<hr>
+        <div class="video">
+            <a href="{{url_for('play', vid=room.video_id)}}" class="Link">
+            <img src="{{url_for('get_image', pid=room.video_id)}}" alt="" class="preview">
+            </a>
+        </div>
+<form action="{{url_for('choose_video', room_id=room.id)}}">
+<button>Выбрать другое видео для демонстрации</button>
+</form>
+{% else %}
+<hr>
+<form action="{{url_for('choose_video', room_id=room.id)}}">
+<button>Выберите видео для демонстрации</button>
+</form>
+{% endif %}
+{% endif %}
+{% if count > 1 %}
+<hr>
+<h5>Количество участников: <span id="countUsers">{{count}}</span></h5>
+{% else %}
+<hr>
+<p id="countUsers">Пригласите участников в комнату</p>
+{% endif %}
+{% if room.capitan_id != anon.id %}
+<div id="cod"></div>
+{% endif %}
+{% if map_ex %}
+<hr>
+<img src="{{url_for('get_multi', pid=room_map)}}" style="width:100%">
+{% endif %}
+{% if msg %}
+    <hr>
+    <p>{{msg}}</p>
+{% endif %}
+<hr>
+<button id="instructionBtn" >Инструкция</button>
+<ol id="instruction" class="instr">
+<li>Пригласите участников.</li>
+<li>Выберите видео для демонстрации.</li>
+<li>Разместите устройства на площади для показа.</li>
+<li>Капитан нажимает на кнопку “Калибровка”.<br>
+4.1. На устройствах участников откроется сплошная цветниая заливка.</li>
+<li>Капитан делает фотографию утсройств и нажимает “Инициализировать”</li>
+<li>Через некоторое время появится карта устройств.<br>
+6.1. Если положение устройств определено неверно повторите действия описанные в п.5</li>
+<li>Капитан нажимает “Начать демонстрацию”<br>
+7.1. Запускается обратный отсчёт</li>
+<li>Через 15 чекунд начинается показ видео.</li>
+</ol>
+
+{% if room.capitan_id != anon.id %}
+    {% if room.video_id %}
+    <video class="ResultVideo" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
+    {% endif %}
+{% endif %}
+<script>
+    function countDown(Time)
+    {
+        $('#cod').css("margin-top","10px");
+        setTimeout(function step(){
+            Time--;
+            $('#cod').html("<h5>Показ начнётся через: " + Time + "с</h5>");
+            if(Time)setTimeout(step,1000);
+            else $('#cod').empty();
+        },1000);
+    }
+    
+    var ID={{ room.id }};
+    
+    var speed=4000;
+
+    function Result()
+    {
+        $('#Body').css('overflow', 'hidden')
+        $('#ReVi').show();
+        $('#ReVi').get(0).play();
+        $('#ReVi').on('ended',function(){ 
+            $('#ReVi').hide(); 
+            $('#Footer').show();
+            $('#Body').css('overflow', 'auto')
+        });
+        $('#Footer').hide();
+    }
+
+    setTimeout(function step(){
+        $.ajax({
+            url:"/askAct/"+ID,
+            type:"GET",
+            dataType:"json",
+            success:function(response)
+            {
+                if(response.action=="calibrate"){
+                    $('#Body').css('overflow', 'hidden');
+                    $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; background:'+response.color+';"></div>');
+                    $('#calibrImage').click(fullscreen);
+                    $('#Footer').hide();
+                    $('#Header').hide();
+                ;}
+    console.log(response.action);
+                if(response.action=="result"){
+                    $('#Body').css('overflow', 'hidden');
+                    setTimeout(Result,response.time);
+                    console.log($('#ReVi').width());
+                    console.log($('#ReVi').height());
+                    $('#ReVi').css({
+                        top: response.top + "%",
+                        left: response.left + "%",
+                        width: response.width+"%",
+                    });
+                    $('#ReVi').css({
+                        top: $('#ReVi').height() * ( response.top / response.width ) + "px",
+                        left: $('#ReVi').width() * ( response.left / response.width ) + "px",
+                        width: response.width+"%",
+                    });
+                    if(response.noSound)$("#ReVi").prop('muted', true);
+                    var time=Math.round(response.time/1000);
+                    countDown(time);
+                }
+                if(response.action=="refresh"){
+                    location.reload();
+                }
+                if(response.action=="update"){
+                    {% if room.capitan_id == anon.id %}
+                    $("#submit").show();
+                    $("#countUsers").html("Количество участников: "+response.count);                  
+                    {% else %}
+                    $("#countUsers").html(response.count);
+                    {% endif %}
+                }
+            },
+            error:function(){}
+        });
+        setTimeout(step,speed);
+    },speed);
+
+    $(document).ready(function() {
+        var ratio = window.devicePixelRatio || 1;
+        var width = screen.width * ratio;
+        var height = screen.height * ratio;
+        $.ajax({
+            url: '/tellRes',
+            contentType: "application/json; charset=utf-8",
+            type: "POST",
+            dataType:"json",
+            data: JSON.stringify({ "width": width, "height" : height }),
+            success: function () {
+                console.log(JSON.stringify({ "width": width, "height" : height }));},
+        });
+    });
+
+    function fullscreen() {
+        var isInFullScreen = (document.fullscreenElement && document.fullscreenElement !== null) ||
+            (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
+            (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
+            (document.msFullscreenElement && document.msFullscreenElement !== null);
+
+        var docElm = document.documentElement;
+        if (!isInFullScreen) {
+            if (docElm.requestFullscreen) {
+                docElm.requestFullscreen();
+            } else if (docElm.mozRequestFullScreen) {
+                docElm.mozRequestFullScreen();
+            } else if (docElm.webkitRequestFullScreen) {
+                docElm.webkitRequestFullScreen();
+            } else if (docElm.msRequestFullscreen) {
+                docElm.msRequestFullscreen();
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+    }
+
+    $(document).ready(function(){
+        $("#instructionBtn").click(function(){
+        $("#instruction").slideToggle("slow",function(){});
+      });});
+
+
+{% if room.capitan_id == anon.id %}
+{% if count == 1 %}
+    $('#submit').hide();
+{% endif %}
+{% if room.video_id %}
+    $('#showRes').click(function(){
+        var hash=window.location.href;
+        var sl=0;
+        for(let i=0;i<hash.length;i++)
+            if(hash[i]=='/')sl=i;
+        hash=hash.substring(sl+1);
+        $.ajax({
+            url:"/showRes/"+hash,
+            type:"GET"
+        });
+        var time=15;
+        countDown(time);
+    });
+{% endif %}
+{% endif %}
+</script>
 {% endblock %}
 

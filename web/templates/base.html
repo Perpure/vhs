@@ -6,52 +6,76 @@
 ███─█──█───█
 ─█──█──█─███
 -->
-<html lang="en">
+<html lang="en" id="html">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Hosting of Everything</title>
+  <title>Video Hosting Service</title>
+  <link href="https://vjs.zencdn.net/7.0.3/video-js.min.css" rel="stylesheet">
   <link rel="shortcut icon" href="{{ url_for('static', filename='vhs4.png') }}" type="image/x-icon">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+  <link href="{{ url_for('static', filename='tagify.css') }}" rel="stylesheet">
   <script src="{{ url_for('static', filename='jquery.js') }}"></script>
 </head>
 <body id="Body">
-  <header>
-    <div class="Logo">
-      <a href="{{url_for('main')}}" class="Link"><img src="{{ url_for('static', filename='vhs4.png') }}" alt="" class="LogoImg"></a>
-      <div class="LogoTxt" id="logoTxt">VideoHostingService</div>
-    </div>
-    <div class="midHead"></div>
-    <div class="Menu">
-      Меню
-      <div class="inMenu">
-        <a href="{{url_for('main')}}" class="Link" id="Home"><div class="menuBtn"><div class="menuTxt">Главная</div><img src="{{ url_for('static', filename='main.png') }}" class="menuImg" id="HomImg"></div></a>
+  <header id="Header">
+    <div class="midHead">
+        <div class="logo">
+        <a href="{{url_for('main')}}" class="Link"><img src="{{ url_for('static', filename='vhs4.png') }}" alt="" class="LogoImg"></a>
+        <div class="LogoTxt" id="logoTxt" title="VideoHostingService">VHS</div>
+        </div>
+        <div class="navMenu">
+        <div class="menuHolder" id="mHolder">Меню</div>
+        <a href="{{url_for('main')}}" class="Link" id="Home"><div class="navMen">Главная</div></a>
+        <div class="navMen" id="Search">Поиск</div>
+        <div class="navMen navClast">
+            Мультискрин 
+            <img src="{{ url_for('static', filename='down.png') }}" class="drop-down">
+            <div class="inBtn">
+                <img src="{{ url_for('static', filename='updown.png') }}" class="drop-down up-down">
+                <a href="{{url_for('viewroom')}}" class="Link" id="Multi"><div class="subBtn upst">Все комнаты</div></a>
+                <a href="{{url_for('createroom')}}" class="Link" id="Multi"><div class="subBtn">Создать комнату</div></a>
+            </div>
+        </div>
         {%if user %}
-        <a href="{{url_for('cabinet')}}" class="Link" id="My"><div class="menuBtn"><div class="menuTxt">Мой Канал</div><img src="{{ url_for('static', filename='channel.png') }}" class="menuImg"></div></a>
-        <a href="{{url_for('viewroom')}}" class="Link" id="Multi"><div class="menuBtn"><div class="menuTxt">Мультискрин</div><img src="{{ url_for('static', filename='multi.png') }}" class="menuImg"></div></a>
-        <a href="{{url_for('upload')}}" class="Link" id="Load"><div class="menuBtn"><div class="menuTxt">Загрузить Видео</div><img src="{{ url_for('static', filename='load.png') }}" class="menuImg"></div></a>
-        <a href="{{url_for('videos_map')}}" class="Link" id="Map"><div class="menuBtn"><div class="menuTxt">Карта</div><img src="{{ url_for('static', filename='map.png') }}" class="menuImg"></div></a>
-        <a href="{{url_for('logout')}}" class="Link" id="Out"><div class="menuBtn"><div class="menuTxt">Выйти</div><img src="{{ url_for('static', filename='out.png') }}" class="menuImg"></div></a>
+        <div class="navMen navEdge navClast">
+            Кабинет 
+            <img src="{{ url_for('static', filename='down.png') }}" class="drop-down">
+            <div class="inBtn">
+                <img src="{{ url_for('static', filename='updown.png') }}" class="drop-down up-down">
+                <a href="{{url_for('cabinet', usr=user.login)}}" class="Link" id="My"><div class="subBtn upst">Мой канал</div></a>
+                <a href="{{url_for('views_story')}}" class="Link" id="Views"><div class="subBtn">История</div></a>
+                <a href="{{url_for('upload')}}" class="Link" id="Load"><div class="subBtn">Загрузить</div></a>
+                <a href="{{url_for('logout')}}" class="Link" id="Out"><div class="subBtn">Выйти</div></a>
+            </div>
+        </div>
         {%else%}
-        <a href="{{url_for('log')}}" class="Link" id="Come"><div class="menuBtn"><div class="menuTxt">Войти</div><img src="{{ url_for('static', filename='log.png') }}" class="menuImg" id="ComeImg"></div></a>
-        <a href="{{url_for('reg')}}" class="Link" id="Log"><div class="menuBtn"><div class="menuTxt">Регистрация</div><img src="{{ url_for('static', filename='reg.png') }}" class="menuImg" id="LogImg"></div></a>
+        <a href="{{url_for('log')}}" class="Link" id="Come"><div class="navMen">Войти</div></a>
+        <a href="{{url_for('reg')}}" class="Link" id="Log"><div class="navMen navEdge">Регистрация</div></a>
         {%endif%}
-      </div>
+        </div>
+    </div>
+    <div class="Searcher" id="searcher">
+        <input type="text" class="inSearch" id="searchKey">
+        <div class="searchField byDate" value=0 id="Date">Дата</div>
+        <div class="searchField byViews" value=0 id="byViews">Просмотры</div>
+        <input type="submit" value="Поиск" class="searchBtn" id="startSearch">
     </div>
   </header>
-  <main>
-    <div class="Content">
+  <main id="Main">
+    <div class="Content" id="Contentt">
       {% block content %}{% endblock %}
     </div>
   </main>
-  <footer>
+  <footer id="Footer">
     <div class="Foot">
-      <div class="Contact"><a href="https://vk.com/shpteam" class="Link"><img src="{{ url_for('static', filename='vk.png') }}" alt="" class="contImg"></a><img src="{{ url_for('static', filename='fb.png') }}" alt="" class="contImg"></div>
-      2018, 53rd Group
+      <div class="footLine"></div><div class="Contact"><a href="https://vk.com/shpteam" class="Link"><img src="{{ url_for('static', filename='vk.png') }}" alt="" class="contImg"></a><img src="{{ url_for('static', filename='fb.png') }}" alt="" class="contImg contEdge"></div><div class="footLine"></div>
+      <p class="Creator">2018, 53rd Group</p>
     </div>
   </footer>
+  <search></search>
 </body>
 <script src="{{ url_for('static', filename='global.js') }}"></script>
 </html>

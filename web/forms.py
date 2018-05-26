@@ -5,6 +5,8 @@ from wtforms import StringField, PasswordField, SubmitField, TextAreaField, Sele
 from wtforms.validators import Length, EqualTo, ValidationError, DataRequired, Optional
 from web.models import User , Room
 from .helper import cur_user
+import re
+from flask.json import JSONDecoder
 from wtforms.widgets import CheckboxInput, ListWidget
 
 
@@ -13,8 +15,11 @@ class RoomForm(FlaskForm):
 
 
 class UploadImageForm(FlaskForm):
+    class Meta:
+        csrf = False
+
     image = FileField("Выберите файл")
-    submit = SubmitField("Загрузить")
+    submit = SubmitField("Инициализировать фотографию")
 
 
 def not_exist(form, field):
@@ -26,9 +31,21 @@ def exist(form, field):
     if User.get(login=field.data) is None:
         raise ValidationError("Такого пользователя не существует")
 
+
 def exist_token(form,field):
-    if Room.get(token=field.data):
+    if Room.query.filter_by(name=field.data).first():
         raise ValidationError("Такая комната уже существует")
+
+
+def not_exist_token(form,field):
+    if not Room.query.filter_by(name=field.data).first():
+        raise ValidationError("Такой комнаты нет")
+
+
+def check_correct_name(form, field):
+    if not re.match(r'[a-zA-Z0-9_]', field.data):
+        raise ValidationError("В имени пользователя могут быть только цифры, латинские буквы и нижние подчёркивания")
+
 
 def match(form, field):
     user = None
@@ -40,9 +57,15 @@ def match(form, field):
         raise ValidationError("Неправильный пароль")
 
 
+def have_geodata(form, field):
+    data = JSONDecoder().decode(field.data)
+    if data['needed'] and not data['coords']:
+        raise ValidationError("Выставьте геотег")
+
+
 class RegForm(FlaskForm):
     login_reg = StringField("Имя пользователя", validators=[Length(5, message='Логин слишком короткий'),
-                                                            not_exist])
+                                                            not_exist, check_correct_name])
     password_reg = PasswordField("Пароль", validators=[Length(8, message='Пароль слишком короткий')])
     confirm_reg = PasswordField("Повторите пароль",
                                 validators=[Length(8, message='Пароль слишком короткий'),
@@ -52,13 +75,17 @@ class RegForm(FlaskForm):
 
 
 class JoinForm(FlaskForm):
-    token = StringField("Токен")
+    class Meta:
+        csrf = False
+
+    token = StringField("Название комнаты", validators=[not_exist_token, Length(2, message='Название слишком короткое')])
     submit = SubmitField("Присоединиться")
 
 
 class LogForm(FlaskForm):
     """Форма авторизации"""
-    login_log = StringField("Имя пользователя", validators=[Length(5, message='Логин слишком короткий'), exist])
+    login_log = StringField("Имя пользователя", validators=[Length(5, message='Логин слишком короткий'),
+                                                            check_correct_name, exist])
     password_log = PasswordField("Пароль", validators=[Length(8, message='Пароль слишком короткий'),
                                                        match])
     submit_log = SubmitField("Войти")
@@ -67,10 +94,13 @@ class LogForm(FlaskForm):
 
 class UploadVideoForm(FlaskForm):
     """Форма загрузки видео"""
+    class Meta:
+        csrf = False
+
     title = StringField("Введите название видео", validators=[Length(3, message='Название слишком короткое')])
     video = FileField("Выберите файл")
-    geotag_is_needed = BooleanField('Прикрепить геотег?')
-    geotag_data = HiddenField()
+    geotag_data = HiddenField(validators=[have_geodata])
+    tags = TextAreaField("Тэги", validators=[Length(2, message='Тэг слишком короткий'), Optional()])
     submit = SubmitField("Загрузить")
 
 
@@ -81,7 +111,7 @@ class UserProfileForm(FlaskForm):
                                                                     Optional()])
     change_avatar = FileField("Изменить аватар профиля:")
     change_background = FileField("Изменить фон канала:")
-    channel_info = StringField("Указать информацию о канале:",
+    channel_info = TextAreaField("Указать информацию о канале:",
                                validators=[Length(8, message='Текст слишком короткий'), Optional()])
     current_password = PasswordField("Введите свой текущий пароль для подтверждения изменений:",
                                      validators=[Length(8, message='Пароль слишком короткий'), match])
@@ -91,20 +121,20 @@ class UserProfileForm(FlaskForm):
 class SearchingVideoForm(FlaskForm):
     """Форма поиска видео"""
     search = StringField("Название")
-    date = BooleanField()
-    views = BooleanField()
+    date = BooleanField("Дата")
+    views = BooleanField("Просмотры")
     submit = SubmitField("Поиск")
 
 
-class AddCommentForm(FlaskForm):
-    class Meta:
-        csrf = False
-
-    message = TextAreaField("Комментарий", validators=[DataRequired(message='Введите текст'),
-                                                       Length(1, message='Текст слишком короткий')])
-    submit = SubmitField("Запостить")
+class VideoToRoomForm(FlaskForm):
+    submit = SubmitField("Создать комнату для видео")
 
 
 class AddRoomForm(FlaskForm):
-    token = StringField("Название комнаты", validators=[DataRequired(),exist_token,Length(5, message='Текст слишком короткий')])
+    class Meta:
+        csrf = False
+
+    token = StringField("Название комнаты", validators=[DataRequired(message='Введите название комнаты'),
+                                                        exist_token,
+                                                        Length(2, message='Текст слишком короткий')])
     submit = SubmitField("Создать")

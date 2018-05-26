@@ -1,33 +1,48 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="container">
         <div class="content">
+            <div class="conbu">
          <div class="z1 z2" onclick="func(this)">Информация о пользователе</div>
          <div class="z1" onclick="func(this)">Видео пользователя</div>
+        {% if settings %}
          <div class="z1" onclick="func(this)">Настройки</div>
-         <br>
+        {% endif %}
+                </div>
          <div class="con con2">
              <div class="content0">
-             <img class="ava" src="../static/a.png">             
+             <img class="ava" src="../static/images/{{ usr.avatar }}">
                 <div class="ava2">
-             Пользователь {{ user.name }}
+             Пользователь {{ usr.name }}
             <br>
             Информация о канале:
              <div class="info">
-              {{ user.channel_info }}
+              {{ usr.channel_info }}
              </div>
                  </div>
              </div>
         </div>
          <div class="con">
-             <!--(Тут будут видео)            -->
+             <div class="content0">
              {% for item in items %}
-                 <div class="video"><img src="{{url_for('get_image', pid=item.id)}}" alt="" class="preview"><div class="videoTxt"> <a href="play/{{item.id}}" class="Link"><p class="videoName">{{item.title}}</p></a> <p class="videoView">{{item.views}} просмотров</p></div> </div>
-             {% endfor %}
+        <div class="video">
+            <a href="/play/{{item.id}}" class="Link">
+            <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="preview">
+            </a>
+            <div class="videoTxt">
+                <a href="/play/{{item.id}}" class="Link">
+                <p class="videoName">{{item.title}}</p>
+                </a>
+                <p class="videoView">{{ item.viewers | length }} просмотров</p>
+            </div>
         </div>
+{% endfor %}
+                 </div>
+        </div>
+        {% if settings %}
         <form action="" method="post">
              {{form.hidden_tag()}}
              <div class="con">
+                 <div class="content0">
                  <div class="set">
                  {{ form.change_name.label }}
                  {{ form.change_name }}
@@ -49,17 +64,8 @@
                  <br>
                 </div>
                 <div class="set">
-                 Изменить аватар профиля:
-                 (Загрузка картинки)
+                 {{ form.channel_info.label }} 
                  <br>
-                </div>
-                <div class="set">
-                 Изменить фон канала:
-                 (Загрузка картинки)
-                 <br>
-                </div>
-                <div class="set">
-                 {{ form.channel_info.label }}
                  {{ form.channel_info }}
                  {% if form.channel_info.errors %}
                     {% for error in form.channel_info.errors %}
@@ -79,12 +85,13 @@
                  <br>
                 </div>
                 <div class="set">
-                    <button type="submit" class="but" value="Сохранить">Сохранить</button>
+                    <input type="submit" class="buttondlc" value="Сохранить">
                 </div>
             </div>
-        </form>
-    </div>
             </div>
+        </form>
+        {% endif %}
+    </div>
     <script>
         'use strict'
     function func(a){
