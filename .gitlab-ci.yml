@@ -20,12 +20,12 @@ cache:
     - venv/
 
 before_script:
-  - python -V               # Print out python version for debugging
-  - pip install virtualenv
+  - python3 -V               # Print out python version for debugging
+  - pip3 install virtualenv
   - virtualenv venv
   - source venv/bin/activate
   - apk add ffmpeg -y
-  - pip install -r requirements.txt
+  - pip3 install -r requirements.txt
 
 test:
   script:
