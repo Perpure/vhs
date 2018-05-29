@@ -1,8 +1,11 @@
+# coding=utf-8
 import unittest
-from web import app
+import os
+from web import app, db
 from wtforms import IntegerField, StringField, SubmitField, ValidationError, PasswordField, FileField
-from web.forms import LogForm, RegForm, UserProfileForm, AddCommentForm, AddRoomForm, JoinForm, \
-    UploadVideoForm, BooleanField, HiddenField
+from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
+    UserProfileForm, AddRoomForm, exist
+from web.models import User
 
 
 class TestLogForm(unittest.TestCase):
@@ -108,27 +111,6 @@ class TestUserProfileForm(unittest.TestCase):
         self.assertIsInstance(self.form.submit_changes, SubmitField)
 
 
-class TestAddCommentForm(unittest.TestCase):
-    def setUp(self):
-        app.config['TESTING'] = True
-        app.config['CSRF_ENABLED'] = False
-        with app.test_request_context():
-            self.form = AddCommentForm()
-
-    def tearDown(self):
-        del self.form
-
-    def test_should_has_need_fields(self):
-        self.assertTrue(hasattr(self.form, "message"))
-        self.assertTrue(hasattr(self.form, "submit"))
-
-    def test_should_message_field_is_string_field(self):
-        self.assertIsInstance(self.form.message, StringField)
-
-    def test_should_submit_field_is_string_field(self):
-        self.assertIsInstance(self.form.submit, SubmitField)
-
-
 class TestAddRoomForm(unittest.TestCase):
     def setUp(self):
         app.config['TESTING'] = True
@@ -146,7 +128,7 @@ class TestAddRoomForm(unittest.TestCase):
     def test_should_token_field_is_string_field(self):
         self.assertIsInstance(self.form.token, StringField)
 
-    def test_should_submit_field_is_string_field(self):
+    def test_should_submit_field_is_submit_field(self):
         self.assertIsInstance(self.form.submit, SubmitField)
 
 
@@ -167,7 +149,7 @@ class TestJoinForm(unittest.TestCase):
     def test_should_token_field_is_string_field(self):
         self.assertIsInstance(self.form.token, StringField)
 
-    def test_should_submit_field_is_string_field(self):
+    def test_should_submit_field_is_submit_field(self):
         self.assertIsInstance(self.form.submit, SubmitField)
 
 
@@ -197,5 +179,43 @@ class TestUploadVideoForm(unittest.TestCase):
     # def test_should_geotag_is_needed_field_is_boolean_field(self):
     #     self.assertIsInstance(self.form.geotag_is_needed, BooleanField)
 
-    def test_should_submit_field_is_string_field(self):
+    def test_should_submit_field_is_submit_field(self):
         self.assertIsInstance(self.form.submit, SubmitField)
+
+
+class TestRoomForm(unittest.TestCase):
+    def setUp(self):
+        app.config['TESTING'] = True
+        app.config['CSRF_ENABLED'] = False
+        with app.test_request_context():
+            self.form = RoomForm()
+
+    def tearDown(self):
+        del self.form
+
+    def test_should_has_need_fields(self):
+        self.assertTrue(hasattr(self.form, "submit"))
+
+    def test_should_submit_field_is_submit_field(self):
+        self.assertIsInstance(self.form.submit, SubmitField)
+
+
+class TestUploadImageForm(unittest.TestCase):
+    def setUp(self):
+        app.config['TESTING'] = True
+        app.config['CSRF_ENABLED'] = False
+        with app.test_request_context():
+            self.form = UploadImageForm()
+
+    def tearDown(self):
+        del self.form
+
+    def test_should_has_need_fields(self):
+        self.assertTrue(hasattr(self.form, "submit"))
+        self.assertTrue(hasattr(self.form, "image"))
+
+    def test_should_submit_field_is_submit_field(self):
+        self.assertIsInstance(self.form.submit, SubmitField)
+
+    def test_should_image_field_is_file_field(self):
+        self.assertIsInstance(self.form.image, FileField)
