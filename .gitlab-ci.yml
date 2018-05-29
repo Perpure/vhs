@@ -20,9 +20,9 @@ cache:
     - venv/
 
 before_script:
-  - sudo add-apt-repository ppa:mc3man/trusty-media -y && sudo apt-get update -y
-  - sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com `sudo aptitude update 2>&1 | grep -o '[0-9A-Z]\{16\}$' | xargs`
-  - sudo apt-get install ffmpeg -y
+  - add-apt-repository ppa:mc3man/trusty-media -y && sudo apt-get update -y
+  - apt-key adv --recv-keys --keyserver keyserver.ubuntu.com `sudo aptitude update 2>&1 | grep -o '[0-9A-Z]\{16\}$' | xargs`
+  - apt-get install ffmpeg -y
   - python3 -V               # Print out python version for debugging
   - pip3 install virtualenv
   - virtualenv venv
