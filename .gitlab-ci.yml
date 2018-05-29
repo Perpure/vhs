@@ -20,6 +20,7 @@ cache:
     - venv/
 
 before_script:
+  - apt-get install --reinstall software-properties-common -y
   - add-apt-repository ppa:mc3man/trusty-media -y && sudo apt-get update -y
   - apt-key adv --recv-keys --keyserver keyserver.ubuntu.com `sudo aptitude update 2>&1 | grep -o '[0-9A-Z]\{16\}$' | xargs`
   - apt-get install ffmpeg -y
