@@ -28,4 +28,4 @@ before_script:
 
 test:
   script:
-  - nose2
+  - nose2 -С

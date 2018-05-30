@@ -1,4 +1,4 @@
-[![pipeline status](https://gitlab.com/multiscreen/vhs/badges/master/pipeline.svg)](https://gitlab.com/multiscreen/vhs/commits/master)
+[![pipeline status](https://gitlab.com/multiscreen/vhs/badges/master/pipeline.svg)](https://gitlab.com/multiscreen/vhs/commits/master) [![coverage report](https://gitlab.com/multiscreen/vhs/badges/master/coverage.svg)](https://gitlab.com/multiscreen/vhs/commits/master)
 
 
 <h1>Установка и развертывание web-приложения HoE</h1>
