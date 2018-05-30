@@ -1,6 +1,7 @@
 # coding=utf-8
 """Файл начальной инициализации приложения"""
 import os
+from imageio import plugins
 
 # CSRF_ENABLED = True
 SECRET_KEY = 'SuperSecretPassword'
@@ -12,3 +13,4 @@ UPLOADS_DEFAULT_DEST = os.path.join(basedir, 'avatar')
 VIDEO_SAVE_PATH = os.path.join(basedir, 'video')
 ALLOWED_EXTENSIONS = {'mp4', 'ogv', 'mpeg', 'avi', 'mov', 'webm', 'flv'}
 ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+plugins.ffmpeg.download()
