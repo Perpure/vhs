@@ -1,4 +1,4 @@
-# coding=utf-8
+﻿# coding=utf-8
 import os
 import json
 from wtforms.validators import ValidationError
@@ -234,7 +234,7 @@ def cabinet(usr):
         if 'background' in request.files:
             folder = str(user.id)
             background_url = backgrounds.save(form.background.data, folder=folder)
-            user.avatar = json.dumps({"url": background_url})
+            user.background = json.dumps({"url": background_url})
             db.session.add(user)
             db.session.commit()
         return redirect(url_for("cabinet", usr=cabinet_owner.login))
