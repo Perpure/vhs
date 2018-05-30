@@ -165,6 +165,10 @@ def parse(room, users, impath):
     
     del draw
 
+    try:
+        os.remove(os.path.join(basedir, 'images', str(room.id) + '_map.jpg'))
+    except FileNotFoundError:
+        pass
     room_map.save(os.path.join(basedir, 'images', str(room.id) + '_map.jpg'))   
 
 
