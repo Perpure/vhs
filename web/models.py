@@ -228,14 +228,7 @@ class User(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def avatar_url(self,):
-        if self.avatar:
-            avatar_json = json.loads(self.avatar)
-            return url_for('_uploads.uploaded_file', setname=avatars.name, filename=avatar_json['url'])
-        else:
-            return '../static/avatar.jpg'
-
-    def background_url(self,):
+    def avatar_url(self):
         if self.avatar:
             avatar_json = json.loads(self.avatar)
             return url_for('_uploads.uploaded_file', setname=avatars.name, filename=avatar_json['url'])
