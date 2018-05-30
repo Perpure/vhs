@@ -165,7 +165,10 @@ def parse(room, users, impath):
     
     del draw
 
-    room_map.save(os.path.join(basedir, 'images', str(room.id) + '_map.jpg'))   
+    filename = basedir + '/images/' + str(room.id) + '_map.jpg'
+    if os.path.exists(filename):
+        os.remove(filename)
+    room_map.save(filename)
 
 
 def image_loaded(request, room, user, users, null_form, image_form, Room_Form):
