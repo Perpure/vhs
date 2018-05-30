@@ -1,28 +1,25 @@
-﻿from web import db
-from web import app
+﻿# coding=utf-8
 import shutil
 import hashlib
 import os
 from random import randint
 from datetime import datetime
-from flask import session
-from random import random
 from uuid import uuid4
+from web import db
+from web import app
+
 
 Views = db.Table('Views', db.Model.metadata,
                  db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
-                 db.Column('Video_id', db.String(32), db.ForeignKey('Video.id'))
-                 )
+                 db.Column('Video_id', db.String(32), db.ForeignKey('Video.id')))
 
 Likes = db.Table('Likes', db.Model.metadata,
                  db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
-                 db.Column('Video_id', db.String(32), db.ForeignKey('Video.id'))
-                 )
+                 db.Column('Video_id', db.String(32), db.ForeignKey('Video.id')))
 
 Dislikes = db.Table('Dislikes', db.Model.metadata,
                     db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
-                    db.Column('Video_id', db.String(32), db.ForeignKey('Video.id'))
-                    )
+                    db.Column('Video_id', db.String(32), db.ForeignKey('Video.id')))
 
 
 class Comment(db.Model):
@@ -60,7 +57,6 @@ class Tag(db.Model):
 
 
 class Video(db.Model):
-    """Класс описывающий модель Видео"""
     __tablename__ = 'Video'
     id = db.Column(db.String(32), primary_key=True)
     title = db.Column(db.String(140), nullable=False)
@@ -190,8 +186,6 @@ class User(db.Model):
     channel_info = db.Column(db.String(64))
     avatar = db.Column(db.String(64))
     action = db.Column(db.String(64))
-    device_width = db.Column(db.Integer)
-    device_height = db.Column(db.Integer)
     color = db.Column(db.String(64))
     top = db.Column(db.Integer)
     left = db.Column(db.Integer)
@@ -214,10 +208,6 @@ class User(db.Model):
         self.channel_info = "Заполните информацию о канале"
 
     def save(self, password):
-        """
-        Функция сохранения нового пользователя в базе данных
-        :param password: Пароль
-        """
         self.password = hashlib.sha512(
             password.encode("utf-8")).hexdigest()
         self.avatar = str(randint(1, 20)) + ".jpg"
@@ -229,28 +219,12 @@ class User(db.Model):
         return self.password == hash
 
     def change_name(self, name):
-        """
-        Метод, изменяющий имя пользователя
-        :param name: Имя пользователя
-        """
         self.name = name
         db.session.add(self)
         db.session.commit()
 
     def change_channel_info(self, info):
-        """
-        Метод, изменяющий информацию о канале пользователя
-        :param info: Информация о канале
-        """
         self.channel_info = info
-        db.session.add(self)
-        db.session.commit()
-
-    def update_resolution(self, width, height):
-        if self.device_width == width and self.device_height == height:
-            return ()
-        self.device_height = height
-        self.device_width = width
         db.session.add(self)
         db.session.commit()
 
@@ -320,9 +294,6 @@ class RoomDeviceColorConnector(db.Model):
 
 
 class AnonUser(db.Model):
-    """
-    Таблица для анонимного пользователя.
-    """
     __tablename__ = 'AnonUser'
     id = db.Column(db.String(), primary_key=True)
     action = db.Column(db.String(64))
@@ -337,9 +308,6 @@ class AnonUser(db.Model):
     room_capitan = db.relationship("Room", backref='captain')
 
     def __init__(self):
-        """
-        Сохраняет анонимного пользователя.
-        """
         self.id = str(uuid4())
         db.session.add(self)
         db.session.commit()
@@ -352,7 +320,7 @@ class AnonUser(db.Model):
 
     def update_resolution(self, width, height):
         if self.device_width == width and self.device_height == height:
-            return ()
+            return()
         self.device_height = height
         self.device_width = width
         db.session.add(self)
