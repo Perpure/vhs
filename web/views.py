@@ -1,11 +1,12 @@
 # coding=utf-8
 import os
+import json
 from wtforms.validators import ValidationError
 from flask import redirect, render_template, session, url_for, request
 from flask.json import JSONDecoder, dumps
 from werkzeug.exceptions import Aborter
 from config import basedir
-from web import app, db
+from web import app, db, avatars
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
     UserProfileForm, AddRoomForm
 from web.models import User, Video, Room, Color, Geotag, Tag, AnonUser, RoomDeviceColorConnector
@@ -216,6 +217,7 @@ def cabinet(usr):
 
     form = UserProfileForm()
     if form.validate_on_submit():
+        print(request.files)
         user = cur_user()
         if form.change_name.data:
             user.change_name(form.change_name.data)
@@ -223,6 +225,13 @@ def cabinet(usr):
             user.save(form.change_password.data)
         if form.channel_info.data:
             user.change_channel_info(form.channel_info.data)
+        if 'avatar' in request.files:
+            print('2')
+            folder = str(user.id)
+            avatar_url = avatars.save(form.avatar.data, folder=folder)
+            user.avatar = json.dumps({"url": avatar_url})
+            db.session.add(user)
+            db.session.commit()
         return redirect(url_for("cabinet", usr=cabinet_owner.login))
     return render_template('cabinet.html', form=form, user=cur_user(), items=items,
                            settings=is_cabinet_settings_available, usr=cabinet_owner)
