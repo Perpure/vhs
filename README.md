@@ -1,4 +1,5 @@
-[![pipeline status](https://gitlab.informatics.ru/pp17-53/HoE/badges/develop/pipeline.svg)](https://gitlab.informatics.ru/pp17-53/HoE/commits/develop)
+[![pipeline status](https://gitlab.com/multiscreen/vhs/badges/master/pipeline.svg)](https://gitlab.com/multiscreen/vhs/commits/master)
+
 
 <h1>Установка и развертывание web-приложения HoE</h1>
 
