@@ -7,7 +7,7 @@ from random import randint
 from datetime import datetime
 from uuid import uuid4
 from flask import url_for
-from web import db, app, avatars
+from web import db, app, avatars, backgrounds
 
 
 Views = db.Table('Views', db.Model.metadata,
@@ -186,6 +186,7 @@ class User(db.Model):
     name = db.Column(db.String(32), nullable=False)
     channel_info = db.Column(db.String(64))
     avatar = db.Column(db.String(128))
+    background = db.Column(db.String(128))
     action = db.Column(db.String(64))
     color = db.Column(db.String(64))
     top = db.Column(db.Integer)
@@ -234,6 +235,13 @@ class User(db.Model):
             return url_for('_uploads.uploaded_file', setname=avatars.name, filename=avatar_json['url'])
         else:
             return '../static/avatar.jpg'
+
+    def background_url(self):
+        if self.background:
+            background_json = json.loads(self.background)
+            return url_for('_uploads.uploaded_file', setname=backgrounds.name, filename=background_json['url'])
+        else:
+            return '../static/background.jpg'
 
     @staticmethod
     def get(id=None, login=None):

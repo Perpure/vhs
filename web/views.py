@@ -6,7 +6,7 @@ from flask import redirect, render_template, session, url_for, request
 from flask.json import JSONDecoder, dumps
 from werkzeug.exceptions import Aborter
 from config import basedir
-from web import app, db, avatars
+from web import app, db, avatars, backgrounds
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
     UserProfileForm, AddRoomForm
 from web.models import User, Video, Room, Color, Geotag, Tag, AnonUser, RoomDeviceColorConnector
@@ -226,10 +226,15 @@ def cabinet(usr):
         if form.channel_info.data:
             user.change_channel_info(form.channel_info.data)
         if 'avatar' in request.files:
-            print('2')
             folder = str(user.id)
             avatar_url = avatars.save(form.avatar.data, folder=folder)
             user.avatar = json.dumps({"url": avatar_url})
+            db.session.add(user)
+            db.session.commit()
+        if 'background' in request.files:
+            folder = str(user.id)
+            background_url = backgrounds.save(form.background.data, folder=folder)
+            user.avatar = json.dumps({"url": background_url})
             db.session.add(user)
             db.session.commit()
         return redirect(url_for("cabinet", usr=cabinet_owner.login))

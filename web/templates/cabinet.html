@@ -81,6 +81,17 @@
                     <br>
                     </div>
 
+                    <div class="set background">
+                    {{ form.background.label }}
+                    {{ form.background }}
+                    {% if form.background.errors %}
+                        {% for error in avatar_form.background.errors %}
+                            <div style="color: red;">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    <br>
+                    </div>
+
                     <div class="set">
                         {{ form.channel_info.label }}
                         <br>

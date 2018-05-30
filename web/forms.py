@@ -7,7 +7,7 @@ from flask.json import JSONDecoder
 from flask_wtf.file import FileAllowed
 from web.models import User, Room
 from .helper import cur_user
-from web import avatars
+from web import avatars, backgrounds
 
 
 class RoomForm(FlaskForm):
@@ -107,7 +107,7 @@ class UserProfileForm(FlaskForm):
     change_name = StringField("Изменить имя:", validators=[Length(3, message='Имя слишком короткое'), Optional()])
     change_password = PasswordField("Изменить пароль:", validators=[Length(8, message='Пароль слишком короткий'),
                                                                     Optional()])
-    change_background = FileField("Изменить фон канала:")
+    background = FileField("Изменить фон канала:", validators=[FileAllowed(backgrounds)])
     avatar = FileField("Изменить аватар профиля:", validators=[FileAllowed(avatars)])
     channel_info = TextAreaField("Указать информацию о канале:",
                                  validators=[Length(8, message='Текст слишком короткий'), Optional()])

@@ -83,8 +83,8 @@ class TestUserProfileForm(unittest.TestCase):
     def test_should_has_need_fields(self):
         self.assertTrue(hasattr(self.form, "change_name"))
         self.assertTrue(hasattr(self.form, "change_password"))
-        self.assertTrue(hasattr(self.form, "change_avatar"))
-        self.assertTrue(hasattr(self.form, "change_background"))
+        self.assertTrue(hasattr(self.form, "avatar"))
+        self.assertTrue(hasattr(self.form, "background"))
         self.assertTrue(hasattr(self.form, "channel_info"))
         self.assertTrue(hasattr(self.form, "current_password"))
         self.assertTrue(hasattr(self.form, "submit_changes"))
@@ -95,11 +95,11 @@ class TestUserProfileForm(unittest.TestCase):
     def test_should_change_password_field_is_password_field(self):
         self.assertIsInstance(self.form.change_password, PasswordField)
 
-    def test_should_change_avatar_field_is_file_field(self):
-        self.assertIsInstance(self.form.change_avatar, FileField)
+    def test_should_avatar_field_is_file_field(self):
+        self.assertIsInstance(self.form.avatar, FileField)
 
-    def test_should_change_background_field_is_file_field(self):
-        self.assertIsInstance(self.form.change_background, FileField)
+    def test_should_background_field_is_file_field(self):
+        self.assertIsInstance(self.form.background, FileField)
 
     def test_should_channel_info_field_is_string_field(self):
         self.assertIsInstance(self.form.channel_info, StringField)
