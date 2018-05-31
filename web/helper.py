@@ -11,16 +11,6 @@ from web.models import User, AnonUser
 from config import basedir
 
 
-def allowed_image(filename):
-    return ('.' in filename and
-            filename.split('.')[-1].lower() in app.config["ALLOWED_IMAGE_EXTENSIONS"])
-
-
-def allowed_file(filename):
-    return ('.' in filename and
-            filename.split('.')[-1].lower() in app.config["ALLOWED_EXTENSIONS"])
-
-
 def requiresauth(f):
     @wraps(f)
     def wrapped(*args, **kwargs):
@@ -185,41 +175,24 @@ def parse(room, users, impath):
     room_map.save(filename)
 
 
-def image_loaded(request, room, user, users, null_form, image_form, room_form):
+def image_loaded(request, room, user, users, image_form, room_form):
     room_id = room.id
     room_map_filename = basedir + '/images/' + str(room_id) + '_map.jpg'
     room_map_url = str(room_id) + '_map'
-    if 'image' not in request.files:
-        return render_template('room.html', room=room, user=cur_user(),
-                               color=user.color, users=users,
-                               image_form=null_form,
-                               room_form=room_form, loaded=False,
-                               map_ex=os.path.exists(room_map_filename),
-                               room_map=room_map_url, anon=user, count=len(users) + 1)
 
     file = request.files['image']
-    if file.filename == '':
-        return render_template('room.html', room=room, user=cur_user(),
-                               color=user.color, users=users,
-                               image_form=null_form,
-                               room_form=room_form, loaded=False,
-                               map_ex=os.path.exists(room_map_filename),
-                               room_map=room_map_url, anon=user, count=len(users) + 1)
 
-    if file and allowed_image(file.filename):
-        file.save(basedir + '/images/' + str(room_id) + '.' + file.filename.split('.')[-1].lower())
-        try:
-            parse(room, users, basedir + '/images/' + str(room_id) + '.jpg')
-        except:
-            return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users,
-                                   image_form=image_form, count=len(users),
-                                   room_form=room_form, loaded=True, room_map=room_map_url, anon=user,
-                                   msg="Мы не смогли идентифицировать устройства,"
-                                       " попробуйте загрузить другую фотографию.",
-                                   map_ex=os.path.exists(room_map_filename))
+    file.save(basedir + '/images/' + str(room_id) + '.' + file.filename.split('.')[-1].lower())
+    try:
+        parse(room, users, basedir + '/images/' + str(room_id) + '.jpg')
+    except IndexError or ValueError or TypeError:
         return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users,
-                               image_form=image_form, anon=user,
-                               room_form=room_form, loaded=True, room_map=room_map_url, count=len(users) + 1,
+                               image_form=image_form, count=len(users),
+                               room_form=room_form, loaded=True, room_map=room_map_url, anon=user,
+                               msg="Мы не смогли идентифицировать устройства,"
+                                   " попробуйте загрузить другую фотографию.",
                                map_ex=os.path.exists(room_map_filename))
-
-    return ()
+    return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users,
+                           image_form=image_form, anon=user,
+                           room_form=room_form, loaded=True, room_map=room_map_url, count=len(users) + 1,
+                           map_ex=os.path.exists(room_map_filename))

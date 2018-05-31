@@ -1,6 +1,6 @@
-var elem=document.getElementById("logoTxt");
-var body=document.getElementById("Body");
-var wid=body.offsetWidth;
+const elem = document.getElementById("logoTxt");
+const body = document.getElementById("Body");
+const wid = body.offsetWidth;
 if(wid<=550)elem.innerHTML="VHS";
 
 var searching=false;
@@ -26,17 +26,18 @@ search.addEventListener('click',function(){
 var holder=document.getElementById("mHolder");
 var opned=false;
 holder.addEventListener('click',function(){
+    let i;
     var els=document.getElementsByClassName("navMen");
     if(opned)
     {
-        for(var i=0;i<els.length;i++)
+        for(i = 0; i<els.length; i++)
             els[i].style.display="none";
         holder.style.backgroundColor="rgba(240, 203, 142,0)";
         opned=false;
     }
     else
     {
-        for(var i=0;i<els.length;i++)
+        for(i = 0; i<els.length; i++)
             els[i].style.display="block";
         holder.style.backgroundColor="rgba(240, 203, 142,0.4)";
         opned=true;

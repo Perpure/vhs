@@ -63,13 +63,13 @@ class TestModelUser(unittest.TestCase):
         old = self.user.name
         self.user.change_name('newname')
         self.assertEqual('newname', self.user.name)
-        self.assertNotEqual(old,self.user.name)
+        self.assertNotEqual(old ,self.user.name)
 
     def test_is_change_channel_info_work(self):
         old = self.user.channel_info
         self.user.change_channel_info('newinfo')
         self.assertEqual('newinfo', self.user.channel_info)
-        self.assertNotEqual(old,self.user.channel_info)
+        self.assertNotEqual(old, self.user.channel_info)
 
     def test_is_get_method_work(self):
         self.assertEqual(User.get(self.user.id), self.user)

@@ -9,6 +9,11 @@
     <h5>Загрузите калибровочное фото</h5>
     <form action="" method="post" enctype="multipart/form-data">
         <div class="Loader"><div><input id="image" name="image" type="file" accept="image/*" capture></div></div>
+        {% if image_form.image.errors %}
+        {% for error in image_form.image.errors %}
+            <div style="color: red;">{{ error }}</div>
+        {% endfor %}
+    {% endif %}
         <div id="Calibr"> {{ image_form.submit }} </div>
         {% if room.video_id %}
             <button class="result" id="showRes" type="button">Начать демонстрацию</button>

@@ -17,7 +17,6 @@ variables:
 cache:
   paths:
     - .cache/pip
-    - ../venv/
     - .imageio/ffmpeg/*
 
 before_script:

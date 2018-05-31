@@ -7,7 +7,7 @@ from flask.json import JSONDecoder
 from flask_wtf.file import FileAllowed
 from web.models import User, Room
 from .helper import cur_user
-from web import avatars, backgrounds
+from web import avatars, backgrounds, app
 
 
 class RoomForm(FlaskForm):
@@ -18,7 +18,9 @@ class UploadImageForm(FlaskForm):
     class Meta:
         csrf = False
 
-    image = FileField("Выберите файл")
+    image = FileField("Выберите файл", validators=[FileAllowed(app.config['ALLOWED_IMAGE_EXTENSIONS'],
+                                                               message="Некорректное расширение"),
+                                                   DataRequired(message='Выберите изображение')])
     submit = SubmitField("Инициализировать фотографию")
 
 
@@ -97,7 +99,9 @@ class UploadVideoForm(FlaskForm):
         csrf = False
 
     title = StringField("Введите название видео", validators=[Length(3, message='Название слишком короткое')])
-    video = FileField("Выберите файл")
+    video = FileField("Выберите файл", validators=[FileAllowed(app.config['ALLOWED_EXTENSIONS'],
+                                                               message="Некорректное расширение"),
+                                                   DataRequired(message='Выберите видео')])
     geotag_data = HiddenField(validators=[have_geodata])
     tags = TextAreaField("Тэги", validators=[Length(2, message='Тэг слишком короткий'), Optional()])
     submit = SubmitField("Загрузить")
@@ -107,8 +111,10 @@ class UserProfileForm(FlaskForm):
     change_name = StringField("Изменить имя:", validators=[Length(3, message='Имя слишком короткое'), Optional()])
     change_password = PasswordField("Изменить пароль:", validators=[Length(8, message='Пароль слишком короткий'),
                                                                     Optional()])
-    background = FileField("Изменить фон канала:", validators=[FileAllowed(backgrounds)])
-    avatar = FileField("Изменить аватар профиля:", validators=[FileAllowed(avatars)])
+    background = FileField("Изменить фон канала:", validators=[FileAllowed(backgrounds,
+                                                                           message="Некорректное расширение")])
+    avatar = FileField("Изменить аватар профиля:", validators=[FileAllowed(avatars,
+                                                                           message="Некорректное расширение")])
     channel_info = TextAreaField("Указать информацию о канале:",
                                  validators=[Length(8, message='Текст слишком короткий'), Optional()])
     current_password = PasswordField("Введите свой текущий пароль для подтверждения изменений:",
