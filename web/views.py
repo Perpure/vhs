@@ -225,6 +225,21 @@ def cabinet(usr):
             user.save(form.change_password.data)
         if form.channel_info.data:
             user.change_channel_info(form.channel_info.data)
+	
+        colors=["", "", "", "",""]
+        if form.color1.data:
+            colors[0]=form.color1.data
+        if form.color2.data:
+            colors[1]=form.color2.data
+        if form.colorTxt.data:
+            colors[2]=form.colorTxt.data
+        if form.colorBrd.data:
+            colors[3]=form.colorBrd.data
+        if form.colorLink.data:
+            colors[4]=form.colorLink.data
+
+        user.change_colors(colors)
+
         if 'avatar' in request.files:
             folder = str(user.id)
             avatar_url = avatars.save(form.avatar.data, folder=folder)
@@ -238,8 +253,9 @@ def cabinet(usr):
             db.session.add(user)
             db.session.commit()
         return redirect(url_for("cabinet", usr=cabinet_owner.login))
+    last=items[-6:]
     return render_template('cabinet.html', form=form, user=cur_user(), items=items,
-                           settings=is_cabinet_settings_available, usr=cabinet_owner)
+                           settings=is_cabinet_settings_available, usr=cabinet_owner,last=last)
 
 
 @app.route('/play/<string:vid>', methods=['GET', 'POST'])

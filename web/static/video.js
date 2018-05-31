@@ -4,7 +4,7 @@ var sl=0;
 for(var i=0;i<hash.length;i++)
     if(hash[i]=='/')sl=i;
 hash=hash.substring(sl+1);
-        
+
 var commSection=document.getElementById("CSect");
 var curComms = document.getElementsByClassName("Comment").length;
 setTimeout(function step(){
@@ -24,7 +24,7 @@ setTimeout(function step(){
                     success:function(response1)
                     {
                         response1.forEach(function(element){
-                            $("#CSect").get(0).innerHTML='<div class="Comment"><div class="commAva"><img src="../static/images/'+element.ava+'" alt="" class="commAvaIn"></div><div class="commTxt"><p class="commAuth"><a href="/cabinet/'+element.login+'" class="Link">'+element.name+'</a></p><p>'+element.text+'</p></div></div>'+$("#CSect").get(0).innerHTML;                        
+                            $("#CSect").get(0).innerHTML='<div class="Comment"><div class="commAva"><img src="'+element.ava+'" alt="" class="commAvaIn"></div><div class="commTxt"><p class="commAuth"><a href="/cabinet/'+element.login+'" class="Link">'+element.name+'</a></p><p>'+element.text+'</p></div></div>'+$("#CSect").get(0).innerHTML;                        
                         });
                     },
                     error:function(){}
@@ -83,7 +83,7 @@ $('#like').click(function(){
                     var dislikes = parsedJson[0].dislikes
                     $("span.lik").html(likes)
                     $("span.dis").html(dislikes)
-                    calc();                    
+                    calc();
                     if(cur!=$("span.lik").html()){
                         var stl=window.getComputedStyle(lk);
                         if(stl.backgroundImage[stl.backgroundImage.length-7]=='L')lk.style.backgroundImage="url(/static/lik1.png)";
@@ -112,11 +112,11 @@ $('#dislike').click(function(){
                     var dislikes = parsedJson[0].dislikes
                     $("span.lik").html(likes)
                     $("span.dis").html(dislikes)
-                    calc();    
+                    calc();
                     if(cur!=$("span.dis").html()){
                         var stl=window.getComputedStyle(dlk);
                         if(stl.backgroundImage[stl.backgroundImage.length-7]=='D')dlk.style.backgroundImage="url(/static/dis1.png)";
-                        else{            
+                        else{
                             dlk.style.backgroundImage="url(/static/dis1D.png)";
                             lk.style.backgroundImage="url(/static/lik1.png)";
                         }

@@ -1,28 +1,46 @@
 ﻿{% extends "base.html" %}
 {% block content %}
-    <div class="conbu">
-        <div class="z1 z2 zEdge" onclick="func(this)">Информация о пользователе</div>
-        <div class="z1" onclick="func(this)">Видео пользователя</div>
-        {% if settings %}
-            <div class="z1" onclick="func(this)">Настройки</div>
-        {% endif %}
-    </div>
+<div class="Canal">
+<div class="solid">
+  {% if usr.avatar_url() %}
+  <div class="ava"><img class="cabAva" src=" {{ usr.avatar_url() }}"></div>
+  {% endif %}
+  <div class="ava2">
+      <h1>{{ usr.name }}</h1>
+      <div class="info">
+          {{ usr.channel_info }}
+      </div>
+  </div>
+  <div class="conbu">
+      <div class="z1 z2 zEdge" onclick="func(this)">Главная</div>
+      <div class="z1" onclick="func(this)">Видео пользователя</div>
+      {% if settings %}
+          <div class="z1" onclick="func(this)">Настройки</div>
+      {% endif %}
+  </div>
+</div>
 
     <div class="con con2">
-            {% if usr.avatar_url() %}
-            <div class="ava"><img class="cabAva" src=" {{ usr.avatar_url() }}"></div>
-            {% endif %}
-            <div class="ava2">
-                <h1>{{ usr.name }}</h1>
-                Информация о канале:
-                <div class="info">
-                    {{ usr.channel_info }}
-                </div>
-            </div>
+      {% if last %}
+      <h2>Последние видео</h2>
+      {%endif%}
+      {% for item in last|reverse %}
+          <div class="video">
+              <a href="/play/{{item.id}}" class="Link">
+                  <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="preview">
+              </a>
+              <div class="videoTxt">
+                  <a href="/play/{{item.id}}" class="Link">
+                      <p class="videoName">{{item.title}}</p>
+                  </a>
+                  <p class="videoView">{{ item.viewers | length }} просмотров</p>
+              </div>
+          </div>
+      {% endfor %}
     </div>
 
     <div class="con">
-        {% for item in items %}
+        {% for item in items|reverse %}
             <div class="video">
                 <a href="/play/{{item.id}}" class="Link">
                     <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="preview">
@@ -38,7 +56,7 @@
     </div>
 
     {% if settings %}
-            <div class="con">
+            <div class="con Settings">
               <form action="" method="post" enctype="multipart/form-data" >
                 {{form.hidden_tag()}}
                     <div class="set">
@@ -62,7 +80,7 @@
                             {% endfor %}
                         {% endif %}
                     </div>
-
+                    <hr>
                     <div class="set avatar">
                     {{ form.avatar.label }}
 		    <div class="Loader">
@@ -90,9 +108,29 @@
                     <ol id="instruction" class="instr">
                         <p>Хотите иметь уникальный фон канала?
                           <br>
-                          Просто создайте картинку с креативно заполненной рамкой (отступ сверху, слева и справа - 15%).
+                          Просто создайте картинку с креативно заполненной рамкой (отступ 15%).
                         </p>
                     </ol>
+                    <hr>
+                    <div clss="set">
+                        <h6>Изменить палитру канала</h6>
+                        <br>
+                        {{ form.color1.label }}
+                        {{ form.color1|format(id="color1")}}
+                        <br>
+                        {{ form.color2.label }}
+                        {{ form.color2}}
+                        <br>
+                        {{ form.colorTxt.label }}
+                        {{ form.colorTxt}}
+                        <br>
+                        {{ form.colorBrd.label }}
+                        {{ form.colorBrd}}
+                        <br>
+                        {{ form.colorLink.label }}
+                        {{ form.colorLink}}
+                    </div>
+                    <hr>
                     <div clss="set">
                         {{ form.channel_info.label }}
                         <br>
@@ -119,12 +157,97 @@
                   </form>
             </div>
     {% endif %}
+    </div>
 <style>
     body
     {
         background-image:url({{ usr.background_url() }});
-      	background-size:100% auto;
+      	background-size:100% 100%;
     }
+
+    {% if usr.get_colors()[0] %}
+    .midHead,.subBtn,.Searcher
+    {
+      background-color:{{'rgb('+usr.get_colors()[0]+')'}};
+    }
+    .solid
+    {
+      background-color:{{'rgba('+usr.get_colors()[0]+',0.85)'}};
+    }
+    .Settings
+    {
+      background-color:{{'rgba('+usr.get_colors()[0]+',0.7)'}};
+    }
+    {%endif%}
+
+    {% if usr.get_colors()[1] %}
+    .Canal
+    {
+      background-color: {{'rgba('+usr.get_colors()[1]+',0.8)'}};
+    }
+    textarea,input[type="submit"]:hover
+    {
+      background-color: {{'rgba('+usr.get_colors()[1]+',0.5)'}};
+    }
+    .navMen:hover
+    {
+      background-color: {{'rgba('+usr.get_colors()[1]+',0.4)'}};
+    }
+    input,input[type="submit"]
+    {
+      border-bottom: 2px solid {{'rgb('+usr.get_colors()[1]+')'}};
+      background-color: {{'rgb('+usr.get_colors()[1]+')'}};
+    }
+    .subBtn:hover,.Checked
+    {
+      background-color: {{'rgb('+usr.get_colors()[1]+')'}};
+    }
+    .z2
+    {
+      border-bottom: 4px solid {{'rgb('+usr.get_colors()[1]+')'}};
+    }
+    {%endif%}
+
+    {% if usr.get_colors()[2] %}
+    .navMen,body,.subBtn,input,textarea,input[type="submit"]:hover,.searchField:hover,.Checked
+    {
+      color: {{'rgb('+usr.get_colors()[2]+')'}};
+    }
+    {%endif%}
+
+    {% if usr.get_colors()[3] %}
+    .up-down
+    {
+      display: none;
+    }
+    .midHead
+    {
+      border-bottom: 2px solid {{'rgba('+usr.get_colors()[3]+',0.5)'}};
+    }
+    .footLine,.navMen:hover
+    {
+      border-bottom: 2px solid {{'rgb('+usr.get_colors()[3]+')'}};
+    }
+    .upst
+    {
+      border-top: 2px solid {{'rgb('+usr.get_colors()[3]+')'}};
+    }
+    .navMen
+    {
+      border-right: 1px solid {{'rgba('+usr.get_colors()[3]+',0.5)'}};
+    }
+    .subBtn
+    {
+      border-bottom: 1px solid {{'rgba('+usr.get_colors()[3]+',0.5)'}};
+    }
+    {%endif%}
+
+    {% if usr.get_colors()[4] %}
+    .Fact,a,a:hover,.Fact:hover
+    {
+      color: {{'rgb('+usr.get_colors()[4]+')'}};
+    }
+    {%endif%}
 </style>
 <script>
     'use strict';
@@ -152,5 +275,47 @@
         $("#instructionBtn").click(function(){
         $("#instruction").slideToggle("slow",function(){});
     });});
+
+    var color1Inp=$("#color1");
+    var color2Inp=$("#color2");
+    var colorTxtInp=$("#colorTxt");
+    var colorBrdInp=$("#colorBrd");
+    var colorLinkInp=$("#colorLink");
+    color1Inp.blur(function()
+    {
+      $('.midHead').css('background-color','rgb('+color1Inp.val()+')');
+      $('.solid').css('background-color','rgb('+color1Inp.val()+')');
+      $('.Settings').css('background-color','rgba('+color1Inp.val()+',0.7)');
+    })
+    color2Inp.blur(function()
+    {
+      $('.Canal').css('background-color','rgba('+color2Inp.val()+',0.8)');
+      $('.z2').css('border-bottom','4px solid rgb('+color2Inp.val()+')');
+      $('input').css('background-color','rgba('+color2Inp.val()+',0.5)');
+      $('textarea').css('background-color','rgba('+color2Inp.val()+',0.5)');
+      $('input').css('border-bottom','2px solid rgb('+color2Inp.val()+')');
+      $(".navMen").hover(function() {
+        $(this).css("background-color",'rgba('+color2Inp.val()+',0.4)')
+      });
+    })
+    colorTxtInp.blur(function()
+    {
+      $('#Body').css('color','rgb('+colorTxtInp.val()+')');
+      $('.navMen').css('color','rgb('+colorTxtInp.val()+')');
+    })
+    colorBrdInp.blur(function()
+    {
+      $('.midHead').css('border-bottom','2px solid rgba('+colorBrdInp.val()+',0.5)');
+      $('.footLine').css('border-bottom','2px solid rgb('+colorBrdInp.val()+')');
+      $('.navMen').css('border-right','1px solid rgba('+colorBrdInp.val()+',0.5)');
+      $(".navMen").hover(function() {
+        $(this).css("border-bottom",'2px solid rgb('+colorBrdInp.val()+')')
+      });
+    })
+    colorLinkInp.blur(function()
+    {
+      $('a').css('color','rgb('+colorLinkInp.val()+')');
+      $('.Fact').css('color','rgb('+colorLinkInp.val()+')');
+    })
 </script>
  {% endblock %}
