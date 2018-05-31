@@ -1,7 +1,7 @@
 ﻿{% extends "base.html" %}
 {% block content %}
     <div class="conbu">
-        <div class="z1 z2" onclick="func(this)">Информация о пользователе</div>
+        <div class="z1 z2 zEdge" onclick="func(this)">Информация о пользователе</div>
         <div class="z1" onclick="func(this)">Видео пользователя</div>
         {% if settings %}
             <div class="z1" onclick="func(this)">Настройки</div>
@@ -9,12 +9,11 @@
     </div>
 
     <div class="con con2">
-            {% if user.avatar_url() %}
-            <img class="ava" src=" {{ user.avatar_url() }}">
+            {% if usr.avatar_url() %}
+            <div class="ava"><img class="cabAva" src=" {{ usr.avatar_url() }}"></div>
             {% endif %}
             <div class="ava2">
-                Пользователь {{ usr.name }}
-                <br>
+                <h1>{{ usr.name }}</h1>
                 Информация о канале:
                 <div class="info">
                     {{ usr.channel_info }}
@@ -67,7 +66,7 @@
                     <div class="set avatar">
                     {{ form.avatar.label }}
 		    <div class="Loader">
-   			<div style="margin-bottom:-25px">{{ form.avatar }}</div>
+   			<div>{{ form.avatar }}</div>
     		    </div>
                     {% if form.avatar.errors %}
                         {% for error in avatar_form.avatar.errors %}
@@ -77,18 +76,24 @@
                     </div>
 
                     <div class="set background">
-	 	    {{ form.background.label }}
-		    <div class="Loader">
-   			<div style="margin-bottom:-25px"> {{ form.background }}</div>
-    		    </div>
-                    {% if form.background.errors %}
+	 	                  {{ form.background.label }}
+		                  <div class="Loader">
+   			                <div> {{ form.background }}</div>
+    		              </div>
+                      {% if form.background.errors %}
                         {% for error in avatar_form.background.errors %}
                             <div style="color: red;">{{ error }}</div>
                         {% endfor %}
                     {% endif %}
                     </div>
-
-                    <div class="set">
+                    <span id="instructionBtn" class="Fact">Что такое Фон?</span>
+                    <ol id="instruction" class="instr">
+                        <p>Хотите иметь уникальный фон канала?
+                          <br>
+                          Просто создайте картинку с креативно заполненной рамкой (отступ сверху, слева и справа - 15%).
+                        </p>
+                    </ol>
+                    <div clss="set">
                         {{ form.channel_info.label }}
                         <br>
                         {{ form.channel_info }}
@@ -117,8 +122,8 @@
 <style>
     body
     {
-        background-image:url({{ user.background_url() }});
-      	background-size:100%;
+        background-image:url({{ usr.background_url() }});
+      	background-size:100% auto;
     }
 </style>
 <script>
@@ -143,5 +148,9 @@
         acon[x].classList.add('con2');
     }
 
+    $(document).ready(function(){
+        $("#instructionBtn").click(function(){
+        $("#instruction").slideToggle("slow",function(){});
+    });});
 </script>
  {% endblock %}

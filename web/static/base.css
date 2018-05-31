@@ -33,16 +33,23 @@ header
   margin-bottom:10px;
 }
 
-a
+a,.Fact
 {
     color:#905a09;
     text-decoration:none;
 }
 
-a:hover
+a:hover,.Fact:hover
 {
     text-decoration:none;
     color:#714707;
+    cursor: pointer;
+}
+
+.Fact
+{
+  font-weight: bold;
+  font-size: 125%;
 }
 
 input
@@ -152,7 +159,7 @@ textarea
 .logo
 {
     height:100%;
-    width:15%;
+    width:14%;
     display:inline-block;
     vertical-align:top;
 }
@@ -358,7 +365,7 @@ main
 .Content
 {
   width: 100%;
-  padding: 1.66%;
+  padding: 1%;
   margin-bottom: 15px;
   height:200%;
 }
@@ -698,8 +705,7 @@ footer
 .z1,.z2
 {
     display: inline-block;
-    background-color: #faebd7;
-    border-bottom: 1px solid #ffcc99;
+    background-color: rgba(240, 203, 142,0.7);
     padding: 7px;
     cursor: pointer;
     margin-left: -4px;
@@ -709,21 +715,23 @@ footer
   -webkit-user-select: none;
 }
 
+.zEdge
+{
+    margin-left: 0;
+}
+
 .z2
 {
-    border: 1px solid #ffcc99;
-    border-bottom: 1px solid #faebd7;
+    background-color: #F7E2C0;
 }
 
 .con{
     display: none;
-    height:90%;
     width: 100%;
     padding: 7px;
-    background-color: rgba(240, 203, 142,0.5);
-    border: 1px solid #ffcc99;
+    background-color: #F7E2C0;
     margin-top: -1px;
-    margin-left: -4px;
+    min-height: 600px;
 }
 
 .con2{
@@ -731,18 +739,20 @@ footer
 }
 
 .ava{
-    border-radius: 40px;
-    padding-left: 5px;
-    padding-top: 5px;
-    width: 200px;
     height: 200px;
+    width: 200px;
+    margin-right: 20px;
+    overflow: hidden;
     display: inline-block;
+}
+.cabAva
+{
+  height: 100%;
 }
 
 .ava2{
     display: inline-block;
     vertical-align:top;
-    padding:7px;
 }
 
 .set{
