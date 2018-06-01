@@ -115,7 +115,7 @@ def getNewComm(vid, cont):
     result = []
     for i in range(cont, len(comms)):
         result.append({"login": comms[i].user.login, "name": comms[i].user.name, "text": comms[i].text,
-                       "ava": comms[i].user.avatar})
+                       "ava": comms[i].user.avatar_url()})
     return jsonify(result)
 
 

@@ -1,130 +1,279 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 {% block content %}
-<div class="content">
-    <div class="conbu">
-        <div class="z1 z2" onclick="func(this)">Информация о пользователе</div>
-        <div class="z1" onclick="func(this)">Видео пользователя</div>
-        {% if settings %}
-            <div class="z1" onclick="func(this)">Настройки</div>
-        {% endif %}
-    </div>
-
-    <div class="con con2">
-        <div class="content0">
-            {% if user.avatar_url() %}
-            <img class="ava" src=" {{ user.avatar_url() }}">
-            {% endif %}
-            <div class="ava2">
-                Пользователь {{ usr.name }}
-                <br>
-                Информация о канале:
-                <div class="info">
-                    {{ usr.channel_info }}
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="con">
-        <div class="content0">
-        {% for item in items %}
-            <div class="video">
-                <a href="/play/{{item.id}}" class="Link">
-                    <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="preview">
-                </a>
-                <div class="videoTxt">
-                    <a href="/play/{{item.id}}" class="Link">
-                        <p class="videoName">{{item.title}}</p>
-                    </a>
-                    <p class="videoView">{{ item.viewers | length }} просмотров</p>
-                </div>
-            </div>
-        {% endfor %}
-        </div>
-    </div>
-
-    {% if settings %}
-        <form action="" method="post" enctype="multipart/form-data" >
-            {{form.hidden_tag()}}
-            <div class="con">
-                <div class="content0">
-                    <div class="set">
-                        {{ form.change_name.label }}
-                        {{ form.change_name }}
-                        {% if form.change_name.errors %}
-                            {% for error in form.change_name.errors %}
-                                <div style="color: red;">{{ error }}</div>
-                            {% endfor %}
-                        {% endif %}
-                        <br>
-                    </div>
-
-                    <div class="set">
-                        {{ form.change_password.label }}
-                        {{ form.change_password }}
-                        {% if form.change_password.errors %}
-                            {% for error in form.change_password.errors %}
-                                <div style="color: red;">{{ error }}</div>
-                            {% endfor %}
-                        {% endif %}
-                        <br>
-                    </div>
-
-                    <div class="set avatar">
-                    {{ form.avatar.label }}
-                    {{ form.avatar }}
-                    {% if form.avatar.errors %}
-                        {% for error in avatar_form.avatar.errors %}
-                            <div style="color: red;">{{ error }}</div>
-                        {% endfor %}
-                    {% endif %}
-                    <br>
-                    </div>
-
-                    <div class="set background">
-                    {{ form.background.label }}
-                    {{ form.background }}
-                    {% if form.background.errors %}
-                        {% for error in avatar_form.background.errors %}
-                            <div style="color: red;">{{ error }}</div>
-                        {% endfor %}
-                    {% endif %}
-                    <br>
-                    </div>
-
-                    <div class="set">
-                        {{ form.channel_info.label }}
-                        <br>
-                        {{ form.channel_info }}
-                        {% if form.channel_info.errors %}
-                            {% for error in form.channel_info.errors %}
-                                <div style="color: red;">{{ error }}</div>
-                            {% endfor %}
-                        {% endif %}
-                        <br>
-                    </div>
-
-                    <div class="set b">
-                        {{ form.current_password.label }}
-                        {{ form.current_password }}
-                        {% if form.current_password.errors %}
-                            {% for error in form.current_password.errors %}
-                                <div style="color: red;">{{ error }}</div>
-                            {% endfor %}
-                        {% endif %}
-                        <br>
-                    </div>
-
-
-                    <div class="set">
-                        <input type="submit" class="buttondlc" value="Сохранить">
-                    </div>
-                </div>
-            </div>
-        </form>
+<div class="Canal">
+  <div class="solid">
+    {% if usr.avatar_url() %}
+      <div class="ava"><img class="cabAva" src=" {{ usr.avatar_url() }}"></div>
     {% endif %}
-</div>
+    <div class="ava2">
+      <h1>{{ usr.name }}</h1>
+      <div class="info">
+        {{ usr.channel_info }}
+      </div>
+    </div>
+    <div class="conbu">
+      <div class="z1 z2 zEdge" onclick="func(this)">Главная</div>
+      <div class="z1" onclick="func(this)">Видео пользователя</div>
+      {% if settings %}
+        <div class="z1" onclick="func(this)">Настройки</div>
+      {% endif %}
+    </div>
+  </div>
 
+  <div class="con con2">
+    {% if last %}
+    <h2>Последние видео</h2>
+    {%endif%}
+    {% for item in last|reverse %}
+      <div class="video">
+        <a href="/play/{{item.id}}" class="Link">
+          <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="preview">
+        </a>
+        <div class="videoTxt">
+          <a href="/play/{{item.id}}" class="Link">
+            <p class="videoName">{{item.title}}</p>
+          </a>
+          <p class="videoView">{{ item.viewers | length }} просмотров</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="con">
+    {% for item in items|reverse %}
+      <div class="video">
+        <a href="/play/{{item.id}}" class="Link">
+          <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="preview">
+        </a>
+        <div class="videoTxt">
+          <a href="/play/{{item.id}}" class="Link">
+            <p class="videoName">{{item.title}}</p>
+          </a>
+          <p class="videoView">{{ item.viewers | length }} просмотров</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if settings %}
+    <div class="con Settings">
+      <h3>Личные данные</h3>
+      <form action="" method="post" enctype="multipart/form-data" >
+        {{form.hidden_tag()}}
+        <div class="set">
+          {{ form.change_name.label }}
+          <br>
+          {{ form.change_name }}
+          {% if form.change_name.errors %}
+            {% for error in form.change_name.errors %}
+              <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+          {% endif %}
+        </div>
+
+        <div class="set">
+          {{ form.change_password.label }}
+          <br>
+          {{ form.change_password }}
+          {% if form.change_password.errors %}
+            {% for error in form.change_password.errors %}
+              <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+          {% endif %}
+        </div>
+        <div clss="set">
+          {{ form.channel_info.label }}
+          <br>
+          {{ form.channel_info }}
+          {% if form.channel_info.errors %}
+            {% for error in form.channel_info.errors %}
+              <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+          {% endif %}
+        </div>
+
+        <hr>
+        <h3>Оформление</h3>
+        <div class="set avatar">
+          {{ form.avatar.label }}
+		      <div class="Loader">
+   			    <div>{{ form.avatar }}</div>
+          </div>
+          {% if form.avatar.errors %}
+            {% for error in avatar_form.avatar.errors %}
+              <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+          {% endif %}
+        </div>
+
+        <div class="set background">
+	 	      {{ form.background.label }}
+		      <div class="Loader">
+   			    <div> {{ form.background }}</div>
+    		  </div>
+          {% if form.background.errors %}
+            {% for error in avatar_form.background.errors %}
+              <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+          {% endif %}
+          <span id="instructionBtn" class="Fact">Что такое Фон?</span>
+          <ol id="instruction" class="instr">
+            <p>
+              Хотите иметь уникальный фон канала?
+              <br>
+              Просто создайте картинку с креативно заполненной рамкой (отступ 15%).
+            </p>
+          </ol>
+        </div>
+
+        <div clss="set">
+          <h6>Изменить палитру канала</h6>
+          <br>
+          <div class="setLeft">{{ form.color1.label }}</div>
+          {{ form.color1(placeholder=usr.get_colors()[0])}}
+          <br>
+          <div class="setLeft">{{ form.color2.label }}</div>
+          {{ form.color2(placeholder=usr.get_colors()[1])}}
+          <br>
+          <div class="setLeft">{{ form.colorTxt.label }}</div>
+          {{ form.colorTxt(placeholder=usr.get_colors()[2])}}
+          <br>
+          <div class="setLeft">{{ form.colorBrd.label }}</div>
+          {{ form.colorBrd(placeholder=usr.get_colors()[3])}}
+          <br>
+          <div class="setLeft">{{ form.colorLink.label }}</div>
+          {{ form.colorLink(placeholder=usr.get_colors()[4])}}
+        </div>
+        <hr>
+        <div class="set b">
+          {{ form.current_password.label }}
+          {{ form.current_password }}
+          {% if form.current_password.errors %}
+            {% for error in form.current_password.errors %}
+              <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+          {% endif %}
+        </div>
+        <div class="set">
+          <input type="submit" class="buttondlc" value="Сохранить">
+        </div>
+
+      </form>
+    </div>
+  {% endif %}
+</div>
+<style>
+    body
+    {
+        background-image:url({{ usr.background_url() }});
+      	background-size:100% 100%;
+    }
+
+    {% if usr.get_colors()[0] %}
+    .midHead,.subBtn,.Searcher
+    {
+      background-color:{{'rgb('+usr.get_colors()[0]+')'}};
+    }
+    .solid
+    {
+      background-color:{{'rgba('+usr.get_colors()[0]+',0.85)'}};
+    }
+    .Settings
+    {
+      background-color:{{'rgba('+usr.get_colors()[0]+',0.7)'}};
+    }
+    {%endif%}
+
+    {% if usr.get_colors()[1] %}
+    .Canal
+    {
+      background-color: {{'rgba('+usr.get_colors()[1]+',0.8)'}};
+    }
+    textarea,input[type="submit"]:hover
+    {
+      background-color: {{'rgba('+usr.get_colors()[1]+',0.5)'}};
+    }
+    .navMen:hover
+    {
+      background-color: {{'rgba('+usr.get_colors()[1]+',0.4)'}};
+    }
+    input,input[type="submit"]
+    {
+      border-bottom: 2px solid {{'rgb('+usr.get_colors()[1]+')'}};
+      background-color: {{'rgb('+usr.get_colors()[1]+')'}};
+    }
+    .subBtn:hover,.Checked
+    {
+      background-color: {{'rgb('+usr.get_colors()[1]+')'}};
+    }
+    .z2
+    {
+      border-bottom: 4px solid {{'rgb('+usr.get_colors()[1]+')'}};
+    }
+    @media (max-width:570px)
+    {
+      .navMen
+      {
+        border-bottom:1px solid {{'rgba('+usr.get_colors()[1]+',0.5)'}};
+      }
+    }
+    {%endif%}
+
+    {% if usr.get_colors()[2] %}
+    .navMen,body,.subBtn,input,textarea,input[type="submit"]:hover,.searchField:hover,.Checked
+    {
+      color: {{'rgb('+usr.get_colors()[2]+')'}};
+    }
+    {%endif%}
+
+    {% if usr.get_colors()[3] %}
+    .up-down
+    {
+      display: none;
+    }
+    .midHead
+    {
+      border-bottom: 2px solid {{'rgba('+usr.get_colors()[3]+',0.5)'}};
+    }
+    .footLine,.navMen:hover
+    {
+      border-bottom: 2px solid {{'rgb('+usr.get_colors()[3]+')'}};
+    }
+    .upst
+    {
+      border-top: 2px solid {{'rgb('+usr.get_colors()[3]+')'}};
+    }
+    .navMen
+    {
+      border-right: 1px solid {{'rgba('+usr.get_colors()[3]+',0.5)'}};
+    }
+    .subBtn
+    {
+      border-bottom: 1px solid {{'rgba('+usr.get_colors()[3]+',0.5)'}};
+    }
+    @media (max-width:1065px)
+    {
+      .navMenu
+      {
+        border-top:2px solid {{'rgba('+usr.get_colors()[3]+',0.5)'}};
+      }
+    }
+    {%endif%}
+
+    {% if usr.get_colors()[4] %}
+    .Fact,a,a:hover,.Fact:hover
+    {
+      color: {{'rgb('+usr.get_colors()[4]+')'}};
+    }
+    {%endif%}
+    @media (max-width:570px)
+    {
+      body
+      {
+        background-size: auto;
+      }
+    }
+</style>
 <script>
     'use strict';
 
@@ -147,5 +296,57 @@
         acon[x].classList.add('con2');
     }
 
+    $(document).ready(function(){
+        $("#instructionBtn").click(function(){
+        $("#instruction").slideToggle("slow",function(){});
+    });});
+
+    var color1Inp=$("#color1");
+    var color2Inp=$("#color2");
+    var colorTxtInp=$("#colorTxt");
+    var colorBrdInp=$("#colorBrd");
+    var colorLinkInp=$("#colorLink");
+    color1Inp.blur(function()
+    {
+      $('.midHead').css('background-color','rgb('+color1Inp.val()+')');
+      $('.Searcher').css('background-color','rgb('+color1Inp.val()+')');
+      $('.subBtn').css('background-color','rgb('+color1Inp.val()+')');
+      $('.solid').css('background-color','rgb('+color1Inp.val()+')');
+      $('.Settings').css('background-color','rgba('+color1Inp.val()+',0.7)');
+    })
+    color2Inp.blur(function()
+    {
+      $('.Canal').css('background-color','rgba('+color2Inp.val()+',0.8)');
+      $('.z2').css('border-bottom','4px solid rgb('+color2Inp.val()+')');
+      $('input').css('background-color','rgba('+color2Inp.val()+',0.5)');
+      $('textarea').css('background-color','rgba('+color2Inp.val()+',0.5)');
+      $('.Checked').css('background-color','rgb('+color2Inp.val()+')');
+      $('input').css('border-bottom','2px solid rgb('+color2Inp.val()+')');
+      $(".navMen").hover(function() {
+        $(this).css("background-color",'rgba('+color2Inp.val()+',0.4)')
+      });
+      $(".subBtn").hover(function() {
+        $(this).css("background-color",'rgb('+color2Inp.val()+')')
+      });
+    })
+    colorTxtInp.blur(function()
+    {
+      $('#Body').css('color','rgb('+colorTxtInp.val()+')');
+      $('.navMen').css('color','rgb('+colorTxtInp.val()+')');
+    })
+    colorBrdInp.blur(function()
+    {
+      $('.midHead').css('border-bottom','2px solid rgba('+colorBrdInp.val()+',0.5)');
+      $('.footLine').css('border-bottom','2px solid rgb('+colorBrdInp.val()+')');
+      $('.navMen').css('border-right','1px solid rgba('+colorBrdInp.val()+',0.5)');
+      $(".navMen").hover(function() {
+        $(this).css("border-bottom",'2px solid rgb('+colorBrdInp.val()+')')
+      });
+    })
+    colorLinkInp.blur(function()
+    {
+      $('a').css('color','rgb('+colorLinkInp.val()+')');
+      $('.Fact').css('color','rgb('+colorLinkInp.val()+')');
+    })
 </script>
  {% endblock %}

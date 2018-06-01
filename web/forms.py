@@ -1,4 +1,4 @@
-# coding=utf-8
+﻿# coding=utf-8
 import re
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, BooleanField, FileField, HiddenField
@@ -109,8 +109,13 @@ class UserProfileForm(FlaskForm):
                                                                     Optional()])
     background = FileField("Изменить фон канала:", validators=[FileAllowed(backgrounds)])
     avatar = FileField("Изменить аватар профиля:", validators=[FileAllowed(avatars)])
-    channel_info = TextAreaField("Указать информацию о канале:",
+    channel_info = TextAreaField("Указать краткое описание канала:",
                                  validators=[Length(8, message='Текст слишком короткий'), Optional()])
+    colorTxt = StringField("Цвет текста:", render_kw={"id":"colorTxt"})
+    color1 = StringField("Цвет 1:", render_kw={"id":"color1"})
+    color2 = StringField("Цвет 2:", render_kw={"id":"color2"})
+    colorBrd = StringField("Цвет границ:", render_kw={"id":"colorBrd"})
+    colorLink = StringField("Цвет ссылок:", render_kw={"id":"colorLink"})
     current_password = PasswordField("Введите свой текущий пароль для подтверждения изменений:",
                                      validators=[Length(8, message='Пароль слишком короткий'), match])
     submit_changes = SubmitField("Сохранить")

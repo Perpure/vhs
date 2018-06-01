@@ -6,7 +6,6 @@ if(wid<=550)elem.innerHTML="VHS";
 var searching=false;
 var search=document.getElementById("Search");
 var searcher=document.getElementById("searcher");
-var shadow=document.getElementById("Shad");
 search.addEventListener('click',function(){
     if(searching)
     {
@@ -18,7 +17,7 @@ search.addEventListener('click',function(){
         if(screen.width>570)
             searcher.style.display="flex";
         else
-            searcher.style.display="block";         
+            searcher.style.display="block";
         searching=true;
     }
 });
@@ -46,7 +45,7 @@ holder.addEventListener('click',function(){
 var clast=document.getElementsByClassName("navClast");
 for(var j=0;j<clast.length;j++){
     clast[j].addEventListener('click',function()
-    {   
+    {
         if(screen.width<570)
         {
             var ins=this.getElementsByClassName("subBtn");
@@ -54,7 +53,7 @@ for(var j=0;j<clast.length;j++){
         }
     });
     clast[j].addEventListener('mouseout',function()
-    {   
+    {
         if(screen.width<570)
         {
             this.style.height=50+"px";
@@ -64,20 +63,8 @@ for(var j=0;j<clast.length;j++){
 
 function swit(e){
         var elem=e.currentTarget;
-        if(elem.value)
-        {
-            elem.style.backgroundColor="rgba(0,0,0,0)";
-            elem.style.fontWeight="normal";
-            elem.style.color="grey";
-            elem.value=0;
-        }
-        else
-        {
-            elem.style.backgroundColor="#f0cb8e";
-            elem.style.fontWeight="bold";
-            elem.style.color="black";
-            elem.value=1;
-        }
+        elem.classList.toggle("Checked");
+        elem.value=Math.abs(elem.value-1);
 }
 
 function getCurrentPage() {
