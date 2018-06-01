@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Карта видео</h1>
-    <br>
-    <div id="videos_map" align="center"></div>
-    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
-    <script src="{{ url_for('static', filename='videos_map.js') }}"></script>
-
+<h1>Карта видео</h1>
+<br>
+<div id="videos_map" align="center"></div>
+<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+<script src="{{ url_for('static', filename='videos_map.js') }}"></script>
 {% endblock %}
