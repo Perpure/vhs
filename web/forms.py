@@ -111,11 +111,11 @@ class UserProfileForm(FlaskForm):
     avatar = FileField("Изменить аватар профиля:", validators=[FileAllowed(avatars)])
     channel_info = TextAreaField("Указать краткое описание канала:",
                                  validators=[Length(8, message='Текст слишком короткий'), Optional()])
-    colorTxt = StringField("Цвет текста:", render_kw={"placeholder": "0, 0, 0","id":"colorTxt"})
-    color1 = StringField("Цвет 1:", render_kw={"placeholder": "247, 226, 192","id":"color1"})
-    color2 = StringField("Цвет 2:", render_kw={"placeholder": "240, 203, 142","id":"color2"})
-    colorBrd = StringField("Цвет границ:", render_kw={"placeholder": "240, 203, 142","id":"colorBrd"})
-    colorLink = StringField("Цвет ссылок:", render_kw={"placeholder": "144, 90, 9","id":"colorLink"})
+    colorTxt = StringField("Цвет текста:", render_kw={"id":"colorTxt"})
+    color1 = StringField("Цвет 1:", render_kw={"id":"color1"})
+    color2 = StringField("Цвет 2:", render_kw={"id":"color2"})
+    colorBrd = StringField("Цвет границ:", render_kw={"id":"colorBrd"})
+    colorLink = StringField("Цвет ссылок:", render_kw={"id":"colorLink"})
     current_password = PasswordField("Введите свой текущий пароль для подтверждения изменений:",
                                      validators=[Length(8, message='Пароль слишком короткий'), match])
     submit_changes = SubmitField("Сохранить")

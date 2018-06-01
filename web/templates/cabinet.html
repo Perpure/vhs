@@ -1,163 +1,167 @@
 ﻿{% extends "base.html" %}
 {% block content %}
 <div class="Canal">
-<div class="solid">
-  {% if usr.avatar_url() %}
-  <div class="ava"><img class="cabAva" src=" {{ usr.avatar_url() }}"></div>
-  {% endif %}
-  <div class="ava2">
+  <div class="solid">
+    {% if usr.avatar_url() %}
+      <div class="ava"><img class="cabAva" src=" {{ usr.avatar_url() }}"></div>
+    {% endif %}
+    <div class="ava2">
       <h1>{{ usr.name }}</h1>
       <div class="info">
-          {{ usr.channel_info }}
+        {{ usr.channel_info }}
       </div>
-  </div>
-  <div class="conbu">
+    </div>
+    <div class="conbu">
       <div class="z1 z2 zEdge" onclick="func(this)">Главная</div>
       <div class="z1" onclick="func(this)">Видео пользователя</div>
       {% if settings %}
-          <div class="z1" onclick="func(this)">Настройки</div>
+        <div class="z1" onclick="func(this)">Настройки</div>
       {% endif %}
+    </div>
   </div>
-</div>
 
-    <div class="con con2">
-      {% if last %}
-      <h2>Последние видео</h2>
-      {%endif%}
-      {% for item in last|reverse %}
-          <div class="video">
-              <a href="/play/{{item.id}}" class="Link">
-                  <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="preview">
-              </a>
-              <div class="videoTxt">
-                  <a href="/play/{{item.id}}" class="Link">
-                      <p class="videoName">{{item.title}}</p>
-                  </a>
-                  <p class="videoView">{{ item.viewers | length }} просмотров</p>
-              </div>
+  <div class="con con2">
+    {% if last %}
+    <h2>Последние видео</h2>
+    {%endif%}
+    {% for item in last|reverse %}
+      <div class="video">
+        <a href="/play/{{item.id}}" class="Link">
+          <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="preview">
+        </a>
+        <div class="videoTxt">
+          <a href="/play/{{item.id}}" class="Link">
+            <p class="videoName">{{item.title}}</p>
+          </a>
+          <p class="videoView">{{ item.viewers | length }} просмотров</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="con">
+    {% for item in items|reverse %}
+      <div class="video">
+        <a href="/play/{{item.id}}" class="Link">
+          <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="preview">
+        </a>
+        <div class="videoTxt">
+          <a href="/play/{{item.id}}" class="Link">
+            <p class="videoName">{{item.title}}</p>
+          </a>
+          <p class="videoView">{{ item.viewers | length }} просмотров</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if settings %}
+    <div class="con Settings">
+      <h3>Личные данные</h3>
+      <form action="" method="post" enctype="multipart/form-data" >
+        {{form.hidden_tag()}}
+        <div class="set">
+          {{ form.change_name.label }}
+          <br>
+          {{ form.change_name }}
+          {% if form.change_name.errors %}
+            {% for error in form.change_name.errors %}
+              <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+          {% endif %}
+        </div>
+
+        <div class="set">
+          {{ form.change_password.label }}
+          <br>
+          {{ form.change_password }}
+          {% if form.change_password.errors %}
+            {% for error in form.change_password.errors %}
+              <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+          {% endif %}
+        </div>
+        <div clss="set">
+          {{ form.channel_info.label }}
+          <br>
+          {{ form.channel_info }}
+          {% if form.channel_info.errors %}
+            {% for error in form.channel_info.errors %}
+              <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+          {% endif %}
+        </div>
+
+        <hr>
+        <h3>Оформление</h3>
+        <div class="set avatar">
+          {{ form.avatar.label }}
+		      <div class="Loader">
+   			    <div>{{ form.avatar }}</div>
           </div>
-      {% endfor %}
+          {% if form.avatar.errors %}
+            {% for error in avatar_form.avatar.errors %}
+              <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+          {% endif %}
+        </div>
+
+        <div class="set background">
+	 	      {{ form.background.label }}
+		      <div class="Loader">
+   			    <div> {{ form.background }}</div>
+    		  </div>
+          {% if form.background.errors %}
+            {% for error in avatar_form.background.errors %}
+              <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+          {% endif %}
+          <span id="instructionBtn" class="Fact">Что такое Фон?</span>
+          <ol id="instruction" class="instr">
+            <p>
+              Хотите иметь уникальный фон канала?
+              <br>
+              Просто создайте картинку с креативно заполненной рамкой (отступ 15%).
+            </p>
+          </ol>
+        </div>
+
+        <div clss="set">
+          <h6>Изменить палитру канала</h6>
+          <br>
+          <div class="setLeft">{{ form.color1.label }}</div>
+          {{ form.color1(placeholder=usr.get_colors()[0])}}
+          <br>
+          <div class="setLeft">{{ form.color2.label }}</div>
+          {{ form.color2(placeholder=usr.get_colors()[1])}}
+          <br>
+          <div class="setLeft">{{ form.colorTxt.label }}</div>
+          {{ form.colorTxt(placeholder=usr.get_colors()[2])}}
+          <br>
+          <div class="setLeft">{{ form.colorBrd.label }}</div>
+          {{ form.colorBrd(placeholder=usr.get_colors()[3])}}
+          <br>
+          <div class="setLeft">{{ form.colorLink.label }}</div>
+          {{ form.colorLink(placeholder=usr.get_colors()[4])}}
+        </div>
+        <hr>
+        <div class="set b">
+          {{ form.current_password.label }}
+          {{ form.current_password }}
+          {% if form.current_password.errors %}
+            {% for error in form.current_password.errors %}
+              <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+          {% endif %}
+        </div>
+        <div class="set">
+          <input type="submit" class="buttondlc" value="Сохранить">
+        </div>
+
+      </form>
     </div>
-
-    <div class="con">
-        {% for item in items|reverse %}
-            <div class="video">
-                <a href="/play/{{item.id}}" class="Link">
-                    <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="preview">
-                </a>
-                <div class="videoTxt">
-                    <a href="/play/{{item.id}}" class="Link">
-                        <p class="videoName">{{item.title}}</p>
-                    </a>
-                    <p class="videoView">{{ item.viewers | length }} просмотров</p>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-
-    {% if settings %}
-            <div class="con Settings">
-              <form action="" method="post" enctype="multipart/form-data" >
-                {{form.hidden_tag()}}
-                    <div class="set">
-                        {{ form.change_name.label }}
-                        <br>
-                        {{ form.change_name }}
-                        {% if form.change_name.errors %}
-                            {% for error in form.change_name.errors %}
-                                <div style="color: red;">{{ error }}</div>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-
-                    <div class="set">
-                        {{ form.change_password.label }}
-                        <br>
-                        {{ form.change_password }}
-                        {% if form.change_password.errors %}
-                            {% for error in form.change_password.errors %}
-                                <div style="color: red;">{{ error }}</div>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                    <hr>
-                    <div class="set avatar">
-                    {{ form.avatar.label }}
-		    <div class="Loader">
-   			<div>{{ form.avatar }}</div>
-    		    </div>
-                    {% if form.avatar.errors %}
-                        {% for error in avatar_form.avatar.errors %}
-                            <div style="color: red;">{{ error }}</div>
-                        {% endfor %}
-                    {% endif %}
-                    </div>
-
-                    <div class="set background">
-	 	                  {{ form.background.label }}
-		                  <div class="Loader">
-   			                <div> {{ form.background }}</div>
-    		              </div>
-                      {% if form.background.errors %}
-                        {% for error in avatar_form.background.errors %}
-                            <div style="color: red;">{{ error }}</div>
-                        {% endfor %}
-                    {% endif %}
-                    </div>
-                    <span id="instructionBtn" class="Fact">Что такое Фон?</span>
-                    <ol id="instruction" class="instr">
-                        <p>Хотите иметь уникальный фон канала?
-                          <br>
-                          Просто создайте картинку с креативно заполненной рамкой (отступ 15%).
-                        </p>
-                    </ol>
-                    <hr>
-                    <div clss="set">
-                        <h6>Изменить палитру канала</h6>
-                        <br>
-                        {{ form.color1.label }}
-                        {{ form.color1|format(id="color1")}}
-                        <br>
-                        {{ form.color2.label }}
-                        {{ form.color2}}
-                        <br>
-                        {{ form.colorTxt.label }}
-                        {{ form.colorTxt}}
-                        <br>
-                        {{ form.colorBrd.label }}
-                        {{ form.colorBrd}}
-                        <br>
-                        {{ form.colorLink.label }}
-                        {{ form.colorLink}}
-                    </div>
-                    <hr>
-                    <div clss="set">
-                        {{ form.channel_info.label }}
-                        <br>
-                        {{ form.channel_info }}
-                        {% if form.channel_info.errors %}
-                            {% for error in form.channel_info.errors %}
-                                <div style="color: red;">{{ error }}</div>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                    <hr>
-                    <div class="set b">
-                        {{ form.current_password.label }}
-                        {{ form.current_password }}
-                        {% if form.current_password.errors %}
-                            {% for error in form.current_password.errors %}
-                                <div style="color: red;">{{ error }}</div>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                    <div class="set">
-                        <input type="submit" class="buttondlc" value="Сохранить">
-                    </div>
-                  </form>
-            </div>
-    {% endif %}
-    </div>
+  {% endif %}
+</div>
 <style>
     body
     {
@@ -284,6 +288,8 @@
     color1Inp.blur(function()
     {
       $('.midHead').css('background-color','rgb('+color1Inp.val()+')');
+      $('.Searcher').css('background-color','rgb('+color1Inp.val()+')');
+      $('.subBtn').css('background-color','rgb('+color1Inp.val()+')');
       $('.solid').css('background-color','rgb('+color1Inp.val()+')');
       $('.Settings').css('background-color','rgba('+color1Inp.val()+',0.7)');
     })
@@ -293,9 +299,13 @@
       $('.z2').css('border-bottom','4px solid rgb('+color2Inp.val()+')');
       $('input').css('background-color','rgba('+color2Inp.val()+',0.5)');
       $('textarea').css('background-color','rgba('+color2Inp.val()+',0.5)');
+      $('.Checked').css('background-color','rgb('+color2Inp.val()+')');
       $('input').css('border-bottom','2px solid rgb('+color2Inp.val()+')');
       $(".navMen").hover(function() {
         $(this).css("background-color",'rgba('+color2Inp.val()+',0.4)')
+      });
+      $(".subBtn").hover(function() {
+        $(this).css("background-color",'rgb('+color2Inp.val()+')')
       });
     })
     colorTxtInp.blur(function()

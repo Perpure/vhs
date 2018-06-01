@@ -213,6 +213,11 @@ class User(db.Model):
         self.login = login
         self.name = login
         self.channel_info = "Заполните информацию о канале"
+        self.colorTxt="0, 0, 0"
+        self.color1="247, 226, 192"
+        self.color2="240, 203, 142"
+        self.colorBrd="240, 203, 142"
+        self.colorLink="144, 90, 9"
 
     def save(self, password):
         self.password = hashlib.sha512(

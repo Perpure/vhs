@@ -5,6 +5,10 @@ html
     height:100%;
 }
 
+h5
+{
+  line-height: 1;
+}
 
 search
 {
@@ -705,6 +709,12 @@ footer
 
 .buttondlc{
     margin-bottom: 0;
+}
+
+.setLeft
+{
+  display: inline-block;
+  width: 110px;
 }
 
 .z1,.z2
