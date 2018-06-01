@@ -2,11 +2,12 @@
 import shutil
 import hashlib
 import os
+import json
 from random import randint
 from datetime import datetime
 from uuid import uuid4
-from web import db
-from web import app
+from flask import url_for
+from web import db, app, avatars, backgrounds
 
 
 Views = db.Table('Views', db.Model.metadata,
@@ -184,7 +185,8 @@ class User(db.Model):
     password = db.Column(db.String(), nullable=False)
     name = db.Column(db.String(32), nullable=False)
     channel_info = db.Column(db.String(64))
-    avatar = db.Column(db.String(64))
+    avatar = db.Column(db.String(128))
+    background = db.Column(db.String(128))
     action = db.Column(db.String(64))
     color = db.Column(db.String(64))
     top = db.Column(db.Integer)
@@ -210,7 +212,6 @@ class User(db.Model):
     def save(self, password):
         self.password = hashlib.sha512(
             password.encode("utf-8")).hexdigest()
-        self.avatar = str(randint(1, 20)) + ".jpg"
         db.session.add(self)
         db.session.commit()
 
@@ -227,6 +228,20 @@ class User(db.Model):
         self.channel_info = info
         db.session.add(self)
         db.session.commit()
+
+    def avatar_url(self):
+        if self.avatar:
+            avatar_json = json.loads(self.avatar)
+            return url_for('_uploads.uploaded_file', setname=avatars.name, filename=avatar_json['url'])
+        else:
+            return '../static/avatar.jpg'
+
+    def background_url(self):
+        if self.background:
+            background_json = json.loads(self.background)
+            return url_for('_uploads.uploaded_file', setname=backgrounds.name, filename=background_json['url'])
+        else:
+            return '../static/background.jpg'
 
     @staticmethod
     def get(id=None, login=None):

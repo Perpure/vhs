@@ -11,7 +11,9 @@
 
     <div class="con con2">
         <div class="content0">
-            <img class="ava" src="../static/images/{{ usr.avatar }}">
+            {% if user.avatar_url() %}
+            <img class="ava" src=" {{ user.avatar_url() }}">
+            {% endif %}
             <div class="ava2">
                 Пользователь {{ usr.name }}
                 <br>
@@ -42,7 +44,7 @@
     </div>
 
     {% if settings %}
-        <form action="" method="post">
+        <form action="" method="post" enctype="multipart/form-data" >
             {{form.hidden_tag()}}
             <div class="con">
                 <div class="content0">
@@ -68,6 +70,28 @@
                         <br>
                     </div>
 
+                    <div class="set avatar">
+                    {{ form.avatar.label }}
+                    {{ form.avatar }}
+                    {% if form.avatar.errors %}
+                        {% for error in avatar_form.avatar.errors %}
+                            <div style="color: red;">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    <br>
+                    </div>
+
+                    <div class="set background">
+                    {{ form.background.label }}
+                    {{ form.background }}
+                    {% if form.background.errors %}
+                        {% for error in avatar_form.background.errors %}
+                            <div style="color: red;">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    <br>
+                    </div>
+
                     <div class="set">
                         {{ form.channel_info.label }}
                         <br>
@@ -90,6 +114,7 @@
                         {% endif %}
                         <br>
                     </div>
+
 
                     <div class="set">
                         <input type="submit" class="buttondlc" value="Сохранить">
