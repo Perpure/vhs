@@ -881,6 +881,11 @@ footer
     {
         width:108px;
     }
+    .Canal
+    {
+      position: static;
+      width: 100%;
+    }
 }
 
 @media (max-width:860px)
@@ -975,9 +980,5 @@ footer
     {
         font-weight: bold;
     }
-    .Canal
-    {
-      position: static;
-      width: 100%;
-    }
+
 }
