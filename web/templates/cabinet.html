@@ -210,6 +210,13 @@
     {
       border-bottom: 4px solid {{'rgb('+usr.get_colors()[1]+')'}};
     }
+    @media (max-width:570px)
+    {
+      .navMen
+      {
+        border-bottom:1px solid {{'rgba('+usr.get_colors()[1]+',0.5)'}};
+      }
+    }
     {%endif%}
 
     {% if usr.get_colors()[2] %}
@@ -243,6 +250,13 @@
     .subBtn
     {
       border-bottom: 1px solid {{'rgba('+usr.get_colors()[3]+',0.5)'}};
+    }
+    @media (max-width:1065px)
+    {
+      .navMenu
+      {
+        border-top:2px solid {{'rgba('+usr.get_colors()[3]+',0.5)'}};
+      }
     }
     {%endif%}
 

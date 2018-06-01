@@ -949,7 +949,7 @@ footer
     .showType
     {
       margin:0 auto;
-        margin-bottom:10px;
+      margin-bottom:10px;
     }
 
     .commArea,.Comment,.infoOne,textarea,.z1
@@ -971,12 +971,13 @@ footer
         border: none;
         margin-left: 0px;
     }
-    .content0
-    {
-        margin-left: 0px;
-    }
     .z2
     {
-        border: 1px solid #ffcc99;
+        font-weight: bold;
+    }
+    .Canal
+    {
+      position: static;
+      width: 100%;
     }
 }
