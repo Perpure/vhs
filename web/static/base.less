@@ -52,6 +52,12 @@ search
     display:none;
 }
 
+.mid
+{
+  width:200px;
+  margin:0 auto;
+}
+
 .nav-menu
 {
   display:inline-block;
@@ -209,6 +215,115 @@ search
   {
     vertical-align:top;
     flex-grow:1;
+  }
+}
+.show-type
+{
+  display:inline-block;
+  border-bottom:2px solid rgba(240, 203, 142,0.5);
+  margin-bottom:15px;
+  width:300px;
+  height:30px;
+  text-align:center;
+  background-color:rgba(240, 203, 142,0.4);
+  padding:5px;
+  &__inv
+  {
+    display:none;
+  }
+  &__rad
+  {
+    visibility:hidden;
+  }
+  &:hover > label
+  {
+    cursor:pointer;
+  }
+}
+.video
+{
+  display:inline-block;
+  width:14%;
+  margin-right:2%;
+  margin-bottom:10px;
+  &:hover
+  {
+    cursor: pointer;
+  }
+  &__preview
+  {
+    display:block;
+    width:100%;
+  }
+  &__title
+  {
+    font-weight:bold;
+    font-size:90%;
+    margin-bottom:3px;
+    overflow:hidden;
+    height:42px;
+  }
+  &__date
+  {
+
+  }
+  &__views,&__ath
+  {
+    font-style:italic;
+    font-size:80%;
+    margin-bottom:3px;
+  }
+  &__ath:hover
+  {
+    font-weight: bold;
+  }
+  &-titling
+  {
+    height:50px;
+    &__title
+    {
+      margin-top:10px;
+      margin-bottom:10px;
+      font-size:120%;
+      display:inline-block;
+    }
+    &__views
+    {
+      display:inline-block;
+      float:right;
+      margin-top:10px;
+      margin-bottom:10px;
+    }
+  }
+  &-info
+  {
+    display:inline-block;
+    vertical-align:top;
+    margin-bottom:10px;
+    &_ava
+    {
+      height:50px;
+      width:50px;
+      margin-right:15px;
+      vertical-align:top;
+      overflow:hidden;
+      display:inline-block;
+      &__img
+      {
+        height: 100%;
+        min-width: 100%;
+      }
+    }
+    &_txt
+    {
+      display:inline-block;
+    }
+    &__date
+    {
+      font-style:italic;
+      font-size:80%;
+      color:grey;
+    }
   }
 }
 footer
