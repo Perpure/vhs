@@ -63,7 +63,7 @@ for(var j=0;j<clast.length;j++){
 
 function swit(e){
         var elem=e.currentTarget;
-        elem.classList.toggle("Checked");
+        elem.classList.toggle("searcher_field__checked");
         elem.value=Math.abs(elem.value-1);
 }
 

@@ -25,9 +25,9 @@
     </div>
 
     <div class="video-rating_btns">
-        <input class="video-rating_btns__btn" id="like" name="like" type="submit" value="Нравится">
+        <div class="video-rating_btns__btn" id="like" name="like"></div>
         <span class="video-rating__likes" id="lik">{{ video.likes | length }}</span>
-        <input class="video-rating_btns__btn" id="dislike" name="dislike" type="submit" value="НЕ нравится">
+        <div class="video-rating_btns__btn" id="dislike" name="dislike"></div>
         <span class="video-rating__dises" id="dis">{{ video.dislikes | length }}</span>
     </div>
 </div>
@@ -67,7 +67,7 @@
 <script src="{{ url_for('static', filename='video.js') }}"></script>
 <script src="https://vjs.zencdn.net/7.0.3/video.min.js"></script>
 <style>
-    input[name="like"]
+    div[name="like"]
     {
         {%if lkd!=1 %}
             background-image:url({{ url_for('static', filename='lik1.png') }});
@@ -76,7 +76,7 @@
         {%endif%}
     }
 
-    input[name="dislike"]
+    div[name="dislike"]
     {
         {%if lkd!=-1 %}
             background-image:url({{ url_for('static', filename='dis1.png') }});
@@ -85,12 +85,12 @@
         {%endif%}
     }
 
-    input[name="like"]:hover
+    div[name="like"]:hover
     {
         background-image:url({{ url_for('static', filename='lik1H.png') }});
     }
 
-    input[name="dislike"]:hover
+    div[name="dislike"]:hover
     {
         background-image:url({{ url_for('static', filename='dis1H.png') }});
     }

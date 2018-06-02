@@ -8,10 +8,10 @@
     </form>
     <h5>Загрузите калибровочное фото</h5>
     <form action="" method="post" enctype="multipart/form-data">
-        <div class="Loader"><div><input id="image" name="image" type="file" accept="image/*" capture></div></div>
+        <div class="loader"><div><input id="image" name="image" type="file" accept="image/*" capture></div></div>
         <div id="Calibr"> {{ image_form.submit }} </div>
         {% if room.video_id %}
-            <button class="result" id="showRes" type="button">Начать демонстрацию</button>
+            <button id="showRes" type="button">Начать демонстрацию</button>
             <div id="cod"></div>
         {% endif %}
         {% if map_ex %}
@@ -21,15 +21,15 @@
 
 {% if room.capitan_id != anon.id %}
     <hr>
-    <button onclick="fullscreen();" class="fullscreenB">Перейти в полноэкранный режим</button>
+    <button onclick="fullscreen();">Перейти в полноэкранный режим</button>
 {% endif %}
 
 {% if room.capitan_id == anon.id %}
     {% if room.video_id %}
         <hr>
         <div class="video">
-            <a href="{{url_for('play', vid=room.video_id)}}" class="Link">
-                <img src="{{url_for('get_image', pid=room.video_id)}}" alt="" class="preview">
+            <a href="{{url_for('play', vid=room.video_id)}}">
+                <img src="{{url_for('get_image', pid=room.video_id)}}" alt="" class="video__preview">
             </a>
         </div>
         <form action="{{url_for('choose_video', room_id=room.id)}}">
@@ -83,11 +83,11 @@
 
 {% if room.capitan_id != anon.id %}
     {% if room.video_id %}
-        <video class="ResultVideo" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
+        <video class="result-video" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
     {% endif %}
 {% endif %}
 
-    <script>
+<script>
     function countDown(Time)
     {
         $('#cod').css("margin-top","10px");
