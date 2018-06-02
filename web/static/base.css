@@ -19,14 +19,6 @@ input[type="submit"], button
     font-weight:bold;
 }
 
-input[name="like"],input[name="dislike"]
-{
-   color:rgba(0,0,0,0);
-   border:none;
-   background-color:rgba(0,0,0,0);
-   width:40px;
-}
-
 button.result
 {
     height:40px;
@@ -59,12 +51,7 @@ input[type="file"]:hover
     cursor:pointer;
 }
 
-textarea
-{
-    resize:none;
-    width:40%;
-    background-color: rgba(240, 203, 142,0.5);
-}
+
 .Checked
 {
   background-color:#f0cb8e;
@@ -77,12 +64,6 @@ textarea
   background-color:rgba(240, 203, 142,0.5);
   cursor: pointer;
   color:black;
-}
-
-input[name="like"]:hover,input[name="dislike"]:hover
-{
-    background-color:rgba(0,0,0,0);
-    color:rgba(0,0,0,0);
 }
 
 main
@@ -109,110 +90,6 @@ main
 {
     margin:0 auto;
     width:100%;
-}
-
-.liking
-{
-    display:inline-block;
-    vertical-align:top;
-    margin-bottom:10px;
-}
-
-.Like,.Dislike
-{
-        background-size:40%;
-        background-repeat:no-repeat;
-        background-position:center;
-}
-
-.liking
-{
-    float:right;
-}
-
-.likeShow,.disShow
-{
-    display:inline-block;
-    height:3px;
-    width:50%;
-    vertical-align:top;
-}
-
-.likeShow
-{
-    background-color:green;
-}
-
-.disShow
-{
-    background-color:red;
-    margin-left:-6px;
-    float:right;
-}
-
-.lineLike
-{
-    height:3px;
-    margin-bottom:5px;
-}
-
-.Tag
-{
-    background-color:#ffcc99;
-    color:white;
-    border-radius:10px;
-    padding:3px;
-    margin-right:5px;
-}
-.Tag:hover
-{
-    border:2px solid #ffcc99;
-    background-color:rgba(0,0,0,0);
-    cursor:pointer;
-    color:  #ffcc99;
-    margin-right:1px;
-    font-weight:bold;
-}
-
-.cSect
-{
-    border-top:2px solid #ffcc99;
-    margin-top:10px;
-    padding-top:10px;
-}
-
-.Comment
-{
-    height:100px;
-    margin-bottom:15px;
-    max-width:50%;
-}
-
-.commAva
-{
-    height:100px;
-    width:100px;
-    margin-right:15px;
-    vertical-align:top;
-    overflow:hidden;
-    display:inline-block;
-}
-
-.commAvaIn
-{
-    height:100%;
-}
-
-.commTxt
-{
-    display:inline-block;
-}
-
-.commAuth
-{
-    color:black;
-    font-weight:bold;
-    font-size:110%;
 }
 
 .videoShow
