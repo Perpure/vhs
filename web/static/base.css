@@ -5,10 +5,6 @@
   color:black;
 }
 
-.typeLabel
-{
-    width:100%;
-}
 
 .Content
 {
@@ -36,14 +32,6 @@
 {
     width:70%;
     margin:0 auto;
-}
-
-.instr
-{
-    display:none;
-    padding-top:10px;
-    padding-left:20px;
-    text-align:left;
 }
 
 .token
@@ -86,97 +74,17 @@
     margin-bottom: 0;
 }
 
-.setLeft
-{
-  display: inline-block;
-  width: 110px;
-}
 
-.z1,.z2
-{
-    display: inline-block;
-    padding: 7px;
-    cursor: pointer;
-    margin-left: -4px;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -o-user-select: none;
-  -webkit-user-select: none;
-}
 
-.zEdge
-{
-    margin-left: 0;
-}
 
-.z2
-{
-    border-bottom:4px solid rgb(240, 203, 142);
-}
 
-.Canal
-{
-  height: 70vh;
-  position: absolute;
-  top: 15vh;
-  width: 70%;
-  overflow-y: auto;
-  background-color:rgba(240, 203, 142,0.8);
-}
 
-.con{
-    display: none;
-    width: 100%;
-    padding: 7px;
-}
 
-.Settings
-{
-  background-color:rgba(247, 226, 192,0.7);
-}
 
-.solid
-{
-    background-color: #F7E2C0;
-    vertical-align: top;
-    padding: 7px;
-    width: 100%;
-    padding-bottom: 0;
-}
-
-.con2{
-    display: block;
-}
-
-.ava{
-    height: 110px;
-    width: 110px;
-    margin-right: 20px;
-    overflow: hidden;
-    display: inline-block;
-}
-.cabAva
-{
-  height: 100%;
-  min-width: 100%;
-}
-
-.ava2{
-    display: inline-block;
-    vertical-align:top;
-}
-
-.set{
-    margin-bottom: 10px;
-}
 
 .but{
   background-color: #ffcc99;
   border-radius: 6px;
-}
-
-.info{
-    font-style: italic;
 }
 
 .b{
@@ -186,174 +94,4 @@
 .btn_pushed{
   background-color:#ffb703;
   color:black;
-}
-.labelnoselect{
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -o-user-select: none;
-  -webkit-user-select: none;
-}
-
-@media (max-width:1065px)
-{
-    .midHead
-    {
-      height:100%;
-      padding-bottom:0;
-    }
-
-    main,.logo
-    {
-      width:100%;
-    }
-
-    .navMenu
-    {
-      text-align:center;
-      border-top:2px solid rgba(240, 203, 142,0.5);
-      width:100%;
-    }
-
-    .navMen:hover
-    {
-      border:none;
-      display:inline-block;
-    }
-
-    .logo
-    {
-      margin:0 auto;
-      height:50px;
-      display:block;
-      text-align:center;
-    }
-    .video
-    {
-      width:18%;
-    }
-
-    .Searcher
-    {
-        top:110px;
-        width:100%;
-        left:0;
-    }
-
-    .Contact
-    {
-      width:20%;
-    }
-    .footLine
-    {
-      width:40%;
-    }
-    .byDate
-    {
-        width:55px;
-    }
-
-    .byViews
-    {
-        width:108px;
-    }
-    .Canal
-    {
-      position: static;
-      width: 100%;
-    }
-}
-
-@media (max-width:860px)
-{
-    .liking
-    {
-        display:block;
-        float:none;
-        margin-bottom:10px;
-        text-align:center;
-    }
-    .dlc
-    {
-        display:inline-block;
-    }
-}
-
-@media (max-width:570px)
-{
-    .Searcher
-    {
-      background-:#f3d6a5;
-      height:100px;
-      z-index:2;
-      top:310px;
-    }
-    .inSearch
-    {
-      display:block;
-      width:100%;
-    }
-    .searchBtn
-    {
-      width:45%;
-    }
-    .video
-    {
-      width:80%;
-      margin:0 auto;
-      display:block;
-    }
-    .navMen
-    {
-        display:none;
-        border-right:none;
-        border-bottom:1px solid rgba(240, 203, 142,0.5);
-    }
-    .menuHolder
-    {
-        display:block;
-    }
-    .Contact
-    {
-      width:30%;
-    }
-    .footLine
-    {
-      width:35%;
-    }
-
-    .Content
-    {
-      text-align:center;
-    }
-
-    .showType
-    {
-      margin:0 auto;
-      margin-bottom:10px;
-    }
-
-    .commArea,.Comment,.infoOne,textarea,.z1
-    {
-        width:100%;
-    }
-    .Comment
-    {
-        max-width:100%;
-        text-align:left;
-    }
-    .titling,.infoOne
-    {
-        text-align:left;
-    }
-    .z1
-    {
-        display: block;
-        border: none;
-        margin-left: 0px;
-    }
-    .z2
-    {
-        font-weight: bold;
-    }
-
 }

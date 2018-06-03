@@ -38,7 +38,7 @@ main
   flex: 1 0 auto;
 }
 
-a,.Fact
+a,.fact
 {
     color:#905a09;
     text-decoration:none;
@@ -50,11 +50,20 @@ a,.Fact
     }
 }
 
-.Fact
+.fact
 {
   font-weight: bold;
   font-size: 125%;
 }
+
+.instr
+{
+    display:none;
+    padding-top:10px;
+    padding-left:20px;
+    text-align:left;
+}
+
 
 input
 {
@@ -297,6 +306,14 @@ search
   {
     cursor:pointer;
   }
+  &__label
+  {
+    width: 100%;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    -webkit-user-select: none;
+  }
 }
 .video
 {
@@ -507,6 +524,94 @@ search
     display:none;
 }
 
+.canal
+{
+  height: 70vh;
+  position: absolute;
+  top: 15vh;
+  width: 70%;
+  overflow-y: auto;
+  background-color:rgba(240, 203, 142,0.8);
+}
+
+.solid
+{
+    background-color: #F7E2C0;
+    vertical-align: top;
+    padding: 7px;
+    width: 100%;
+    padding-bottom: 0;
+    &_ava
+    {
+      height: 110px;
+      width: 110px;
+      margin-right: 20px;
+      overflow: hidden;
+      display: inline-block;
+      &__img
+      {
+        height: 100%;
+        min-width: 100%;
+      }
+    }
+    &_txt
+    {
+      display: inline-block;
+      vertical-align:top;
+      &__info
+      {
+        font-style: italic;
+      }
+    }
+}
+
+.tabs
+{
+  &_tab
+  {
+    display: inline-block;
+    padding: 7px;
+    cursor: pointer;
+    margin-left: -4px;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    -webkit-user-select: none;
+    &__open
+    {
+      border-bottom:4px solid rgb(240, 203, 142);
+    }
+    &__edge
+    {
+      margin-left: 0;
+    }
+  }
+}
+
+.section
+{
+  display: none;
+  width: 100%;
+  padding: 7px;
+  &__open
+  {
+    display: block;
+  }
+}
+
+.settings
+{
+  background-color:rgba(247, 226, 192,0.7);
+  &_set{
+    margin-bottom: 10px;
+    &__left
+    {
+      display: inline-block;
+      width: 110px;
+    }
+  }
+}
+
 footer
 {
   width: 100%;
@@ -557,4 +662,180 @@ footer
       margin-right:0;
     }
   }
+}
+
+@media (max-width:1065px)
+{
+    .mid-head
+    {
+      height:100%;
+      padding-bottom:0;
+    }
+
+    main,.logo
+    {
+      width:100%;
+    }
+
+    main
+    {
+      padding: 7px;
+    }
+
+    .nav-menu
+    {
+      text-align:center;
+      border-top:2px solid rgba(240, 203, 142,0.5);
+      width:100%;
+      &_nav-men:hover
+      {
+        border:none;
+        display:inline-block;
+      }
+    }
+
+    .logo
+    {
+      margin:0 auto;
+      height:50px;
+      display:block;
+      text-align:center;
+    }
+    .video
+    {
+      width:18%;
+    }
+
+    .searcher
+    {
+        top:110px;
+        width:100%;
+        left:0;
+    }
+
+    .footer
+    {
+      &__line
+      {
+        width:39%;
+      }
+      &_contact
+      {
+        width:20%;
+      }
+    }
+
+    .canal
+    {
+      position: static;
+      width: 100%;
+    }
+}
+
+@media (max-width:860px)
+{
+  .video
+  {
+    &-rating
+    {
+      display:block;
+      float:none;
+      margin-bottom:10px;
+      text-align:center;
+      &_btns
+      {
+        display:inline-block;
+      }
+    }
+  }
+}
+
+@media (max-width:570px)
+{
+    body
+    {
+      text-align: center;
+    }
+    .searcher
+    {
+      background-:#f3d6a5;
+      height:100px;
+      z-index:2;
+      top:310px;
+      &__input
+      {
+        display:block;
+        width:100%;
+      }
+      &__btn
+      {
+        width:45%;
+      }
+    }
+
+    .nav-menu
+    {
+      &_nav-men
+      {
+        display:none;
+        border-right:none;
+        border-bottom:1px solid rgba(240, 203, 142,0.5);
+      }
+      &_menu-holder
+      {
+        display:block;
+      }
+    }
+
+    .footer
+    {
+      &__line
+      {
+        width:33%;
+      }
+      &_contact
+      {
+        width:30%;
+      }
+    }
+
+    .show-type
+    {
+      margin:0 auto;
+      margin-bottom:10px;
+    }
+
+    .comment,.video-info,textarea,.tabs_tab
+    {
+        width:100%;
+    }
+    .comment
+    {
+        max-width:100%;
+        text-align:left;
+    }
+    .video
+    {
+      width:80%;
+      margin:0 auto;
+      display:block;
+      &-titling,&-info
+      {
+        text-align:left;
+      }
+    }
+
+    .tabs
+    {
+      &_tab
+      {
+        display: block;
+        border: none;
+        margin-left: 0px;
+        &__open
+        {
+          font-weight: bold;
+        }
+      }
+    }
 }

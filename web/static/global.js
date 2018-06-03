@@ -25,7 +25,7 @@ search.addEventListener('click',function(){
 var holder=document.getElementById("mHolder");
 var opned=false;
 holder.addEventListener('click',function(){
-    var els=document.getElementsByClassName("navMen");
+    var els=document.getElementsByClassName("nav-menu_nav-men");
     if(opned)
     {
         for(var i=0;i<els.length;i++)
@@ -42,13 +42,13 @@ holder.addEventListener('click',function(){
     }
 });
 
-var clast=document.getElementsByClassName("navClast");
+var clast=document.getElementsByClassName("nav-menu_nav-men__nav-clast");
 for(var j=0;j<clast.length;j++){
     clast[j].addEventListener('click',function()
     {
         if(screen.width<570)
         {
-            var ins=this.getElementsByClassName("subBtn");
+            var ins=this.getElementsByClassName("nav-menu_nav-men__sub-btn");
             this.style.height=ins.length*50+60+"px";
         }
     });
