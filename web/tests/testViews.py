@@ -47,10 +47,6 @@ class TestPageAvail(unittest.TestCase):
         response = self.client.get("/reg", follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
-    def test_should_video_map_page_be_exist(self):
-        response = self.client.get("/video/map", follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
     def test_should_views_story_page_be_exist(self):
         response = self.client.get("/views_story", follow_redirects=True)
         self.assertEqual(response.status_code, 200)

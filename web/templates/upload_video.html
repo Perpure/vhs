@@ -16,7 +16,7 @@
             .{{format}}
         {% endfor %}
     )</p>
-    <div class="Loader">
+    <div class="loader">
         <div style="margin-bottom:-25px"> {{ form.video }} </div>
         <p id="fileName"></p>
     </div>
@@ -78,9 +78,9 @@
     }
 </script>
 <script type="text/javascript">
-    $( ".Loader" )
+    $( ".loader" )
       .change(function () {
-        $( ".Loader" ).css('background-image', 'url("/static/LoaderChange.png")');
+        $( ".loader" ).css('background-image', 'url("/static/LoaderChange.png")');
           let filename = $('#video').val();
           $('#fileName').html(filename);
         $('#OuterDiv').append('<div id="innerDiv"></div>');

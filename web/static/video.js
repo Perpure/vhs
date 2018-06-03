@@ -6,7 +6,7 @@ for(var i=0;i<hash.length;i++)
 hash=hash.substring(sl+1);
 
 var commSection=document.getElementById("CSect");
-var curComms = document.getElementsByClassName("Comment").length;
+var curComms = document.getElementsByClassName("comment").length;
 setTimeout(function step(){
     $.ajax({
         url:"/askNewComm/"+hash,
@@ -24,7 +24,7 @@ setTimeout(function step(){
                     success:function(response1)
                     {
                         response1.forEach(function(element){
-                            $("#CSect").get(0).innerHTML='<div class="Comment"><div class="commAva"><img src="'+element.ava+'" alt="" class="commAvaIn"></div><div class="commTxt"><p class="commAuth"><a href="/cabinet/'+element.login+'" class="Link">'+element.name+'</a></p><p>'+element.text+'</p></div></div>'+$("#CSect").get(0).innerHTML;                        
+                            $("#CSect").get(0).innerHTML='<div class="comment"><div class="comment_ava"><img src="'+element.ava+'" alt="" class="comment_ava__img"></div><div class="comment_txt"><p class="comment_txt__auth"><a href="/cabinet/'+element.login+'">'+element.name+'</a></p><p>'+element.text+'</p></div></div>'+$("#CSect").get(0).innerHTML;
                         });
                     },
                     error:function(){}
@@ -70,21 +70,21 @@ var lk=document.getElementById("like");
 var dlk=document.getElementById("dislike");
 
 $('#like').click(function(){
-            var cur=$("span.lik").html();
+            var cur=$("#lik").html();
             $.ajax({
                url:"/likeVideo/"+hash,
                type:"GET",
                dataType:"text",
                success:function(response){
                     var parsedJson = $.parseJSON(response);
-                    $("span.lik").empty()
-                    $("span.dis").empty()
+                    $("#lik").empty()
+                    $("#dis").empty()
                     var likes = parsedJson[0].likes
                     var dislikes = parsedJson[0].dislikes
-                    $("span.lik").html(likes)
-                    $("span.dis").html(dislikes)
+                    $("#lik").html(likes)
+                    $("#dis").html(dislikes)
                     calc();
-                    if(cur!=$("span.lik").html()){
+                    if(cur!=$("#lik").html()){
                         var stl=window.getComputedStyle(lk);
                         if(stl.backgroundImage[stl.backgroundImage.length-7]=='L')lk.style.backgroundImage="url(/static/lik1.png)";
                         else{
@@ -99,21 +99,21 @@ $('#like').click(function(){
 });
 
 $('#dislike').click(function(){
-            var cur=$("span.dis").html();
+            var cur=$("#dis").html();
             $.ajax({
                url:"/dislikeVideo/"+hash,
                type:"GET",
                dataType:"text",
                success:function(response){
                     var parsedJson = $.parseJSON(response);
-                    $("span.lik").empty()
-                    $("span.dis").empty()
+                    $("#lik").empty()
+                    $("#dis").empty()
                     var likes = + parsedJson[0].likes
                     var dislikes = parsedJson[0].dislikes
-                    $("span.lik").html(likes)
-                    $("span.dis").html(dislikes)
+                    $("#lik").html(likes)
+                    $("#dis").html(dislikes)
                     calc();
-                    if(cur!=$("span.dis").html()){
+                    if(cur!=$("#dis").html()){
                         var stl=window.getComputedStyle(dlk);
                         if(stl.backgroundImage[stl.backgroundImage.length-7]=='D')dlk.style.backgroundImage="url(/static/dis1.png)";
                         else{
@@ -127,15 +127,7 @@ $('#dislike').click(function(){
             });
 });
 
-
-(function () {
-    var Dator=document.getElementById("Dating");
-    var Dte=Dator.innerHTML;
-    Dte=Dte.substr(0,10);
-    Dator.innerHTML=Dte;
-})();
-
-var taggs=document.getElementsByClassName("Tag");
+var taggs=document.getElementsByClassName("tag");
 for(var i=0;i<taggs.length;i++)
     taggs[i].addEventListener('click',function(){
         var val = this.innerText;
@@ -157,17 +149,13 @@ for(var i=0;i<taggs.length;i++)
                        },
                        success:function(response)
                        {
-                            var placer="";
-                            var plus=false;
-                            for(var i=0;i<response.length;i++)
-                            {
-                                if(response[i]=='<' && response[i+1]=='m' && response[i+2]=='a' && response[i+3]=='i')plus=true;
-                                if(plus)placer+=response[i];
-                                if(response[i+2]=='/' && response[i+3]=='m' && plus)i=response.length;
-                            }
-                            placer=placer.substr(17);
-                            var mn=document.getElementById("Main");
-                            mn.innerHTML=placer;
+                         var placer="";
+                         var plus=false;
+                         response=$.parseHTML(response);
+                         var tempDom = $('search').append(response);
+                         var maine=$('#Main', tempDom);
+                         $(tempDom).empty();
+                         $("#Main").html($(maine).html());
                        },
                        error:function(){}
         });

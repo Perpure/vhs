@@ -4,61 +4,59 @@
     <source src="{{url_for('get_video', vid=vid)}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
 </video>
 
-<div class="titling">
-    <h2 class="videoTitle">{{ video.title }}</h2>
-    <p class="vidViews">Просмотры: {{ video.viewers | length }}</p>
+<div class="video-titling">
+    <h2 class="video-titling__title">{{ video.title }}</h2>
+    <p class="video-titling__views">Просмотры: {{ video.viewers | length }}</p>
 </div>
 
-<div class="infoOne">
-    <div>
-        <div class="authAva"><img src="{{ usr.avatar_url() }}" alt="" class="authAvaIn"></div>
-        <div class="inAuth">
-            <b><a href="{{url_for('cabinet', usr=video.user_login)}}" class="Link">{{video.user.name}}</a></b>
-            <p class="videoDate" id="Dating">{{video.date}}</p>
-        </div>
+<div class="video-info">
+    <div class="video-info_ava"><img src="{{ usr.avatar_url() }}" alt="" class="video-info_ava__img"></div>
+    <div class="video-info_txt">
+        <b><a href="{{url_for('cabinet', usr=video.user_login)}}">{{video.user.name}}</a></b>
+        <p class="video-info__date" id="Dating">{{video.date.date()}}</p>
     </div>
 </div>
 
 
-<div class="liking">
-        <div class="lineLike">        
-            <div id="likSh" class="likeShow"></div>
-            <div id="disSh" class="disShow"></div>
-        </div>
+<div class="video-rating">
+    <div class="video-rating_rateline">
+        <div id="likSh" class="video-rating_rateline__show-like"></div>
+        <div id="disSh" class="video-rating_rateline__show-dis"></div>
+    </div>
 
-        <div class="dlc">
-            <input class="Like" id="like" name="like" type="submit" value="Нравится">
-            <span class="lik" id="lik">{{ video.likes | length }}</span>
-            <input class="Dislike" id="dislike" name="dislike" type="submit" value="НЕ нравится">
-            <span class="dis" id="dis">{{ video.dislikes | length }}</span>
-        </div>
+    <div class="video-rating_btns">
+        <div class="video-rating_btns__btn" id="like" name="like"></div>
+        <span class="video-rating__likes" id="lik">{{ video.likes | length }}</span>
+        <div class="video-rating_btns__btn" id="dislike" name="dislike"></div>
+        <span class="video-rating__dises" id="dis">{{ video.dislikes | length }}</span>
+    </div>
 </div>
 
 
-<div class="tags">
+<div class="video-tags">
     {% for tag in video.tags %}
-        <span class="Tag">#{{ tag.text }}</span>
+        <span class="tag">#{{ tag.text }}</span>
     {% endfor %}
 </div>
 
 {%if not user%}
-    <br><a href="{{url_for('log')}}" class="Link"><b>Войдите</b></a>, чтобы оценить видео
+    <br><a href="{{url_for('log')}}"><b>Войдите</b></a>, чтобы оценить видео
 {%endif%}
 
-<div class="cSect">
+<div class="video-comments">
     <p>Комментарии</p>
     {%if user %}
-        <textarea id="txtPlate" class="commArea" maxlength="200" title=""></textarea>
+        <textarea id="txtPlate" maxlength="200" title=""></textarea>
         <br>
         <input type="submit" value="Запостить" id="addC">
     {%endif%}
 
     <div id="CSect">
         {% for comment in video.comments|sort(attribute="id")|reverse %}
-            <div class="Comment">
-                <div class="commAva"><img src="{{ comment.user.avatar_url() }}" alt="" class="commAvaIn"></div>
-                <div class="commTxt">
-                    <p class="commAuth"><a href="{{url_for('cabinet', usr=comment.user.login)}}" class="Link">{{ comment.user.name }}</a></p>
+            <div class="comment">
+                <div class="comment_ava"><img src="{{ comment.user.avatar_url() }}" alt="" class="comment_ava__img"></div>
+                <div class="comment_txt">
+                    <p class="comment_txt__auth"><a href="{{url_for('cabinet', usr=comment.user.login)}}">{{ comment.user.name }}</a></p>
                     <p>{{ comment.text }}</p>
                 </div>
             </div>
@@ -69,7 +67,7 @@
 <script src="{{ url_for('static', filename='video.js') }}"></script>
 <script src="https://vjs.zencdn.net/7.0.3/video.min.js"></script>
 <style>
-    .Like
+    div[name="like"]
     {
         {%if lkd!=1 %}
             background-image:url({{ url_for('static', filename='lik1.png') }});
@@ -78,7 +76,7 @@
         {%endif%}
     }
 
-    .Dislike
+    div[name="dislike"]
     {
         {%if lkd!=-1 %}
             background-image:url({{ url_for('static', filename='dis1.png') }});
@@ -87,20 +85,14 @@
         {%endif%}
     }
 
-    .Like:hover,.Dislike:hover
-    {
-        background-size:41%;
-    }
-
-    .Like:hover
+    div[name="like"]:hover
     {
         background-image:url({{ url_for('static', filename='lik1H.png') }});
     }
 
-    .Dislike:hover
+    div[name="dislike"]:hover
     {
         background-image:url({{ url_for('static', filename='dis1H.png') }});
     }
 </style>
 {% endblock %}
-

@@ -1,66 +1,68 @@
 ﻿{% extends "base.html" %}
 {% block content %}
-<div class="Canal">
+<div class="canal">
   <div class="solid">
     {% if usr.avatar_url() %}
-      <div class="ava"><img class="cabAva" src=" {{ usr.avatar_url() }}"></div>
+      <div class="solid_ava"><img class="solid_ava__img" src=" {{ usr.avatar_url() }}"></div>
     {% endif %}
-    <div class="ava2">
+    <div class="solid_txt">
       <h1>{{ usr.name }}</h1>
-      <div class="info">
+      <div class="solid_txt__info">
         {{ usr.channel_info }}
       </div>
     </div>
-    <div class="conbu">
-      <div class="z1 z2 zEdge" onclick="func(this)">Главная</div>
-      <div class="z1" onclick="func(this)">Видео пользователя</div>
+    <div class="tabs">
+      <div class="tabs_tab tabs_tab__open tabs_tab__edge" onclick="func(this)">Главная</div>
+      <div class="tabs_tab" onclick="func(this)">Видео пользователя</div>
       {% if settings %}
-        <div class="z1" onclick="func(this)">Настройки</div>
+        <div class="tabs_tab" onclick="func(this)">Настройки</div>
       {% endif %}
     </div>
   </div>
 
-  <div class="con con2">
+  <div class="section section__open">
     {% if last %}
     <h2>Последние видео</h2>
     {%endif%}
     {% for item in last|reverse %}
       <div class="video">
-        <a href="/play/{{item.id}}" class="Link">
-          <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="preview">
+        <a href="{{ url_for('play', vid=item.id) }}">
+          <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video__preview">
         </a>
-        <div class="videoTxt">
-          <a href="/play/{{item.id}}" class="Link">
-            <p class="videoName">{{item.title}}</p>
+        <div class="video_txt">
+          <a href="{{ url_for('play', vid=item.id) }}">
+            <p class="video__title" title="{{item.title}}">{{item.title}}</p>
           </a>
-          <p class="videoView">{{ item.viewers | length }} просмотров</p>
+          <a href="/cabinet/{{ item.user_login }}"><p class="video__ath">{{ item.user_login }}</p></a>
+          <p class="video__views">{{ item.viewers | length }} просмотров</p>
         </div>
       </div>
     {% endfor %}
   </div>
 
-  <div class="con">
+  <div class="section">
     {% for item in items|reverse %}
-      <div class="video">
-        <a href="/play/{{item.id}}" class="Link">
-          <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="preview">
+    <div class="video">
+      <a href="{{ url_for('play', vid=item.id) }}">
+        <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video__preview">
+      </a>
+      <div class="video_txt">
+        <a href="{{ url_for('play', vid=item.id) }}">
+          <p class="video__title" title="{{item.title}}">{{item.title}}</p>
         </a>
-        <div class="videoTxt">
-          <a href="/play/{{item.id}}" class="Link">
-            <p class="videoName">{{item.title}}</p>
-          </a>
-          <p class="videoView">{{ item.viewers | length }} просмотров</p>
-        </div>
+        <a href="/cabinet/{{ item.user_login }}"><p class="video__ath">{{ item.user_login }}</p></a>
+        <p class="video__views">{{ item.viewers | length }} просмотров</p>
       </div>
+    </div>
     {% endfor %}
   </div>
 
   {% if settings %}
-    <div class="con Settings">
+    <div class="section settings">
       <h3>Личные данные</h3>
       <form action="" method="post" enctype="multipart/form-data" >
         {{form.hidden_tag()}}
-        <div class="set">
+        <div class="settings_set">
           {{ form.change_name.label }}
           <br>
           {{ form.change_name }}
@@ -71,7 +73,7 @@
           {% endif %}
         </div>
 
-        <div class="set">
+        <div class="settings_set">
           {{ form.change_password.label }}
           <br>
           {{ form.change_password }}
@@ -81,7 +83,7 @@
             {% endfor %}
           {% endif %}
         </div>
-        <div clss="set">
+        <div clss="settings_set">
           {{ form.channel_info.label }}
           <br>
           {{ form.channel_info }}
@@ -94,9 +96,9 @@
 
         <hr>
         <h3>Оформление</h3>
-        <div class="set avatar">
+        <div class="settings_set">
           {{ form.avatar.label }}
-		      <div class="Loader">
+		      <div class="loader">
    			    <div>{{ form.avatar }}</div>
           </div>
           {% if form.avatar.errors %}
@@ -106,9 +108,9 @@
           {% endif %}
         </div>
 
-        <div class="set background">
+        <div class="settings_set">
 	 	      {{ form.background.label }}
-		      <div class="Loader">
+		      <div class="loader">
    			    <div> {{ form.background }}</div>
     		  </div>
           {% if form.background.errors %}
@@ -116,7 +118,7 @@
               <div style="color: red;">{{ error }}</div>
             {% endfor %}
           {% endif %}
-          <span id="instructionBtn" class="Fact">Что такое Фон?</span>
+          <span id="instructionBtn" class="fact">Что такое Фон?</span>
           <ol id="instruction" class="instr">
             <p>
               Хотите иметь уникальный фон канала?
@@ -126,26 +128,27 @@
           </ol>
         </div>
 
-        <div clss="set">
+        <div clss="settings_set">
           <h6>Изменить палитру канала</h6>
           <br>
-          <div class="setLeft">{{ form.color1.label }}</div>
+          <div class="settings_set__left">{{ form.color1.label }}</div>
           {{ form.color1(placeholder=usr.get_colors()[0])}}
           <br>
-          <div class="setLeft">{{ form.color2.label }}</div>
+          <div class="settings_set__left">{{ form.color2.label }}</div>
           {{ form.color2(placeholder=usr.get_colors()[1])}}
           <br>
-          <div class="setLeft">{{ form.colorTxt.label }}</div>
+          <div class="settings_set__left">{{ form.colorTxt.label }}</div>
           {{ form.colorTxt(placeholder=usr.get_colors()[2])}}
           <br>
-          <div class="setLeft">{{ form.colorBrd.label }}</div>
+          <div class="settings_set__left">{{ form.colorBrd.label }}</div>
           {{ form.colorBrd(placeholder=usr.get_colors()[3])}}
           <br>
-          <div class="setLeft">{{ form.colorLink.label }}</div>
+          <div class="settings_set__left">{{ form.colorLink.label }}</div>
           {{ form.colorLink(placeholder=usr.get_colors()[4])}}
         </div>
         <hr>
-        <div class="set b">
+        <div class="settings_set">
+          <b>
           {{ form.current_password.label }}
           {{ form.current_password }}
           {% if form.current_password.errors %}
@@ -153,8 +156,9 @@
               <div style="color: red;">{{ error }}</div>
             {% endfor %}
           {% endif %}
+          </b>
         </div>
-        <div class="set">
+        <div class="settings_set">
           <input type="submit" class="buttondlc" value="Сохранить">
         </div>
 
@@ -170,7 +174,7 @@
     }
 
     {% if usr.get_colors()[0] %}
-    .midHead,.subBtn,.Searcher
+    .mid-head,.nav-menu_nav-men__sub-btn,.searcher
     {
       background-color:{{'rgb('+usr.get_colors()[0]+')'}};
     }
@@ -178,14 +182,14 @@
     {
       background-color:{{'rgba('+usr.get_colors()[0]+',0.85)'}};
     }
-    .Settings
+    .settings
     {
       background-color:{{'rgba('+usr.get_colors()[0]+',0.7)'}};
     }
     {%endif%}
 
     {% if usr.get_colors()[1] %}
-    .Canal
+    .canal
     {
       background-color: {{'rgba('+usr.get_colors()[1]+',0.8)'}};
     }
@@ -193,7 +197,7 @@
     {
       background-color: {{'rgba('+usr.get_colors()[1]+',0.5)'}};
     }
-    .navMen:hover
+    .nav-menu_nav-men:hover
     {
       background-color: {{'rgba('+usr.get_colors()[1]+',0.4)'}};
     }
@@ -202,17 +206,17 @@
       border-bottom: 2px solid {{'rgb('+usr.get_colors()[1]+')'}};
       background-color: {{'rgb('+usr.get_colors()[1]+')'}};
     }
-    .subBtn:hover,.Checked
+    .nav-menu_nav-men__sub-btn:hover,.searcher_field__checked
     {
       background-color: {{'rgb('+usr.get_colors()[1]+')'}};
     }
-    .z2
+    .tabs_tab__open
     {
       border-bottom: 4px solid {{'rgb('+usr.get_colors()[1]+')'}};
     }
     @media (max-width:570px)
     {
-      .navMen
+      .nav-menu_nav-men
       {
         border-bottom:1px solid {{'rgba('+usr.get_colors()[1]+',0.5)'}};
       }
@@ -220,40 +224,40 @@
     {%endif%}
 
     {% if usr.get_colors()[2] %}
-    .navMen,body,.subBtn,input,textarea,input[type="submit"]:hover,.searchField:hover,.Checked
+    .nav-menu_nav-men,body,.nav-menu_nav-men__sub-btn,input,textarea,input[type="submit"]:hover,.searcher_field:hover,.searcher_field__checked
     {
       color: {{'rgb('+usr.get_colors()[2]+')'}};
     }
     {%endif%}
 
     {% if usr.get_colors()[3] %}
-    .up-down
+    .nav-menu_nav-men__up-down
     {
       display: none;
     }
-    .midHead
+    .mid-head
     {
       border-bottom: 2px solid {{'rgba('+usr.get_colors()[3]+',0.5)'}};
     }
-    .footLine,.navMen:hover
+    .footer__line,.nav-menu_nav-men:hover
     {
       border-bottom: 2px solid {{'rgb('+usr.get_colors()[3]+')'}};
     }
-    .upst
+    .nav-menu_nav-men__upst
     {
       border-top: 2px solid {{'rgb('+usr.get_colors()[3]+')'}};
     }
-    .navMen
+    .nav-menu_nav-men
     {
       border-right: 1px solid {{'rgba('+usr.get_colors()[3]+',0.5)'}};
     }
-    .subBtn
+    .nav-menu_nav-men__sub-btn
     {
       border-bottom: 1px solid {{'rgba('+usr.get_colors()[3]+',0.5)'}};
     }
     @media (max-width:1065px)
     {
-      .navMenu
+      .nav-menu
       {
         border-top:2px solid {{'rgba('+usr.get_colors()[3]+',0.5)'}};
       }
@@ -261,7 +265,7 @@
     {%endif%}
 
     {% if usr.get_colors()[4] %}
-    .Fact,a,a:hover,.Fact:hover
+    .fact,a,a:hover,.fact:hover
     {
       color: {{'rgb('+usr.get_colors()[4]+')'}};
     }
@@ -279,21 +283,21 @@
 
     function func(a){
         let x;
-        let amas = document.getElementsByClassName('z1');
+        let amas = document.getElementsByClassName('tabs_tab');
         for (let i=0; i<amas.length; i++){
-            amas[i].classList.remove('z2');
-            amas[i].classList.add('z1');
+            amas[i].classList.remove('tabs_tab__open');
+            amas[i].classList.add('tabs_tab');
         }
-        a.classList.add('z2');
-        let acon = document.getElementsByClassName('con');
+        a.classList.add('tabs_tab__open');
+        let acon = document.getElementsByClassName('section');
         for (let i=0; i<acon.length; i++){
-            acon[i].classList.remove('con2');
-            acon[i].classList.add('con');
-            if (amas[i].classList.contains('z2')){
+            acon[i].classList.remove('section__open');
+            acon[i].classList.add('section');
+            if (amas[i].classList.contains('tabs_tab__open')){
                 x = i;
             }
         }
-        acon[x].classList.add('con2');
+        acon[x].classList.add('section__open');
     }
 
     $(document).ready(function(){
