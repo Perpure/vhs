@@ -11,6 +11,9 @@
         {{ usr.channel_info }}
       </div>
     </div>
+    {% if settings==False %}
+      <button id="subscribe">Подписаться</button>
+    {%endif%}
     <div class="tabs">
       <div class="tabs_tab tabs_tab__open tabs_tab__edge" onclick="func(this)">Главная</div>
       <div class="tabs_tab" onclick="func(this)">Видео пользователя</div>
@@ -352,5 +355,16 @@
       $('a').css('color','rgb('+colorLinkInp.val()+')');
       $('.fact').css('color','rgb('+colorLinkInp.val()+')');
     })
+
+    var id={{usr.id}}
+    $('#subscribe').click(function(){
+      $.ajax({
+         url:"/subscribe/"+id,
+         type:"GET",
+         dataType:"text",
+         success:function(response){},
+         error:function(){}
+      });
+    });
 </script>
  {% endblock %}

@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import url_for, redirect, make_response, request, jsonify, session, render_template
 from web import app, db
 from web.helper import read_image, read_video, cur_user, read_multi
-from web.models import Video, Comment, Room, AnonUser
+from web.models import Video, Comment, Room, AnonUser, User
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -221,3 +221,16 @@ def showRes(room_id):
     users[0].action = "resultS"
     db.session.commit()
     return ""
+
+@app.route('/subscribe/<int:ID>', methods=['GET', 'POST'])
+def subscribe(ID):
+    user = cur_user()
+    blog=User.get(id=ID)
+    if user in blog.subscribers:
+        blog.subscribers.remove(user)
+        db.session.add(user)
+        db.session.commit()
+    else:
+        user.follow(blog)
+    
+    return "nice"

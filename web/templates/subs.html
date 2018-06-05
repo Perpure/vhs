@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+{% for item in items %}
+  <div class="video">
+    <a href="{{ url_for('play', vid=item.id) }}">
+      <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video__preview">
+    </a>
+    <div class="video_txt">
+      <a href="{{ url_for('play', vid=item.id) }}">
+        <p class="video__title" title="{{item.title}}">{{item.title}}</p>
+      </a>
+      <a href="/cabinet/{{ item.user_login }}"><p class="video__ath">{{ item.user_login }}</p></a>
+      <p class="video__views">{{ item.viewers | length }} просмотров</p>
+    </div>
+  </div>
+{% endfor %}
+{% endblock %}

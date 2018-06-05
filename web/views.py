@@ -301,6 +301,16 @@ def views_story():
 
     return render_template('views_story.html', user=cur_user(), items=items)
 
+@app.route('/subscriptions', methods=['GET', 'POST'])
+def subs_s():
+    user = cur_user()
+    subs=user.subscriptions
+    items = []
+    for blog in subs:
+        for video in blog.videos:
+            items.append(video)
+    return render_template('subs.html', user=user, items=items)
+
 
 @app.errorhandler(403)
 def forbidden(e):
