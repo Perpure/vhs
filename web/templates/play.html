@@ -64,8 +64,6 @@
     </div>
 </div>
 
-<script src="{{ url_for('static', filename='video.js') }}"></script>
-<script src="https://vjs.zencdn.net/7.0.3/video.min.js"></script>
 <style>
     div[name="like"]
     {
@@ -95,4 +93,10 @@
         background-image:url({{ url_for('static', filename='dis1H.png') }});
     }
 </style>
+
+<script src="{{ url_for('static', filename='video.js') }}"></script>
+{%if user %}
+  <script src="{{ url_for('static', filename='video_like.js') }}"></script>
+{%endif%}
+<script src="https://vjs.zencdn.net/7.0.3/video.min.js"></script>
 {% endblock %}

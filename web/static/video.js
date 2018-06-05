@@ -60,72 +60,18 @@ function calc()
     var disIn=document.getElementById("disSh");
     lkes=lkes.innerHTML;
     disl=disl.innerHTML;
-    lkesIn.style.width=(lkes*100)/(lkes*1+disl*1)+"%";
-    disIn.style.width=(disl*100)/(lkes*1+disl*1)+"%";
+    denom=lkes*1+disl*1;
+    if(!denom)
+    {
+      lkes=0.5;
+      disl=0.5;
+      denom=1;
+    }
+    lkesIn.style.width=(lkes*100)/denom+"%";
+    disIn.style.width=(disl*100)/denom+"%";
 }
 
-if(addCom!=null)calc();
-
-var lk=document.getElementById("like");
-var dlk=document.getElementById("dislike");
-
-$('#like').click(function(){
-            var cur=$("#lik").html();
-            $.ajax({
-               url:"/likeVideo/"+hash,
-               type:"GET",
-               dataType:"text",
-               success:function(response){
-                    var parsedJson = $.parseJSON(response);
-                    $("#lik").empty()
-                    $("#dis").empty()
-                    var likes = parsedJson[0].likes
-                    var dislikes = parsedJson[0].dislikes
-                    $("#lik").html(likes)
-                    $("#dis").html(dislikes)
-                    calc();
-                    if(cur!=$("#lik").html()){
-                        var stl=window.getComputedStyle(lk);
-                        if(stl.backgroundImage[stl.backgroundImage.length-7]=='L')lk.style.backgroundImage="url(/static/lik1.png)";
-                        else{
-                            lk.style.backgroundImage="url(/static/lik1L.png)";
-                            dlk.style.backgroundImage="url(/static/dis1.png)";
-                        }
-                    }
-               },
-               error:function(){
-                    alert('Произошла ошибка')}
-            });
-});
-
-$('#dislike').click(function(){
-            var cur=$("#dis").html();
-            $.ajax({
-               url:"/dislikeVideo/"+hash,
-               type:"GET",
-               dataType:"text",
-               success:function(response){
-                    var parsedJson = $.parseJSON(response);
-                    $("#lik").empty()
-                    $("#dis").empty()
-                    var likes = + parsedJson[0].likes
-                    var dislikes = parsedJson[0].dislikes
-                    $("#lik").html(likes)
-                    $("#dis").html(dislikes)
-                    calc();
-                    if(cur!=$("#dis").html()){
-                        var stl=window.getComputedStyle(dlk);
-                        if(stl.backgroundImage[stl.backgroundImage.length-7]=='D')dlk.style.backgroundImage="url(/static/dis1.png)";
-                        else{
-                            dlk.style.backgroundImage="url(/static/dis1D.png)";
-                            lk.style.backgroundImage="url(/static/lik1.png)";
-                        }
-                    }
-               },
-               error:function(){
-                    alert('Произошла ошибка')}
-            });
-});
+calc();
 
 var taggs=document.getElementsByClassName("tag");
 for(var i=0;i<taggs.length;i++)
