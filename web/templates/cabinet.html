@@ -12,7 +12,10 @@
       </div>
     </div>
     {% if settings==False %}
-      <button id="subscribe">Подписаться</button>
+      <div class="solid_subs">
+        <span class="solid_subs__count">{{ usr.subscribers|length }}</span>
+        <button class="subscribe-btn" value="{{usr.id}}">{% if subscribed %} Отписаться {% else %} Подписаться {% endif %}</button>
+      </div>
     {%endif%}
     <div class="tabs">
       <div class="tabs_tab tabs_tab__open tabs_tab__edge" onclick="func(this)">Главная</div>
@@ -355,16 +358,6 @@
       $('a').css('color','rgb('+colorLinkInp.val()+')');
       $('.fact').css('color','rgb('+colorLinkInp.val()+')');
     })
-
-    var id={{usr.id}}
-    $('#subscribe').click(function(){
-      $.ajax({
-         url:"/subscribe/"+id,
-         type:"GET",
-         dataType:"text",
-         success:function(response){},
-         error:function(){}
-      });
-    });
 </script>
+<script src="{{ url_for('static', filename='subs.js') }}"></script>
  {% endblock %}

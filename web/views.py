@@ -254,8 +254,8 @@ def cabinet(usr):
             db.session.commit()
         return redirect(url_for("cabinet", usr=cabinet_owner.login))
     last=items[-6:]
-    return render_template('cabinet.html', form=form, user=cur_user(), items=items,
-                           settings=is_cabinet_settings_available, usr=cabinet_owner,last=last)
+    return render_template('cabinet.html', form=form, user=user, items=items,
+                           settings=is_cabinet_settings_available, usr=cabinet_owner,last=last,subscribed=(user in cabinet_owner.subscribers))
 
 
 @app.route('/play/<string:vid>', methods=['GET', 'POST'])
@@ -305,11 +305,7 @@ def views_story():
 def subs_s():
     user = cur_user()
     subs=user.subscriptions
-    items = []
-    for blog in subs:
-        for video in blog.videos:
-            items.append(video)
-    return render_template('subs.html', user=user, items=items)
+    return render_template('subs.html', user=user, subs=subs)
 
 
 @app.errorhandler(403)

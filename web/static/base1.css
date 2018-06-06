@@ -64,6 +64,7 @@ button {
   border: none;
   border-bottom: 2px solid #ffb366;
   font-weight: bold;
+  vertical-align: top;
 }
 input[type="submit"]:hover,
 button:hover {
@@ -88,6 +89,9 @@ search {
 .mid {
   width: 200px;
   margin: 0 auto;
+}
+.mid__wider {
+  width: 600px;
 }
 .nav-menu {
   display: inline-block;
@@ -456,9 +460,21 @@ search {
 .solid_txt {
   display: inline-block;
   vertical-align: top;
+  margin-right: 10px;
 }
 .solid_txt__info {
   font-style: italic;
+}
+.solid_subs {
+  float: right;
+  height: 40px;
+  margin-top: 30px;
+  display: inline-block;
+  vertical-align: top;
+}
+.solid_subs__count {
+  line-height: 40px;
+  margin-right: 10px;
 }
 .tabs_tab {
   display: inline-block;
@@ -581,6 +597,31 @@ footer {
     position: static;
     width: 100%;
   }
+}
+.subscription {
+  height: 100px;
+  margin-bottom: 20px;
+}
+.subscription_ava {
+  height: 100%;
+  width: 100px;
+  overflow: hidden;
+  display: inline-block;
+  margin-right: 10px;
+  border: 4px solid rgba(255, 255, 255, 0.5);
+}
+.subscription_ava__img {
+  min-width: 100%;
+  height: 100%;
+}
+.subscription_txt {
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 10px;
+  width: 300px;
+}
+.subscription__btn {
+  margin-top: 30px;
 }
 @media (max-width: 860px) {
   .video-rating {

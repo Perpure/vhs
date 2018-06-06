@@ -84,6 +84,7 @@ input[type="submit"], button
     border:none;
     border-bottom:2px solid #ffb366;
     font-weight:bold;
+    vertical-align: top;
     &:hover
     {
       background-color:rgba(240, 203, 142,0.5);
@@ -117,6 +118,10 @@ search
 {
   width:200px;
   margin:0 auto;
+  &__wider
+  {
+    width: 600px;
+  }
 }
 
 .nav-menu
@@ -558,9 +563,23 @@ search
     {
       display: inline-block;
       vertical-align:top;
+      margin-right: 10px;
       &__info
       {
         font-style: italic;
+      }
+    }
+    &_subs
+    {
+      float: right;
+      height: 40px;
+      margin-top: 30px;
+      display: inline-block;
+      vertical-align: top;
+      &__count
+      {
+        line-height: 40px;
+        margin-right: 10px;
       }
     }
 }
@@ -730,6 +749,37 @@ footer
       position: static;
       width: 100%;
     }
+}
+
+.subscription
+{
+  height: 100px;
+  margin-bottom: 20px;
+  &_ava
+  {
+    height: 100%;
+    width: 100px;
+    overflow: hidden;
+    display: inline-block;
+    margin-right: 10px;
+    border: 4px solid rgba(255,255,255,0.5);
+    &__img
+    {
+      min-width: 100%;
+      height: 100%;
+    }
+  }
+  &_txt
+  {
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 10px;
+    width: 300px;
+  }
+  &__btn
+  {
+    margin-top: 30px;
+  }
 }
 
 @media (max-width:860px)
