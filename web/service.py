@@ -61,45 +61,41 @@ def askAct(room_id):
         user = AnonUser.query.get(session['anon_id'])
         action = user.action
         if action == 'calibrate':
-            user.action = ''
-            db.session.add(user)
-            db.session.commit()
+            user.update_action('')
             return jsonify({"action": action,
                             "color": user.color})
         elif action == 'result' or action == 'resultS':
-            noSound = True
-            if action == 'resultS':
-                noSound = False
-            user.action = ''
-            db.session.add(user)
-            db.session.commit()
-            time = datetime.now(tz=None)
-            hr = time.hour
-            mt = time.minute
-            sc = time.second
-            ms = round(time.microsecond/1000)
-            new = hr * 3600000 + mt * 60000 + sc * 1000 + ms
-            action = "result"
-            old = user.time
-            time = str(old-new)
-            return jsonify({"action": action,
-                            "time": time,
-                            "top": user.top,
-                            "left": user.left,
-                            "width": user.res_k,
-                            "noSound": noSound})
+            return result(action, user)
         elif action == 'refresh':
-            user.action = ''
-            db.session.add(user)
-            db.session.commit()
+            user.update_action('')
             return jsonify({"action": action})
         elif action == 'update':
-            user.action = ''
-            db.session.add(user)
-            db.session.commit()
+            user.update_action('')
             users = room.get_devices()
             return jsonify({"action": action, "count": len(users)+1})
     return jsonify({"action": ''})
+
+
+def result(action, user):
+    noSound = True
+    if action == 'resultS':
+        noSound = False
+    user.update_action('')
+    time = datetime.now(tz=None)
+    hr = time.hour
+    mt = time.minute
+    sc = time.second
+    ms = round(time.microsecond / 1000)
+    new = hr * 3600000 + mt * 60000 + sc * 1000 + ms
+    action = "result"
+    old = user.time
+    time = str(old - new)
+    return jsonify({"action": action,
+                    "time": time,
+                    "top": user.top,
+                    "left": user.left,
+                    "width": user.res_k,
+                    "noSound": noSound})
 
 
 @app.route('/askNewComm/<string:vid>', methods=['GET', 'POST'])
@@ -215,7 +211,7 @@ def showRes(room_id):
         sc = time.second
         ms = round(time.microsecond / 1000)
         now = hr * 3600000 + mt * 60000 + sc * 1000 + ms
-        now += 15000 - (now-zero)
+        now += 15000 - (now - zero)
         member.action = "result"
         member.time = now
     users[0].action = "resultS"

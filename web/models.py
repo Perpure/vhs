@@ -3,7 +3,6 @@ import shutil
 import hashlib
 import os
 import json
-from random import randint
 from datetime import datetime
 from uuid import uuid4
 from flask import url_for
@@ -226,6 +225,21 @@ class User(db.Model):
 
     def change_channel_info(self, info):
         self.channel_info = info
+        db.session.add(self)
+        db.session.commit()
+
+    def update_action(self, action):
+        self.action = action
+        db.session.add(self)
+        db.session.commit()
+
+    def update_avatar(self, avatar):
+        self.avatar = avatar
+        db.session.add(self)
+        db.session.commit()
+
+    def update_background(self, background):
+        self.background = background
         db.session.add(self)
         db.session.commit()
 

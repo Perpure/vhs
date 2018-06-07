@@ -210,6 +210,7 @@ def cabinet(usr):
     if form.validate_on_submit():
         print(request.files)
         user = cur_user()
+        folder = str(user.id)
         if form.change_name.data:
             user.change_name(form.change_name.data)
         if form.change_password.data:
@@ -217,17 +218,11 @@ def cabinet(usr):
         if form.channel_info.data:
             user.change_channel_info(form.channel_info.data)
         if 'avatar' in request.files:
-            folder = str(user.id)
             avatar_url = avatars.save(form.avatar.data, folder=folder)
-            user.avatar = json.dumps({"url": avatar_url})
-            db.session.add(user)
-            db.session.commit()
+            user.update_avatar(json.dumps({"url": avatar_url}))
         if 'background' in request.files:
-            folder = str(user.id)
             background_url = backgrounds.save(form.background.data, folder=folder)
-            user.avatar = json.dumps({"url": background_url})
-            db.session.add(user)
-            db.session.commit()
+            user.update_background(json.dumps({"url": background_url}))
         return redirect(url_for("cabinet", usr=cabinet_owner.login))
     return render_template('cabinet.html', form=form, user=cur_user(), items=items,
                            settings=is_cabinet_settings_available, usr=cabinet_owner)
