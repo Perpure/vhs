@@ -2,21 +2,20 @@
 {% block content %}
 <div class="canal">
   <div class="solid">
-    {% if usr.avatar_url() %}
-      <div class="solid_ava"><img class="solid_ava__img" src=" {{ usr.avatar_url() }}"></div>
-    {% endif %}
-    <div class="solid_txt">
-      <h1>{{ usr.name }}</h1>
-      <div class="solid_txt__info">
-        {{ usr.channel_info }}
-      </div>
+    <div class="profile">
+        <div class="profile_ava"><img src="{{ usr.avatar_url() }}" alt="" class="profile_ava__img"></div>
+        <div class="profile_txt">
+            <h2><a href="{{url_for('cabinet', usr=usr.login)}}">{{usr.name}}</a></h2>
+            <p>{{usr.channel_info}}</p>
+        </div>
+        {% if settings==False %}
+        <div class="profile_sub">
+          <span class="profile_sub__count">{{ usr.subscribers|length }}</span>
+          <button type="button" name="button" value="{{usr.id}}">{% if subscribed %} Отписаться {% else %} Подписаться {% endif %}</button>
+        </div>
+        {%endif%}
     </div>
-    {% if settings==False %}
-      <div class="solid_subs">
-        <span class="solid_subs__count">{{ usr.subscribers|length }}</span>
-        <button class="subscribe-btn" value="{{usr.id}}">{% if subscribed %} Отписаться {% else %} Подписаться {% endif %}</button>
-      </div>
-    {%endif%}
+
     <div class="tabs">
       <div class="tabs_tab tabs_tab__open tabs_tab__edge" onclick="func(this)">Главная</div>
       <div class="tabs_tab" onclick="func(this)">Видео пользователя</div>

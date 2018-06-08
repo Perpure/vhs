@@ -9,14 +9,20 @@
     <p class="video-titling__views">Просмотры: {{ video.viewers | length }}</p>
 </div>
 
-<div class="video-info">
-    <div class="video-info_ava"><img src="{{ usr.avatar_url() }}" alt="" class="video-info_ava__img"></div>
-    <div class="video-info_txt">
-        <b><a href="{{url_for('cabinet', usr=video.user_login)}}">{{video.user.name}}</a></b>
-        <p class="video-info__date" id="Dating">{{video.date.date()}}</p>
-    </div>
-</div>
 
+<div class="profile profile__small">
+    <div class="profile_ava"><img src="{{ usr.avatar_url() }}" alt="" class="profile_ava__img"></div>
+    <div class="profile_txt">
+        <b><a href="{{url_for('cabinet', usr=usr.login)}}">{{usr.name}}</a></b>
+        <p class="italic" id="Dating">{{video.date.date()}}</p>
+    </div>
+    {% if user!=video.user %}
+    <div class="profile_sub">
+      <span class="profile_sub__count">{{ usr.subscribers|length }}</span>
+      <button type="button" name="button" value="{{usr.id}}">{% if subscribed %} Отписаться {% else %} Подписаться {% endif %}</button>
+    </div>
+    {%endif%}
+</div>
 
 <div class="video-rating">
     <div class="video-rating_rateline">

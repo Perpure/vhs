@@ -19,8 +19,7 @@
         <a href="{{ url_for('play', vid=item.id) }}">
           <p class="video__title" title="{{item.title}}">{{item.title}}</p>
         </a>
-        <a href="/cabinet/{{ item.user_login }}"><p class="video__ath">{{ item.user_login }}</p></a>
-        <p class="video__views">{{ item.viewers | length }} просмотров</p>
+        <a href="/cabinet/{{ item.user_login }}"><p class="italic">{{ item.user_login }} <br> {{ item.viewers | length }} просмотров</p></a>
       </div>
     </div>
   {% endfor %}
