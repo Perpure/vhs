@@ -8,9 +8,15 @@
   <label class="show-type__label" for="show_video_table">Отображать в виде таблицы</label>
   <input name="selector" id="show_video_table" type="radio" checked class="show-type__rad">
 </div>
-
+<div class="tabs">
+  <div class="tabs_tab tabs_tab__open tabs_tab__edge" onclick="func(this)">Новые</div>
+  {% if user %}
+  <div class="tabs_tab" onclick="func(this)">Подписки</div>
+  {% endif %}
+</div>
 <div id="video_table">
-  {% for item in items %}
+  <div class="section section__open">
+  {% for item in items|reverse %}
     <div class="video">
       <a href="{{ url_for('play', vid=item.id) }}">
         <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video__preview">
@@ -19,14 +25,50 @@
         <a href="{{ url_for('play', vid=item.id) }}">
           <p class="video__title" title="{{item.title}}">{{item.title}}</p>
         </a>
-        <a href="/cabinet/{{ item.user_login }}"><p class="italic">{{ item.user_login }} <br> {{ item.viewers | length }} просмотров</p></a>
+        <a href="/cabinet/{{ item.user_login }}"><p class="italic">{{ item.user.name }} <br> {{ item.viewers | length }} просмотров</p></a>
       </div>
     </div>
   {% endfor %}
+  </div>
+  <div class="section">
+    {% for item in sub_items|reverse %}
+      <div class="video">
+        <a href="{{ url_for('play', vid=item.id) }}">
+          <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video__preview">
+        </a>
+        <div class="video_txt">
+          <a href="{{ url_for('play', vid=item.id) }}">
+            <p class="video__title" title="{{item.title}}">{{item.title}}</p>
+          </a>
+          <a href="/cabinet/{{ item.user_login }}"><p class="italic">{{ item.user.name }} <br> {{ item.viewers | length }} просмотров</p></a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
 </div>
 
 <div id="videos_map" align="center"></div>
 
 <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
 <script src="{{ url_for('static', filename='videos_map.js') }}"></script>
+<script>
+function func(a){
+    var x;
+    var amas = document.getElementsByClassName('tabs_tab');
+    for (var i=0; i<amas.length; i++){
+        amas[i].classList.remove('tabs_tab__open');
+        amas[i].classList.add('tabs_tab');
+    }
+    a.classList.add('tabs_tab__open');
+    var acon = document.getElementsByClassName('section');
+    for (var i=0; i<acon.length; i++){
+        acon[i].classList.remove('section__open');
+        acon[i].classList.add('section');
+        if (amas[i].classList.contains('tabs_tab__open')){
+            x = i;
+        }
+    }
+    acon[x].classList.add('section__open');
+}
+</script>
 {% endblock %}

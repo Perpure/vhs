@@ -272,12 +272,13 @@ search {
   width: 14%;
   margin-right: 2%;
   margin-bottom: 10px;
+  vertical-align: top;
+  height: 160px;
 }
 .video:hover {
   cursor: pointer;
 }
 .video__preview {
-  display: block;
   width: 100%;
 }
 .video__title {
@@ -285,13 +286,7 @@ search {
   font-size: 90%;
   margin-bottom: 3px;
   overflow: hidden;
-  height: 42px;
-}
-.video__views,
-.video__ath {
-  font-style: italic;
-  font-size: 80%;
-  margin-bottom: 3px;
+  max-height: 42px;
 }
 .video__ath:hover {
   font-weight: bold;
@@ -450,13 +445,13 @@ search {
 .section__open {
   display: block;
 }
-.settings {
+.section__settings {
   background-color: rgba(247, 226, 192, 0.7);
 }
-.settings_set {
+.section_set {
   margin-bottom: 10px;
 }
-.settings_set__left {
+.section_set__left {
   display: inline-block;
   width: 110px;
 }

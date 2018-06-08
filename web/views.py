@@ -16,7 +16,14 @@ from web.video_handler import save_video
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    return render_template('main.html', user=cur_user(), items=Video.get())
+    user=cur_user()
+    sub_items=[]
+    if(user):
+        subs=user.subscriptions
+        for sub in subs:
+            for video in sub.videos:
+                sub_items.append(video)
+    return render_template('main.html', user=user, items=Video.get(),sub_items=sub_items)
 
 
 @app.route('/createroom', methods=['GET', 'POST'])
@@ -266,7 +273,7 @@ def play(vid):
         return abort(404)
 
     user = cur_user()
-    usr = User.get(login=video.user_login)
+    usr = User.get(login=video.user.login)
 
     if user and user not in video.viewers:
         video.add_viewer(user)
@@ -276,7 +283,7 @@ def play(vid):
         likened = 1
     if user in video.dislikes:
         likened = -1
-    return render_template('play.html', user=user, vid=vid, video=video, lkd=likened, usr=usr)
+    return render_template('play.html', user=user, vid=vid, video=video, lkd=likened, usr=usr,subscribed=(user in usr.subscribers))
 
 
 @app.route('/video/map', methods=["GET"])

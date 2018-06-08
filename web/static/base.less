@@ -332,13 +332,14 @@ search
   width:14%;
   margin-right:2%;
   margin-bottom:10px;
+  vertical-align: top;
+  height: 160px;
   &:hover
   {
     cursor: pointer;
   }
   &__preview
   {
-    display:block;
     width:100%;
   }
   &__title
@@ -347,7 +348,7 @@ search
     font-size:90%;
     margin-bottom:3px;
     overflow:hidden;
-    height:42px;
+    max-height:42px;
   }
   &__ath:hover
   {
@@ -546,11 +547,10 @@ search
   {
     display: block;
   }
-}
-
-.settings
-{
-  background-color:rgba(247, 226, 192,0.7);
+  &__settings
+  {
+    background-color:rgba(247, 226, 192,0.7);
+  }
   &_set{
     margin-bottom: 10px;
     &__left

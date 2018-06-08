@@ -17,7 +17,7 @@
     <h5>Все комнаты:</h5>
     {% for room in rooms %}
       <p><a href="{{url_for('room', room_id=room.id)}}">{{room.name}}</a>
-      <p class="video-info__date">Создана: {{ room.get_format_date() }}</p>
+      <p class="italic">Создана: {{ room.get_format_date() }}</p>
     {% endfor %}
   {% endif %}
 {% endblock %}

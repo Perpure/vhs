@@ -5,7 +5,7 @@
     <div class="profile">
         <div class="profile_ava"><img src="{{ usr.avatar_url() }}" alt="" class="profile_ava__img"></div>
         <div class="profile_txt">
-            <h2><a href="{{url_for('cabinet', usr=usr.login)}}">{{usr.name}}</a></h2>
+            <h2>{{usr.name}}</h2>
             <p>{{usr.channel_info}}</p>
         </div>
         {% if settings==False %}
@@ -38,8 +38,7 @@
           <a href="{{ url_for('play', vid=item.id) }}">
             <p class="video__title" title="{{item.title}}">{{item.title}}</p>
           </a>
-          <a href="/cabinet/{{ item.user_login }}"><p class="video__ath">{{ item.user_login }}</p></a>
-          <p class="video__views">{{ item.viewers | length }} просмотров</p>
+          <a href="/cabinet/{{ item.user_login }}"><p class="italic">{{ item.user_login }} <br> {{ item.viewers | length }} просмотров</p></a>
         </div>
       </div>
     {% endfor %}
@@ -55,19 +54,18 @@
         <a href="{{ url_for('play', vid=item.id) }}">
           <p class="video__title" title="{{item.title}}">{{item.title}}</p>
         </a>
-        <a href="/cabinet/{{ item.user_login }}"><p class="video__ath">{{ item.user_login }}</p></a>
-        <p class="video__views">{{ item.viewers | length }} просмотров</p>
+        <a href="/cabinet/{{ item.user_login }}"><p class="italic">{{ item.user_login }} <br> {{ item.viewers | length }} просмотров</p></a>
       </div>
     </div>
     {% endfor %}
   </div>
 
   {% if settings %}
-    <div class="section settings">
+    <div class="section section__settings">
       <h3>Личные данные</h3>
       <form action="" method="post" enctype="multipart/form-data" >
         {{form.hidden_tag()}}
-        <div class="settings_set">
+        <div class="section_set">
           {{ form.change_name.label }}
           <br>
           {{ form.change_name }}
@@ -78,7 +76,7 @@
           {% endif %}
         </div>
 
-        <div class="settings_set">
+        <div class="section_set">
           {{ form.change_password.label }}
           <br>
           {{ form.change_password }}
@@ -88,7 +86,7 @@
             {% endfor %}
           {% endif %}
         </div>
-        <div clss="settings_set">
+        <div clss="section_set">
           {{ form.channel_info.label }}
           <br>
           {{ form.channel_info }}
@@ -101,7 +99,7 @@
 
         <hr>
         <h3>Оформление</h3>
-        <div class="settings_set">
+        <div class="section_set">
           {{ form.avatar.label }}
 		      <div class="loader">
    			    <div>{{ form.avatar }}</div>
@@ -113,7 +111,7 @@
           {% endif %}
         </div>
 
-        <div class="settings_set">
+        <div class="section_set">
 	 	      {{ form.background.label }}
 		      <div class="loader">
    			    <div> {{ form.background }}</div>
@@ -133,26 +131,26 @@
           </ol>
         </div>
 
-        <div clss="settings_set">
+        <div clss="section_set">
           <h6>Изменить палитру канала</h6>
           <br>
-          <div class="settings_set__left">{{ form.color1.label }}</div>
+          <div class="section_set__left">{{ form.color1.label }}</div>
           {{ form.color1(placeholder=usr.get_colors()[0])}}
           <br>
-          <div class="settings_set__left">{{ form.color2.label }}</div>
+          <div class="section_set__left">{{ form.color2.label }}</div>
           {{ form.color2(placeholder=usr.get_colors()[1])}}
           <br>
-          <div class="settings_set__left">{{ form.colorTxt.label }}</div>
+          <div class="section_set__left">{{ form.colorTxt.label }}</div>
           {{ form.colorTxt(placeholder=usr.get_colors()[2])}}
           <br>
-          <div class="settings_set__left">{{ form.colorBrd.label }}</div>
+          <div class="section_set__left">{{ form.colorBrd.label }}</div>
           {{ form.colorBrd(placeholder=usr.get_colors()[3])}}
           <br>
-          <div class="settings_set__left">{{ form.colorLink.label }}</div>
+          <div class="section_set__left">{{ form.colorLink.label }}</div>
           {{ form.colorLink(placeholder=usr.get_colors()[4])}}
         </div>
         <hr>
-        <div class="settings_set">
+        <div class="section_set">
           <b>
           {{ form.current_password.label }}
           {{ form.current_password }}
@@ -163,7 +161,7 @@
           {% endif %}
           </b>
         </div>
-        <div class="settings_set">
+        <div class="section_set">
           <input type="submit" class="buttondlc" value="Сохранить">
         </div>
 
@@ -284,18 +282,16 @@
     }
 </style>
 <script>
-    'use strict';
-
     function func(a){
-        let x;
-        let amas = document.getElementsByClassName('tabs_tab');
-        for (let i=0; i<amas.length; i++){
+        var x;
+        var amas = document.getElementsByClassName('tabs_tab');
+        for (var i=0; i<amas.length; i++){
             amas[i].classList.remove('tabs_tab__open');
             amas[i].classList.add('tabs_tab');
         }
         a.classList.add('tabs_tab__open');
-        let acon = document.getElementsByClassName('section');
-        for (let i=0; i<acon.length; i++){
+        var acon = document.getElementsByClassName('section');
+        for (var i=0; i<acon.length; i++){
             acon[i].classList.remove('section__open');
             acon[i].classList.add('section');
             if (amas[i].classList.contains('tabs_tab__open')){
@@ -308,7 +304,8 @@
     $(document).ready(function(){
         $("#instructionBtn").click(function(){
         $("#instruction").slideToggle("slow",function(){});
-    });});
+    });
+    });
 
     var color1Inp=$("#color1");
     var color2Inp=$("#color2");
