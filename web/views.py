@@ -12,11 +12,21 @@ from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, Upl
 from web.models import User, Video, Room, Color, Geotag, Tag, AnonUser, RoomDeviceColorConnector
 from web.helper import allowed_file, cur_user, requiresauth, anon_user, image_loaded
 from web.video_handler import save_video
+from datetime import datetime
 
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    return render_template('main.html', user=cur_user(), items=Video.get())
+    user=cur_user()
+    sub_items=[]
+    if(user):
+        subs=user.subscriptions
+        for sub in subs:
+            for video in sub.videos:
+                sub_items.append(video)
+    
+    now=time = datetime.now(tz=None)
+    return render_template('main.html', user=user, items=Video.get(),sub_items=sub_items,now=now)
 
 
 @app.route('/createroom', methods=['GET', 'POST'])
@@ -254,8 +264,9 @@ def cabinet(usr):
             db.session.commit()
         return redirect(url_for("cabinet", usr=cabinet_owner.login))
     last=items[-6:]
-    return render_template('cabinet.html', form=form, user=cur_user(), items=items,
-                           settings=is_cabinet_settings_available, usr=cabinet_owner,last=last)
+    now=time = datetime.now(tz=None)
+    return render_template('cabinet.html', form=form, user=user, items=items,
+                           settings=is_cabinet_settings_available, usr=cabinet_owner,last=last,subscribed=(user in cabinet_owner.subscribers),now=now)
 
 
 @app.route('/play/<string:vid>', methods=['GET', 'POST'])
@@ -266,7 +277,7 @@ def play(vid):
         return abort(404)
 
     user = cur_user()
-    usr = User.get(login=video.user_login)
+    usr = User.get(login=video.user.login)
 
     if user and user not in video.viewers:
         video.add_viewer(user)
@@ -276,7 +287,7 @@ def play(vid):
         likened = 1
     if user in video.dislikes:
         likened = -1
-    return render_template('play.html', user=user, vid=vid, video=video, lkd=likened, usr=usr)
+    return render_template('play.html', user=user, vid=vid, video=video, lkd=likened, usr=usr,subscribed=(user in usr.subscribers))
 
 
 @app.route('/video/map', methods=["GET"])
@@ -300,6 +311,12 @@ def views_story():
             items.append(video)
 
     return render_template('views_story.html', user=cur_user(), items=items)
+
+@app.route('/subscriptions', methods=['GET', 'POST'])
+def subs_s():
+    user = cur_user()
+    subs=user.subscriptions
+    return render_template('subs.html', user=user, subs=subs)
 
 
 @app.errorhandler(403)

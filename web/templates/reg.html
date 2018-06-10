@@ -1,8 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="mid">
+<div class="mid mid__wider">
     <h2>Регистрация</h2>
-    <form action="" method="post">
+    <div class="ib">
+      <h3>Зачем регистрироваться?</h3>
+      Вы сможете:
+      <ul>
+        <li>Загружать видео</li>
+        <li>Комментировать и оценивать видео</li>
+        <li>Подписываться на других пользователей</li>
+      </ul>
+    </div>
+    <form action="" method="post" class="ib">
         {{form.hidden_tag()}}
         <div>{{ form.login_reg.label}}</div>
         <div>{{ form.login_reg }}</div>

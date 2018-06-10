@@ -1,6 +1,6 @@
 ﻿{% extends "base.html" %}
 {% block content %}
-<video id="my-video" class="video-js vjs-fluid vjs-paused preview-player-dimensions vjs-controls-enabled vjs-workinghover vjs-v6 vjs-mux vjs-user-active" poster="{{url_for('get_image', pid=vid)}}" data-setup='{"controls": true, "autoplay": false, "preload": "auto"}'>
+<video id="my-video" class="video-js vjs-fluid vjs-paused preview-player-dimensions vjs-controls-enabled vjs-workinghover vjs-v6 vjs-mux vjs-user-active" poster="{{url_for('get_image', pid=vid)}}" data-setup='{"controls": true, "autoplay": false, "preload": "metadata"}'>
     <source src="{{url_for('get_video', vid=vid)}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
 </video>
 
@@ -9,14 +9,20 @@
     <p class="video-titling__views">Просмотры: {{ video.viewers | length }}</p>
 </div>
 
-<div class="video-info">
-    <div class="video-info_ava"><img src="{{ usr.avatar_url() }}" alt="" class="video-info_ava__img"></div>
-    <div class="video-info_txt">
-        <b><a href="{{url_for('cabinet', usr=video.user_login)}}">{{video.user.name}}</a></b>
-        <p class="video-info__date" id="Dating">{{video.date.date()}}</p>
-    </div>
-</div>
 
+<div class="profile profile__small">
+    <div class="profile_ava"><img src="{{ usr.avatar_url() }}" alt="" class="profile_ava__img"></div>
+    <div class="profile_txt">
+        <b><a href="{{url_for('cabinet', usr=usr.login)}}">{{usr.name}}</a></b>
+        <p class="italic" id="Dating">{{video.date.date()}}</p>
+    </div>
+    {% if user!=video.user and user %}
+    <div class="profile_sub">
+      <span class="profile_sub__count" id="subCnt{{usr.id}}">{{ usr.subscribers|length }}</span>
+      <button type="button" name="button" value="{{usr.id}}"  class="subscribe-btn">{% if subscribed %}Отписаться{% else %}Подписаться{% endif %}</button>
+    </div>
+    {%endif%}
+</div>
 
 <div class="video-rating">
     <div class="video-rating_rateline">
@@ -64,8 +70,6 @@
     </div>
 </div>
 
-<script src="{{ url_for('static', filename='video.js') }}"></script>
-<script src="https://vjs.zencdn.net/7.0.3/video.min.js"></script>
 <style>
     div[name="like"]
     {
@@ -95,4 +99,14 @@
         background-image:url({{ url_for('static', filename='dis1H.png') }});
     }
 </style>
+
+<script src="{{ url_for('static', filename='video.js') }}"></script>
+{%if user %}
+  <script src="{{ url_for('static', filename='video_like.js') }}"></script>
+{%endif%}
+{% if user!=video.user %}
+  <script src="{{ url_for('static', filename='subs.js') }}"></script>
+{%endif%}
+
+<script src="https://vjs.zencdn.net/7.0.3/video.min.js"></script>
 {% endblock %}

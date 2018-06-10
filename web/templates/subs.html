@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="mid mid__wider">
+<h1>Подписки</h1>
+{% for sub in subs %}
+<div class="profile">
+    <div class="profile_ava"><img src="{{ sub.avatar_url() }}" alt="" class="profile_ava__img"></div>
+    <div class="profile_txt">
+        <h2><a href="{{url_for('cabinet', usr=sub.login)}}">{{sub.name}}</a></h2>
+        <p>{{sub.channel_info}}</p>
+    </div>
+    <div class="profile_sub">
+      <span class="profile_sub__count"  id="subCnt{{sub.id}}">{{ sub.subscribers|length }}</span>
+      <button type="button" name="button" value="{{sub.id}}"  class="subscribe-btn">Отписаться</button>
+    </div>
+</div>
+{% endfor %}
+</div>
+<script src="{{ url_for('static', filename='subs.js') }}"></script>
+{% endblock %}

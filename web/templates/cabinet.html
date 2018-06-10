@@ -2,15 +2,20 @@
 {% block content %}
 <div class="canal">
   <div class="solid">
-    {% if usr.avatar_url() %}
-      <div class="solid_ava"><img class="solid_ava__img" src=" {{ usr.avatar_url() }}"></div>
-    {% endif %}
-    <div class="solid_txt">
-      <h1>{{ usr.name }}</h1>
-      <div class="solid_txt__info">
-        {{ usr.channel_info }}
-      </div>
+    <div class="profile">
+        <div class="profile_ava"><img src="{{ usr.avatar_url() }}" alt="" class="profile_ava__img"></div>
+        <div class="profile_txt">
+            <h2>{{usr.name}}</h2>
+            <p>{{usr.channel_info}}</p>
+        </div>
+        {% if settings==False %}
+        <div class="profile_sub">
+          <span class="profile_sub__count" id="subCnt{{usr.id}}">{{ usr.subscribers|length }}</span>
+          <button type="button" name="button" value="{{usr.id}}" class="subscribe-btn">{% if subscribed %}Отписаться{% else %}Подписаться{% endif %}</button>
+        </div>
+        {%endif%}
     </div>
+
     <div class="tabs">
       <div class="tabs_tab tabs_tab__open tabs_tab__edge" onclick="func(this)">Главная</div>
       <div class="tabs_tab" onclick="func(this)">Видео пользователя</div>
@@ -33,8 +38,18 @@
           <a href="{{ url_for('play', vid=item.id) }}">
             <p class="video__title" title="{{item.title}}">{{item.title}}</p>
           </a>
-          <a href="/cabinet/{{ item.user_login }}"><p class="video__ath">{{ item.user_login }}</p></a>
-          <p class="video__views">{{ item.viewers | length }} просмотров</p>
+          <a href="/cabinet/{{ item.user.login }}">
+            <p class="italic">
+              {{ item.user.name }} <br>
+              {{ item.viewers | length }} просмотров <br>
+              {% if (now - item.date).days>1 %}
+                {{item.date.date()}}
+              {% elif (now - item.date).days==1 %} вчера
+              {% elif (now - item.date).seconds/60< 60 %} {{((now - item.date).seconds/60)|int}} минут назад
+              {% else %} {{((now - item.date).seconds/3600)|int}} часов назад
+              {%endif%}
+            </p>
+          </a>
         </div>
       </div>
     {% endfor %}
@@ -50,19 +65,29 @@
         <a href="{{ url_for('play', vid=item.id) }}">
           <p class="video__title" title="{{item.title}}">{{item.title}}</p>
         </a>
-        <a href="/cabinet/{{ item.user_login }}"><p class="video__ath">{{ item.user_login }}</p></a>
-        <p class="video__views">{{ item.viewers | length }} просмотров</p>
+        <a href="/cabinet/{{ item.user.login }}">
+          <p class="italic">
+            {{ item.user.name }} <br>
+            {{ item.viewers | length }} просмотров <br>
+            {% if (now - item.date).days>1 %}
+              {{item.date.date()}}
+            {% elif (now - item.date).days==1 %} вчера
+            {% elif (now - item.date).seconds/60< 60 %} {{((now - item.date).seconds/60)|int}} минут назад
+            {% else %} {{((now - item.date).seconds/3600)|int}} часов назад
+            {%endif%}
+          </p>
+        </a>
       </div>
     </div>
     {% endfor %}
   </div>
 
   {% if settings %}
-    <div class="section settings">
+    <div class="section section__settings">
       <h3>Личные данные</h3>
       <form action="" method="post" enctype="multipart/form-data" >
         {{form.hidden_tag()}}
-        <div class="settings_set">
+        <div class="section_set">
           {{ form.change_name.label }}
           <br>
           {{ form.change_name }}
@@ -73,7 +98,7 @@
           {% endif %}
         </div>
 
-        <div class="settings_set">
+        <div class="section_set">
           {{ form.change_password.label }}
           <br>
           {{ form.change_password }}
@@ -83,7 +108,7 @@
             {% endfor %}
           {% endif %}
         </div>
-        <div clss="settings_set">
+        <div clss="section_set">
           {{ form.channel_info.label }}
           <br>
           {{ form.channel_info }}
@@ -96,7 +121,7 @@
 
         <hr>
         <h3>Оформление</h3>
-        <div class="settings_set">
+        <div class="section_set">
           {{ form.avatar.label }}
 		      <div class="loader">
    			    <div>{{ form.avatar }}</div>
@@ -108,7 +133,7 @@
           {% endif %}
         </div>
 
-        <div class="settings_set">
+        <div class="section_set">
 	 	      {{ form.background.label }}
 		      <div class="loader">
    			    <div> {{ form.background }}</div>
@@ -128,26 +153,26 @@
           </ol>
         </div>
 
-        <div clss="settings_set">
+        <div clss="section_set">
           <h6>Изменить палитру канала</h6>
           <br>
-          <div class="settings_set__left">{{ form.color1.label }}</div>
+          <div class="section_set__left">{{ form.color1.label }}</div>
           {{ form.color1(placeholder=usr.get_colors()[0])}}
           <br>
-          <div class="settings_set__left">{{ form.color2.label }}</div>
+          <div class="section_set__left">{{ form.color2.label }}</div>
           {{ form.color2(placeholder=usr.get_colors()[1])}}
           <br>
-          <div class="settings_set__left">{{ form.colorTxt.label }}</div>
+          <div class="section_set__left">{{ form.colorTxt.label }}</div>
           {{ form.colorTxt(placeholder=usr.get_colors()[2])}}
           <br>
-          <div class="settings_set__left">{{ form.colorBrd.label }}</div>
+          <div class="section_set__left">{{ form.colorBrd.label }}</div>
           {{ form.colorBrd(placeholder=usr.get_colors()[3])}}
           <br>
-          <div class="settings_set__left">{{ form.colorLink.label }}</div>
+          <div class="section_set__left">{{ form.colorLink.label }}</div>
           {{ form.colorLink(placeholder=usr.get_colors()[4])}}
         </div>
         <hr>
-        <div class="settings_set">
+        <div class="section_set">
           <b>
           {{ form.current_password.label }}
           {{ form.current_password }}
@@ -158,7 +183,7 @@
           {% endif %}
           </b>
         </div>
-        <div class="settings_set">
+        <div class="section_set">
           <input type="submit" class="buttondlc" value="Сохранить">
         </div>
 
@@ -279,18 +304,16 @@
     }
 </style>
 <script>
-    'use strict';
-
     function func(a){
-        let x;
-        let amas = document.getElementsByClassName('tabs_tab');
-        for (let i=0; i<amas.length; i++){
+        var x;
+        var amas = document.getElementsByClassName('tabs_tab');
+        for (var i=0; i<amas.length; i++){
             amas[i].classList.remove('tabs_tab__open');
             amas[i].classList.add('tabs_tab');
         }
         a.classList.add('tabs_tab__open');
-        let acon = document.getElementsByClassName('section');
-        for (let i=0; i<acon.length; i++){
+        var acon = document.getElementsByClassName('section');
+        for (var i=0; i<acon.length; i++){
             acon[i].classList.remove('section__open');
             acon[i].classList.add('section');
             if (amas[i].classList.contains('tabs_tab__open')){
@@ -303,7 +326,8 @@
     $(document).ready(function(){
         $("#instructionBtn").click(function(){
         $("#instruction").slideToggle("slow",function(){});
-    });});
+    });
+    });
 
     var color1Inp=$("#color1");
     var color2Inp=$("#color2");
@@ -312,45 +336,46 @@
     var colorLinkInp=$("#colorLink");
     color1Inp.blur(function()
     {
-      $('.midHead').css('background-color','rgb('+color1Inp.val()+')');
-      $('.Searcher').css('background-color','rgb('+color1Inp.val()+')');
-      $('.subBtn').css('background-color','rgb('+color1Inp.val()+')');
+      $('.mid-head').css('background-color','rgb('+color1Inp.val()+')');
+      $('.searcher').css('background-color','rgb('+color1Inp.val()+')');
+      $('.nav-menu_nav-men__sub-btn').css('background-color','rgb('+color1Inp.val()+')');
       $('.solid').css('background-color','rgb('+color1Inp.val()+')');
-      $('.Settings').css('background-color','rgba('+color1Inp.val()+',0.7)');
+      $('.settings').css('background-color','rgba('+color1Inp.val()+',0.7)');
     })
     color2Inp.blur(function()
     {
-      $('.Canal').css('background-color','rgba('+color2Inp.val()+',0.8)');
-      $('.z2').css('border-bottom','4px solid rgb('+color2Inp.val()+')');
+      $('.canal').css('background-color','rgba('+color2Inp.val()+',0.8)');
+      $('.tabs_tab__open').css('border-bottom','4px solid rgb('+color2Inp.val()+')');
       $('input').css('background-color','rgba('+color2Inp.val()+',0.5)');
       $('textarea').css('background-color','rgba('+color2Inp.val()+',0.5)');
-      $('.Checked').css('background-color','rgb('+color2Inp.val()+')');
+      $('.searcher_field__checked').css('background-color','rgb('+color2Inp.val()+')');
       $('input').css('border-bottom','2px solid rgb('+color2Inp.val()+')');
-      $(".navMen").hover(function() {
+      $(".nav-menu_nav-men").hover(function() {
         $(this).css("background-color",'rgba('+color2Inp.val()+',0.4)')
       });
-      $(".subBtn").hover(function() {
+      $(".nav-menu_nav-men__sub-btn").hover(function() {
         $(this).css("background-color",'rgb('+color2Inp.val()+')')
       });
     })
     colorTxtInp.blur(function()
     {
       $('#Body').css('color','rgb('+colorTxtInp.val()+')');
-      $('.navMen').css('color','rgb('+colorTxtInp.val()+')');
+      $('.nav-menu_nav-men').css('color','rgb('+colorTxtInp.val()+')');
     })
     colorBrdInp.blur(function()
     {
-      $('.midHead').css('border-bottom','2px solid rgba('+colorBrdInp.val()+',0.5)');
-      $('.footLine').css('border-bottom','2px solid rgb('+colorBrdInp.val()+')');
-      $('.navMen').css('border-right','1px solid rgba('+colorBrdInp.val()+',0.5)');
-      $(".navMen").hover(function() {
+      $('.mid-head').css('border-bottom','2px solid rgba('+colorBrdInp.val()+',0.5)');
+      $('.footer__line').css('border-bottom','2px solid rgb('+colorBrdInp.val()+')');
+      $('.nav-menu_nav-men').css('border-right','1px solid rgba('+colorBrdInp.val()+',0.5)');
+      $(".nav-menu_nav-men").hover(function() {
         $(this).css("border-bottom",'2px solid rgb('+colorBrdInp.val()+')')
       });
     })
     colorLinkInp.blur(function()
     {
       $('a').css('color','rgb('+colorLinkInp.val()+')');
-      $('.Fact').css('color','rgb('+colorLinkInp.val()+')');
+      $('.fact').css('color','rgb('+colorLinkInp.val()+')');
     })
 </script>
+<script src="{{ url_for('static', filename='subs.js') }}"></script>
  {% endblock %}

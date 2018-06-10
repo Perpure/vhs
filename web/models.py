@@ -22,6 +22,10 @@ Dislikes = db.Table('Dislikes', db.Model.metadata,
                     db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
                     db.Column('Video_id', db.String(32), db.ForeignKey('Video.id')))
 
+Subscription = db.Table('Subscription', db.Model.metadata,
+                    db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
+                    db.Column('UserB_id', db.Integer, db.ForeignKey('User.id')))
+
 
 class Comment(db.Model):
     __tablename__ = 'Comment'
@@ -56,7 +60,6 @@ class Tag(db.Model):
         db.session.add(self)
         db.session.commit()
 
-
 class Video(db.Model):
     __tablename__ = 'Video'
     id = db.Column(db.String(32), primary_key=True)
@@ -64,7 +67,6 @@ class Video(db.Model):
     path = db.Column(db.String(256), nullable=False)
     date = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
-    user_login = db.Column(db.String)
 
     longitude = db.Column(db.Float(), nullable=True)
     latitude = db.Column(db.Float(), nullable=True)
@@ -205,9 +207,17 @@ class User(db.Model):
     comments = db.relationship('Comment',
                                backref='user',
                                lazy='joined')
+
     tags = db.relationship('Tag',
                            backref='user',
                            lazy='joined')
+
+    subscriptions = db.relationship('User',
+                           secondary=Subscription,
+                           primaryjoin = (Subscription.c.User_id == id), 
+                           secondaryjoin = (Subscription.c.UserB_id == id), 
+                           backref='subscribers',
+                           lazy = 'joined')
 
     def __init__(self, login):
         self.login = login
@@ -254,6 +264,11 @@ class User(db.Model):
         if(cls[2]!=''):self.colorTxt = cls[2]
         if(cls[3]!=''):self.colorBrd = cls[3]
         if(cls[4]!=''):self.colorLink = cls[4]
+        db.session.add(self)
+        db.session.commit()
+
+    def follow(self, user):
+        self.subscriptions.append(user)
         db.session.add(self)
         db.session.commit()
 

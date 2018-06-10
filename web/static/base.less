@@ -1,16 +1,42 @@
 //out:base1.css ,sourcemap:false,compress:false;
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
+@color-link:#905a09;
+@color1:#F7E2C0;
+@colorBrd:#e8ab4a;
+
+.color2(@trans)
+{
+  background-color: rgba(240, 203, 142,@trans);
+}
+
+.border-color2(@where,@how,@trans)
+{
+   border-@{where}:@how solid rgba(240, 203, 142,@trans);
+}
+
 html
 {
     height:100%;
+}
+
+.ib
+{
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 20px;
+}
+
+ul
+{
+  padding-left: 20px;
 }
 
 body
 {
   font-family: 'Roboto', sans-serif;
   /*background-image:url("bg4.png");*/
-  background-color:rgba(240, 203, 142,0.2);
+  .color2(0.2);
   height:100%;
   position:relative;
   display: flex;
@@ -21,7 +47,7 @@ textarea
 {
     resize:none;
     width:40%;
-    background-color: rgba(240, 203, 142,0.5);
+    .color2(0.5);
 }
 
 header
@@ -40,12 +66,12 @@ main
 
 a,.fact
 {
-    color:#905a09;
+    color:@color-link;
     text-decoration:none;
     &:hover
     {
       text-decoration:none;
-      color:#714707;
+      color:@color-link/1.5;
       cursor: pointer;
     }
 }
@@ -64,14 +90,20 @@ a,.fact
     text-align:left;
 }
 
+.italic
+{
+  font-style:italic;
+  font-size:80%;
+  color:grey;
+}
 
 input
 {
     border:none;
-    border-bottom:2px solid #ffb366;
+    border-bottom:2px solid @colorBrd;
     margin-bottom:10px;
     padding-left:5px;
-    background-color:rgba(240, 203, 142,0.5);
+    .color2(0.5);
 }
 
 input[type="submit"], button
@@ -79,14 +111,15 @@ input[type="submit"], button
     height:40px;
     padding:10px;
     padding-top:8px;
-    background-color:#f0cb8e;
+    .color2(1);
     transition:0.5s;
     border:none;
-    border-bottom:2px solid #ffb366;
+    border-bottom:2px solid @colorBrd;
     font-weight:bold;
+    vertical-align: top;
     &:hover
     {
-      background-color:rgba(240, 203, 142,0.5);
+      .color2(0.5);
       cursor: pointer;
       color:black;
     }
@@ -117,6 +150,10 @@ search
 {
   width:200px;
   margin:0 auto;
+  &__wider
+  {
+    width: 600px;
+  }
 }
 
 .nav-menu
@@ -137,13 +174,13 @@ search
     margin-left:-5px;
     text-align:center;
     color:black;
-    border-right:1px solid rgba(240, 203, 142,0.5);
+    .border-color2(right,1px,0.5);
     position:relative;
     &:hover
     {
       cursor:pointer;
-      border-bottom:2px solid rgb(232, 171, 74);
-      background-color:rgba(240, 203, 142,0.4);
+      border-bottom:2px solid @colorBrd;
+      .color2(0.4);
       border-right:none;
       margin-right:1px;
     }
@@ -175,19 +212,19 @@ search
     {
       width:100%;
       height:50px;
-      background-color:#f3d6a5;
+      background-color: @color1 - #000a1e;
       padding:13px 0 13px 0;
-      border-bottom:2px solid rgba(240, 203, 142,0.5);
+      .border-color2(bottom,2px,0.5);
       color:black;
       &:hover
       {
-        background-color:#f0cc8f;
+        .color2(1);
         border-bottom:none;
       }
     }
     &__upst
     {
-      border-top:2px solid rgb(232, 171, 74);
+      border-top:2px solid @colorBrd;
     }
     &__nav-edge
     {
@@ -198,11 +235,11 @@ search
 .mid-head
 {
   display: inline-block;
-  background-color: #F7E2C0;
+  background-color: @color1;
   height: 50px;
   padding-bottom: 5px;
   vertical-align: top;
-  border-bottom:2px solid rgba(240, 203, 142,0.5);
+  .border-color2(bottom,2px,0.5);
   width: 100%;
   padding-left: 1%;
   padding-right: 1%;
@@ -242,7 +279,7 @@ search
   top:60px;
   left:17%;
   width:60%;
-  background-color:#F7E2C0;
+  background-color:@color1;
   padding:5px;
   display:none;
   z-index:5;
@@ -266,7 +303,7 @@ search
     }
     &__checked
     {
-      background-color:#f0cb8e;
+      .color2(1);
       font-weight: bold;
       color:black;
     }
@@ -287,12 +324,12 @@ search
 .show-type
 {
   display:inline-block;
-  border-bottom:2px solid rgba(240, 203, 142,0.5);
+  .border-color2(bottom,2px,0.5);
   margin-bottom:15px;
   width:300px;
   height:30px;
   text-align:center;
-  background-color:rgba(240, 203, 142,0.4);
+  .color2(0.4);
   padding:5px;
   &__inv
   {
@@ -321,13 +358,14 @@ search
   width:14%;
   margin-right:2%;
   margin-bottom:10px;
+  vertical-align: top;
+  height: 160px;
   &:hover
   {
     cursor: pointer;
   }
   &__preview
   {
-    display:block;
     width:100%;
   }
   &__title
@@ -336,17 +374,7 @@ search
     font-size:90%;
     margin-bottom:3px;
     overflow:hidden;
-    height:42px;
-  }
-  &__date
-  {
-
-  }
-  &__views,&__ath
-  {
-    font-style:italic;
-    font-size:80%;
-    margin-bottom:3px;
+    max-height:42px;
   }
   &__ath:hover
   {
@@ -368,36 +396,6 @@ search
       float:right;
       margin-top:10px;
       margin-bottom:10px;
-    }
-  }
-  &-info
-  {
-    display:inline-block;
-    vertical-align:top;
-    margin-bottom:10px;
-    &_ava
-    {
-      height:50px;
-      width:50px;
-      margin-right:15px;
-      vertical-align:top;
-      overflow:hidden;
-      display:inline-block;
-      &__img
-      {
-        height: 100%;
-        min-width: 100%;
-      }
-    }
-    &_txt
-    {
-      display:inline-block;
-    }
-    &__date
-    {
-      font-style:italic;
-      font-size:80%;
-      color:grey;
     }
   }
   &-rating
@@ -454,7 +452,7 @@ search
   }
   &-comments
   {
-    border-top:2px solid #ffcc99;
+    border-top:2px solid @colorBrd;
     margin-top:10px;
     padding-top:10px;
 
@@ -492,17 +490,17 @@ search
 }
 .tag
 {
-  background-color:#ffcc99;
+  background-color:@colorBrd;
   color:white;
   border-radius:10px;
   padding:3px;
   margin-right:5px;
   &:hover
   {
-    border:2px solid #ffcc99;
+    border:2px solid @colorBrd;
     background-color:rgba(0,0,0,0);
     cursor:pointer;
-    color:  #ffcc99;
+    color:  @colorBrd;
     margin-right:1px;
     font-weight:bold;
   }
@@ -531,38 +529,16 @@ search
   top: 15vh;
   width: 70%;
   overflow-y: auto;
-  background-color:rgba(240, 203, 142,0.8);
+  .color2(0.8);
 }
 
 .solid
 {
-    background-color: #F7E2C0;
+    background-color:@color1;
     vertical-align: top;
     padding: 7px;
     width: 100%;
     padding-bottom: 0;
-    &_ava
-    {
-      height: 110px;
-      width: 110px;
-      margin-right: 20px;
-      overflow: hidden;
-      display: inline-block;
-      &__img
-      {
-        height: 100%;
-        min-width: 100%;
-      }
-    }
-    &_txt
-    {
-      display: inline-block;
-      vertical-align:top;
-      &__info
-      {
-        font-style: italic;
-      }
-    }
 }
 
 .tabs
@@ -579,7 +555,7 @@ search
     -webkit-user-select: none;
     &__open
     {
-      border-bottom:4px solid rgb(240, 203, 142);
+      .border-color2(bottom,4px,1);
     }
     &__edge
     {
@@ -597,11 +573,10 @@ search
   {
     display: block;
   }
-}
-
-.settings
-{
-  background-color:rgba(247, 226, 192,0.7);
+  &__settings
+  {
+    background-color:@color1;
+  }
   &_set{
     margin-bottom: 10px;
     &__left
@@ -609,6 +584,64 @@ search
       display: inline-block;
       width: 110px;
     }
+  }
+}
+
+.profile
+{
+  height: 100px;
+  margin-bottom: 20px;
+  &_ava
+  {
+    height: 100%;
+    width: 100px;
+    overflow: hidden;
+    display: inline-block;
+    margin-right: 10px;
+    border: 4px solid rgba(255,255,255,0.5);
+    &__img
+    {
+      min-width: 100%;
+      height: 100%;
+    }
+  }
+  &_txt
+  {
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 10px;
+    width: 300px;
+  }
+  &_sub
+  {
+    float: right;
+    height: 40px;
+    margin-top: 30px;
+    display: inline-block;
+    vertical-align: top;
+    &__count
+    {
+      line-height: 40px;
+      margin-right: 10px;
+    }
+  }
+  &__small
+  {
+    height: 50px;
+    display: inline-block;
+  }
+  &__small &_ava
+  {
+    width: 50px;
+  }
+  &__small &_sub
+  {
+    margin-top: 0;
+  }
+  &__small &_txt
+  {
+    width: auto;
+    margin-right: 20px;
   }
 }
 
@@ -632,7 +665,7 @@ footer
       margin-bottom:10px;
       height:20px;
       width:44%;
-      border-bottom:2px solid #ffb366;
+      border-bottom:2px solid @colorBrd;
   }
   &__creator
   {
@@ -685,7 +718,7 @@ footer
     .nav-menu
     {
       text-align:center;
-      border-top:2px solid rgba(240, 203, 142,0.5);
+      .border-color2(top,2px,0.5);
       width:100%;
       &_nav-men:hover
       {
@@ -758,7 +791,6 @@ footer
     }
     .searcher
     {
-      background-:#f3d6a5;
       height:100px;
       z-index:2;
       top:310px;
@@ -779,7 +811,7 @@ footer
       {
         display:none;
         border-right:none;
-        border-bottom:1px solid rgba(240, 203, 142,0.5);
+        .border-color2(bottom,1px,0.5);
       }
       &_menu-holder
       {
