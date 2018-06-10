@@ -7,19 +7,20 @@ for(var i=0;i<subBtns.length;i++)
          url:"/subscribe/"+val,
          type:"GET",
          dataType:"text",
-         success:function(response){
-           var cnt=document.getElementById("subCnt"+val);
-           if(this.innerHTML=="Подписаться")
-             {
-               cnt.innerHTML-=(-1);
-               this.innerHTML="Отписаться";
-             }
-           else
-           {
-             cnt.innerHTML-=1;
-             this.innerHTML="Подписаться";
-           }
-         },
+         success:function(response){},
+
          error:function(){}
       });
+      var cnt=document.getElementById("subCnt"+val);
+      if(this.innerHTML=="Подписаться")
+        {
+          cnt.innerHTML-=(-1);
+          this.innerHTML="Отписаться";
+        }
+      else
+      {
+        cnt.innerHTML-=1;
+        this.innerHTML="Подписаться";
+      }
+
     });

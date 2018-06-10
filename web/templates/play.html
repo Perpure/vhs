@@ -16,7 +16,7 @@
         <b><a href="{{url_for('cabinet', usr=usr.login)}}">{{usr.name}}</a></b>
         <p class="italic" id="Dating">{{video.date.date()}}</p>
     </div>
-    {% if user!=video.user %}
+    {% if user!=video.user and user %}
     <div class="profile_sub">
       <span class="profile_sub__count" id="subCnt{{usr.id}}">{{ usr.subscribers|length }}</span>
       <button type="button" name="button" value="{{usr.id}}"  class="subscribe-btn">{% if subscribed %}Отписаться{% else %}Подписаться{% endif %}</button>
