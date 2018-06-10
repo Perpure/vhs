@@ -42,7 +42,7 @@ a,
 a:hover,
 .fact:hover {
   text-decoration: none;
-  color: #714707;
+  color: #603c06;
   cursor: pointer;
 }
 .fact {
@@ -62,7 +62,7 @@ a:hover,
 }
 input {
   border: none;
-  border-bottom: 2px solid #ffb366;
+  border-bottom: 2px solid #e8ab4a;
   margin-bottom: 10px;
   padding-left: 5px;
   background-color: rgba(240, 203, 142, 0.5);
@@ -75,7 +75,7 @@ button {
   background-color: #f0cb8e;
   transition: 0.5s;
   border: none;
-  border-bottom: 2px solid #ffb366;
+  border-bottom: 2px solid #e8ab4a;
   font-weight: bold;
   vertical-align: top;
 }
@@ -155,7 +155,7 @@ search {
 .nav-menu_nav-men__sub-btn {
   width: 100%;
   height: 50px;
-  background-color: #f3d6a5;
+  background-color: #f7d8a2;
   padding: 13px 0 13px 0;
   border-bottom: 2px solid rgba(240, 203, 142, 0.5);
   color: black;
@@ -358,7 +358,7 @@ search {
   cursor: pointer;
 }
 .video-comments {
-  border-top: 2px solid #ffcc99;
+  border-top: 2px solid #e8ab4a;
   margin-top: 10px;
   padding-top: 10px;
 }
@@ -388,17 +388,17 @@ search {
   font-size: 110%;
 }
 .tag {
-  background-color: #ffcc99;
+  background-color: #e8ab4a;
   color: white;
   border-radius: 10px;
   padding: 3px;
   margin-right: 5px;
 }
 .tag:hover {
-  border: 2px solid #ffcc99;
+  border: 2px solid #e8ab4a;
   background-color: rgba(0, 0, 0, 0);
   cursor: pointer;
-  color: #ffcc99;
+  color: #e8ab4a;
   margin-right: 1px;
   font-weight: bold;
 }
@@ -454,7 +454,7 @@ search {
   display: block;
 }
 .section__settings {
-  background-color: rgba(247, 226, 192, 0.7);
+  background-color: #F7E2C0;
 }
 .section_set {
   margin-bottom: 10px;
@@ -526,7 +526,7 @@ footer {
   margin-bottom: 10px;
   height: 20px;
   width: 44%;
-  border-bottom: 2px solid #ffb366;
+  border-bottom: 2px solid #e8ab4a;
 }
 .footer__creator {
   margin: 0;
@@ -614,7 +614,6 @@ footer {
     text-align: center;
   }
   .searcher {
-    background-: #f3d6a5;
     height: 100px;
     z-index: 2;
     top: 310px;

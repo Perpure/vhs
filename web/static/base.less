@@ -2,6 +2,8 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
 @color-link:#905a09;
+@color1:#F7E2C0;
+@colorBrd:#e8ab4a;
 
 .color2(@trans)
 {
@@ -69,7 +71,7 @@ a,.fact
     &:hover
     {
       text-decoration:none;
-      color:#714707;
+      color:@color-link/1.5;
       cursor: pointer;
     }
 }
@@ -98,7 +100,7 @@ a,.fact
 input
 {
     border:none;
-    border-bottom:2px solid #ffb366;
+    border-bottom:2px solid @colorBrd;
     margin-bottom:10px;
     padding-left:5px;
     .color2(0.5);
@@ -112,7 +114,7 @@ input[type="submit"], button
     .color2(1);
     transition:0.5s;
     border:none;
-    border-bottom:2px solid #ffb366;
+    border-bottom:2px solid @colorBrd;
     font-weight:bold;
     vertical-align: top;
     &:hover
@@ -177,7 +179,7 @@ search
     &:hover
     {
       cursor:pointer;
-      border-bottom:2px solid rgb(232, 171, 74);
+      border-bottom:2px solid @colorBrd;
       .color2(0.4);
       border-right:none;
       margin-right:1px;
@@ -210,7 +212,7 @@ search
     {
       width:100%;
       height:50px;
-      background-color:#f3d6a5;
+      background-color: @color1 - #000a1e;
       padding:13px 0 13px 0;
       .border-color2(bottom,2px,0.5);
       color:black;
@@ -222,7 +224,7 @@ search
     }
     &__upst
     {
-      border-top:2px solid rgb(232, 171, 74);
+      border-top:2px solid @colorBrd;
     }
     &__nav-edge
     {
@@ -233,7 +235,7 @@ search
 .mid-head
 {
   display: inline-block;
-  background-color: #F7E2C0;
+  background-color: @color1;
   height: 50px;
   padding-bottom: 5px;
   vertical-align: top;
@@ -277,7 +279,7 @@ search
   top:60px;
   left:17%;
   width:60%;
-  background-color:#F7E2C0;
+  background-color:@color1;
   padding:5px;
   display:none;
   z-index:5;
@@ -450,7 +452,7 @@ search
   }
   &-comments
   {
-    border-top:2px solid #ffcc99;
+    border-top:2px solid @colorBrd;
     margin-top:10px;
     padding-top:10px;
 
@@ -488,17 +490,17 @@ search
 }
 .tag
 {
-  background-color:#ffcc99;
+  background-color:@colorBrd;
   color:white;
   border-radius:10px;
   padding:3px;
   margin-right:5px;
   &:hover
   {
-    border:2px solid #ffcc99;
+    border:2px solid @colorBrd;
     background-color:rgba(0,0,0,0);
     cursor:pointer;
-    color:  #ffcc99;
+    color:  @colorBrd;
     margin-right:1px;
     font-weight:bold;
   }
@@ -532,7 +534,7 @@ search
 
 .solid
 {
-    background-color: #F7E2C0;
+    background-color:@color1;
     vertical-align: top;
     padding: 7px;
     width: 100%;
@@ -573,7 +575,7 @@ search
   }
   &__settings
   {
-    background-color:rgba(247, 226, 192,0.7);
+    background-color:@color1;
   }
   &_set{
     margin-bottom: 10px;
@@ -663,7 +665,7 @@ footer
       margin-bottom:10px;
       height:20px;
       width:44%;
-      border-bottom:2px solid #ffb366;
+      border-bottom:2px solid @colorBrd;
   }
   &__creator
   {
@@ -789,7 +791,6 @@ footer
     }
     .searcher
     {
-      background-:#f3d6a5;
       height:100px;
       z-index:2;
       top:310px;
