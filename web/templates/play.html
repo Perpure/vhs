@@ -1,6 +1,6 @@
 ﻿{% extends "base.html" %}
 {% block content %}
-<video id="my-video" class="video-js vjs-fluid vjs-paused preview-player-dimensions vjs-controls-enabled vjs-workinghover vjs-v6 vjs-mux vjs-user-active" poster="{{url_for('get_image', pid=vid)}}" data-setup='{"controls": true, "autoplay": false, "preload": "auto"}'>
+<video id="my-video" class="video-js vjs-fluid vjs-paused preview-player-dimensions vjs-controls-enabled vjs-workinghover vjs-v6 vjs-mux vjs-user-active" poster="{{url_for('get_image', pid=vid)}}" data-setup='{"controls": true, "autoplay": false, "preload": "metadata"}'>
     <source src="{{url_for('get_video', vid=vid)}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
 </video>
 
@@ -18,8 +18,8 @@
     </div>
     {% if user!=video.user %}
     <div class="profile_sub">
-      <span class="profile_sub__count">{{ usr.subscribers|length }}</span>
-      <button type="button" name="button" value="{{usr.id}}">{% if subscribed %} Отписаться {% else %} Подписаться {% endif %}</button>
+      <span class="profile_sub__count" id="subCnt{{usr.id}}">{{ usr.subscribers|length }}</span>
+      <button type="button" name="button" value="{{usr.id}}"  class="subscribe-btn">{% if subscribed %}Отписаться{% else %}Подписаться{% endif %}</button>
     </div>
     {%endif%}
 </div>
@@ -104,5 +104,9 @@
 {%if user %}
   <script src="{{ url_for('static', filename='video_like.js') }}"></script>
 {%endif%}
+{% if user!=video.user %}
+  <script src="{{ url_for('static', filename='subs.js') }}"></script>
+{%endif%}
+
 <script src="https://vjs.zencdn.net/7.0.3/video.min.js"></script>
 {% endblock %}

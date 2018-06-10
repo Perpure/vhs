@@ -10,8 +10,8 @@
         <p>{{sub.channel_info}}</p>
     </div>
     <div class="profile_sub">
-      <span class="profile_sub__count">{{ sub.subscribers|length }}</span>
-      <button type="button" name="button" value="{{sub.id}}">Отписаться</button>
+      <span class="profile_sub__count"  id="subCnt{{sub.id}}">{{ sub.subscribers|length }}</span>
+      <button type="button" name="button" value="{{sub.id}}"  class="subscribe-btn">Отписаться</button>
     </div>
 </div>
 {% endfor %}

@@ -10,8 +10,8 @@
         </div>
         {% if settings==False %}
         <div class="profile_sub">
-          <span class="profile_sub__count">{{ usr.subscribers|length }}</span>
-          <button type="button" name="button" value="{{usr.id}}">{% if subscribed %} Отписаться {% else %} Подписаться {% endif %}</button>
+          <span class="profile_sub__count" id="subCnt{{usr.id}}">{{ usr.subscribers|length }}</span>
+          <button type="button" name="button" value="{{usr.id}}" class="subscribe-btn">{% if subscribed %}Отписаться{% else %}Подписаться{% endif %}</button>
         </div>
         {%endif%}
     </div>

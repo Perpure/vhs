@@ -12,6 +12,7 @@ from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, Upl
 from web.models import User, Video, Room, Color, Geotag, Tag, AnonUser, RoomDeviceColorConnector
 from web.helper import allowed_file, cur_user, requiresauth, anon_user, image_loaded
 from web.video_handler import save_video
+from datetime import datetime
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -23,7 +24,9 @@ def main():
         for sub in subs:
             for video in sub.videos:
                 sub_items.append(video)
-    return render_template('main.html', user=user, items=Video.get(),sub_items=sub_items)
+    
+    now=time = datetime.now(tz=None)
+    return render_template('main.html', user=user, items=Video.get(),sub_items=sub_items,now=now)
 
 
 @app.route('/createroom', methods=['GET', 'POST'])
