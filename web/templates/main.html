@@ -8,13 +8,14 @@
   <label class="show-type__label" for="show_video_table">Отображать в виде таблицы</label>
   <input name="selector" id="show_video_table" type="radio" checked class="show-type__rad">
 </div>
-<div class="tabs">
-  <div class="tabs_tab tabs_tab__open tabs_tab__edge" onclick="func(this)">Новые</div>
-  {% if user %}
-  <div class="tabs_tab" onclick="func(this)">Подписки</div>
-  {% endif %}
-</div>
+
 <div id="video_table">
+  <div class="tabs">
+    <div class="tabs_tab tabs_tab__open tabs_tab__edge" onclick="func(this)">Новые</div>
+    {% if user %}
+    <div class="tabs_tab" onclick="func(this)">Подписки</div>
+    {% endif %}
+  </div>
   <div class="section section__open">
   {% for item in items|reverse %}
     <div class="video">

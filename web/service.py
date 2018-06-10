@@ -187,15 +187,16 @@ def startSearch():
     ask = request.args.get('ask')
     view = request.args.get('view')
     dat = request.args.get('dat')
+    now=time = datetime.now(tz=None)
 
     if dat:
         sort += "date"
     if view:
         sort += "views"
     if ask != " ":
-        return render_template('main.html', user=cur_user(), items=Video.get(search=ask, sort=sort))
-
-    return render_template('main.html', user=cur_user(), items=Video.get())
+        return render_template('main.html', user=cur_user(), items=Video.get(search=ask, sort=sort),now=now)
+    
+    return render_template('main.html', user=cur_user(), items=Video.get(),now=now)
 
 
 @app.route('/showRes/<int:room_id>', methods=['GET', 'POST'])

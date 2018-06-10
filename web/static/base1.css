@@ -2,6 +2,14 @@
 html {
   height: 100%;
 }
+.ib {
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 20px;
+}
+ul {
+  padding-left: 20px;
+}
 body {
   font-family: 'Roboto', sans-serif;
   /*background-image:url("bg4.png");*/

@@ -264,8 +264,9 @@ def cabinet(usr):
             db.session.commit()
         return redirect(url_for("cabinet", usr=cabinet_owner.login))
     last=items[-6:]
+    now=time = datetime.now(tz=None)
     return render_template('cabinet.html', form=form, user=user, items=items,
-                           settings=is_cabinet_settings_available, usr=cabinet_owner,last=last,subscribed=(user in cabinet_owner.subscribers))
+                           settings=is_cabinet_settings_available, usr=cabinet_owner,last=last,subscribed=(user in cabinet_owner.subscribers),now=now)
 
 
 @app.route('/play/<string:vid>', methods=['GET', 'POST'])
