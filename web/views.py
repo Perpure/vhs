@@ -63,7 +63,7 @@ def room(room_id):
         user_rooms = [rac.room for rac in raw_user_rooms]
         users = room.get_devices()
 
-        if not ((room in user_rooms) or not (room.captain != user)):
+        if not (room in user_rooms) and (room.captain != user):
             color_id = len(users) + 1
             if color_id > 6:
                 return redirect(url_for('viewroom'))
@@ -227,7 +227,6 @@ def cabinet(usr):
 
     form = UserProfileForm()
     if form.validate_on_submit():
-        print(request.files)
         user = cur_user()
         folder = str(user.id)
         if form.change_name.data:

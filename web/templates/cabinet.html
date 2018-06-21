@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 {% block content %}
 <div class="content">
     <div class="conbu">
@@ -129,15 +129,15 @@
     'use strict';
 
     function func(a){
-        let x;
-        let amas = document.getElementsByClassName('z1');
-        for (let i=0; i<amas.length; i++){
+        var x;
+        var amas = document.getElementsByClassName('z1');
+        for (var i=0; i<amas.length; i++){
             amas[i].classList.remove('z2');
             amas[i].classList.add('z1');
         }
         a.classList.add('z2');
-        let acon = document.getElementsByClassName('con');
-        for (let i=0; i<acon.length; i++){
+        var acon = document.getElementsByClassName('con');
+        for (var i=0; i<acon.length; i++){
             acon[i].classList.remove('con2');
             acon[i].classList.add('con');
             if (amas[i].classList.contains('z2')){

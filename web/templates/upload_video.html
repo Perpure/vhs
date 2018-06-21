@@ -71,8 +71,8 @@
     }
 
     function addTags() {
-        let mas = document.body.getElementsByTagName('span');
-        for (let i = 0; i < mas.length-1; i++){
+        var mas = document.body.getElementsByTagName('span');
+        for (var i = 0; i < mas.length-1; i++){
             tags.value = tags.value + "," + mas[i].innerHTML;}
         tags.value = tags.value.substring(1, tags.value.length);
     }
@@ -81,7 +81,7 @@
     $( ".Loader" )
       .change(function () {
         $( ".Loader" ).css('background-image', 'url("/static/LoaderChange.png")');
-          let filename = $('#video').val();
+          var filename = $('#video').val();
           $('#fileName').html(filename);
         $('#OuterDiv').append('<div id="innerDiv"></div>');
       })

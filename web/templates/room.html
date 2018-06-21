@@ -104,9 +104,9 @@
         },1000);
     }
 
-    let ID = {{ room.id }};
+    var ID = {{ room.id }};
 
-    let speed = 4000;
+    var speed = 4000;
 
     function Result()
     {
@@ -151,7 +151,7 @@
                         width: response.width+"%",
                     });
                     if(response.noSound)$("#ReVi").prop('muted', true);
-                    let time = Math.round(response.time / 1000);
+                    var time = Math.round(response.time / 1000);
                     countDown(time);
                 }
 
@@ -175,9 +175,9 @@
     },speed);
 
     $(document).ready(function() {
-        let ratio = window.devicePixelRatio || 1;
-        let width = screen.width * ratio;
-        let height = screen.height * ratio;
+        var ratio = window.devicePixelRatio || 1;
+        var width = screen.width * ratio;
+        var height = screen.height * ratio;
         $.ajax({
             url: '/tellRes',
             contentType: "application/json; charset=utf-8",
@@ -190,12 +190,12 @@
     });
 
     function fullscreen() {
-        let isInFullScreen = (document.fullscreenElement && document.fullscreenElement !== null) ||
+        var isInFullScreen = (document.fullscreenElement && document.fullscreenElement !== null) ||
             (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
             (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
             (document.msFullscreenElement && document.msFullscreenElement !== null);
 
-        let docElm = document.documentElement;
+        var docElm = document.documentElement;
         if (!isInFullScreen) {
             if (docElm.requestFullscreen) {
                 docElm.requestFullscreen();
@@ -231,9 +231,9 @@
     {% endif %}
     {% if room.video_id %}
         $('#showRes').click(function(){
-            let hash = window.location.href;
-            let sl = 0;
-            for(let i = 0;i<hash.length;i++) {
+            var hash = window.location.href;
+            var sl = 0;
+            for(var i = 0;i<hash.length;i++) {
                 if (hash[i] === '/') sl = i;
             }
             hash = hash.substring(sl+1);
@@ -241,7 +241,7 @@
                 url:"/showRes/"+hash,
                 type:"GET"
             });
-            let time = 15;
+            var time = 15;
             countDown(time);
         });
     {% endif %}
