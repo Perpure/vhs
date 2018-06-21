@@ -60,7 +60,7 @@
 <script src="{{ url_for('static', filename='map.js') }}"></script>
 <script src="{{ url_for('static', filename='tagify.js') }}"></script>
 <script>
-    let input = document.querySelector('input[name=tags]'),
+    var input = document.querySelector('input[name=tags]'),
         tagify = new Tagify(input);
 </script>
 <script type="text/javascript">
