@@ -1,21 +1,17 @@
-from web import app, db
-from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
-    UserProfileForm, AddRoomForm, SearchingVideoForm, VideoToRoomForm
-from web.models import User, Video, Room, Color, Comment, Geotag, Tag, AnonUser, RoomDeviceColorConnector
-from web.helper import read_image, read_video, allowed_image, allowed_file, cur_user, is_true_pixel, \
-    read_multi, parse, requiresauth, anon_user, image_loaded
-from web.video_handler import save_video
-from wtforms.validators import ValidationError
-from config import basedir, ALLOWED_EXTENSIONS
-from flask import redirect, render_template, session, url_for, make_response, request, jsonify
-from flask.json import JSONDecoder, dumps
-from werkzeug.utils import secure_filename
-from random import choice
-from string import ascii_letters
-from werkzeug.exceptions import Aborter
-from PIL import Image, ImageDraw
+# coding=utf-8
 import os
-from datetime import datetime
+import json
+from wtforms.validators import ValidationError
+from flask import redirect, render_template, session, url_for, request
+from flask.json import JSONDecoder, dumps
+from werkzeug.exceptions import Aborter
+from config import basedir
+from web import app, db, avatars, backgrounds
+from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
+    UserProfileForm, AddRoomForm
+from web.models import User, Video, Room, Color, Geotag, Tag, AnonUser, RoomDeviceColorConnector
+from web.helper import cur_user, requiresauth, anon_user, image_loaded
+from web.video_handler import save_video
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -37,7 +33,7 @@ def createroom():
         db.session.add(room)
         db.session.commit()
         return redirect(url_for('room', room_id=room.id))
-    return render_template('create_room.html', add_room_form=add_room_form)
+    return render_template('create_room.html', user=cur_user(), add_room_form=add_room_form)
 
 
 @app.route('/viewroom', methods=['GET', 'POST'])
@@ -59,7 +55,7 @@ def viewroom():
 @app.route('/room/<int:room_id>', methods=['GET', 'POST'])
 def room(room_id):
     user = anon_user()
-    Room_Form = RoomForm()
+    room_form = RoomForm()
     room = Room.query.get(room_id)
     if room:
         room_map_url = str(room_id) + '_map'
@@ -67,7 +63,7 @@ def room(room_id):
         user_rooms = [rac.room for rac in raw_user_rooms]
         users = room.get_devices()
 
-        if (not (room in user_rooms)) and (room.captain != user):
+        if not (room in user_rooms) and (room.captain != user):
             color_id = len(users) + 1
             if color_id > 6:
                 return redirect(url_for('viewroom'))
@@ -75,14 +71,14 @@ def room(room_id):
             rac = RoomDeviceColorConnector(anon=user, room=room, color=col)
             db.session.add(rac)
             for member in users:
-                member.action="update"
-            capt=AnonUser.get(room.capitan_id)
-            capt.action="update"
+                member.action = "update"
+            capt = AnonUser.get(room.capitan_id)
+            capt.action = "update"
             db.session.commit()
 
         users = room.get_devices()
 
-        if Room_Form.validate_on_submit():
+        if room_form.validate_on_submit():
             for member in users:
                 member.action = "calibrate"
             db.session.commit()
@@ -95,10 +91,10 @@ def room(room_id):
 
         image_form = UploadImageForm()
         if image_form.validate_on_submit():
-            return image_loaded(request, room, user, users, UploadImageForm(), image_form, Room_Form)
+            return image_loaded(request, room, user, users, image_form, room_form)
         return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users,
                                count=len(users) + 1,
-                               image_form=image_form, Room_Form=Room_Form, loaded=False, anon=user,
+                               image_form=image_form, room_form=room_form, loaded=False, anon=user,
                                room_map=room_map_url,
                                map_ex=os.path.exists(basedir + '/images/' + str(room.id) + '_map.jpg'))
     else:
@@ -145,34 +141,28 @@ def upload():
     form = UploadVideoForm()
 
     if form.validate_on_submit():
-        if 'video' not in request.files:
-            return redirect(request.url)
         file = request.files['video']
-        if file.filename == '':
-            return redirect(request.url)
 
-        if file and allowed_file(file.filename):
-            video = save_video(file, form.title.data)
+        video = save_video(file, form.title.data)
 
-            if not video:
-                form.video.errors.append(ValidationError('Ошибка при загрузке видео'))
-                return render_template('upload_video.html', form=form, user=cur_user(),
-                                       formats=app.config['ALLOWED_EXTENSIONS'])
+        if not video:
+            form.video.errors.append(ValidationError('Ошибка при загрузке видео'))
+            return render_template('upload_video.html', form=form, user=cur_user(),
+                                   formats=app.config['ALLOWED_EXTENSIONS'])
 
-            data = JSONDecoder().decode(form.geotag_data.data)
-            if data['needed']:
-                for coords in data['coords']:
-                    gt = Geotag(*coords)
-                    gt.save(video)
+        data = JSONDecoder().decode(form.geotag_data.data)
+        if data['needed']:
+            for coords in data['coords']:
+                gt = Geotag(*coords)
+                gt.save(video)
 
-            if form.tags.data:
-                tags = form.tags.data.split(',')
-                for tag in tags:
-                    tag_data = Tag(tag, video.id, user.id)
-                    tag_data.save()
-            return redirect(url_for("main"))
-        elif not allowed_file(file.filename):
-            form.video.errors.append(ValidationError('Некорректное разрешение'))
+        if form.tags.data:
+            tags = form.tags.data.split(',')
+            for tag in tags:
+                tag_data = Tag(tag, video.id, user.id)
+                tag_data.save()
+
+        return redirect(url_for("main"))
 
     if not form.geotag_data.data:
         form.geotag_data.data = dumps({'needed': False, 'coords': []})
@@ -186,6 +176,7 @@ def reg():
     Отвечает за вывод страницы регистрации и регистрацию
     :return: Страница регистрации
     """
+
     form = RegForm()
 
     if form.validate_on_submit():
@@ -203,6 +194,7 @@ def log():
     Отвечает за вывод страницы входа и вход
     :return: Страница входа
     """
+
     form = LogForm()
 
     if form.validate_on_submit():
@@ -224,28 +216,31 @@ def cabinet(usr):
     items = []
     user = cur_user()
     cabinet_owner = User.get(login=usr)
+    is_cabinet_settings_available = False
 
     if user == cabinet_owner:
         is_cabinet_settings_available = True
-    else:
-        is_cabinet_settings_available = False
 
-    try:
-        for item in video_list:
-            if item.user_id == cabinet_owner.id:
-                items.append(item)
-    except:
-        return render_template('404.html'), 404
+    for item in video_list:
+        if item.user_id == cabinet_owner.id:
+            items.append(item)
 
     form = UserProfileForm()
     if form.validate_on_submit():
         user = cur_user()
+        folder = str(user.id)
         if form.change_name.data:
             user.change_name(form.change_name.data)
         if form.change_password.data:
             user.save(form.change_password.data)
         if form.channel_info.data:
             user.change_channel_info(form.channel_info.data)
+        if 'avatar' in request.files:
+            avatar_url = avatars.save(form.avatar.data, folder=folder)
+            user.update_avatar(json.dumps({"url": avatar_url}))
+        if 'background' in request.files:
+            background_url = backgrounds.save(form.background.data, folder=folder)
+            user.update_background(json.dumps({"url": background_url}))
         return redirect(url_for("cabinet", usr=cabinet_owner.login))
     return render_template('cabinet.html', form=form, user=cur_user(), items=items,
                            settings=is_cabinet_settings_available, usr=cabinet_owner)
@@ -297,14 +292,14 @@ def views_story():
 
 @app.errorhandler(403)
 def forbidden(e):
-    return render_template('403.html'), 403
+    return render_template('403.html', user=cur_user()), 403
 
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    return render_template('404.html', user=cur_user()), 404
 
 
 @app.errorhandler(500)
 def internal_server_error(e):
-    return render_template('500.html'), 500
+    return render_template('500.html', user=cur_user()), 500

@@ -1,28 +1,25 @@
-﻿from web import db
-from web import app
+﻿# coding=utf-8
 import shutil
 import hashlib
 import os
-from random import randint
+import json
 from datetime import datetime
-from flask import session
-from random import random
 from uuid import uuid4
+from flask import url_for
+from web import db, app, avatars, backgrounds
+
 
 Views = db.Table('Views', db.Model.metadata,
                  db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
-                 db.Column('Video_id', db.String(32), db.ForeignKey('Video.id'))
-                 )
+                 db.Column('Video_id', db.String(32), db.ForeignKey('Video.id')))
 
 Likes = db.Table('Likes', db.Model.metadata,
                  db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
-                 db.Column('Video_id', db.String(32), db.ForeignKey('Video.id'))
-                 )
+                 db.Column('Video_id', db.String(32), db.ForeignKey('Video.id')))
 
 Dislikes = db.Table('Dislikes', db.Model.metadata,
                     db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
-                    db.Column('Video_id', db.String(32), db.ForeignKey('Video.id'))
-                    )
+                    db.Column('Video_id', db.String(32), db.ForeignKey('Video.id')))
 
 
 class Comment(db.Model):
@@ -188,10 +185,9 @@ class User(db.Model):
     password = db.Column(db.String(), nullable=False)
     name = db.Column(db.String(32), nullable=False)
     channel_info = db.Column(db.String(64))
-    avatar = db.Column(db.String(64))
+    avatar = db.Column(db.String(128))
+    background = db.Column(db.String(128))
     action = db.Column(db.String(64))
-    device_width = db.Column(db.Integer)
-    device_height = db.Column(db.Integer)
     color = db.Column(db.String(64))
     top = db.Column(db.Integer)
     left = db.Column(db.Integer)
@@ -220,7 +216,6 @@ class User(db.Model):
         """
         self.password = hashlib.sha512(
             password.encode("utf-8")).hexdigest()
-        self.avatar = str(randint(1, 20)) + ".jpg"
         db.session.add(self)
         db.session.commit()
 
@@ -246,13 +241,34 @@ class User(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def update_resolution(self, width, height):
-        if self.device_width == width and self.device_height == height:
-            return ()
-        self.device_height = height
-        self.device_width = width
+    def update_action(self, action):
+        self.action = action
         db.session.add(self)
         db.session.commit()
+
+    def update_avatar(self, avatar):
+        self.avatar = avatar
+        db.session.add(self)
+        db.session.commit()
+
+    def update_background(self, background):
+        self.background = background
+        db.session.add(self)
+        db.session.commit()
+
+    def avatar_url(self):
+        if self.avatar:
+            avatar_json = json.loads(self.avatar)
+            return url_for('_uploads.uploaded_file', setname=avatars.name, filename=avatar_json['url'])
+        else:
+            return '../static/avatar.jpg'
+
+    def background_url(self):
+        if self.background:
+            background_json = json.loads(self.background)
+            return url_for('_uploads.uploaded_file', setname=backgrounds.name, filename=background_json['url'])
+        else:
+            return '../static/background.jpg'
 
     @staticmethod
     def get(id=None, login=None):
@@ -352,7 +368,7 @@ class AnonUser(db.Model):
 
     def update_resolution(self, width, height):
         if self.device_width == width and self.device_height == height:
-            return ()
+            return()
         self.device_height = height
         self.device_width = width
         db.session.add(self)

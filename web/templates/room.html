@@ -2,86 +2,97 @@
 {% block content %}
 <h1>Комната {{room.name}}</h1>
 {% if room.capitan_id == anon.id %}
-<form action="" method="post">
-    {{Room_Form.hidden_tag()}}
-    {{ Room_Form.submit }}
-</form>
-<h5>Загрузите калибровочное фото</h5>
-<form action="" method="post" enctype="multipart/form-data">
-    <div class="Loader"><div><input id="image" name="image" type="file" accept="image/*" capture></div></div>
-    <div id="Calibr"> {{ image_form.submit }} </div>
-{% if room.video_id %}
-<button class="result" id="showRes" type="button">Начать демонстрацию</button>
-<div id="cod"></div>
-{% endif %}
-    {% if map_ex %}
-    
+    <form action="" method="post">
+        {{room_form.hidden_tag()}}
+        {{ room_form.submit }}
+    </form>
+    <h5>Загрузите калибровочное фото</h5>
+    <form action="" method="post" enctype="multipart/form-data">
+        <div class="Loader"><div><input id="image" name="image" type="file" accept="image/*" capture></div></div>
+        {% if image_form.image.errors %}
+        {% for error in image_form.image.errors %}
+            <div style="color: red;">{{ error }}</div>
+        {% endfor %}
     {% endif %}
-</form>
+        <div id="Calibr"> {{ image_form.submit }} </div>
+        {% if room.video_id %}
+            <button class="result" id="showRes" type="button">Начать демонстрацию</button>
+            <div id="cod"></div>
+        {% endif %}
+        {% if map_ex %}
+        {% endif %}
+    </form>
+{% endif %}
 
-{% endif %}
 {% if room.capitan_id != anon.id %}
-<hr>
-<button onclick="fullscreen();" class="fullscreenB">Перейти в полноэкранный режим</button>
+    <hr>
+    <button onclick="fullscreen();" class="fullscreenB">Перейти в полноэкранный режим</button>
 {% endif %}
+
 {% if room.capitan_id == anon.id %}
-{% if room.video_id %}
-<hr>
+    {% if room.video_id %}
+        <hr>
         <div class="video">
             <a href="{{url_for('play', vid=room.video_id)}}" class="Link">
-            <img src="{{url_for('get_image', pid=room.video_id)}}" alt="" class="preview">
+                <img src="{{url_for('get_image', pid=room.video_id)}}" alt="" class="preview">
             </a>
         </div>
-<form action="{{url_for('choose_video', room_id=room.id)}}">
-<button>Выбрать другое видео для демонстрации</button>
-</form>
-{% else %}
-<hr>
-<form action="{{url_for('choose_video', room_id=room.id)}}">
-<button>Выберите видео для демонстрации</button>
-</form>
+        <form action="{{url_for('choose_video', room_id=room.id)}}">
+            <button>Выбрать другое видео для демонстрации</button>
+        </form>
+    {% else %}
+        <hr>
+        <form action="{{url_for('choose_video', room_id=room.id)}}">
+            <button>Выберите видео для демонстрации</button>
+        </form>
+    {% endif %}
 {% endif %}
-{% endif %}
+
 {% if count > 1 %}
-<hr>
-<h5>Количество участников: <span id="countUsers">{{count}}</span></h5>
+    <hr>
+    <h5>Количество участников: <span id="countUsers">{{count}}</span></h5>
 {% else %}
-<hr>
-<p id="countUsers">Пригласите участников в комнату</p>
+    <hr>
+    <p id="countUsers">Пригласите участников в комнату</p>
 {% endif %}
+
 {% if room.capitan_id != anon.id %}
-<div id="cod"></div>
+    <div id="cod"></div>
 {% endif %}
+
 {% if map_ex %}
-<hr>
-<img src="{{url_for('get_multi', pid=room_map)}}" style="width:100%">
+    <hr>
+    <img src="{{url_for('get_multi', pid=room_map)}}" style="width:100%">
 {% endif %}
+
 {% if msg %}
     <hr>
     <p>{{msg}}</p>
 {% endif %}
+
 <hr>
 <button id="instructionBtn" >Инструкция</button>
 <ol id="instruction" class="instr">
-<li>Пригласите участников.</li>
-<li>Выберите видео для демонстрации.</li>
-<li>Разместите устройства на площади для показа.</li>
-<li>Капитан нажимает на кнопку “Калибровка”.<br>
-4.1. На устройствах участников откроется сплошная цветниая заливка.</li>
-<li>Капитан делает фотографию утсройств и нажимает “Инициализировать”</li>
-<li>Через некоторое время появится карта устройств.<br>
-6.1. Если положение устройств определено неверно повторите действия описанные в п.5</li>
-<li>Капитан нажимает “Начать демонстрацию”<br>
-7.1. Запускается обратный отсчёт</li>
-<li>Через 15 чекунд начинается показ видео.</li>
+    <li>Пригласите участников.</li>
+    <li>Выберите видео для демонстрации.</li>
+    <li>Разместите устройства на площади для показа.</li>
+    <li>Капитан нажимает на кнопку “Калибровка”.<br>
+    4.1. На устройствах участников откроется сплошная цветниая заливка.</li>
+    <li>Капитан делает фотографию утсройств и нажимает “Инициализировать”</li>
+    <li>Через некоторое время появится карта устройств.<br>
+    6.1. Если положение устройств определено неверно повторите действия описанные в п.5</li>
+    <li>Капитан нажимает “Начать демонстрацию”<br>
+    7.1. Запускается обратный отсчёт</li>
+    <li>Через 15 чекунд начинается показ видео.</li>
 </ol>
 
 {% if room.capitan_id != anon.id %}
     {% if room.video_id %}
-    <video class="ResultVideo" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
+        <video class="ResultVideo" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
     {% endif %}
 {% endif %}
-<script>
+
+    <script>
     function countDown(Time)
     {
         $('#cod').css("margin-top","10px");
@@ -92,18 +103,18 @@
             else $('#cod').empty();
         },1000);
     }
-    
-    var ID={{ room.id }};
-    
-    var speed=4000;
+
+    var ID = {{ room.id }};
+
+    var speed = 4000;
 
     function Result()
     {
-        $('#Body').css('overflow', 'hidden')
+        $('#Body').css('overflow', 'hidden');
         $('#ReVi').show();
         $('#ReVi').get(0).play();
-        $('#ReVi').on('ended',function(){ 
-            $('#ReVi').hide(); 
+        $('#ReVi').on('ended',function(){
+            $('#ReVi').hide();
             $('#Footer').show();
             $('#Body').css('overflow', 'auto')
         });
@@ -117,19 +128,18 @@
             dataType:"json",
             success:function(response)
             {
-                if(response.action=="calibrate"){
+                if(response.action==="calibrate"){
                     $('#Body').css('overflow', 'hidden');
-                    $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; background:'+response.color+';"></div>');
+                    $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; ' +
+                        'background:'+response.color+';"></div>');
                     $('#calibrImage').click(fullscreen);
                     $('#Footer').hide();
                     $('#Header').hide();
-                ;}
-    console.log(response.action);
-                if(response.action=="result"){
+                }
+
+                if(response.action==="result"){
                     $('#Body').css('overflow', 'hidden');
                     setTimeout(Result,response.time);
-                    console.log($('#ReVi').width());
-                    console.log($('#ReVi').height());
                     $('#ReVi').css({
                         top: response.top + "%",
                         left: response.left + "%",
@@ -141,23 +151,26 @@
                         width: response.width+"%",
                     });
                     if(response.noSound)$("#ReVi").prop('muted', true);
-                    var time=Math.round(response.time/1000);
+                    var time = Math.round(response.time / 1000);
                     countDown(time);
                 }
-                if(response.action=="refresh"){
+
+                if(response.action==="refresh"){
                     location.reload();
                 }
-                if(response.action=="update"){
+
+                if(response.action==="update"){
                     {% if room.capitan_id == anon.id %}
-                    $("#submit").show();
-                    $("#countUsers").html("Количество участников: "+response.count);                  
+                        $("#submit").show();
+                        $("#countUsers").html("Количество участников: "+response.count);
                     {% else %}
-                    $("#countUsers").html(response.count);
+                        $("#countUsers").html(response.count);
                     {% endif %}
                 }
             },
             error:function(){}
         });
+
         setTimeout(step,speed);
     },speed);
 
@@ -213,24 +226,25 @@
 
 
 {% if room.capitan_id == anon.id %}
-{% if count == 1 %}
-    $('#submit').hide();
-{% endif %}
-{% if room.video_id %}
-    $('#showRes').click(function(){
-        var hash=window.location.href;
-        var sl=0;
-        for(let i=0;i<hash.length;i++)
-            if(hash[i]=='/')sl=i;
-        hash=hash.substring(sl+1);
-        $.ajax({
-            url:"/showRes/"+hash,
-            type:"GET"
+    {% if count == 1 %}
+        $('#submit').hide();
+    {% endif %}
+    {% if room.video_id %}
+        $('#showRes').click(function(){
+            var hash = window.location.href;
+            var sl = 0;
+            for(var i = 0;i<hash.length;i++) {
+                if (hash[i] === '/') sl = i;
+            }
+            hash = hash.substring(sl+1);
+            $.ajax({
+                url:"/showRes/"+hash,
+                type:"GET"
+            });
+            var time = 15;
+            countDown(time);
         });
-        var time=15;
-        countDown(time);
-    });
-{% endif %}
+    {% endif %}
 {% endif %}
 </script>
 {% endblock %}

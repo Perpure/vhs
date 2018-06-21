@@ -1,95 +1,96 @@
 {% extends "base.html" %}
-
 {% block content %}
-    <title>Upload new File</title>
-    <h1>Загрузите видео</h1>
-    <p>Введите название видео</p>
-    <form action="" method="post" enctype="multipart/form-data">
-        <div> {{ form.title }} </div>
-        {% if form.title.errors %}
-            {% for error in form.title.errors %}
+<title>Upload new File</title>
+<h1>Загрузите видео</h1>
+<p>Введите название видео</p>
+<form action="" method="post" enctype="multipart/form-data">
+    <div> {{ form.title }} </div>
+    {% if form.title.errors %}
+        {% for error in form.title.errors %}
             <div style="color: red;">{{ error }}</div>
-            {% endfor %}
-        {% endif %}
-        <div> {{ form.video.label }} </div>
-        <p>(Разрешённые видео форматы:
+        {% endfor %}
+    {% endif %}
+    <div> {{ form.video.label }} </div>
+    <p>(Разрешённые видео форматы:
         {% for format in formats %}
             .{{format}}
         {% endfor %}
-        )</p>
-        <div class="Loader">
-            <div style="margin-bottom:-25px"> {{ form.video }} </div>
-            <p id="fileName"></p>
-        </div>
-        {% if form.video.errors %}
+    )</p>
+    <div class="Loader">
+        <div style="margin-bottom:-25px"> {{ form.video }} </div>
+        <p id="fileName"></p>
+    </div>
+    {% if form.video.errors %}
         {% for error in form.video.errors %}
             <div style="color: red;">{{ error }}</div>
         {% endfor %}
-        {% endif %}
+    {% endif %}
 
-        <div> <button type='button' id="geotag_is_needed">Прикрепить геотег</button></div>
-        <br>
-        <div style="display:none;" id="map-info"><p>Для добавления новых тегов дважды нажмите на карту. Для смены цвета тега кликните по нему.
-                Красные теги перемещаются при клике по карте, любые теги можно двигать перетаскиванием.
-                Преред добавлением тега рекомендуется сделать все теги синими.
-                Для удаления тега щёлкните по нему правой кнопкой мыши.</p></div>
-        <div id="map"></div>
-        <div> {{ form.geotag_data }}</div>
-        {% if form.geotag_data.errors %}
-            {% for error in form.geotag_data.errors %}
+    <div> <button type='button' id="geotag_is_needed">Прикрепить геотег</button></div>
+    <br>
+    <div style="display:none;" id="map-info">
+        <p> Для добавления новых тегов дважды нажмите на карту. Для смены цвета тега кликните по нему.
+            Красные теги перемещаются при клике по карте, любые теги можно двигать перетаскиванием.
+            Преред добавлением тега рекомендуется сделать все теги синими.
+            Для удаления тега щёлкните по нему правой кнопкой мыши.
+        </p>
+    </div>
+    <div id="map"></div>
+    <div> {{ form.geotag_data }}</div>
+    {% if form.geotag_data.errors %}
+        {% for error in form.geotag_data.errors %}
             <div style="color: red;">{{ error }}</div>
-            {% endfor %}
-        {% endif %}
-        <div style="color: red;"> {{ error }} </div>
-        <div>{{ form.tags.label }}</div>
-        <div style="margin-bottom:15px">
-        <input name="tags" placeholder="добавьте теги через enter"> <!-- value="my video"> -->
-        </div>
-        <div>{{ form.tags(rows=5, cols=60, display=none) }}</div>
-        {% if form.tags.errors %}
-            {% for error in form.tags.errors %}
+        {% endfor %}
+    {% endif %}
+    <div style="color: red;"> {{ error }} </div>
+    <div>{{ form.tags.label }}</div>
+    <div style="margin-bottom:15px">
+        <input name="tags" placeholder="добавьте теги через enter">
+    </div>
+    <div>{{ form.tags(rows=5, cols=60, display=none) }}</div>
+    {% if form.tags.errors %}
+        {% for error in form.tags.errors %}
             <div style="color: red;">{{ error }}</div>
-            {% endfor %}
-        {% endif %}
-        <div> {{ form.submit }} </div>
-    </form>
+        {% endfor %}
+    {% endif %}
+    <div> {{ form.submit }} </div>
+</form>
 
-    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
-    <script src="{{ url_for('static', filename='map.js') }}"></script>
-    <script src="{{ url_for('static', filename='tagify.js') }}"></script>
-    <script>
-        var input = document.querySelector('input[name=tags]'),
-        tagify = new Tagify( input );
-    </script>
-    <script type="text/javascript">
-        $( init );
+<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+<script src="{{ url_for('static', filename='map.js') }}"></script>
+<script src="{{ url_for('static', filename='tagify.js') }}"></script>
+<script>
+    var input = document.querySelector('input[name=tags]'),
+        tagify = new Tagify(input);
+</script>
+<script type="text/javascript">
+    $( init );
 
-        function init() {
-            $('#submit').bind( 'submit', addTags );
-        }
+    function init() {
+        $('#submit').bind( 'submit', addTags );
+    }
 
-        function addTags() {
-            var mas = document.body.getElementsByTagName('span');
-            for (var i = 0; i < mas.length-1; i++){
-            tags.value = tags.value + "," + mas[i].innerHTML;
-            }
-            tags.value = tags.value.substring(1, tags.value.length);
-        }
-    </script>
-    <script type="text/javascript">
-        $( ".Loader" )
-          .change(function () {
-            $( ".Loader" ).css('background-image', 'url("/static/LoaderChange.png")')
-            var filename = $('#video').val()
-            $('#fileName').html(filename);
-            $('#OuterDiv').append('<div id="innerDiv"></div>');
-          })
-    </script>
+    function addTags() {
+        var mas = document.body.getElementsByTagName('span');
+        for (var i = 0; i < mas.length-1; i++){
+            tags.value = tags.value + "," + mas[i].innerHTML;}
+        tags.value = tags.value.substring(1, tags.value.length);
+    }
+</script>
+<script type="text/javascript">
+    $( ".Loader" )
+      .change(function () {
+        $( ".Loader" ).css('background-image', 'url("/static/LoaderChange.png")');
+          var filename = $('#video').val();
+          $('#fileName').html(filename);
+        $('#OuterDiv').append('<div id="innerDiv"></div>');
+      })
+</script>
 
-    <style>
-       #tags {
-        display: none;
-       }
-    </style>
+<style>
+   #tags {
+    display: none;
+   }
+</style>
 
 {% endblock %}

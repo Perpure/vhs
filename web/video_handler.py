@@ -1,10 +1,11 @@
-from moviepy.editor import VideoFileClip
-from web.models import Video
-from os.path import join as join_path
-from os import makedirs, rmdir
+# coding=utf-8
 from random import random
-from werkzeug.utils import secure_filename
 from hashlib import md5
+from os import makedirs
+from os.path import join as join_path
+from moviepy.editor import VideoFileClip
+from werkzeug.utils import secure_filename
+from web.models import Video
 from web.helper import cur_user
 
 
@@ -21,7 +22,7 @@ def create_preview(video_id, ext):
     video_path = join_path(video.path, 'video.' + ext)
 
     video_clip = VideoFileClip(video_path)
-    time = random()*video_clip.duration
+    time = random() * video_clip.duration
 
     preview_path = join_path(video.path, 'preview.png')
     video_clip.save_frame(preview_path, time)
