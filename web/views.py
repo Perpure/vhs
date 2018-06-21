@@ -132,6 +132,10 @@ def choose_video(room_id):
 @app.route('/upload', methods=['GET', 'POST'])
 @requiresauth
 def upload():
+    """
+    Отвечает за вывод страницы загрузки и загрузку файлов
+    :return: Страница загрузки
+    """
     user = cur_user()
 
     form = UploadVideoForm()
@@ -168,6 +172,11 @@ def upload():
 
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():
+    """
+    Отвечает за вывод страницы регистрации и регистрацию
+    :return: Страница регистрации
+    """
+
     form = RegForm()
 
     if form.validate_on_submit():
@@ -181,6 +190,11 @@ def reg():
 
 @app.route('/auth', methods=['GET', 'POST'])
 def log():
+    """
+    Отвечает за вывод страницы входа и вход
+    :return: Страница входа
+    """
+
     form = LogForm()
 
     if form.validate_on_submit():
@@ -193,6 +207,11 @@ def log():
 @app.route('/cabinet/<string:usr>', methods=['GET', 'POST'])
 @requiresauth
 def cabinet(usr):
+    """
+    Отвечает за вывод страницы личного кабинета
+    :return: Страница личного кабинета
+    """
+
     video_list = Video.get()
     items = []
     user = cur_user()

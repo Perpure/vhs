@@ -1,4 +1,5 @@
 # coding=utf-8
+"""Данный файл описывает формы приложения"""
 import re
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, BooleanField, FileField, HiddenField
@@ -86,6 +87,7 @@ class JoinForm(FlaskForm):
 
 
 class LogForm(FlaskForm):
+    """Форма авторизации"""
     login_log = StringField("Имя пользователя", validators=[Length(5, message='Логин слишком короткий'),
                                                             check_correct_name, not_exist])
     password_log = PasswordField("Пароль", validators=[Length(8, message='Пароль слишком короткий'),
@@ -95,6 +97,7 @@ class LogForm(FlaskForm):
 
 
 class UploadVideoForm(FlaskForm):
+    """Форма загрузки видео"""
     class Meta:
         csrf = False
 
@@ -108,6 +111,7 @@ class UploadVideoForm(FlaskForm):
 
 
 class UserProfileForm(FlaskForm):
+    """Форма редактирования профиля пользователя"""
     change_name = StringField("Изменить имя:", validators=[Length(3, message='Имя слишком короткое'), Optional()])
     change_password = PasswordField("Изменить пароль:", validators=[Length(8, message='Пароль слишком короткий'),
                                                                     Optional()])
@@ -123,6 +127,7 @@ class UserProfileForm(FlaskForm):
 
 
 class SearchingVideoForm(FlaskForm):
+    """Форма поиска видео"""
     search = StringField("Название")
     date = BooleanField("Дата")
     views = BooleanField("Просмотры")
