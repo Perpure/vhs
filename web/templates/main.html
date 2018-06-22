@@ -1,12 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="show-type" id="showMap">
-  <label class="show-type__label" for="show_video_map">Отображать на карте</label>
-  <input name="selector" id="show_video_map" type="radio" class="show-type__rad">
-</div>
-<div class="show-type show-type__inv" id="showTab">
-  <label class="show-type__label" for="show_video_table">Отображать в виде таблицы</label>
-  <input name="selector" id="show_video_table" type="radio" checked class="show-type__rad">
+<h5>Отображение</h5>
+<div class="switcher">
+  <div class="switcher_arm" id="showMap">
+    <label class="switcher__label" for="show_video_map">Таблица</label>
+    <input name="selector" id="show_video_map" type="radio" class="switcher__rad">
+  </div>
+  <div class="switcher_arm switcher_arm__inv switcher_arm__right" id="showTab">
+    <label class="switcher__label" for="show_video_table">Карта</label>
+    <input name="selector" id="show_video_table" type="radio" checked class="switcher__rad">
+  </div>
 </div>
 
 <div id="video_table">

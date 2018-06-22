@@ -249,26 +249,40 @@ search {
   vertical-align: top;
   flex-grow: 1;
 }
-.show-type {
+.switcher {
+  background-color: rgba(240, 203, 142, 0.3);
+  height: 44px;
+  border-radius: 20px;
+  width: 160px;
+  margin-bottom: 10px;
+  border: 2px solid #F7E2C0;
+}
+.switcher_arm {
   display: inline-block;
-  border-bottom: 2px solid rgba(240, 203, 142, 0.5);
-  margin-bottom: 15px;
-  width: 300px;
-  height: 30px;
+  height: 40px;
+  border-radius: 20px;
   text-align: center;
   background-color: rgba(240, 203, 142, 0.4);
   padding: 5px;
+  padding-top: 8px;
+  width: 80px;
 }
-.show-type__inv {
+.switcher_arm__inv {
   display: none;
 }
-.show-type__rad {
-  visibility: hidden;
-}
-.show-type:hover > label {
+.switcher_arm:hover {
   cursor: pointer;
 }
-.show-type__label {
+.switcher_arm:hover > label {
+  cursor: pointer;
+}
+.switcher_arm__right {
+  margin-left: 80px;
+}
+.switcher__rad {
+  visibility: hidden;
+}
+.switcher__label {
   width: 100%;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -511,14 +525,13 @@ search {
   margin-right: 20px;
 }
 footer {
-  width: 100%;
+  width: 70%;
   margin: 0 auto;
-  height: 119px;
   flex: 0 0 auto;
-  padding: 1%;
   font-weight: bold;
-  text-align: center;
-  padding-bottom: 0;
+  border-top: 2px solid #e8ab4a;
+  padding-top: 1%;
+  text-align: right;
 }
 .footer__line {
   display: inline-block;
@@ -533,24 +546,30 @@ footer {
 }
 .footer_contact {
   margin-bottom: 10px;
-  height: 41px;
   display: inline-block;
-  width: 10%;
 }
 .footer_contact__img {
-  height: 40px;
+  height: 30px;
   margin-right: 10px;
   transition: 0.1s;
   vertical-align: top;
 }
 .footer_contact__img:hover {
-  height: 41px;
+  height: 31px;
   cursor: pointer;
   margin-right: 9px;
+  margin-bottom: -1px;
 }
-.footer_contact__edge,
-.footer_contact__edge:hover {
+.footer_contact__edge {
   margin-right: 0;
+}
+.footer_contact__edge:hover {
+  margin-left: -1px;
+  margin-right: 0;
+}
+.footer_contact__text {
+  display: inline-block;
+  margin-right: 10px;
 }
 @media (max-width: 1065px) {
   .mid-head {
