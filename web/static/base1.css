@@ -251,21 +251,21 @@ search {
 }
 .switcher {
   background-color: rgba(240, 203, 142, 0.3);
-  height: 44px;
-  border-radius: 20px;
-  width: 160px;
+  height: 34px;
+  border-radius: 15px;
+  width: 120px;
   margin-bottom: 10px;
   border: 2px solid #F7E2C0;
 }
 .switcher_arm {
   display: inline-block;
-  height: 40px;
-  border-radius: 20px;
+  height: 30px;
+  border-radius: 15px;
   text-align: center;
   background-color: rgba(240, 203, 142, 0.4);
-  padding: 5px;
-  padding-top: 8px;
+  padding: 4px;
   width: 80px;
+  border-right: 1px solid #e8ab4a;
 }
 .switcher_arm__inv {
   display: none;
@@ -277,7 +277,9 @@ search {
   cursor: pointer;
 }
 .switcher_arm__right {
-  margin-left: 80px;
+  margin-left: 40px;
+  border-left: 1px solid #e8ab4a;
+  border-right: none;
 }
 .switcher__rad {
   visibility: hidden;
@@ -529,7 +531,7 @@ footer {
   margin: 0 auto;
   flex: 0 0 auto;
   font-weight: bold;
-  border-top: 2px solid #e8ab4a;
+  border-top: 2px solid rgba(240, 203, 142, 0.3);
   padding-top: 1%;
   text-align: right;
 }
