@@ -17,16 +17,16 @@ from datetime import datetime
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    user=cur_user()
-    sub_items=[]
-    if(user):
-        subs=user.subscriptions
+    user = cur_user()
+    sub_items = []
+    if user:
+        subs = user.subscriptions
         for sub in subs:
             for video in sub.videos:
                 sub_items.append(video)
-    
-    now=time = datetime.now(tz=None)
-    return render_template('main.html', user=user, items=Video.get(),sub_items=sub_items,now=now)
+
+    now = time = datetime.now(tz=None)
+    return render_template('main.html', user=user, items=Video.get(), sub_items=sub_items, now=now)
 
 
 @app.route('/createroom', methods=['GET', 'POST'])
@@ -245,18 +245,18 @@ def cabinet(usr):
             user.save(form.change_password.data)
         if form.channel_info.data:
             user.change_channel_info(form.channel_info.data)
-	
-        colors=["", "", "", "",""]
+
+        colors = ["", "", "", "", ""]
         if form.color1.data:
-            colors[0]=form.color1.data
+            colors[0] = form.color1.data
         if form.color2.data:
-            colors[1]=form.color2.data
+            colors[1] = form.color2.data
         if form.colorTxt.data:
-            colors[2]=form.colorTxt.data
+            colors[2] = form.colorTxt.data
         if form.colorBrd.data:
-            colors[3]=form.colorBrd.data
+            colors[3] = form.colorBrd.data
         if form.colorLink.data:
-            colors[4]=form.colorLink.data
+            colors[4] = form.colorLink.data
 
         user.change_colors(colors)
 
@@ -267,10 +267,11 @@ def cabinet(usr):
             background_url = backgrounds.save(form.background.data, folder=folder)
             user.update_background(json.dumps({"url": background_url}))
         return redirect(url_for("cabinet", usr=cabinet_owner.login))
-    last=items[-6:]
-    now=time = datetime.now(tz=None)
+    last = items[-6:]
+    now = time = datetime.now(tz=None)
     return render_template('cabinet.html', form=form, user=user, items=items,
-                           settings=is_cabinet_settings_available, usr=cabinet_owner,last=last,subscribed=(user in cabinet_owner.subscribers),now=now)
+                           settings=is_cabinet_settings_available, usr=cabinet_owner, last=last,
+                           subscribed=(user in cabinet_owner.subscribers), now=now)
 
 
 @app.route('/play/<string:vid>', methods=['GET', 'POST'])
@@ -291,7 +292,8 @@ def play(vid):
         likened = 1
     if user in video.dislikes:
         likened = -1
-    return render_template('play.html', user=user, vid=vid, video=video, lkd=likened, usr=usr,subscribed=(user in usr.subscribers))
+    return render_template('play.html', user=user, vid=vid, video=video, lkd=likened,
+                           usr=usr, subscribed=(user in usr.subscribers))
 
 
 @app.route('/video/map', methods=["GET"])
@@ -316,10 +318,11 @@ def views_story():
 
     return render_template('views_story.html', user=cur_user(), items=items)
 
+
 @app.route('/subscriptions', methods=['GET', 'POST'])
 def subs_s():
     user = cur_user()
-    subs=user.subscriptions
+    subs = user.subscriptions
     return render_template('subs.html', user=user, subs=subs)
 
 
