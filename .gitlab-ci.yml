@@ -10,21 +10,14 @@ cache:
 
 before_script:
   - python3 -V
-  - pip3 install virtualenv
-  - virtualenv ../venv
-  - source ../venv/bin/activate
   - pip3 install -r requirements.txt
 
 stages:
-  - pep8
-  - unittest
+  - code-test
  
-pep8:
-  stage: pep8
-  script: "pycodestyle web --max-line-length=120 --ignore=E402 --show-source --show-pep8"
-
-unittest:
-  stage: unittest
+code-test:
+  stage: code-test
   script:
   - nose2 web -C
+  - pycodestyle web --max-line-length=120 --ignore=E402 --show-source --show-pep8
  
