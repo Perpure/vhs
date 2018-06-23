@@ -3,7 +3,6 @@ import shutil
 import hashlib
 import os
 import json
-from random import randint
 from datetime import datetime
 from uuid import uuid4
 from flask import url_for
@@ -60,7 +59,9 @@ class Tag(db.Model):
         db.session.add(self)
         db.session.commit()
 
+
 class Video(db.Model):
+    """Класс описывающий модель Видео"""
     __tablename__ = 'Video'
     id = db.Column(db.String(32), primary_key=True)
     title = db.Column(db.String(140), nullable=False)
@@ -230,6 +231,10 @@ class User(db.Model):
         self.colorLink="144, 90, 9"
 
     def save(self, password):
+        """
+        Функция сохранения нового пользователя в базе данных
+        :param password: Пароль
+        """
         self.password = hashlib.sha512(
             password.encode("utf-8")).hexdigest()
         db.session.add(self)
@@ -240,11 +245,19 @@ class User(db.Model):
         return self.password == hash
 
     def change_name(self, name):
+        """
+        Метод, изменяющий имя пользователя
+        :param name: Имя пользователя
+        """
         self.name = name
         db.session.add(self)
         db.session.commit()
 
     def change_channel_info(self, info):
+        """
+        Метод, изменяющий информацию о канале пользователя
+        :param info: Информация о канале
+        """
         self.channel_info = info
         db.session.add(self)
         db.session.commit()
@@ -272,6 +285,20 @@ class User(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def update_action(self, action):
+        self.action = action
+        db.session.add(self)
+        db.session.commit()
+
+    def update_avatar(self, avatar):
+        self.avatar = avatar
+        db.session.add(self)
+        db.session.commit()
+
+    def update_background(self, background):
+        self.background = background
+        db.session.add(self)
+        db.session.commit()
 
     def avatar_url(self):
         if self.avatar:
@@ -353,6 +380,9 @@ class RoomDeviceColorConnector(db.Model):
 
 
 class AnonUser(db.Model):
+    """
+    Таблица для анонимного пользователя.
+    """
     __tablename__ = 'AnonUser'
     id = db.Column(db.String(), primary_key=True)
     action = db.Column(db.String(64))
@@ -367,6 +397,9 @@ class AnonUser(db.Model):
     room_capitan = db.relationship("Room", backref='captain')
 
     def __init__(self):
+        """
+        Сохраняет анонимного пользователя.
+        """
         self.id = str(uuid4())
         db.session.add(self)
         db.session.commit()

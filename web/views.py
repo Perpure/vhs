@@ -10,7 +10,7 @@ from web import app, db, avatars, backgrounds
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
     UserProfileForm, AddRoomForm
 from web.models import User, Video, Room, Color, Geotag, Tag, AnonUser, RoomDeviceColorConnector
-from web.helper import allowed_file, cur_user, requiresauth, anon_user, image_loaded
+from web.helper import cur_user, requiresauth, anon_user, image_loaded
 from web.video_handler import save_video
 from datetime import datetime
 
@@ -73,7 +73,7 @@ def room(room_id):
         user_rooms = [rac.room for rac in raw_user_rooms]
         users = room.get_devices()
 
-        if not ((room in user_rooms) or not (room.captain != user)):
+        if not (room in user_rooms) and (room.captain != user):
             color_id = len(users) + 1
             if color_id > 6:
                 return redirect(url_for('viewroom'))
@@ -101,7 +101,7 @@ def room(room_id):
 
         image_form = UploadImageForm()
         if image_form.validate_on_submit():
-            return image_loaded(request, room, user, users, UploadImageForm(), image_form, room_form)
+            return image_loaded(request, room, user, users, image_form, room_form)
         return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users,
                                count=len(users) + 1,
                                image_form=image_form, room_form=room_form, loaded=False, anon=user,
@@ -142,39 +142,37 @@ def choose_video(room_id):
 @app.route('/upload', methods=['GET', 'POST'])
 @requiresauth
 def upload():
+    """
+    Отвечает за вывод страницы загрузки и загрузку файлов
+    :return: Страница загрузки
+    """
     user = cur_user()
 
     form = UploadVideoForm()
 
     if form.validate_on_submit():
-        if 'video' not in request.files:
-            return redirect(request.url)
         file = request.files['video']
-        if file.filename == '':
-            return redirect(request.url)
 
-        if file and allowed_file(file.filename):
-            video = save_video(file, form.title.data)
+        video = save_video(file, form.title.data)
 
-            if not video:
-                form.video.errors.append(ValidationError('Ошибка при загрузке видео'))
-                return render_template('upload_video.html', form=form, user=cur_user(),
-                                       formats=app.config['ALLOWED_EXTENSIONS'])
+        if not video:
+            form.video.errors.append(ValidationError('Ошибка при загрузке видео'))
+            return render_template('upload_video.html', form=form, user=cur_user(),
+                                   formats=app.config['ALLOWED_EXTENSIONS'])
 
-            data = JSONDecoder().decode(form.geotag_data.data)
-            if data['needed']:
-                for coords in data['coords']:
-                    gt = Geotag(*coords)
-                    gt.save(video)
+        data = JSONDecoder().decode(form.geotag_data.data)
+        if data['needed']:
+            for coords in data['coords']:
+                gt = Geotag(*coords)
+                gt.save(video)
 
-            if form.tags.data:
-                tags = form.tags.data.split(',')
-                for tag in tags:
-                    tag_data = Tag(tag, video.id, user.id)
-                    tag_data.save()
-            return redirect(url_for("main"))
-        elif not allowed_file(file.filename):
-            form.video.errors.append(ValidationError('Некорректное разрешение'))
+        if form.tags.data:
+            tags = form.tags.data.split(',')
+            for tag in tags:
+                tag_data = Tag(tag, video.id, user.id)
+                tag_data.save()
+
+        return redirect(url_for("main"))
 
     if not form.geotag_data.data:
         form.geotag_data.data = dumps({'needed': False, 'coords': []})
@@ -184,6 +182,11 @@ def upload():
 
 @app.route('/reg', methods=['GET', 'POST'])
 def reg():
+    """
+    Отвечает за вывод страницы регистрации и регистрацию
+    :return: Страница регистрации
+    """
+
     form = RegForm()
 
     if form.validate_on_submit():
@@ -197,6 +200,11 @@ def reg():
 
 @app.route('/auth', methods=['GET', 'POST'])
 def log():
+    """
+    Отвечает за вывод страницы входа и вход
+    :return: Страница входа
+    """
+
     form = LogForm()
 
     if form.validate_on_submit():
@@ -209,6 +217,11 @@ def log():
 @app.route('/cabinet/<string:usr>', methods=['GET', 'POST'])
 @requiresauth
 def cabinet(usr):
+    """
+    Отвечает за вывод страницы личного кабинета
+    :return: Страница личного кабинета
+    """
+
     video_list = Video.get()
     items = []
     user = cur_user()
@@ -218,17 +231,14 @@ def cabinet(usr):
     if user == cabinet_owner:
         is_cabinet_settings_available = True
 
-    try:
-        for item in video_list:
-            if item.user_id == cabinet_owner.id:
-                items.append(item)
-    except:
-        return render_template('404.html'), 404
+    for item in video_list:
+        if item.user_id == cabinet_owner.id:
+            items.append(item)
 
     form = UserProfileForm()
     if form.validate_on_submit():
-        print(request.files)
         user = cur_user()
+        folder = str(user.id)
         if form.change_name.data:
             user.change_name(form.change_name.data)
         if form.change_password.data:
@@ -251,17 +261,11 @@ def cabinet(usr):
         user.change_colors(colors)
 
         if 'avatar' in request.files:
-            folder = str(user.id)
             avatar_url = avatars.save(form.avatar.data, folder=folder)
-            user.avatar = json.dumps({"url": avatar_url})
-            db.session.add(user)
-            db.session.commit()
+            user.update_avatar(json.dumps({"url": avatar_url}))
         if 'background' in request.files:
-            folder = str(user.id)
             background_url = backgrounds.save(form.background.data, folder=folder)
-            user.background = json.dumps({"url": background_url})
-            db.session.add(user)
-            db.session.commit()
+            user.update_background(json.dumps({"url": background_url}))
         return redirect(url_for("cabinet", usr=cabinet_owner.login))
     last=items[-6:]
     now=time = datetime.now(tz=None)

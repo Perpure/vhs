@@ -1,6 +1,6 @@
-var elem=document.getElementById("logoTxt");
-var body=document.getElementById("Body");
-var wid=body.offsetWidth;
+var elem = document.getElementById("logoTxt");
+var body = document.getElementById("Body");
+var wid = body.offsetWidth;
 if(wid<=550)elem.innerHTML="VHS";
 
 var searching=false;
@@ -28,14 +28,14 @@ holder.addEventListener('click',function(){
     var els=document.getElementsByClassName("nav-menu_nav-men");
     if(opned)
     {
-        for(var i=0;i<els.length;i++)
+        for(var i = 0; i<els.length; i++)
             els[i].style.display="none";
         holder.style.backgroundColor="rgba(240, 203, 142,0)";
         opned=false;
     }
     else
     {
-        for(var i=0;i<els.length;i++)
+        for(var i = 0; i<els.length; i++)
             els[i].style.display="block";
         holder.style.backgroundColor="rgba(240, 203, 142,0.4)";
         opned=true;
