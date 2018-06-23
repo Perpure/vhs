@@ -72,7 +72,7 @@ def askAct(room_id):
         elif action == 'update':
             user.update_action('')
             users = room.get_devices()
-            return jsonify({"action": action, "count": len(users)+1})
+            return jsonify({"action": action, "count": len(users) + 1})
     return jsonify({"action": ''})
 
 
@@ -183,16 +183,16 @@ def startSearch():
     ask = request.args.get('ask')
     view = request.args.get('view')
     dat = request.args.get('dat')
-    now=time = datetime.now(tz=None)
+    now = time = datetime.now(tz=None)
 
     if dat:
         sort += "date"
     if view:
         sort += "views"
     if ask != " ":
-        return render_template('main.html', user=cur_user(), items=Video.get(search=ask, sort=sort),now=now)
-    
-    return render_template('main.html', user=cur_user(), items=Video.get(),now=now)
+        return render_template('main.html', user=cur_user(), items=Video.get(search=ask, sort=sort), now=now)
+
+    return render_template('main.html', user=cur_user(), items=Video.get(), now=now)
 
 
 @app.route('/showRes/<int:room_id>', methods=['GET', 'POST'])
@@ -219,15 +219,16 @@ def showRes(room_id):
     db.session.commit()
     return ""
 
+
 @app.route('/subscribe/<int:ID>', methods=['GET', 'POST'])
 def subscribe(ID):
     user = cur_user()
-    blog=User.get(id=ID)
+    blog = User.get(id=ID)
     if user in blog.subscribers:
         blog.subscribers.remove(user)
         db.session.add(user)
         db.session.commit()
     else:
         user.follow(blog)
-    
+
     return "nice"

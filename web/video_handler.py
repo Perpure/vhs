@@ -40,7 +40,7 @@ def save_video(video_file, title):
     video_file.save(video_path)
     try:
         prepare_video(video.id, ext)
-    except:
+    except OSError:
         video.delete_video()
         return None
     return video

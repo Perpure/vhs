@@ -22,8 +22,8 @@ Dislikes = db.Table('Dislikes', db.Model.metadata,
                     db.Column('Video_id', db.String(32), db.ForeignKey('Video.id')))
 
 Subscription = db.Table('Subscription', db.Model.metadata,
-                    db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
-                    db.Column('UserB_id', db.Integer, db.ForeignKey('User.id')))
+                        db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
+                        db.Column('UserB_id', db.Integer, db.ForeignKey('User.id')))
 
 
 class Comment(db.Model):
@@ -214,21 +214,21 @@ class User(db.Model):
                            lazy='joined')
 
     subscriptions = db.relationship('User',
-                           secondary=Subscription,
-                           primaryjoin = (Subscription.c.User_id == id), 
-                           secondaryjoin = (Subscription.c.UserB_id == id), 
-                           backref='subscribers',
-                           lazy = 'joined')
+                                    secondary=Subscription,
+                                    primaryjoin=(Subscription.c.User_id == id),
+                                    secondaryjoin=(Subscription.c.UserB_id == id),
+                                    backref='subscribers',
+                                    lazy='joined')
 
     def __init__(self, login):
         self.login = login
         self.name = login
         self.channel_info = "Заполните информацию о канале"
-        self.colorTxt="0, 0, 0"
-        self.color1="247, 226, 192"
-        self.color2="240, 203, 142"
-        self.colorBrd="240, 203, 142"
-        self.colorLink="144, 90, 9"
+        self.colorTxt = "0, 0, 0"
+        self.color1 = "247, 226, 192"
+        self.color2 = "240, 203, 142"
+        self.colorBrd = "240, 203, 142"
+        self.colorLink = "144, 90, 9"
 
     def save(self, password):
         """
@@ -263,20 +263,20 @@ class User(db.Model):
         db.session.commit()
 
     def get_colors(self):
-        colors=[]
-        colors.append(self.color1)
-        colors.append(self.color2)
-        colors.append(self.colorTxt)
-        colors.append(self.colorBrd)
-        colors.append(self.colorLink)
+        colors = [self.color1, self.color2, self.colorTxt, self.colorBrd, self.colorLink]
         return colors
 
     def change_colors(self, cls):
-        if(cls[0]!=''):self.color1 = cls[0]
-        if(cls[1]!=''):self.color2 = cls[1]
-        if(cls[2]!=''):self.colorTxt = cls[2]
-        if(cls[3]!=''):self.colorBrd = cls[3]
-        if(cls[4]!=''):self.colorLink = cls[4]
+        if cls[0] != '':
+            self.color1 = cls[0]
+        if cls[1] != '':
+            self.color2 = cls[1]
+        if cls[2] != '':
+            self.colorTxt = cls[2]
+        if cls[3] != '':
+            self.colorBrd = cls[3]
+        if cls[4] != '':
+            self.colorLink = cls[4]
         db.session.add(self)
         db.session.commit()
 
