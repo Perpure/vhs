@@ -58,7 +58,7 @@ def partial_response(path, start, end=None):
 
 
 def get_range(range):
-    m = re.match('bytes=(?P<start>\d+)-(?P<end>\d+)?', range)
+    m = re.match(r'bytes=(?P<start>\d+)-(?P<end>\d+)?', range)
     if m:
         start = m.group('start')
         end = m.group('end')
