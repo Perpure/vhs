@@ -72,7 +72,11 @@
           {% block content %}{% endblock %}
     </main>
     <footer id="Footer">
-      <p class="italic">VideoHostingService by 53rd Group, 2018</p>
+      <span class="italic footer__line footer__line-left">Video Hosting Service</span>
+      <div class="footer_contact">
+        <a href="https://vk.com/shpteam"><img src="{{ url_for('static', filename='vk.png') }}" alt="" class="footer_contact__img"></a>
+      </div>
+      <span class="italic footer__line">by 53rd Group, 2018</span>
     </footer>
 
     <search></search>

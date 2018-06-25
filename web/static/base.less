@@ -664,16 +664,6 @@ search
   }
 }
 
-footer
-{
-  width: 70%;
-  margin: 0 auto;
-  flex: 0 0 auto;
-  font-weight:bold;
-  .border-color2(top,2px,0.3);
-  padding-top: 10px;
-  text-align: right;
-}
 .footer
 {
   &__line
@@ -682,8 +672,13 @@ footer
       vertical-align:top;
       margin-bottom:10px;
       height:20px;
-      width:44%;
-      border-bottom:2px solid @colorBrd;
+      width:43%;
+      //border-bottom:2px solid @colorBrd;
+      text-align: right;
+      &-left
+      {
+        text-align: left;
+      }
   }
   &__creator
   {
@@ -693,6 +688,8 @@ footer
   {
     margin-bottom:10px;
     display:inline-block;
+    width: 11%;
+    text-align: center;
     &__img
     {
       height:30px;
@@ -721,6 +718,26 @@ footer
       display: inline-block;
       margin-right: 10px;
     }
+  }
+}
+
+footer
+{
+  width: 70%;
+  margin: 0 auto;
+  flex: 0 0 auto;
+  font-weight:bold;
+  .border-color2(top,2px,0.3);
+  transition: 0.3s;
+  padding-top: 10px;
+  & div,span
+  {
+    transition: 0.2s;
+    opacity: 0.5;
+  }
+  &:hover div, &:hover span
+  {
+    opacity: 1;
   }
 }
 
