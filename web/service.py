@@ -42,8 +42,7 @@ def partial_response(path, start, end=None):
 
     if end is None:
         end = start + BUFF_SIZE - 1
-    end = min(end, file_size - 1)
-    end = min(end, start + BUFF_SIZE - 1)
+    end = min(end, file_size - 1, start + BUFF_SIZE - 1)
     length = end - start + 1
 
     with open(path, 'rb') as fd:
@@ -57,7 +56,7 @@ def partial_response(path, start, end=None):
     return response
 
 
-def get_range(range):
+def get_bounds_of_header_range(range):
     m = re.match(r'bytes=(?P<start>\d+)-(?P<end>\d+)?', range)
     if m:
         start = m.group('start')
@@ -74,7 +73,7 @@ def get_range(range):
 def get_video(vid):
     path = basedir + '/video/%s/video.mp4' % vid
     range = request.headers.get('Range')
-    start, end = get_range(range)
+    start, end = get_bounds_of_header_range(range)
     return partial_response(path, start, end)
 
 
