@@ -60,6 +60,7 @@ def read_video(vid):
         b = bytearray(f)
         return b
 
+
 def calibrate_resolution(resolution, w, h):
     width = resolution[0]
     height = resolution[1]
@@ -112,6 +113,7 @@ def save_parse(items, minX, minY, maxX, maxY, room):
     if os.path.exists(filename):
         os.remove(filename)
     room_map.save(filename)
+
 
 def parse(room, users, impath):
     img = cv2.imread(impath)
