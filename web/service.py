@@ -1,9 +1,13 @@
 # coding=utf-8
+import mimetypes
+import os
+import re
 from datetime import datetime
-from flask import url_for, redirect, make_response, request, jsonify, session, render_template
+from flask import url_for, redirect, make_response, request, jsonify, session, render_template, Response
 from web import app, db
-from web.helper import read_image, read_video, cur_user, read_multi
+from web.helper import read_image, cur_user, read_multi
 from web.models import Video, Comment, Room, AnonUser, User
+from config import basedir, BUFF_SIZE
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -33,14 +37,44 @@ def get_image(pid):
     return response
 
 
+def partial_response(path, start, end=None):
+    file_size = os.path.getsize(path)
+
+    if end is None:
+        end = start + BUFF_SIZE - 1
+    end = min(end, file_size - 1, start + BUFF_SIZE - 1)
+    length = end - start + 1
+
+    with open(path, 'rb') as fd:
+        fd.seek(start)
+        bytes = fd.read(length)
+    assert len(bytes) == length
+
+    response = Response(bytes, 206, mimetype=mimetypes.guess_type(path)[0], direct_passthrough=True)
+    response.headers.add('Content-Range', 'bytes {0}-{1}/{2}'.format(start, end, file_size))
+    response.headers.add('Accept-Ranges', 'bytes')
+    return response
+
+
+def get_bounds_of_header_range(range):
+    m = re.match(r'bytes=(?P<start>\d+)-(?P<end>\d+)?', range)
+    if m:
+        start = m.group('start')
+        end = m.group('end')
+        start = int(start)
+        if end is not None:
+            end = int(end)
+        return start, end
+    else:
+        return 0, None
+
+
 @app.route('/video/<string:vid>/video.mp4')
 def get_video(vid):
-    video_binary = read_video(vid)
-    response = make_response(video_binary)
-    response.headers.set('Content-Type', 'video/mp4')
-    response.headers.set(
-        'Content-Disposition', 'attachment', filename='video/%s/video.mp4' % vid)
-    return response
+    path = basedir + '/video/%s/video.mp4' % vid
+    range = request.headers.get('Range')
+    start, end = get_bounds_of_header_range(range)
+    return partial_response(path, start, end)
 
 
 @app.route('/video/data', methods=['GET'])
