@@ -81,7 +81,7 @@ def calibrate_resolution(resolution, w, h):
     return [width, height]
 
 
-def save_parse(items, minX, minY, maxX, maxY, room):
+def count_parse(items, minX, minY, maxX, maxY, room):
     resolution = (maxX - minX, maxY - minY)
     new_resolution = calibrate_resolution(resolution, 16, 9)
     deltax = (new_resolution[0] - resolution[0]) / 2
@@ -89,30 +89,37 @@ def save_parse(items, minX, minY, maxX, maxY, room):
     room_map = Image.new('RGB', resolution, (255, 255, 255))
     draw = ImageDraw.Draw(room_map)
     for item in items:
-        rect = item[1]
-        item = (item[0], ((rect[0][0] - minX, rect[0][1] - minY), rect[1], rect[2]), item[2])
         user, rect, color = item
-        draw.polygon(np.int0(cv2.boxPoints(rect)).flatten().tolist(), fill=color)
-        if (rect[2] < -85) and (rect[2] > -95):
-            firsty = int(rect[0][1] - rect[1][0] / 2) + deltay
-            firstx = int(rect[0][0] - rect[1][1] / 2) + deltax
-            lastx = int(rect[0][0] + rect[1][1] / 2) + deltax
-        else:
-            firsty = int(rect[0][1] - rect[1][1] / 2) + deltay
-            firstx = int(rect[0][0] - rect[1][0] / 2) + deltax
-            lastx = int(rect[0][0] + rect[1][0] / 2) + deltax
-        width = (new_resolution[0] / (lastx - firstx)) * 100
-        left = - (firstx / new_resolution[0]) * width
-        top = - (firsty / new_resolution[1]) * width
-        user.res_k = int(width)
-        user.top = int(top)
-        user.left = int(left)
-        db.session.commit()
+        rect = ((rect[0][0] - minX, rect[0][1] - minY), rect[1], rect[2])
+        save_parse(user, rect, deltax, deltay, new_resolution)
+        draw_map(draw, rect, color)
     del draw
     filename = basedir + '/images/' + str(room.id) + '_map.jpg'
     if os.path.exists(filename):
         os.remove(filename)
     room_map.save(filename)
+
+
+def draw_map(draw, rect, color):
+    draw.polygon(np.int0(cv2.boxPoints(rect)).flatten().tolist(), fill=color)
+
+
+def save_parse(user, rect, deltax, deltay, new_resolution):
+    if (rect[2] < -85) and (rect[2] > -95):
+        firsty = int(rect[0][1] - rect[1][0] / 2) + deltay
+        firstx = int(rect[0][0] - rect[1][1] / 2) + deltax
+        lastx = int(rect[0][0] + rect[1][1] / 2) + deltax
+    else:
+        firsty = int(rect[0][1] - rect[1][1] / 2) + deltay
+        firstx = int(rect[0][0] - rect[1][0] / 2) + deltax
+        lastx = int(rect[0][0] + rect[1][0] / 2) + deltax
+    width = (new_resolution[0] / (lastx - firstx)) * 100
+    left = - (firstx / new_resolution[0]) * width
+    top = - (firsty / new_resolution[1]) * width
+    user.res_k = int(width)
+    user.top = int(top)
+    user.left = int(left)
+    db.session.commit()
 
 
 def parse(room, users, impath):
@@ -139,7 +146,7 @@ def parse(room, users, impath):
         minY = min(minY, np.ndarray.min(box[..., 1]))
         maxY = max(maxY, np.ndarray.max(box[..., 1]))
         items.append([user, rect, (color[2], color[1], color[0])])
-    save_parse(items, minX, minY, maxX, maxY, room)
+    count_parse(items, minX, minY, maxX, maxY, room)
 
 
 def image_loaded(request, room, user, users, image_form, room_form):
