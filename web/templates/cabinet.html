@@ -17,15 +17,15 @@
     </div>
 
     <div class="tabs">
-      <div class="tabs_tab tabs_tab__open tabs_tab__edge" onclick="func(this)">Главная</div>
-      <div class="tabs_tab" onclick="func(this)">Видео пользователя</div>
+      <div value="about" class="tabs_tab tabs_tab__open tabs_tab__edge">Главная</div>
+      <div value="videos" class="tabs_tab">Видео пользователя</div>
       {% if settings %}
-        <div class="tabs_tab" onclick="func(this)">Настройки</div>
+        <div value="settings" class="tabs_tab">Настройки</div>
       {% endif %}
     </div>
   </div>
 
-  <div class="section section__open">
+  <div class="section section__open" id="about">
     {% if last %}
     <h2>Последние видео</h2>
     {%endif%}
@@ -55,7 +55,7 @@
     {% endfor %}
   </div>
 
-  <div class="section">
+  <div class="section" id="videos">
     {% for item in items|reverse %}
     <div class="video">
       <a href="{{ url_for('play', vid=item.id) }}">
@@ -83,7 +83,7 @@
   </div>
 
   {% if settings %}
-    <div class="section section__settings">
+    <div class="section section__settings" id="settings">
       <h3>Личные данные</h3>
       <form action="" method="post" enctype="multipart/form-data" >
         {{form.hidden_tag()}}
@@ -304,24 +304,14 @@
     }
 </style>
 <script>
-    function func(a){
-        var x;
-        var amas = document.getElementsByClassName('tabs_tab');
-        for (var i=0; i<amas.length; i++){
-            amas[i].classList.remove('tabs_tab__open');
-            amas[i].classList.add('tabs_tab');
-        }
-        a.classList.add('tabs_tab__open');
-        var acon = document.getElementsByClassName('section');
-        for (var i=0; i<acon.length; i++){
-            acon[i].classList.remove('section__open');
-            acon[i].classList.add('section');
-            if (amas[i].classList.contains('tabs_tab__open')){
-                x = i;
-            }
-        }
-        acon[x].classList.add('section__open');
+    function func(){
+      $('.tabs_tab').removeClass('tabs_tab__open');
+      this.classList.add('tabs_tab__open');
+      $('.section').removeClass('section__open');
+      var id=$(this).attr('value');
+      $('#' + id).addClass('section__open');
     }
+    $('.tabs_tab').click(func);
 
     $(document).ready(function(){
         $("#instructionBtn").click(function(){

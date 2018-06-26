@@ -1,0 +1,166 @@
+
+.nav-menu
+{
+  display:inline-block;
+  &_menu-holder
+  {
+    width:100%;
+    display:none;
+    height:50px;
+    padding-top:13px;
+  }
+  &_nav-men
+  {
+    display:inline-block;
+    height:50px;
+    padding:15px;
+    margin-left:-5px;
+    text-align:center;
+    color:black;
+    .set-border-to-color2(right,1px,0.5);
+    position:relative;
+    &:hover
+    {
+      cursor:pointer;
+      border-bottom:2px solid @colorBrd;
+      .set-background-to-color2(0.4);
+      border-right:none;
+      margin-right:1px;
+    }
+    &:hover &__in-btn
+    {
+      display: block;
+    }
+    &__drop-down
+    {
+      width:12px;
+    }
+    &__up-down
+    {
+      position:absolute;
+      top:4px;
+      right:15px;
+    }
+    &__in-btn
+    {
+      position:absolute;
+      display:none;
+      width:100%;
+      top:50px;
+      left:0;
+      padding-top:10px;
+      z-index:5;
+    }
+    &__sub-btn
+    {
+      width:100%;
+      height:50px;
+      background-color: @color1 - #000a1e;
+      padding:13px 0 13px 0;
+      .set-border-to-color2(bottom,2px,0.5);
+      color:black;
+      &:hover
+      {
+        .set-background-to-color2(1);
+        border-bottom:none;
+      }
+    }
+    &__upst
+    {
+      border-top:2px solid @colorBrd;
+    }
+    &__nav-edge
+    {
+      border-right: none;
+    }
+  }
+}
+.mid-head
+{
+  display: inline-block;
+  background-color: @color1;
+  height: 50px;
+  padding-bottom: 5px;
+  vertical-align: top;
+  .set-border-to-color2(bottom,2px,0.5);
+  width: 100%;
+  padding-left: 1%;
+  padding-right: 1%;
+  position:relative;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  -webkit-user-select: none;
+}
+.logo
+{
+  height:100%;
+  width:14%;
+  display:inline-block;
+  vertical-align:top;
+  &__img,&__txt
+  {
+    height: 100%;
+    display: inline-block;
+    vertical-align: top;
+    margin-top:5px;
+  }
+  &__txt
+  {
+    padding: 10px;
+    padding-right:0;
+    &:hover
+    {
+        cursor: default;
+    }
+  }
+}
+.searcher
+{
+  position: absolute;
+  height:50px;
+  top:60px;
+  left:17%;
+  width:60%;
+  background-color:@color1;
+  padding:5px;
+  display:none;
+  z-index:5;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  -webkit-user-select: none;
+  &_field
+  {
+    display:inline-block;
+    height:100%;
+    color:grey;
+    padding:7px;
+    text-align:center;
+    flex-grow:1;
+    margin-right:5px;
+    &:hover
+    {
+      cursor:pointer;
+      color:black;
+    }
+    &__checked
+    {
+      .set-background-to-color2(1);
+      font-weight: bold;
+      color:black;
+    }
+  }
+  &__input
+  {
+    vertical-align:top;
+    flex-grow:7;
+    height:40px;
+    margin-right:5px;
+  }
+  &__btn
+  {
+    vertical-align:top;
+    flex-grow:1;
+  }
+}
