@@ -81,18 +81,30 @@ def calibrate_resolution(resolution, w, h):
     return [width, height]
 
 
-def count_parse(items, minX, minY, maxX, maxY, room):
+def handle_parse(items, minX, minY, maxX, maxY, room):
     resolution = (maxX - minX, maxY - minY)
     new_resolution = calibrate_resolution(resolution, 16, 9)
     deltax = (new_resolution[0] - resolution[0]) / 2
     deltay = (new_resolution[1] - resolution[1]) / 2
-    room_map = Image.new('RGB', resolution, (255, 255, 255))
-    draw = ImageDraw.Draw(room_map)
+    draw, room_map = create_map(resolution)
     for item in items:
         user, rect, color = item
         rect = ((rect[0][0] - minX, rect[0][1] - minY), rect[1], rect[2])
         save_parse(user, rect, deltax, deltay, new_resolution)
         draw_map(draw, rect, color)
+    save_map(draw, room, room_map)
+
+
+def draw_map(draw, rect, color):
+    draw.polygon(np.int0(cv2.boxPoints(rect)).flatten().tolist(), fill=color)
+
+
+def create_map(resolution):
+    room_map = Image.new('RGB', resolution, (255, 255, 255))
+    return ImageDraw.Draw(room_map), room_map
+
+
+def save_map(draw, room, room_map):
     del draw
     filename = basedir + '/images/' + str(room.id) + '_map.jpg'
     if os.path.exists(filename):
@@ -100,12 +112,8 @@ def count_parse(items, minX, minY, maxX, maxY, room):
     room_map.save(filename)
 
 
-def draw_map(draw, rect, color):
-    draw.polygon(np.int0(cv2.boxPoints(rect)).flatten().tolist(), fill=color)
-
-
 def save_parse(user, rect, deltax, deltay, new_resolution):
-    if (rect[2] < -85) and (rect[2] > -95):
+    if -95 < rect[2] < -85:
         firsty = int(rect[0][1] - rect[1][0] / 2) + deltay
         firstx = int(rect[0][0] - rect[1][1] / 2) + deltax
         lastx = int(rect[0][0] + rect[1][1] / 2) + deltax
@@ -146,7 +154,7 @@ def parse(room, users, impath):
         minY = min(minY, np.ndarray.min(box[..., 1]))
         maxY = max(maxY, np.ndarray.max(box[..., 1]))
         items.append([user, rect, (color[2], color[1], color[0])])
-    count_parse(items, minX, minY, maxX, maxY, room)
+    handle_parse(items, minX, minY, maxX, maxY, room)
 
 
 def image_loaded(request, room, user, users, image_form, room_form):
