@@ -1,37 +1,85 @@
 [![pipeline status](https://gitlab.com/multiscreen/vhs/badges/master/pipeline.svg)](https://gitlab.com/multiscreen/vhs/commits/master) [![coverage report](https://gitlab.com/multiscreen/vhs/badges/master/coverage.svg)](https://gitlab.com/multiscreen/vhs/commits/master)
 
 
-<h1>Установка и развертывание web-приложения</h1>
+## Установка и развертывание web-приложения
 
-1. Инициализировать git <br>
-```git init```
-2. Склонировать репозиторий по HTTP или SSH <br>
-```git clone git@gitlab.com:multiscreen/vhs.git```
-3. Перейти в склонированный репозиторий <br>
-```cd vhs```
-4. Создать виртуальное окружение <br>
-```virtualenv --python=python3 venv```
-5. Активировать виртуальное окружение <br>
-```source venv/bin/activate```
-6. Установить зависимости <br>
-```pip install -r requirements.txt```
-7. Выполнить миграцию <br>
-```python3 migrate.py```
-8. Запустить приложение<br>
-```python3 run.py```
+1. Склонировать репозиторий и перейти в его папку
 
-<h1>Отправка Merge Request</h1>
+    ```
+    git clone git@gitlab.com:multiscreen/vhs.git
+    cd vhs
+    ```
 
-Проверка кода на соответствие стандарту PEP-8 выполняется следующим образом:
+2. Провести подготовку файла с переменными среды. Пример этих переменных описан в файле `.env.example`, поэтому нужно произвести его копию в файл `.env`. Затем отредактировать копию в соответствии с параметрами своей системы (подробнее в разделе "Переменные среды")
+
+    ```
+    cp .env.example .env
+    # редактируем .env
+    ```
+
+3. Создать виртуальное окружение и активировать его
+
+    ```
+    virtualenv --python=python3 venv
+    source venv/bin/activate
+    ```
+
+4. Установить зависимости
+
+    ```
+    pip install -r requirements.txt
+    ```
+
+5. Активировать переменные среды
+
+    ```
+    source .env
+    ```
+
+6. Выполнить миграцию базы данных
+
+    ```
+    python migrate.py
+    ```
+
+7. Запустить приложение
+
+    ```
+    python run.py
+    ```
+
+
+## Отправка Merge Request
+
+Проверка кода на соответствие стандарту **PEP-8** выполняется следующим образом:
+
 ```
 pycodestyle web --max-line-length=120 --ignore=E402 --show-source --show-pep8
 ```
 
 Запуск юнит-тестов производится с помощью:
+
 ```
 nose2 -v
 ```
 
 Перед снятием WIP статуса с Merge Request удостоверьтесь, что все тесты пройдены без ошибок.
 
-Запросы на слияние с ошибками pipeline будут отклонены.
+Запросы на слияние с ошибками в _CI_ будут отклонены.
+
+
+## Переменные среды
+
+Среди переменных среды важна `DATABASE_URL`, содержимое которой определяет местонахожение и параметры доступа к базе данных приложения. Проект поддерживает два типа СУБД: _SQLite_ и _PostgreSQL_.
+
+Чтобы использовать _SQLite_ нужно указать **полный абсолютный** путь до файла с БД. Например, файл БД располагается в `/tmp/db.sqlite`. Тогда необходимо записать в переменную следующий _URI_:
+
+```
+export DATABASE_URL=sqlite:////tmp/db.sqlite
+```
+
+При использовании СУБД _PostgreSQL_ формат переменной будет следующий: 
+
+```
+export DATABASE_URL=postgres://username:password@host:port/datbase_name
+```

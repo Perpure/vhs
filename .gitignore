@@ -207,3 +207,4 @@ $RECYCLE.BIN/
 /images/*
 /video/*
 *.sqlite-journal
+.env

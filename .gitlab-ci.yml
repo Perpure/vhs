@@ -2,6 +2,8 @@ image: python:latest
 
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache"
+  SECRET_KEY: "SuperSecret"
+  DATABASE_URL: "sqlite:////tmp/db.sqlite"
 
 cache:
   paths:
