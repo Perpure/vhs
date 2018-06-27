@@ -5,36 +5,36 @@
 </video>
 
 <div class="video-titling">
-    <h2 class="video-titling__title">{{ video.title }}</h2>
-    <p class="video-titling__views">Просмотры: {{ video.viewers | length }}</p>
+    <h2 class="video-titling_title">{{ video.title }}</h2>
+    <p class="video-titling_views">Просмотры: {{ video.viewers | length }}</p>
 </div>
 
 
 <div class="profile profile__small">
-    <div class="profile_ava"><img src="{{ usr.avatar_url() }}" alt="" class="profile_ava__img"></div>
+    <div class="profile_ava"><img src="{{ usr.avatar_url() }}" alt="" class="profile_ava-img"></div>
     <div class="profile_txt">
         <b><a href="{{url_for('cabinet', usr=usr.login)}}">{{usr.name}}</a></b>
         <p class="italic" id="Dating">{{video.date.date()}}</p>
     </div>
     {% if user!=video.user and user %}
     <div class="profile_sub">
-      <span class="profile_sub__count" id="subCnt{{usr.id}}">{{ usr.subscribers|length }}</span>
-      <button type="button" name="button" value="{{usr.id}}"  class="subscribe-btn">{% if subscribed %}Отписаться{% else %}Подписаться{% endif %}</button>
+      <span class="profile_sub-count" id="subCnt{{usr.id}}">{{ usr.subscribers|length }}</span>
+      <button type="button" name="button" value="{{usr.id}}"  class="profile_subscribe-btn">{% if subscribed %}Отписаться{% else %}Подписаться{% endif %}</button>
     </div>
     {%endif%}
 </div>
 
 <div class="video-rating">
     <div class="video-rating_rateline">
-        <div id="likSh" class="video-rating_rateline__show-like"></div>
-        <div id="disSh" class="video-rating_rateline__show-dis"></div>
+        <div id="likSh" class="video-rating_like-line"></div>
+        <div id="disSh" class="video-rating_dis-line"></div>
     </div>
 
-    <div class="video-rating_btns">
-        <div class="video-rating_btns__btn" id="like" name="like"></div>
-        <span class="video-rating__likes" id="lik">{{ video.likes | length }}</span>
-        <div class="video-rating_btns__btn" id="dislike" name="dislike"></div>
-        <span class="video-rating__dises" id="dis">{{ video.dislikes | length }}</span>
+    <div>
+        <div class="video-rating_btn" id="like" name="like"></div>
+        <span id="lik">{{ video.likes | length }}</span>
+        <div class="video-rating_btn" id="dislike" name="dislike"></div>
+        <span id="dis">{{ video.dislikes | length }}</span>
     </div>
 </div>
 
@@ -60,9 +60,9 @@
     <div id="CSect">
         {% for comment in video.comments|sort(attribute="id")|reverse %}
             <div class="comment">
-                <div class="comment_ava"><img src="{{ comment.user.avatar_url() }}" alt="" class="comment_ava__img"></div>
-                <div class="comment_txt">
-                    <p class="comment_txt__auth"><a href="{{url_for('cabinet', usr=comment.user.login)}}">{{ comment.user.name }}</a></p>
+                <div class="comment_ava"><img src="{{ comment.user.avatar_url() }}" alt="" class="comment_ava-img"></div>
+                <div>
+                    <p class="comment_author"><a href="{{url_for('cabinet', usr=comment.user.login)}}">{{ comment.user.name }}</a></p>
                     <p>{{ comment.text }}</p>
                 </div>
             </div>

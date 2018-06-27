@@ -1,5 +1,5 @@
 
-var subBtns=document.getElementsByClassName("subscribe-btn");
+var subBtns=document.getElementsByClassName("profile_subscribe-btn");
 for(var i=0;i<subBtns.length;i++)
     subBtns[i].addEventListener('click',function(){
       var val=this.value;

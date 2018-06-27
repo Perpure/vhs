@@ -1,30 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="show-type" id="showMap">
-  <label class="show-type__label" for="show_video_map">Отображать на карте</label>
-  <input name="selector" id="show_video_map" type="radio" class="show-type__rad">
-</div>
-<div class="show-type show-type__inv" id="showTab">
-  <label class="show-type__label" for="show_video_table">Отображать в виде таблицы</label>
-  <input name="selector" id="show_video_table" type="radio" checked class="show-type__rad">
+<h5>Отображение</h5>
+<div class="switcher">
+  <div class="switcher_arm" id="showMap">
+    <label class="switcher_label" for="show_video_map">Таблица</label>
+    <input name="selector" id="show_video_map" type="radio" class="switcher_radio">
+  </div>
+  <div class="switcher_arm switcher_arm__inv switcher_arm__right" id="showTab">
+    <label class="switcher_label" for="show_video_table">Карта</label>
+    <input name="selector" id="show_video_table" type="radio" checked class="switcher_radio">
+  </div>
 </div>
 
 <div id="video_table">
   <div class="tabs">
-    <div class="tabs_tab tabs_tab__open tabs_tab__edge" onclick="func(this)">Новые</div>
+    <label value="all" class="tabs_tab tabs_tab__open tabs_tab__edge">Новые</label>
     {% if user %}
-    <div class="tabs_tab" onclick="func(this)">Подписки</div>
+    <label value="subs" class="tabs_tab">Подписки</label>
     {% endif %}
   </div>
-  <div class="section section__open">
+  <div class="section section__open"  id="all">
   {% for item in items|reverse %}
     <div class="video">
       <a href="{{ url_for('play', vid=item.id) }}">
-        <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video__preview">
+        <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video_preview">
       </a>
-      <div class="video_txt">
+      <div>
         <a href="{{ url_for('play', vid=item.id) }}">
-          <p class="video__title" title="{{item.title}}">{{item.title}}</p>
+          <p class="video_title" title="{{item.title}}">{{item.title}}</p>
         </a>
         <a href="/cabinet/{{ item.user.login }}">
           <p class="italic">
@@ -42,15 +45,15 @@
     </div>
   {% endfor %}
   </div>
-  <div class="section">
+  <div class="section" id="subs">
     {% for item in sub_items|reverse %}
       <div class="video">
         <a href="{{ url_for('play', vid=item.id) }}">
-          <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video__preview">
+          <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video_preview">
         </a>
-        <div class="video_txt">
+        <div>
           <a href="{{ url_for('play', vid=item.id) }}">
-            <p class="video__title" title="{{item.title}}">{{item.title}}</p>
+            <p class="video_title" title="{{item.title}}">{{item.title}}</p>
           </a>
           <a href="/cabinet/{{ item.user.login }}">
             <p class="italic">
@@ -74,24 +77,17 @@
 
 <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
 <script src="{{ url_for('static', filename='videos_map.js') }}"></script>
+{% if user %}
 <script>
-function func(a){
-    var x;
-    var amas = document.getElementsByClassName('tabs_tab');
-    for (var i=0; i<amas.length; i++){
-        amas[i].classList.remove('tabs_tab__open');
-        amas[i].classList.add('tabs_tab');
-    }
-    a.classList.add('tabs_tab__open');
-    var acon = document.getElementsByClassName('section');
-    for (var i=0; i<acon.length; i++){
-        acon[i].classList.remove('section__open');
-        acon[i].classList.add('section');
-        if (amas[i].classList.contains('tabs_tab__open')){
-            x = i;
-        }
-    }
-    acon[x].classList.add('section__open');
-}
+$(document).ready(function(){
+  $('.tabs_tab').click(function(){
+    $('.tabs_tab').removeClass('tabs_tab__open');
+    this.classList.add('tabs_tab__open');
+    $('.section').removeClass('section__open');
+    var id=$(this).attr('value');
+    $('#' + id).addClass('section__open');
+  });
+});
 </script>
+{%endif%}
 {% endblock %}

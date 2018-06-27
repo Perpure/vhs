@@ -1,0 +1,166 @@
+
+.nav-menu
+{
+  display:inline-block;
+  &_menu-holder
+  {
+    width:100%;
+    display:none;
+    height:50px;
+    padding-top:13px;
+  }
+  &_img
+  {
+    width:12px;
+    &__up-down
+    {
+      position:absolute;
+      top:4px;
+      right:15px;
+    }
+  }
+  &_sub-btn
+  {
+    width:100%;
+    height:50px;
+    background-color: @color-main - #000a1e;
+    padding:13px 0 13px 0;
+    border-bottom: 2px solid fade(@color-secondary,50);
+    color:black;
+    &:hover
+    {
+      background-color: @color-secondary;
+      border-bottom:none;
+    }
+    &__upst
+    {
+      border-top:2px solid @color-border;
+    }
+  }
+  &_in-btn
+  {
+    position:absolute;
+    display:none;
+    width:100%;
+    top:50px;
+    left:0;
+    padding-top:10px;
+    z-index:5;
+  }
+  &_nav-men:hover &_in-btn
+  {
+    display: block;
+  }
+  &_nav-men
+  {
+    display:inline-block;
+    height:50px;
+    padding:15px;
+    margin-left:-5px;
+    text-align:center;
+    color:black;
+    border-right: 1px solid fade(@color-secondary,50);
+    position:relative;
+    &:hover
+    {
+      cursor:pointer;
+      border-bottom:2px solid @color-border;
+      background-color: fade(@color-secondary,40);
+      border-right:none;
+      margin-right:1px;
+    }
+    &__nav-edge
+    {
+      border-right: none;
+    }
+  }
+}
+.mid-head
+{
+  display: inline-block;
+  background-color: @color-main;
+  height: 50px;
+  padding-bottom: 5px;
+  vertical-align: top;
+  border-bottom: 2px solid fade(@color-secondary,50);
+  width: 100%;
+  padding-left: 1%;
+  padding-right: 1%;
+  position:relative;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  -webkit-user-select: none;
+}
+.logo
+{
+  height:100%;
+  width:14%;
+  display:inline-block;
+  vertical-align:top;
+  &_img,&_txt
+  {
+    height: 100%;
+    display: inline-block;
+    vertical-align: top;
+    margin-top:5px;
+  }
+  &_txt
+  {
+    padding: 10px;
+    padding-right:0;
+    &:hover
+    {
+        cursor: default;
+    }
+  }
+}
+.searcher
+{
+  position: absolute;
+  height:50px;
+  top:60px;
+  left:17%;
+  width:60%;
+  background-color:@color-main;
+  padding:5px;
+  display:none;
+  z-index:5;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  -webkit-user-select: none;
+  &_field
+  {
+    display:inline-block;
+    height:100%;
+    color:grey;
+    padding:7px;
+    text-align:center;
+    flex-grow:1;
+    margin-right:5px;
+    &:hover
+    {
+      cursor:pointer;
+      color:black;
+    }
+    &__checked
+    {
+      background-color:@color-secondary;
+      font-weight: bold;
+      color:black;
+    }
+  }
+  &_input
+  {
+    vertical-align:top;
+    flex-grow:7;
+    height:40px;
+    margin-right:5px;
+  }
+  &_btn
+  {
+    vertical-align:top;
+    flex-grow:1;
+  }
+}
