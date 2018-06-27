@@ -56,6 +56,3 @@ class TestService(unittest.TestCase):
     def test_is_dislikeVideo_work(self):
         response = self.client.get("/dislikeVideo/" + str(self.video.id), follow_redirects=True)
         self.assertEqual(response.status_code, 200)
-
-
-

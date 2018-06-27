@@ -3,7 +3,6 @@ import shutil
 import hashlib
 import os
 import json
-from random import randint
 from datetime import datetime
 from uuid import uuid4
 from flask import url_for
@@ -23,8 +22,8 @@ Dislikes = db.Table('Dislikes', db.Model.metadata,
                     db.Column('Video_id', db.String(32), db.ForeignKey('Video.id')))
 
 Subscription = db.Table('Subscription', db.Model.metadata,
-                    db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
-                    db.Column('UserB_id', db.Integer, db.ForeignKey('User.id')))
+                        db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
+                        db.Column('UserB_id', db.Integer, db.ForeignKey('User.id')))
 
 
 class Comment(db.Model):
@@ -60,7 +59,9 @@ class Tag(db.Model):
         db.session.add(self)
         db.session.commit()
 
+
 class Video(db.Model):
+    """Класс описывающий модель Видео"""
     __tablename__ = 'Video'
     id = db.Column(db.String(32), primary_key=True)
     title = db.Column(db.String(140), nullable=False)
@@ -213,23 +214,27 @@ class User(db.Model):
                            lazy='joined')
 
     subscriptions = db.relationship('User',
-                           secondary=Subscription,
-                           primaryjoin = (Subscription.c.User_id == id), 
-                           secondaryjoin = (Subscription.c.UserB_id == id), 
-                           backref='subscribers',
-                           lazy = 'joined')
+                                    secondary=Subscription,
+                                    primaryjoin=(Subscription.c.User_id == id),
+                                    secondaryjoin=(Subscription.c.UserB_id == id),
+                                    backref='subscribers',
+                                    lazy='joined')
 
     def __init__(self, login):
         self.login = login
         self.name = login
         self.channel_info = "Заполните информацию о канале"
-        self.colorTxt="0, 0, 0"
-        self.color1="247, 226, 192"
-        self.color2="240, 203, 142"
-        self.colorBrd="240, 203, 142"
-        self.colorLink="144, 90, 9"
+        self.colorTxt = "0, 0, 0"
+        self.color1 = "247, 226, 192"
+        self.color2 = "240, 203, 142"
+        self.colorBrd = "240, 203, 142"
+        self.colorLink = "144, 90, 9"
 
     def save(self, password):
+        """
+        Функция сохранения нового пользователя в базе данных
+        :param password: Пароль
+        """
         self.password = hashlib.sha512(
             password.encode("utf-8")).hexdigest()
         db.session.add(self)
@@ -240,30 +245,38 @@ class User(db.Model):
         return self.password == hash
 
     def change_name(self, name):
+        """
+        Метод, изменяющий имя пользователя
+        :param name: Имя пользователя
+        """
         self.name = name
         db.session.add(self)
         db.session.commit()
 
     def change_channel_info(self, info):
+        """
+        Метод, изменяющий информацию о канале пользователя
+        :param info: Информация о канале
+        """
         self.channel_info = info
         db.session.add(self)
         db.session.commit()
 
     def get_colors(self):
-        colors=[]
-        colors.append(self.color1)
-        colors.append(self.color2)
-        colors.append(self.colorTxt)
-        colors.append(self.colorBrd)
-        colors.append(self.colorLink)
+        colors = [self.color1, self.color2, self.colorTxt, self.colorBrd, self.colorLink]
         return colors
 
     def change_colors(self, cls):
-        if(cls[0]!=''):self.color1 = cls[0]
-        if(cls[1]!=''):self.color2 = cls[1]
-        if(cls[2]!=''):self.colorTxt = cls[2]
-        if(cls[3]!=''):self.colorBrd = cls[3]
-        if(cls[4]!=''):self.colorLink = cls[4]
+        if cls[0] != '':
+            self.color1 = cls[0]
+        if cls[1] != '':
+            self.color2 = cls[1]
+        if cls[2] != '':
+            self.colorTxt = cls[2]
+        if cls[3] != '':
+            self.colorBrd = cls[3]
+        if cls[4] != '':
+            self.colorLink = cls[4]
         db.session.add(self)
         db.session.commit()
 
@@ -272,6 +285,20 @@ class User(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def update_action(self, action):
+        self.action = action
+        db.session.add(self)
+        db.session.commit()
+
+    def update_avatar(self, avatar):
+        self.avatar = avatar
+        db.session.add(self)
+        db.session.commit()
+
+    def update_background(self, background):
+        self.background = background
+        db.session.add(self)
+        db.session.commit()
 
     def avatar_url(self):
         if self.avatar:
@@ -353,6 +380,9 @@ class RoomDeviceColorConnector(db.Model):
 
 
 class AnonUser(db.Model):
+    """
+    Таблица для анонимного пользователя.
+    """
     __tablename__ = 'AnonUser'
     id = db.Column(db.String(), primary_key=True)
     action = db.Column(db.String(64))
@@ -367,6 +397,9 @@ class AnonUser(db.Model):
     room_capitan = db.relationship("Room", backref='captain')
 
     def __init__(self):
+        """
+        Сохраняет анонимного пользователя.
+        """
         self.id = str(uuid4())
         db.session.add(self)
         db.session.commit()

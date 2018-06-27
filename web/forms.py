@@ -1,4 +1,5 @@
-﻿# coding=utf-8
+# coding=utf-8
+"""Данный файл описывает формы приложения"""
 import re
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, BooleanField, FileField, HiddenField
@@ -7,7 +8,7 @@ from flask.json import JSONDecoder
 from flask_wtf.file import FileAllowed
 from web.models import User, Room
 from .helper import cur_user
-from web import avatars, backgrounds
+from web import avatars, backgrounds, app
 
 
 class RoomForm(FlaskForm):
@@ -18,7 +19,9 @@ class UploadImageForm(FlaskForm):
     class Meta:
         csrf = False
 
-    image = FileField("Выберите файл")
+    image = FileField("Выберите файл", validators=[FileAllowed(app.config['ALLOWED_IMAGE_EXTENSIONS'],
+                                                               message="Некорректное расширение"),
+                                                   DataRequired(message='Выберите изображение')])
     submit = SubmitField("Инициализировать фотографию")
 
 
@@ -84,6 +87,7 @@ class JoinForm(FlaskForm):
 
 
 class LogForm(FlaskForm):
+    """Форма авторизации"""
     login_log = StringField("Имя пользователя", validators=[Length(5, message='Логин слишком короткий'),
                                                             check_correct_name, not_exist])
     password_log = PasswordField("Пароль", validators=[Length(8, message='Пароль слишком короткий'),
@@ -93,35 +97,42 @@ class LogForm(FlaskForm):
 
 
 class UploadVideoForm(FlaskForm):
+    """Форма загрузки видео"""
     class Meta:
         csrf = False
 
     title = StringField("Введите название видео", validators=[Length(3, message='Название слишком короткое')])
-    video = FileField("Выберите файл")
+    video = FileField("Выберите файл", validators=[FileAllowed(app.config['ALLOWED_EXTENSIONS'],
+                                                               message="Некорректное расширение"),
+                                                   DataRequired(message='Выберите видео')])
     geotag_data = HiddenField(validators=[have_geodata])
     tags = TextAreaField("Тэги", validators=[Length(2, message='Тэг слишком короткий'), Optional()])
     submit = SubmitField("Загрузить")
 
 
 class UserProfileForm(FlaskForm):
+    """Форма редактирования профиля пользователя"""
     change_name = StringField("Изменить имя:", validators=[Length(3, message='Имя слишком короткое'), Optional()])
     change_password = PasswordField("Изменить пароль:", validators=[Length(8, message='Пароль слишком короткий'),
                                                                     Optional()])
-    background = FileField("Изменить фон канала:", validators=[FileAllowed(backgrounds)])
-    avatar = FileField("Изменить аватар профиля:", validators=[FileAllowed(avatars)])
+    background = FileField("Изменить фон канала:", validators=[FileAllowed(backgrounds,
+                                                                           message="Некорректное расширение")])
+    avatar = FileField("Изменить аватар профиля:", validators=[FileAllowed(avatars,
+                                                                           message="Некорректное расширение")])
     channel_info = TextAreaField("Указать краткое описание канала:",
                                  validators=[Length(8, message='Текст слишком короткий'), Optional()])
-    colorTxt = StringField("Цвет текста:", render_kw={"id":"colorTxt"})
-    color1 = StringField("Цвет 1:", render_kw={"id":"color1"})
-    color2 = StringField("Цвет 2:", render_kw={"id":"color2"})
-    colorBrd = StringField("Цвет границ:", render_kw={"id":"colorBrd"})
-    colorLink = StringField("Цвет ссылок:", render_kw={"id":"colorLink"})
+    colorTxt = StringField("Цвет текста:", render_kw={"id": "colorTxt"})
+    color1 = StringField("Цвет 1:", render_kw={"id": "color1"})
+    color2 = StringField("Цвет 2:", render_kw={"id": "color2"})
+    colorBrd = StringField("Цвет границ:", render_kw={"id": "colorBrd"})
+    colorLink = StringField("Цвет ссылок:", render_kw={"id": "colorLink"})
     current_password = PasswordField("Введите свой текущий пароль для подтверждения изменений:",
                                      validators=[Length(8, message='Пароль слишком короткий'), match])
     submit_changes = SubmitField("Сохранить")
 
 
 class SearchingVideoForm(FlaskForm):
+    """Форма поиска видео"""
     search = StringField("Название")
     date = BooleanField("Дата")
     views = BooleanField("Просмотры")

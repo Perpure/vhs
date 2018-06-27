@@ -1,9 +1,13 @@
 # coding=utf-8
+import mimetypes
+import os
+import re
 from datetime import datetime
-from flask import url_for, redirect, make_response, request, jsonify, session, render_template
+from flask import url_for, redirect, make_response, request, jsonify, session, render_template, Response
 from web import app, db
-from web.helper import read_image, read_video, cur_user, read_multi
+from web.helper import read_image, cur_user, read_multi
 from web.models import Video, Comment, Room, AnonUser, User
+from config import basedir, BUFF_SIZE
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -33,14 +37,44 @@ def get_image(pid):
     return response
 
 
+def partial_response(path, start, end=None):
+    file_size = os.path.getsize(path)
+
+    if end is None:
+        end = start + BUFF_SIZE - 1
+    end = min(end, file_size - 1, start + BUFF_SIZE - 1)
+    length = end - start + 1
+
+    with open(path, 'rb') as fd:
+        fd.seek(start)
+        bytes = fd.read(length)
+    assert len(bytes) == length
+
+    response = Response(bytes, 206, mimetype=mimetypes.guess_type(path)[0], direct_passthrough=True)
+    response.headers.add('Content-Range', 'bytes {0}-{1}/{2}'.format(start, end, file_size))
+    response.headers.add('Accept-Ranges', 'bytes')
+    return response
+
+
+def get_bounds_of_header_range(range):
+    m = re.match(r'bytes=(?P<start>\d+)-(?P<end>\d+)?', range)
+    if m:
+        start = m.group('start')
+        end = m.group('end')
+        start = int(start)
+        if end is not None:
+            end = int(end)
+        return start, end
+    else:
+        return 0, None
+
+
 @app.route('/video/<string:vid>/video.mp4')
 def get_video(vid):
-    video_binary = read_video(vid)
-    response = make_response(video_binary)
-    response.headers.set('Content-Type', 'video/mp4')
-    response.headers.set(
-        'Content-Disposition', 'attachment', filename='video/%s/video.mp4' % vid)
-    return response
+    path = basedir + '/video/%s/video.mp4' % vid
+    range = request.headers.get('Range')
+    start, end = get_bounds_of_header_range(range)
+    return partial_response(path, start, end)
 
 
 @app.route('/video/data', methods=['GET'])
@@ -61,45 +95,41 @@ def askAct(room_id):
         user = AnonUser.query.get(session['anon_id'])
         action = user.action
         if action == 'calibrate':
-            user.action = ''
-            db.session.add(user)
-            db.session.commit()
+            user.update_action('')
             return jsonify({"action": action,
                             "color": user.color})
         elif action == 'result' or action == 'resultS':
-            noSound = True
-            if action == 'resultS':
-                noSound = False
-            user.action = ''
-            db.session.add(user)
-            db.session.commit()
-            time = datetime.now(tz=None)
-            hr = time.hour
-            mt = time.minute
-            sc = time.second
-            ms = round(time.microsecond/1000)
-            new = hr * 3600000 + mt * 60000 + sc * 1000 + ms
-            action = "result"
-            old = user.time
-            time = str(old-new)
-            return jsonify({"action": action,
-                            "time": time,
-                            "top": user.top,
-                            "left": user.left,
-                            "width": user.res_k,
-                            "noSound": noSound})
+            return result(action, user)
         elif action == 'refresh':
-            user.action = ''
-            db.session.add(user)
-            db.session.commit()
+            user.update_action('')
             return jsonify({"action": action})
         elif action == 'update':
-            user.action = ''
-            db.session.add(user)
-            db.session.commit()
+            user.update_action('')
             users = room.get_devices()
-            return jsonify({"action": action, "count": len(users)+1})
+            return jsonify({"action": action, "count": len(users) + 1})
     return jsonify({"action": ''})
+
+
+def result(action, user):
+    noSound = True
+    if action == 'resultS':
+        noSound = False
+    user.update_action('')
+    time = datetime.now(tz=None)
+    hr = time.hour
+    mt = time.minute
+    sc = time.second
+    ms = round(time.microsecond / 1000)
+    new = hr * 3600000 + mt * 60000 + sc * 1000 + ms
+    action = "result"
+    old = user.time
+    time = str(old - new)
+    return jsonify({"action": action,
+                    "time": time,
+                    "top": user.top,
+                    "left": user.left,
+                    "width": user.res_k,
+                    "noSound": noSound})
 
 
 @app.route('/askNewComm/<string:vid>', methods=['GET', 'POST'])
@@ -187,16 +217,16 @@ def startSearch():
     ask = request.args.get('ask')
     view = request.args.get('view')
     dat = request.args.get('dat')
-    now=time = datetime.now(tz=None)
+    now = time = datetime.now(tz=None)
 
     if dat:
         sort += "date"
     if view:
         sort += "views"
     if ask != " ":
-        return render_template('main.html', user=cur_user(), items=Video.get(search=ask, sort=sort),now=now)
-    
-    return render_template('main.html', user=cur_user(), items=Video.get(),now=now)
+        return render_template('main.html', user=cur_user(), items=Video.get(search=ask, sort=sort), now=now)
+
+    return render_template('main.html', user=cur_user(), items=Video.get(), now=now)
 
 
 @app.route('/showRes/<int:room_id>', methods=['GET', 'POST'])
@@ -216,22 +246,23 @@ def showRes(room_id):
         sc = time.second
         ms = round(time.microsecond / 1000)
         now = hr * 3600000 + mt * 60000 + sc * 1000 + ms
-        now += 15000 - (now-zero)
+        now += 15000 - (now - zero)
         member.action = "result"
         member.time = now
     users[0].action = "resultS"
     db.session.commit()
     return ""
 
+
 @app.route('/subscribe/<int:ID>', methods=['GET', 'POST'])
 def subscribe(ID):
     user = cur_user()
-    blog=User.get(id=ID)
+    blog = User.get(id=ID)
     if user in blog.subscribers:
         blog.subscribers.remove(user)
         db.session.add(user)
         db.session.commit()
     else:
         user.follow(blog)
-    
+
     return "nice"
