@@ -1,6 +1,6 @@
 .footer
 {
-  &__line
+  &_line
   {
       display:inline-block;
       vertical-align:top;
@@ -8,8 +8,11 @@
       height:20px;
       width:43%;
       //border-bottom:2px solid @colorBrd;
-      text-align: right;
-      &-left
+      &__right
+      {
+        text-align: right;
+      }
+      &__left
       {
         text-align: left;
       }
@@ -24,20 +27,6 @@
     display:inline-block;
     width: 11%;
     text-align: center;
-    &__img
-    {
-      height:30px;
-      margin-right:10px;
-      transition: 0.1s;
-      vertical-align:top;
-      &:hover
-      {
-        height:31px;
-        cursor:pointer;
-        margin-right:9px;
-        margin-bottom: -1px;
-      }
-    }
     &__edge
     {
       margin-right:0;
@@ -53,6 +42,19 @@
       margin-right: 10px;
     }
   }
+  &_img
+  {
+    height:30px;
+    margin-right:10px;
+    transition: 0.1s;
+    vertical-align:top;
+    filter: brightness(75%);
+    &:hover
+    {
+      cursor:pointer;
+      filter: brightness(100%);
+    }
+  }
 }
 
 footer
@@ -61,7 +63,7 @@ footer
   margin: 0 auto;
   flex: 0 0 auto;
   font-weight:bold;
-  .set-border-to-color2(top,2px,0.3);
+  border-top: 2px solid fade(@color-secondary,30);
   transition: 0.3s;
   padding-top: 10px;
   & div,span

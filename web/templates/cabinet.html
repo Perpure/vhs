@@ -3,14 +3,14 @@
 <div class="canal">
   <div class="solid">
     <div class="profile">
-        <div class="profile_ava"><img src="{{ usr.avatar_url() }}" alt="" class="profile_ava__img"></div>
+        <div class="profile_ava"><img src="{{ usr.avatar_url() }}" alt="" class="profile_ava-img"></div>
         <div class="profile_txt">
             <h2>{{usr.name}}</h2>
             <p>{{usr.channel_info}}</p>
         </div>
         {% if settings==False %}
         <div class="profile_sub">
-          <span class="profile_sub__count" id="subCnt{{usr.id}}">{{ usr.subscribers|length }}</span>
+          <span class="profile_sub-count" id="subCnt{{usr.id}}">{{ usr.subscribers|length }}</span>
           <button type="button" name="button" value="{{usr.id}}" class="subscribe-btn">{% if subscribed %}Отписаться{% else %}Подписаться{% endif %}</button>
         </div>
         {%endif%}
@@ -32,11 +32,11 @@
     {% for item in last|reverse %}
       <div class="video">
         <a href="{{ url_for('play', vid=item.id) }}">
-          <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video__preview">
+          <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video_preview">
         </a>
-        <div class="video_txt">
+        <div>
           <a href="{{ url_for('play', vid=item.id) }}">
-            <p class="video__title" title="{{item.title}}">{{item.title}}</p>
+            <p class="video_title" title="{{item.title}}">{{item.title}}</p>
           </a>
           <a href="/cabinet/{{ item.user.login }}">
             <p class="italic">
@@ -59,11 +59,11 @@
     {% for item in items|reverse %}
     <div class="video">
       <a href="{{ url_for('play', vid=item.id) }}">
-        <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video__preview">
+        <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video_preview">
       </a>
-      <div class="video_txt">
+      <div>
         <a href="{{ url_for('play', vid=item.id) }}">
-          <p class="video__title" title="{{item.title}}">{{item.title}}</p>
+          <p class="video_title" title="{{item.title}}">{{item.title}}</p>
         </a>
         <a href="/cabinet/{{ item.user.login }}">
           <p class="italic">
@@ -156,19 +156,19 @@
         <div clss="section_set">
           <h6>Изменить палитру канала</h6>
           <br>
-          <div class="section_set__left">{{ form.color1.label }}</div>
+          <div class="section_set-left">{{ form.color1.label }}</div>
           {{ form.color1(placeholder=usr.get_colors()[0])}}
           <br>
-          <div class="section_set__left">{{ form.color2.label }}</div>
+          <div class="section_set-left">{{ form.color2.label }}</div>
           {{ form.color2(placeholder=usr.get_colors()[1])}}
           <br>
-          <div class="section_set__left">{{ form.colorTxt.label }}</div>
+          <div class="section_set-left">{{ form.colorTxt.label }}</div>
           {{ form.colorTxt(placeholder=usr.get_colors()[2])}}
           <br>
-          <div class="section_set__left">{{ form.colorBrd.label }}</div>
+          <div class="section_set-left">{{ form.colorBrd.label }}</div>
           {{ form.colorBrd(placeholder=usr.get_colors()[3])}}
           <br>
-          <div class="section_set__left">{{ form.colorLink.label }}</div>
+          <div class="section_set-left">{{ form.colorLink.label }}</div>
           {{ form.colorLink(placeholder=usr.get_colors()[4])}}
         </div>
         <hr>
@@ -304,14 +304,15 @@
     }
 </style>
 <script>
-    function func(){
-      $('.tabs_tab').removeClass('tabs_tab__open');
-      this.classList.add('tabs_tab__open');
-      $('.section').removeClass('section__open');
-      var id=$(this).attr('value');
-      $('#' + id).addClass('section__open');
-    }
-    $('.tabs_tab').click(func);
+    $(document).ready(function(){
+      $('.tabs_tab').click(function(){
+        $('.tabs_tab').removeClass('tabs_tab__open');
+        this.classList.add('tabs_tab__open');
+        $('.section').removeClass('section__open');
+        var id=$(this).attr('value');
+        $('#' + id).addClass('section__open');
+      });
+    });
 
     $(document).ready(function(){
         $("#instructionBtn").click(function(){

@@ -1,21 +1,21 @@
 .switcher
 {
-  .set-background-to-color2(0.3);
+  background-color: fade(@color-secondary,30);
   height: 34px;
   border-radius:15px;
   width: 120px;
   margin-bottom: 10px;
-  border: 2px solid @color1;
+  border: 2px solid @color-main;
   &_arm
   {
     display:inline-block;
     height:30px;
     border-radius: 15px;
     text-align:center;
-    .set-background-to-color2(0.4);
+    background-color: fade(@color-secondary,40);
     padding:4px;
     width: 80px;
-    border-right: 1px solid @colorBrd;
+    border-right: 1px solid @color-border;
     &__inv
     {
       display:none;
@@ -31,15 +31,15 @@
     &__right
     {
       margin-left: 40px;
-      border-left: 1px solid @colorBrd;
+      border-left: 1px solid @color-border;
       border-right: none;
     }
   }
-  &__rad
+  &_radio
   {
     visibility:hidden;
   }
-  &__label
+  &_label
   {
     width: 100%;
     -moz-user-select: none;
@@ -60,11 +60,15 @@
   {
     cursor: pointer;
   }
-  &__preview
+  &:hover &_preview
+  {
+    filter: brightness(90%);
+  }
+  &_preview
   {
     width:100%;
   }
-  &__title
+  &_title
   {
     font-weight:bold;
     font-size:90%;
@@ -79,14 +83,14 @@
   &-titling
   {
     height:50px;
-    &__title
+    &_title
     {
       margin-top:10px;
       margin-bottom:10px;
       font-size:120%;
       display:inline-block;
     }
-    &__views
+    &_views
     {
       display:inline-block;
       float:right;
@@ -104,51 +108,48 @@
     {
       height:3px;
       margin-bottom:5px;
-      &__show-like,&__show-dis
-      {
-        display:inline-block;
-        height:3px;
-        width:50%;
-        vertical-align:top;
-      }
-      &__show-like
-      {
-        background-color:green;
-      }
-      &__show-dis
-      {
-        background-color:red;
-        margin-left:-6px;
-        float:right;
-      }
     }
-    &_btns
+    &_like-line,&_dis-line
     {
-      &__btn
+      display:inline-block;
+      height:3px;
+      width:50%;
+      vertical-align:top;
+    }
+    &_like-line
+    {
+      background-color:green;
+    }
+    &_dis-line
+    {
+      background-color:red;
+      margin-left:-6px;
+      float:right;
+    }
+    &_btn
+    {
+      background-size:40%;
+      background-repeat:no-repeat;
+      background-position:center;
+      color:rgba(0,0,0,0);
+      border:none;
+      background-color:rgba(0,0,0,0);
+      width:40px;
+      height: 22px;
+      display: inline-block;
+      vertical-align: top;
+      &:hover
       {
-        background-size:40%;
-        background-repeat:no-repeat;
-        background-position:center;
-        color:rgba(0,0,0,0);
-        border:none;
         background-color:rgba(0,0,0,0);
-        width:40px;
-        height: 22px;
-        display: inline-block;
-        vertical-align: top;
-        &:hover
-        {
-          background-color:rgba(0,0,0,0);
-          color:rgba(0,0,0,0);
-          background-size:41%;
-          cursor: pointer;
-        }
+        color:rgba(0,0,0,0);
+        background-size:41%;
+        cursor: pointer;
       }
     }
   }
   &-comments
   {
-    border-top:2px solid @colorBrd;
+    border-top:2px solid @color-border;
     margin-top:10px;
     padding-top:10px;
 
@@ -159,6 +160,10 @@
   height:100px;
   margin-bottom:15px;
   max-width:50%;
+  div
+  {
+    display: inline-block;
+  }
   &_ava
   {
     height:100px;
@@ -166,37 +171,32 @@
     margin-right:15px;
     vertical-align:top;
     overflow:hidden;
-    display:inline-block;
-    &__img
+    &-img
     {
       height: 100%;
       min-width: 100%;
     }
   }
-  &_txt
+  &_author
   {
-    display: inline-block;
-    &__auth
-    {
-      color:black;
-      font-weight:bold;
-      font-size:110%;
-    }
+    color:black;
+    font-weight:bold;
+    font-size:110%;
   }
 }
 .tag
 {
-  background-color:@colorBrd;
+  background-color:@color-border;
   color:white;
   border-radius:10px;
   padding:3px;
   margin-right:5px;
   &:hover
   {
-    border:2px solid @colorBrd;
+    border:2px solid @color-border;
     background-color:rgba(0,0,0,0);
     cursor:pointer;
-    color:  @colorBrd;
+    color:  @color-border;
     margin-right:1px;
     font-weight:bold;
   }
@@ -225,12 +225,12 @@
   top: 15vh;
   width: 70%;
   overflow-y: auto;
-  .set-background-to-color2(0.8);
+  background-color: fade(@color-secondary,80);
 }
 
 .solid
 {
-    background-color:@color1;
+    background-color:@color-main;
     vertical-align: top;
     padding: 7px;
     width: 100%;
@@ -251,7 +251,7 @@
     -webkit-user-select: none;
     &__open
     {
-      .set-border-to-color2(bottom,4px,1);
+      border-bottom: 4px solid @color-secondary;
     }
     &__edge
     {
@@ -271,11 +271,11 @@
   }
   &__settings
   {
-    background-color:@color1;
+    background-color:@color-main;
   }
   &_set{
     margin-bottom: 10px;
-    &__left
+    &-left
     {
       display: inline-block;
       width: 110px;
@@ -295,7 +295,7 @@
     display: inline-block;
     margin-right: 10px;
     border: 4px solid rgba(255,255,255,0.5);
-    &__img
+    &-img
     {
       min-width: 100%;
       height: 100%;
@@ -315,7 +315,7 @@
     margin-top: 30px;
     display: inline-block;
     vertical-align: top;
-    &__count
+    &-count
     {
       line-height: 40px;
       margin-right: 10px;

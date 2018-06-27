@@ -1,35 +1,95 @@
 {% extends "base.html" %}
 {% block content %}
 {% if cap == anon.id %}
-<div class="show-type" id="showMap">
-  <label class="labelnoselect typeLabel" for="show_video_map">Отображать на карте</label>
-  <input name="selector" id="show_video_map" type="radio" class="show-type__rad">
-</div>
-<div class="show-type show-type__inv" id="showTab">
-  <label class="labelnoselect typeLabel" for="show_video_table">Отображать в виде таблицы</label>
-  <input name="selector" id="show_video_table" type="radio" checked class="show-type__rad">
+<h5>Отображение</h5>
+<div class="switcher">
+  <div class="switcher_arm" id="showMap">
+    <label class="switcher_label" for="show_video_map">Таблица</label>
+    <input name="selector" id="show_video_map" type="radio" class="switcher_radio">
+  </div>
+  <div class="switcher_arm switcher_arm__inv switcher_arm__right" id="showTab">
+    <label class="switcher_label" for="show_video_table">Карта</label>
+    <input name="selector" id="show_video_table" type="radio" checked class="switcher_radio">
+  </div>
 </div>
 
 <div id="video_table">
-  {% for item in items %}
+  <div class="tabs">
+    <label value="all" class="tabs_tab tabs_tab__open tabs_tab__edge">Новые</label>
+    {% if user %}
+    <label value="subs" class="tabs_tab">Подписки</label>
+    {% endif %}
+  </div>
+  <div class="section section__open"  id="all">
+  {% for item in items|reverse %}
+  <div class="video">
+    <a href="{{url_for('choosed_video', room_id=room.id, vid_id=item.id)}}">
+      <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video_preview">
+    </a>
+    <div>
+      <a href="{{url_for('choosed_video', room_id=room.id, vid_id=item.id)}}">
+        <p class="video_title" title="{{item.title}}">{{item.title}}</p>
+      </a>
+      <a href="/cabinet/{{ item.user.login }}">
+        <p class="italic">
+          {{ item.user.name }} <br>
+          {{ item.viewers | length }} просмотров <br>
+          {% if (now - item.date).days>1 %}
+            {{item.date.date()}}
+          {% elif (now - item.date).days==1 %} вчера
+          {% elif (now - item.date).seconds/60< 60 %} {{((now - item.date).seconds/60)|int}} минут назад
+          {% else %} {{((now - item.date).seconds/3600)|int}} часов назад
+          {%endif%}
+        </p>
+      </a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<div class="section" id="subs">
+  {% for item in sub_items|reverse %}
     <div class="video">
       <a href="{{url_for('choosed_video', room_id=room.id, vid_id=item.id)}}">
-        <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video__preview">
+        <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video_preview">
       </a>
-      <div class="video_txt">
+      <div>
         <a href="{{url_for('choosed_video', room_id=room.id, vid_id=item.id)}}">
-          <p class="video__title" title="{{item.title}}">{{item.title}}</p>
+          <p class="video_title" title="{{item.title}}">{{item.title}}</p>
         </a>
-        <p class="video__views">{{ item.viewers | length }} просмотров</p>
+        <a href="/cabinet/{{ item.user.login }}">
+          <p class="italic">
+            {{ item.user.name }} <br>
+            {{ item.viewers | length }} просмотров <br>
+            {% if (now - item.date).days>1 %}
+              {{item.date.date()}}
+            {% elif (now - item.date).days==1 %} вчера
+            {% elif (now - item.date).seconds/60< 60 %} {{((now - item.date).seconds/60)|int}} минут назад
+            {% else %} {{((now - item.date).seconds/3600)|int}} часов назад
+            {%endif%}
+          </p>
+        </a>
       </div>
     </div>
   {% endfor %}
+</div>
 </div>
 
 <div id="videos_map" align="center"></div>
 
 <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
 <script src="{{ url_for('static', filename='videos_map.js') }}"></script>
+{% if user %}
+<script>
+function func(){
+    $('.tabs_tab').removeClass('tabs_tab__open');
+    this.classList.add('tabs_tab__open');
+    $('.section').removeClass('section__open');
+    var id=$(this).attr('value');
+    $('#' + id).addClass('section__open');
+}
+$('.tabs_tab').click(func);
+</script>
+{%endif%}
 {% else %}
     <p>Вы должны быть капитаном, чтобы выбирать видео</p>
 {% endif %}
