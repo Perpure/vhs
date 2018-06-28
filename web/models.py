@@ -195,11 +195,6 @@ class User(db.Model):
     top = db.Column(db.Integer)
     left = db.Column(db.Integer)
     res_k = db.Column(db.Integer)
-    color1 = db.Column(db.String(32))
-    color2 = db.Column(db.String(32))
-    colorTxt = db.Column(db.String(32))
-    colorBrd = db.Column(db.String(32))
-    colorLink = db.Column(db.String(32))
 
     videos = db.relationship("Video",
                              backref="user",
@@ -224,11 +219,6 @@ class User(db.Model):
         self.login = login
         self.name = login
         self.channel_info = "Заполните информацию о канале"
-        self.colorTxt = "0, 0, 0"
-        self.color1 = "247, 226, 192"
-        self.color2 = "240, 203, 142"
-        self.colorBrd = "240, 203, 142"
-        self.colorLink = "144, 90, 9"
 
     def save(self, password):
         """
@@ -259,24 +249,6 @@ class User(db.Model):
         :param info: Информация о канале
         """
         self.channel_info = info
-        db.session.add(self)
-        db.session.commit()
-
-    def get_colors(self):
-        colors = [self.color1, self.color2, self.colorTxt, self.colorBrd, self.colorLink]
-        return colors
-
-    def change_colors(self, cls):
-        if cls[0] != '':
-            self.color1 = cls[0]
-        if cls[1] != '':
-            self.color2 = cls[1]
-        if cls[2] != '':
-            self.colorTxt = cls[2]
-        if cls[3] != '':
-            self.colorBrd = cls[3]
-        if cls[4] != '':
-            self.colorLink = cls[4]
         db.session.add(self)
         db.session.commit()
 

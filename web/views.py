@@ -254,20 +254,6 @@ def cabinet(usr):
         if form.channel_info.data:
             user.change_channel_info(form.channel_info.data)
 
-        colors = ["", "", "", "", ""]
-        if form.color1.data:
-            colors[0] = form.color1.data
-        if form.color2.data:
-            colors[1] = form.color2.data
-        if form.colorTxt.data:
-            colors[2] = form.colorTxt.data
-        if form.colorBrd.data:
-            colors[3] = form.colorBrd.data
-        if form.colorLink.data:
-            colors[4] = form.colorLink.data
-
-        user.change_colors(colors)
-
         if 'avatar' in request.files:
             avatar_url = avatars.save(form.avatar.data, folder=folder)
             user.update_avatar(json.dumps({"url": avatar_url}))
