@@ -417,3 +417,8 @@ class AnonUser(db.Model):
         self.device_width = width
         db.session.add(self)
         db.session.commit()
+
+    def update_action(self, action):
+        self.action = action
+        db.session.add(self)
+        db.session.commit()
