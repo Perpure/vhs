@@ -451,7 +451,7 @@ search {
   background-color: rgba(240, 203, 142, 0.8);
 }
 .solid {
-  background-color: #F7E2C0;
+  background-color: rgba(247, 226, 192, 0.8);
   vertical-align: top;
   padding: 7px;
   width: 100%;
@@ -482,7 +482,7 @@ search {
   display: block;
 }
 .section__settings {
-  background-color: #F7E2C0;
+  background-color: rgba(247, 226, 192, 0.7);
 }
 .section_set {
   margin-bottom: 10px;

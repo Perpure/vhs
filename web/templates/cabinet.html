@@ -20,7 +20,8 @@
       <div value="about" class="tabs_tab tabs_tab__open tabs_tab__edge">Главная</div>
       <div value="videos" class="tabs_tab">Видео пользователя</div>
       {% if settings %}
-        <div value="settings" class="tabs_tab">Настройки</div>
+        <div value="settings" class="tabs_tab">Настройки канала</div>
+        <div value="settingsAcc" class="tabs_tab">Настройки аккаунта</div>
       {% endif %}
     </div>
   </div>
@@ -88,7 +89,7 @@
 
   {% if settings %}
     <div class="section section__settings" id="settings">
-      <h3>Личные данные</h3>
+      <h3>Данные канала</h3>
       <form action="" method="post" enctype="multipart/form-data" >
         {{form.hidden_tag()}}
         <div class="section_set">
@@ -97,17 +98,6 @@
           {{ form.change_name }}
           {% if form.change_name.errors %}
             {% for error in form.change_name.errors %}
-              <div style="color: red;">{{ error }}</div>
-            {% endfor %}
-          {% endif %}
-        </div>
-
-        <div class="section_set">
-          {{ form.change_password.label }}
-          <br>
-          {{ form.change_password }}
-          {% if form.change_password.errors %}
-            {% for error in form.change_password.errors %}
               <div style="color: red;">{{ error }}</div>
             {% endfor %}
           {% endif %}
@@ -174,6 +164,36 @@
 
       </form>
     </div>
+    <div class="section section__settings" id="settingsAcc">
+      <h3>Настройка данных аккаунта</h3>
+      <form action="" method="post" enctype="multipart/form-data" >
+        {{form_acc.hidden_tag()}}
+        <div class="section_set">
+          {{ form_acc.change_password.label }}
+          <br>
+          {{ form_acc.change_password }}
+          {% if form_acc.change_password.errors %}
+            {% for error in form_acc.change_password.errors %}
+              <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+          {% endif %}
+        </div>
+        <hr>
+        <div class="section_set">
+          <b>
+          {{ form_acc.current_password.label }}
+          {{ form_acc.current_password }}
+          {% if form_acc.current_password.errors %}
+            {% for error in form_acc.current_password.errors %}
+              <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+          {% endif %}
+          </b>
+        </div>
+        <div class="section_set">
+          <input type="submit" class="buttondlc" value="Сохранить">
+        </div>
+    </div>
   {% endif %}
 </div>
 <style>
@@ -181,6 +201,10 @@
     {
         background-image:url({{ usr.background_url() }});
       	background-size:100% 100%;
+    }
+    footer
+    {
+      display: none;
     }
     @media (max-width:570px)
     {

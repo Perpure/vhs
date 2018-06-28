@@ -8,7 +8,7 @@ from werkzeug.exceptions import Aborter
 from config import basedir
 from web import app, db, avatars, backgrounds
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
-    UserProfileForm, AddRoomForm
+    UserProfileForm, AddRoomForm, AccountSettingsForm
 from web.models import User, Video, Room, Color, Geotag, Tag, AnonUser, RoomDeviceColorConnector
 from web.helper import cur_user, requiresauth, anon_user, image_loaded
 from web.video_handler import save_video
@@ -261,9 +261,15 @@ def cabinet(usr):
             background_url = backgrounds.save(form.background.data, folder=folder)
             user.update_background(json.dumps({"url": background_url}))
         return redirect(url_for("cabinet", usr=cabinet_owner.login))
+    form_acc = AccountSettingsForm()
+    if form_acc.validate_on_submit():
+        user = cur_user()
+        if form_acc.change_password.data:
+            user.save(form_acc.change_password.data)
+        return redirect(url_for("cabinet", usr=cabinet_owner.login))
     last = items[-6:]
     now = time = datetime.now(tz=None)
-    return render_template('cabinet.html', form=form, user=user, items=items,
+    return render_template('cabinet.html', form=form,form_acc=form_acc, user=user, items=items,
                            settings=is_cabinet_settings_available, usr=cabinet_owner, last=last,
                            subscribed=(user in cabinet_owner.subscribers), now=now)
 
