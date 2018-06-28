@@ -181,10 +181,10 @@
         <hr>
         <div class="section_set">
           <b>
-          {{ form_acc.current_password.label }}
-          {{ form_acc.current_password }}
-          {% if form_acc.current_password.errors %}
-            {% for error in form_acc.current_password.errors %}
+          {{ form_acc.cur_password.label }}
+          {{ form_acc.cur_password }}
+          {% if form_acc.cur_password.errors %}
+            {% for error in form_acc.cur_password.errors %}
               <div style="color: red;">{{ error }}</div>
             {% endfor %}
           {% endif %}
@@ -193,6 +193,7 @@
         <div class="section_set">
           <input type="submit" class="buttondlc" value="Сохранить">
         </div>
+      </form>
     </div>
   {% endif %}
 </div>

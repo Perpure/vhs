@@ -113,8 +113,6 @@ class UploadVideoForm(FlaskForm):
 class UserProfileForm(FlaskForm):
     """Форма редактирования профиля пользователя"""
     change_name = StringField("Изменить имя:", validators=[Length(3, message='Имя слишком короткое'), Optional()])
-    change_password = PasswordField("Изменить пароль:", validators=[Length(8, message='Пароль слишком короткий'),
-                                                                    Optional()])
     background = FileField("Изменить фон канала:", validators=[FileAllowed(backgrounds,
                                                                            message="Некорректное расширение")])
     avatar = FileField("Изменить аватар профиля:", validators=[FileAllowed(avatars,
@@ -127,9 +125,10 @@ class UserProfileForm(FlaskForm):
 
 
 class AccountSettingsForm(FlaskForm):
+    """Форма редактирования аккаунта пользователя"""
     change_password = PasswordField("Изменить пароль:", validators=[Length(8, message='Пароль слишком короткий'),
                                                                     Optional()])
-    current_password = PasswordField("Введите свой текущий пароль для подтверждения изменений:",
+    cur_password = PasswordField("Введите свой текущий пароль для подтверждения изменений:",
                                      validators=[Length(8, message='Пароль слишком короткий'), match])
     submit_changes = SubmitField("Сохранить")
 
