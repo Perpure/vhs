@@ -23,9 +23,11 @@
   <div class="section section__open"  id="all">
   {% for item in items|reverse %}
   <div class="video">
-    <a href="{{url_for('choosed_video', room_id=room.id, vid_id=item.id)}}">
-      <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video_preview">
-    </a>
+    <div class="video_preview">
+      <a href="{{url_for('choosed_video', room_id=room.id, vid_id=item.id)}}">
+        <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video_preview-img">
+      </a>
+    </div>
     <div>
       <a href="{{url_for('choosed_video', room_id=room.id, vid_id=item.id)}}">
         <p class="video_title" title="{{item.title}}">{{item.title}}</p>
@@ -49,9 +51,11 @@
 <div class="section" id="subs">
   {% for item in sub_items|reverse %}
     <div class="video">
-      <a href="{{url_for('choosed_video', room_id=room.id, vid_id=item.id)}}">
-        <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video_preview">
-      </a>
+      <div class="video_preview">
+        <a href="{{url_for('choosed_video', room_id=room.id, vid_id=item.id)}}">
+          <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video_preview-img">
+        </a>
+      </div>
       <div>
         <a href="{{url_for('choosed_video', room_id=room.id, vid_id=item.id)}}">
           <p class="video_title" title="{{item.title}}">{{item.title}}</p>

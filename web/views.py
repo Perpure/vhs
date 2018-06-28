@@ -134,7 +134,15 @@ def choose_video(room_id):
     room = Room.query.get(room_id)
     cap = room.capitan_id
     if room:
-        return render_template('choose_video.html', user=cur_user(), items=Video.get(), cap=cap, room=room, anon=user)
+        now = time = datetime.now(tz=None)
+        sub_items = []
+        real_user = cur_user()
+        if real_user:
+            subs = real_user.subscriptions
+            for sub in subs:
+                for video in sub.videos:
+                    sub_items.append(video)
+        return render_template('choose_video.html', user=cur_user(), items=Video.get(), cap=cap, room=room, anon=user,now=now,sub_items=sub_items)
     else:
         return redirect(url_for('viewroom'))
 

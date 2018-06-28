@@ -11,7 +11,7 @@
         {% if settings==False %}
         <div class="profile_sub">
           <span class="profile_sub-count" id="subCnt{{usr.id}}">{{ usr.subscribers|length }}</span>
-          <button type="button" name="button" value="{{usr.id}}" class="subscribe-btn">{% if subscribed %}Отписаться{% else %}Подписаться{% endif %}</button>
+          <button type="button" name="button" value="{{usr.id}}" class="profile_subscribe-btn">{% if subscribed %}Отписаться{% else %}Подписаться{% endif %}</button>
         </div>
         {%endif%}
     </div>
@@ -31,9 +31,11 @@
     {%endif%}
     {% for item in last|reverse %}
       <div class="video">
-        <a href="{{ url_for('play', vid=item.id) }}">
-          <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video_preview">
-        </a>
+        <div class="video_preview">
+          <a href="{{ url_for('play', vid=item.id) }}">
+            <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video_preview-img">
+          </a>
+        </div>
         <div>
           <a href="{{ url_for('play', vid=item.id) }}">
             <p class="video_title" title="{{item.title}}">{{item.title}}</p>
@@ -58,9 +60,11 @@
   <div class="section" id="videos">
     {% for item in items|reverse %}
     <div class="video">
-      <a href="{{ url_for('play', vid=item.id) }}">
-        <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video_preview">
-      </a>
+      <div class="video_preview">
+        <a href="{{ url_for('play', vid=item.id) }}">
+          <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video_preview-img">
+        </a>
+      </div>
       <div>
         <a href="{{ url_for('play', vid=item.id) }}">
           <p class="video_title" title="{{item.title}}">{{item.title}}</p>
