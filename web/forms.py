@@ -129,7 +129,7 @@ class AccountSettingsForm(FlaskForm):
     change_password = PasswordField("Изменить пароль:", validators=[Length(8, message='Пароль слишком короткий'),
                                                                     Optional()])
     cur_password = PasswordField("Введите свой текущий пароль для подтверждения изменений:",
-                                     validators=[Length(8, message='Пароль слишком короткий'), match])
+                                 validators=[Length(8, message='Пароль слишком короткий'), match])
     save_changes = SubmitField("Сохранить")
 
 
