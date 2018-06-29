@@ -8,7 +8,7 @@ from werkzeug.exceptions import Aborter
 from config import basedir
 from web import app, db, avatars, backgrounds
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
-    UserProfileForm, AddRoomForm
+    UserProfileForm, AddRoomForm, AccountSettingsForm
 from web.models import User, Video, Room, Color, Geotag, Tag, AnonUser, RoomDeviceColorConnector
 from web.helper import cur_user, requiresauth, anon_user, image_loaded
 from web.video_handler import save_video
@@ -134,7 +134,16 @@ def choose_video(room_id):
     room = Room.query.get(room_id)
     cap = room.capitan_id
     if room:
-        return render_template('choose_video.html', user=cur_user(), items=Video.get(), cap=cap, room=room, anon=user)
+        now = time = datetime.now(tz=None)
+        sub_items = []
+        real_user = cur_user()
+        if real_user:
+            subs = real_user.subscriptions
+            for sub in subs:
+                for video in sub.videos:
+                    sub_items.append(video)
+        return render_template('choose_video.html', user=cur_user(), items=Video.get(), cap=cap, room=room, anon=user,
+                               now=now, sub_items=sub_items)
     else:
         return redirect(url_for('viewroom'))
 
@@ -216,7 +225,7 @@ def log():
 
 @app.route('/cabinet/<string:usr>', methods=['GET', 'POST'])
 @requiresauth
-def cabinet(usr):
+def cabinet(usr, tab=0):
     """
     Отвечает за вывод страницы личного кабинета
     :return: Страница личного кабинета
@@ -236,42 +245,38 @@ def cabinet(usr):
             items.append(item)
 
     form = UserProfileForm()
-    if form.validate_on_submit():
-        user = cur_user()
-        folder = str(user.id)
-        if form.change_name.data:
-            user.change_name(form.change_name.data)
-        if form.change_password.data:
-            user.save(form.change_password.data)
-        if form.channel_info.data:
-            user.change_channel_info(form.channel_info.data)
-
-        colors = ["", "", "", "", ""]
-        if form.color1.data:
-            colors[0] = form.color1.data
-        if form.color2.data:
-            colors[1] = form.color2.data
-        if form.colorTxt.data:
-            colors[2] = form.colorTxt.data
-        if form.colorBrd.data:
-            colors[3] = form.colorBrd.data
-        if form.colorLink.data:
-            colors[4] = form.colorLink.data
-
-        user.change_colors(colors)
-
-        if 'avatar' in request.files:
-            avatar_url = avatars.save(form.avatar.data, folder=folder)
-            user.update_avatar(json.dumps({"url": avatar_url}))
-        if 'background' in request.files:
-            background_url = backgrounds.save(form.background.data, folder=folder)
-            user.update_background(json.dumps({"url": background_url}))
-        return redirect(url_for("cabinet", usr=cabinet_owner.login))
+    form_acc = AccountSettingsForm()
+    if request.method == 'POST':
+        form_name = request.form['form-name']
+        tab = 3
+        if form_name == 'form':
+            tab = 2
+        if form_name == 'form' and form.validate():
+            tab = 2
+            user = cur_user()
+            folder = str(user.id)
+            if form.change_name.data:
+                user.change_name(form.change_name.data)
+            if form.channel_info.data:
+                user.change_channel_info(form.channel_info.data)
+            if 'avatar' in request.files:
+                avatar_url = avatars.save(form.avatar.data, folder=folder)
+                user.update_avatar(json.dumps({"url": avatar_url}))
+            if 'background' in request.files:
+                background_url = backgrounds.save(form.background.data, folder=folder)
+                user.update_background(json.dumps({"url": background_url}))
+            return redirect(url_for("cabinet", usr=cabinet_owner.login, tab=tab))
+        elif form_name == 'form_acc' and form_acc.validate():
+            tab = 3
+            user = cur_user()
+            if form_acc.change_password.data:
+                user.save(form_acc.change_password.data)
+            return redirect(url_for("cabinet", usr=cabinet_owner.login, tab=tab))
     last = items[-6:]
     now = time = datetime.now(tz=None)
-    return render_template('cabinet.html', form=form, user=user, items=items,
+    return render_template('cabinet.html', form=form, form_acc=form_acc, user=user, items=items,
                            settings=is_cabinet_settings_available, usr=cabinet_owner, last=last,
-                           subscribed=(user in cabinet_owner.subscribers), now=now)
+                           subscribed=(user in cabinet_owner.subscribers), now=now, tab=tab)
 
 
 @app.route('/play/<string:vid>', methods=['GET', 'POST'])

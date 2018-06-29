@@ -1,4 +1,4 @@
-# coding=utf-8
+﻿# coding=utf-8
 """Данный файл описывает формы приложения"""
 import re
 from flask_wtf import FlaskForm
@@ -113,22 +113,24 @@ class UploadVideoForm(FlaskForm):
 class UserProfileForm(FlaskForm):
     """Форма редактирования профиля пользователя"""
     change_name = StringField("Изменить имя:", validators=[Length(3, message='Имя слишком короткое'), Optional()])
-    change_password = PasswordField("Изменить пароль:", validators=[Length(8, message='Пароль слишком короткий'),
-                                                                    Optional()])
     background = FileField("Изменить фон канала:", validators=[FileAllowed(backgrounds,
                                                                            message="Некорректное расширение")])
     avatar = FileField("Изменить аватар профиля:", validators=[FileAllowed(avatars,
                                                                            message="Некорректное расширение")])
     channel_info = TextAreaField("Указать краткое описание канала:",
                                  validators=[Length(8, message='Текст слишком короткий'), Optional()])
-    colorTxt = StringField("Цвет текста:", render_kw={"id": "colorTxt"})
-    color1 = StringField("Цвет 1:", render_kw={"id": "color1"})
-    color2 = StringField("Цвет 2:", render_kw={"id": "color2"})
-    colorBrd = StringField("Цвет границ:", render_kw={"id": "colorBrd"})
-    colorLink = StringField("Цвет ссылок:", render_kw={"id": "colorLink"})
     current_password = PasswordField("Введите свой текущий пароль для подтверждения изменений:",
                                      validators=[Length(8, message='Пароль слишком короткий'), match])
     submit_changes = SubmitField("Сохранить")
+
+
+class AccountSettingsForm(FlaskForm):
+    """Форма редактирования аккаунта пользователя"""
+    change_password = PasswordField("Изменить пароль:", validators=[Length(8, message='Пароль слишком короткий'),
+                                                                    Optional()])
+    cur_password = PasswordField("Введите свой текущий пароль для подтверждения изменений:",
+                                 validators=[Length(8, message='Пароль слишком короткий'), match])
+    save_changes = SubmitField("Сохранить")
 
 
 class SearchingVideoForm(FlaskForm):

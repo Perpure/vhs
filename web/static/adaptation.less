@@ -38,6 +38,10 @@
     .video
     {
       width:18%;
+      &_preview
+      {
+        height: 10.125vw;
+      }
     }
 
     .searcher
@@ -70,10 +74,6 @@
       float:none;
       margin-bottom:10px;
       text-align:center;
-      &_btns
-      {
-        display:inline-block;
-      }
     }
   }
 }
@@ -89,12 +89,12 @@
       height:100px;
       z-index:2;
       top:310px;
-      &__input
+      &_input
       {
         display:block;
         width:100%;
       }
-      &__btn
+      &_btn
       {
         width:45%;
       }
@@ -124,6 +124,7 @@
     .profile
     {
       height: auto;
+      width: 100%;
       &_ava
       {
         height: 100px;
@@ -132,6 +133,10 @@
       {
         float: none;
         margin-top: 0;
+      }
+      &__small &_ava
+      {
+        height: 50px;
       }
     }
 
@@ -154,8 +159,11 @@
       {
         text-align:left;
       }
+      &_preview
+      {
+        height: 45vw;
+      }
     }
-
     .tabs
     {
       &_tab
