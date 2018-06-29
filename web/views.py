@@ -230,7 +230,7 @@ def cabinet(usr, tab=0):
     Отвечает за вывод страницы личного кабинета
     :return: Страница личного кабинета
     """
-    print(tab)
+
     video_list = Video.get()
     items = []
     user = cur_user()
@@ -248,11 +248,10 @@ def cabinet(usr, tab=0):
     form_acc = AccountSettingsForm()
     if request.method == 'POST':
         form_name = request.form['form-name']
-        tab=3
+        tab =3
         if form_name == 'form':
-            tab=2
+            tab =2
         if form_name == 'form' and form.validate():
-            print(120)
             user = cur_user()
             folder = str(user.id)
             if form.change_name.data:
@@ -265,12 +264,12 @@ def cabinet(usr, tab=0):
             if 'background' in request.files:
                 background_url = backgrounds.save(form.background.data, folder=folder)
                 user.update_background(json.dumps({"url": background_url}))
-            return redirect(url_for("cabinet", usr=cabinet_owner.login, tab = 2))
+            return redirect(url_for("cabinet", usr=cabinet_owner.login, tab =2))
         elif form_name == 'form_acc' and form_acc.validate():
             user = cur_user()
             if form_acc.change_password.data:
                 user.save(form_acc.change_password.data)
-            return redirect(url_for("cabinet", usr=cabinet_owner.login, tab = 3))
+            return redirect(url_for("cabinet", usr=cabinet_owner.login, tab =3))
     last = items[-6:]
     now = time = datetime.now(tz=None)
     return render_template('cabinet.html', form=form, form_acc=form_acc, user=user, items=items,
