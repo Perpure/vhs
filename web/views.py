@@ -143,7 +143,7 @@ def choose_video(room_id):
                 for video in sub.videos:
                     sub_items.append(video)
         return render_template('choose_video.html', user=cur_user(), items=Video.get(), cap=cap, room=room, anon=user,
-                                                                                         now=now, sub_items=sub_items)
+                               now=now, sub_items=sub_items)
     else:
         return redirect(url_for('viewroom'))
 
@@ -265,12 +265,12 @@ def cabinet(usr, tab=0):
             if 'background' in request.files:
                 background_url = backgrounds.save(form.background.data, folder=folder)
                 user.update_background(json.dumps({"url": background_url}))
-            return redirect(url_for("cabinet", usr=cabinet_owner.login, tab=2))
+            return redirect(url_for("cabinet", usr=cabinet_owner.login, tab = 2))
         elif form_name == 'form_acc' and form_acc.validate():
             user = cur_user()
             if form_acc.change_password.data:
                 user.save(form_acc.change_password.data)
-            return redirect(url_for("cabinet", usr=cabinet_owner.login, tab=3))
+            return redirect(url_for("cabinet", usr=cabinet_owner.login, tab = 3))
     last = items[-6:]
     now = time = datetime.now(tz=None)
     return render_template('cabinet.html', form=form, form_acc=form_acc, user=user, items=items,
