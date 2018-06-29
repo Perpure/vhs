@@ -17,7 +17,7 @@
     </div>
 
     <div class="tabs">
-      <div value="about" class="tabs_tab tabs_tab__open tabs_tab__edge">Главная</div>
+      <div value="about" class="tabs_tab tabs_tab__edge">Главная</div>
       <div value="videos" class="tabs_tab">Видео пользователя</div>
       {% if settings %}
         <div value="settings" class="tabs_tab">Настройки канала</div>
@@ -92,6 +92,7 @@
       <h3>Данные канала</h3>
       <form action="" method="post" enctype="multipart/form-data" >
         {{form.hidden_tag()}}
+        <input type="hidden" name="form-name" value="form">
         <div class="section_set">
           {{ form.change_name.label }}
           <br>
@@ -168,6 +169,7 @@
       <h3>Настройка данных аккаунта</h3>
       <form action="" method="post" enctype="multipart/form-data" >
         {{form_acc.hidden_tag()}}
+        <input type="hidden" name="form-name" value="form_acc">
         <div class="section_set">
           {{ form_acc.change_password.label }}
           <br>
@@ -224,6 +226,7 @@
         var id=$(this).attr('value');
         $('#' + id).addClass('section__open');
       });
+      $('.tabs_tab').get({{tab}}).click();
     });
 
     $(document).ready(function(){

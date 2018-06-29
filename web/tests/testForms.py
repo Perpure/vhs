@@ -120,7 +120,7 @@ class TestAccountSettingsForm(unittest.TestCase):
     def test_should_has_need_fields(self):
         self.assertTrue(hasattr(self.form, "change_password"))
         self.assertTrue(hasattr(self.form, "cur_password"))
-        self.assertTrue(hasattr(self.form, "submit_changes"))
+        self.assertTrue(hasattr(self.form, "save_changes"))
 
     def test_should_change_password_field_is_password_field(self):
         self.assertIsInstance(self.form.change_password, PasswordField)
@@ -129,7 +129,7 @@ class TestAccountSettingsForm(unittest.TestCase):
         self.assertIsInstance(self.form.cur_password, PasswordField)
 
     def test_should_submit_changes_password_is_submit_field(self):
-        self.assertIsInstance(self.form.submit_changes, SubmitField)
+        self.assertIsInstance(self.form.save_changes, SubmitField)
 
 
 class TestAddRoomForm(unittest.TestCase):

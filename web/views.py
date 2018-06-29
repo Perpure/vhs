@@ -142,7 +142,8 @@ def choose_video(room_id):
             for sub in subs:
                 for video in sub.videos:
                     sub_items.append(video)
-        return render_template('choose_video.html', user=cur_user(), items=Video.get(), cap=cap, room=room, anon=user,now=now,sub_items=sub_items)
+        return render_template('choose_video.html', user=cur_user(), items=Video.get(), cap=cap, room=room, anon=user,
+                                                                                         now=now, sub_items=sub_items)
     else:
         return redirect(url_for('viewroom'))
 
@@ -224,12 +225,12 @@ def log():
 
 @app.route('/cabinet/<string:usr>', methods=['GET', 'POST'])
 @requiresauth
-def cabinet(usr):
+def cabinet(usr, tab=0):
     """
     Отвечает за вывод страницы личного кабинета
     :return: Страница личного кабинета
     """
-
+    print(tab)
     video_list = Video.get()
     items = []
     user = cur_user()
@@ -244,34 +245,37 @@ def cabinet(usr):
             items.append(item)
 
     form = UserProfileForm()
-    if form.validate_on_submit():
-        user = cur_user()
-        folder = str(user.id)
-        if form.change_name.data:
-            user.change_name(form.change_name.data)
-        if form.change_password.data:
-            user.save(form.change_password.data)
-        if form.channel_info.data:
-            user.change_channel_info(form.channel_info.data)
-
-        if 'avatar' in request.files:
-            avatar_url = avatars.save(form.avatar.data, folder=folder)
-            user.update_avatar(json.dumps({"url": avatar_url}))
-        if 'background' in request.files:
-            background_url = backgrounds.save(form.background.data, folder=folder)
-            user.update_background(json.dumps({"url": background_url}))
-        return redirect(url_for("cabinet", usr=cabinet_owner.login))
     form_acc = AccountSettingsForm()
-    if form_acc.validate_on_submit():
-        user = cur_user()
-        if form_acc.change_password.data:
-            user.save(form_acc.change_password.data)
-        return redirect(url_for("cabinet", usr=cabinet_owner.login))
+    if request.method == 'POST':
+        form_name = request.form['form-name']
+        tab=3
+        if form_name == 'form':
+            tab=2
+        if form_name == 'form' and form.validate():
+            print(120)
+            user = cur_user()
+            folder = str(user.id)
+            if form.change_name.data:
+                user.change_name(form.change_name.data)
+            if form.channel_info.data:
+                user.change_channel_info(form.channel_info.data)
+            if 'avatar' in request.files:
+                avatar_url = avatars.save(form.avatar.data, folder=folder)
+                user.update_avatar(json.dumps({"url": avatar_url}))
+            if 'background' in request.files:
+                background_url = backgrounds.save(form.background.data, folder=folder)
+                user.update_background(json.dumps({"url": background_url}))
+            return redirect(url_for("cabinet", usr=cabinet_owner.login, tab=2))
+        elif form_name == 'form_acc' and form_acc.validate():
+            user = cur_user()
+            if form_acc.change_password.data:
+                user.save(form_acc.change_password.data)
+            return redirect(url_for("cabinet", usr=cabinet_owner.login, tab=3))
     last = items[-6:]
     now = time = datetime.now(tz=None)
-    return render_template('cabinet.html', form=form,form_acc=form_acc, user=user, items=items,
+    return render_template('cabinet.html', form=form, form_acc=form_acc, user=user, items=items,
                            settings=is_cabinet_settings_available, usr=cabinet_owner, last=last,
-                           subscribed=(user in cabinet_owner.subscribers), now=now)
+                           subscribed=(user in cabinet_owner.subscribers), now=now, tab=tab)
 
 
 @app.route('/play/<string:vid>', methods=['GET', 'POST'])

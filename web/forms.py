@@ -130,7 +130,7 @@ class AccountSettingsForm(FlaskForm):
                                                                     Optional()])
     cur_password = PasswordField("Введите свой текущий пароль для подтверждения изменений:",
                                      validators=[Length(8, message='Пароль слишком короткий'), match])
-    submit_changes = SubmitField("Сохранить")
+    save_changes = SubmitField("Сохранить")
 
 
 class SearchingVideoForm(FlaskForm):
