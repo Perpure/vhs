@@ -286,6 +286,7 @@
   {
     background-color:fade(@color-main,70);
     min-height: 100%;
+    color:#e7e7e7;
   }
   &_set{
     margin-bottom: 10px;
@@ -297,10 +298,22 @@
   }
 }
 
+.buttondlc{
+    color:#e7e7e7;
+}
+
 .profile
 {
   height: 100px;
   margin-bottom: 20px;
+  &_subscribe-btn
+  {
+    color: white;
+    &:hover
+    {
+      color: @color-link;
+    }
+  }
   &_ava
   {
     height: 100%;
@@ -352,5 +365,13 @@
   {
     width: auto;
     margin-right: 20px;
+  }
+  &__small &_subscribe-btn
+  {
+    color: black;
+    &:hover
+    {
+      color: @color-link;
+    }
   }
 }

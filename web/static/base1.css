@@ -82,7 +82,6 @@ input[type="submit"]:hover,
 button:hover {
   border: 2px solid #1c180b;
   cursor: pointer;
-  color: black;
 }
 input[type="file"] {
   opacity: 0;
@@ -249,6 +248,10 @@ header {
 .searcher_btn {
   vertical-align: top;
   flex-grow: 1;
+  color: white;
+}
+.searcher_btn:hover {
+  color: #cc8787;
 }
 .switcher {
   background-color: rgba(232, 232, 232, 0.3);
@@ -486,6 +489,7 @@ header {
 .section__settings {
   background-color: rgba(28, 24, 11, 0.7);
   min-height: 100%;
+  color: #e7e7e7;
 }
 .section_set {
   margin-bottom: 10px;
@@ -494,9 +498,18 @@ header {
   display: inline-block;
   width: 110px;
 }
+.buttondlc {
+  color: #e7e7e7;
+}
 .profile {
   height: 100px;
   margin-bottom: 20px;
+}
+.profile_subscribe-btn {
+  color: white;
+}
+.profile_subscribe-btn:hover {
+  color: #cc8787;
 }
 .profile_ava {
   height: 100%;
@@ -540,6 +553,12 @@ header {
 .profile__small .profile_txt {
   width: auto;
   margin-right: 20px;
+}
+.profile__small .profile_subscribe-btn {
+  color: black;
+}
+.profile__small .profile_subscribe-btn:hover {
+  color: #cc8787;
 }
 .footer_line {
   display: inline-block;
