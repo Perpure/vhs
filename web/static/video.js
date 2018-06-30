@@ -24,7 +24,7 @@ setTimeout(function step(){
                     success:function(response1)
                     {
                         response1.forEach(function(element){
-                            $("#CSect").get(0).innerHTML='<div class="comment"><div class="comment_ava"><img src="'+element.ava+'" alt="" class="comment_ava__img"></div><div class="comment_txt"><p class="comment_txt__auth"><a href="/cabinet/'+element.login+'">'+element.name+'</a></p><p>'+element.text+'</p></div></div>'+$("#CSect").get(0).innerHTML;
+                            $("#CSect").get(0).innerHTML='<div class="comment"><div class="comment_ava"><img src="'+element.ava+'" alt="" class="comment_ava-img"></div><div class="comment_txt"><p class="comment_txt__auth"><a href="/cabinet/'+element.login+'">'+element.name+'</a></p><p>'+element.text+'</p></div></div>'+$("#CSect").get(0).innerHTML;
                         });
                     },
                     error:function(){}

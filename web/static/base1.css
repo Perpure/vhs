@@ -13,7 +13,7 @@ ul {
 body {
   font-family: 'Roboto', sans-serif;
   /*background-image:url("bg4.png");*/
-  background-color: rgba(240, 203, 142, 0.2);
+  background-color: rgba(232, 232, 232, 0.2);
   height: 100%;
   position: relative;
   display: flex;
@@ -22,12 +22,7 @@ body {
 textarea {
   resize: none;
   width: 40%;
-  background-color: rgba(240, 203, 142, 0.5);
-}
-header {
-  width: 100%;
-  vertical-align: top;
-  margin-bottom: 10px;
+  background-color: rgba(232, 232, 232, 0.5);
 }
 main {
   width: 70%;
@@ -36,13 +31,13 @@ main {
 }
 a,
 .fact {
-  color: #905a09;
+  color: #cc8787;
   text-decoration: none;
 }
 a:hover,
 .fact:hover {
   text-decoration: none;
-  color: #603c06;
+  color: #885a5a;
   cursor: pointer;
 }
 .fact {
@@ -62,26 +57,30 @@ a:hover,
 }
 input {
   border: none;
-  border-bottom: 2px solid #e8ab4a;
+  border-bottom: 2px solid #bdafaf;
   margin-bottom: 10px;
   padding-left: 5px;
-  background-color: rgba(240, 203, 142, 0.5);
+  background-color: rgba(232, 232, 232, 0.5);
+}
+input:focus {
+  border-bottom: 2px solid #1c180b;
 }
 input[type="submit"],
 button {
   height: 40px;
   padding: 10px;
   padding-top: 8px;
-  background-color: #f0cb8e;
+  background: none;
   transition: 0.5s;
   border: none;
-  border-bottom: 2px solid #e8ab4a;
+  border: 2px solid #bdafaf;
   font-weight: bold;
   vertical-align: top;
+  transition: 0.4s;
 }
 input[type="submit"]:hover,
 button:hover {
-  background-color: rgba(240, 203, 142, 0.5);
+  border: 2px solid #1c180b;
   cursor: pointer;
   color: black;
 }
@@ -106,6 +105,12 @@ search {
 .mid__wider {
   width: 600px;
 }
+header {
+  width: 100%;
+  vertical-align: top;
+  margin-bottom: 30px;
+  color: white;
+}
 .nav-menu {
   display: inline-block;
 }
@@ -126,17 +131,13 @@ search {
 .nav-menu_sub-btn {
   width: 100%;
   height: 50px;
-  background-color: #f7d8a2;
+  background-color: #1c0e00;
   padding: 13px 0 13px 0;
-  border-bottom: 2px solid rgba(240, 203, 142, 0.5);
-  color: black;
+  color: white;
 }
 .nav-menu_sub-btn:hover {
-  background-color: #f0cb8e;
+  background-color: rgba(9, 6, 0, 0.8);
   border-bottom: none;
-}
-.nav-menu_sub-btn__upst {
-  border-top: 2px solid #e8ab4a;
 }
 .nav-menu_in-btn {
   position: absolute;
@@ -156,27 +157,24 @@ search {
   padding: 15px;
   margin-left: -5px;
   text-align: center;
-  color: black;
-  border-right: 1px solid rgba(240, 203, 142, 0.5);
+  color: #e7e7e7;
   position: relative;
 }
 .nav-menu_nav-men:hover {
   cursor: pointer;
-  border-bottom: 2px solid #e8ab4a;
-  background-color: rgba(240, 203, 142, 0.4);
-  border-right: none;
-  margin-right: 1px;
+  color: white;
+  font-weight: 500;
 }
 .nav-menu_nav-men__nav-edge {
   border-right: none;
 }
 .mid-head {
   display: inline-block;
-  background-color: #F7E2C0;
+  background-color: #1c180b;
   height: 50px;
   padding-bottom: 5px;
   vertical-align: top;
-  border-bottom: 2px solid rgba(240, 203, 142, 0.5);
+  border-bottom: 2px solid rgba(232, 232, 232, 0.5);
   width: 100%;
   padding-left: 1%;
   padding-right: 1%;
@@ -194,7 +192,7 @@ search {
 }
 .logo_img,
 .logo_txt {
-  height: 100%;
+  height: 90%;
   display: inline-block;
   vertical-align: top;
   margin-top: 5px;
@@ -212,7 +210,7 @@ search {
   top: 60px;
   left: 17%;
   width: 60%;
-  background-color: #F7E2C0;
+  background-color: #1c180b;
   padding: 5px;
   display: none;
   z-index: 5;
@@ -232,11 +230,14 @@ search {
 }
 .searcher_field:hover {
   cursor: pointer;
-  color: black;
+  color: white;
 }
 .searcher_field__checked {
-  background-color: #f0cb8e;
+  background-color: #e8e8e8;
   font-weight: bold;
+  color: black;
+}
+.searcher_field__checked:hover {
   color: black;
 }
 .searcher_input {
@@ -250,22 +251,22 @@ search {
   flex-grow: 1;
 }
 .switcher {
-  background-color: rgba(240, 203, 142, 0.3);
+  background-color: rgba(232, 232, 232, 0.3);
   height: 34px;
   border-radius: 15px;
   width: 120px;
   margin-bottom: 10px;
-  border: 2px solid #F7E2C0;
+  border: 2px solid #bdafaf;
 }
 .switcher_arm {
   display: inline-block;
   height: 30px;
   border-radius: 15px;
   text-align: center;
-  background-color: rgba(240, 203, 142, 0.4);
+  background-color: rgba(232, 232, 232, 0.4);
   padding: 4px;
   width: 80px;
-  border-right: 1px solid #e8ab4a;
+  border-right: 1px solid #bdafaf;
 }
 .switcher_arm__inv {
   display: none;
@@ -278,7 +279,7 @@ search {
 }
 .switcher_arm__right {
   margin-left: 40px;
-  border-left: 1px solid #e8ab4a;
+  border-left: 1px solid #bdafaf;
   border-right: none;
 }
 .switcher_radio {
@@ -387,7 +388,7 @@ search {
   cursor: pointer;
 }
 .video-comments {
-  border-top: 2px solid #e8ab4a;
+  border-top: 2px solid #bdafaf;
   margin-top: 10px;
   padding-top: 10px;
 }
@@ -416,17 +417,17 @@ search {
   font-size: 110%;
 }
 .tag {
-  background-color: #e8ab4a;
+  background-color: #bdafaf;
   color: white;
   border-radius: 10px;
   padding: 3px;
   margin-right: 5px;
 }
 .tag:hover {
-  border: 2px solid #e8ab4a;
+  border: 2px solid #bdafaf;
   background-color: rgba(0, 0, 0, 0);
   cursor: pointer;
-  color: #e8ab4a;
+  color: #bdafaf;
   margin-right: 1px;
   font-weight: bold;
 }
@@ -448,14 +449,15 @@ search {
   top: 15vh;
   width: 70%;
   overflow-y: auto;
-  background-color: rgba(240, 203, 142, 0.8);
+  background-color: rgba(232, 232, 232, 0.8);
 }
 .solid {
-  background-color: rgba(247, 226, 192, 0.8);
+  background-color: rgba(28, 24, 11, 0.8);
   vertical-align: top;
   padding: 7px;
   width: 100%;
   padding-bottom: 0;
+  color: #e7e7e7;
 }
 .tabs_tab {
   display: inline-block;
@@ -468,7 +470,7 @@ search {
   -webkit-user-select: none;
 }
 .tabs_tab__open {
-  border-bottom: 4px solid #f0cb8e;
+  border-bottom: 4px solid #e8e8e8;
 }
 .tabs_tab__edge {
   margin-left: 0;
@@ -482,7 +484,7 @@ search {
   display: block;
 }
 .section__settings {
-  background-color: rgba(247, 226, 192, 0.7);
+  background-color: rgba(28, 24, 11, 0.7);
   min-height: 100%;
 }
 .section_set {
@@ -588,7 +590,7 @@ footer {
   margin: 0 auto;
   flex: 0 0 auto;
   font-weight: bold;
-  border-top: 2px solid rgba(240, 203, 142, 0.3);
+  border-top: 2px solid rgba(232, 232, 232, 0.3);
   transition: 0.3s;
   padding-top: 10px;
 }
@@ -615,7 +617,7 @@ footer:hover span {
   }
   .nav-menu {
     text-align: center;
-    border-top: 2px solid rgba(240, 203, 142, 0.5);
+    border-top: 2px solid rgba(232, 232, 232, 0.5);
     width: 100%;
   }
   .nav-menu_nav-men:hover {
@@ -675,7 +677,7 @@ footer:hover span {
   .nav-menu_nav-men {
     display: none;
     border-right: none;
-    border-bottom: 1px solid rgba(240, 203, 142, 0.5);
+    border-bottom: 1px solid rgba(232, 232, 232, 0.5);
   }
   .nav-menu_menu-holder {
     display: block;
