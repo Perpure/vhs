@@ -69,5 +69,9 @@ def save_video(video_file, title):
 def prepare_video(video_id, ext):
     if ext != 'mp4':
         standardize_video_extension_mp4(video_id, ext)
-    standardize_video_extension_ogv(video_id, ext)
-    standardize_video_extension_webm(video_id, ext)
+    prepare_thread_ogv = threading.Thread(target=standardize_video_extension_ogv, args=(video_id, ext))
+    prepare_thread_ogv.start()
+    # standardize_video_extension_ogv(video_id, ext)
+    # standardize_video_extension_webm(video_id, ext)
+    prepare_thread_webm = threading.Thread(target=standardize_video_extension_webm, args=(video_id, ext))
+    prepare_thread_webm.start()
