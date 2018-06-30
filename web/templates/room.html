@@ -88,7 +88,11 @@
 
 {% if room.capitan_id != anon.id %}
     {% if room.video_id %}
-        <video class="result-video" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
+        <video class="result-video" preload="auto" id="ReVi">
+            <source src="{{url_for('get_video', vid=vid, file='video.mp4')}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+            <source src="{{url_for('get_video', vid=vid, file='video.ogv')}}" type='video/ogg; codecs="theora, vorbis"'>
+            <source src="{{url_for('get_video', vid=vid, file='video.webm')}}" type='video/webm; codecs="vp8.0, vorbis"'>
+        </video>
     {% endif %}
 {% endif %}
 
