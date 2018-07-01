@@ -5,7 +5,7 @@
   border-radius:15px;
   width: 120px;
   margin-bottom: 10px;
-  border: 2px solid @color-main;
+  border: 2px solid @color-border;
   &_arm
   {
     display:inline-block;
@@ -55,7 +55,7 @@
   margin-right:2%;
   margin-bottom:10px;
   vertical-align: top;
-  height: 160px;
+  height: calc(8% + 100px);
   &-js
   {
     height: 40vw;
@@ -247,6 +247,7 @@
     padding: 7px;
     width: 100%;
     padding-bottom: 0;
+    color: #e7e7e7;
 }
 
 .tabs
@@ -285,6 +286,7 @@
   {
     background-color:fade(@color-main,70);
     min-height: 100%;
+    color:#e7e7e7;
   }
   &_set{
     margin-bottom: 10px;
@@ -296,10 +298,26 @@
   }
 }
 
+.buttondlc{
+    color:#e7e7e7;
+}
+
 .profile
 {
   height: 100px;
   margin-bottom: 20px;
+  &_subscribe-btn
+  {
+    color: white;
+    &:hover
+    {
+      color: @color-link;
+    }
+    &__sub-list
+    {
+      color: black;
+    }
+  }
   &_ava
   {
     height: 100%;
@@ -351,5 +369,13 @@
   {
     width: auto;
     margin-right: 20px;
+  }
+  &__small &_subscribe-btn
+  {
+    color: black;
+    &:hover
+    {
+      color: @color-link;
+    }
   }
 }
