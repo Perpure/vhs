@@ -511,6 +511,9 @@ header {
 .profile_subscribe-btn:hover {
   color: #cc8787;
 }
+.profile_subscribe-btn__sub-list {
+  color: black;
+}
 .profile_ava {
   height: 100%;
   width: 100px;
