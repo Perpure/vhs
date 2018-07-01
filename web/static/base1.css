@@ -301,7 +301,7 @@ header {
   margin-right: 2%;
   margin-bottom: 10px;
   vertical-align: top;
-  height: 160px;
+  height: calc(108%);
 }
 .video-js {
   height: 40vw;
