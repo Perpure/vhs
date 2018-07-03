@@ -202,6 +202,10 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# NodeJS
+node_modules/
+
+# Project
 /uploads/*
 /avatar/*
 /images/*
