@@ -21,8 +21,16 @@ def on_leave(room):
 
 @socketio.on('calibration_event')
 def send_room_message(message):
+    print('calibrate_ev')
     if message['data'] == 'calibrate':
         print('calibrate')
+        user = AnonUser.query.get(session['anon_id'])
+        color = user.color
+        print(user.id)
+        print(user.color)
+        socketio.emit('my_response',
+                      {'data': 'calibrate'},
+                      broadccast=True)
 
 
 @socketio.on('message')

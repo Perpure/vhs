@@ -18,5 +18,5 @@ configure_uploads(app, (avatars, backgrounds))
 import web.views
 import web.service
 from .websocket import (
-    handle_client_connect_event
+    send_room_message
 )
