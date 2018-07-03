@@ -94,11 +94,7 @@ def askAct(room_id):
         room = Room.query.get(room_id)
         user = AnonUser.query.get(session['anon_id'])
         action = user.action
-        if action == 'calibrate':
-            user.update_action('')
-            return jsonify({"action": action,
-                            "color": user.color})
-        elif action == 'result' or action == 'resultS':
+        if action == 'result' or action == 'resultS':
             return result(action, user)
         elif action == 'refresh':
             user.update_action('')
