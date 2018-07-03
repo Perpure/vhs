@@ -3,10 +3,6 @@
 <h1>Комната {{room.name}}</h1>
 {% if room.capitan_id == anon.id %}
     <button id="calibrate_btn">Калибровка</button>
-{#    <form id='calibrate' action="" method="post">#}
-{#        {{room_form.hidden_tag()}}#}
-{#        {{ room_form.submit }}#}
-{#    </form>#}
     <h5>Загрузите калибровочное фото</h5>
     <form action="" method="post" enctype="multipart/form-data">
         <div class="loader"><div><input id="image" name="image" type="file" accept="image/*" capture></div></div>
@@ -119,9 +115,10 @@
     });
 
     {% if room.capitan_id == anon.id %}
-    $('#calibrate_btn').click(function(event) {
-        socket.emit('multiscreen_set_calibrate', {room: ROOM_ID, data: 'calibrate'});
-        return false;
+    $('#calibrate_btn').click(function() {
+        socket.emit('multiscreen_set_calibrate', {
+            room: ROOM_ID
+        });
     });
     {% endif %}
 
@@ -193,7 +190,10 @@
             error:function(){}
         });
 
-        setTimeout(step,speed)});
+        setTimeout(function() {
+            step();
+        },speed);
+    }, speed);
 
     $(document).ready(function() {
         var ratio = window.devicePixelRatio || 1;

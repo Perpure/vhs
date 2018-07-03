@@ -17,4 +17,4 @@ configure_uploads(app, (avatars, backgrounds))
 
 import web.views
 import web.service
-from .websocket import on_join, on_leave, multiscreen_show_calibrate
+import web.websocket

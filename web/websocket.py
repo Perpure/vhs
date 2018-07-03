@@ -19,4 +19,4 @@ def on_leave(room):
 @socketio.on('multiscreen_set_calibrate')
 def multiscreen_show_calibrate(message):
     socketio.emit('multiscreen_show_calibrate',
-                  broadccast=True)
+                  broadcast=True)
