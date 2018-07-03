@@ -2,7 +2,7 @@
 {% block content %}
 <h1>Комната {{room.name}}</h1>
 {% if room.capitan_id == anon.id %}
-    <form action="" method="post">
+    <form id='calibrate' action="" method="post">
         {{room_form.hidden_tag()}}
         {{ room_form.submit }}
     </form>
@@ -93,8 +93,16 @@
         <video class="result-video" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
     {% endif %}
 {% endif %}
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
 
 <script>
+    {% if room.capitan_id == anon.id %}
+    $('form#calibrate').submit(function(event) {
+        socket.emit('calibration_event', {room: {{ room.id }}, data: 'calibrate'});
+        return false;
+    });
+    {% endif %}
+
     function countDown(Time)
     {
         $('#cod').css("margin-top","10px");
@@ -102,13 +110,24 @@
             Time--;
             $('#cod').html("<h5>Показ начнётся через: " + Time + "с</h5>");
             if(Time)setTimeout(step,1000);
-            else $('#cod').empty();
+            else $('#cod').myeventempty();
         },1000);
     }
 
     var ID = {{ room.id }};
 
     var speed = 4000;
+
+    $(document).ready(function() {
+    socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+    socket.on('connect', function() {
+        socket.emit('join', ID);
+    });
+    socket.on('disconnect', function() {
+        socket.emit('leave', ID);
+    });
+    });
+
 
     function Result()
     {
@@ -123,58 +142,59 @@
         $('#Footer').hide();
     }
 
-    setTimeout(function step(){
-        $.ajax({
-            url:"/askAct/"+ID,
-            type:"GET",
-            dataType:"json",
-            success:function(response)
-            {
-                if(response.action==="calibrate"){
-                    $('#Body').css('overflow', 'hidden');
-                    $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; ' +
-                        'background:'+response.color+';"></div>');
-                    $('#calibrImage').click(fullscreen);
-                    $('#Footer').hide();
-                    $('#Header').hide();
-                }
 
-                if(response.action==="result"){
-                    $('#Body').css('overflow', 'hidden');
-                    setTimeout(Result,response.time);
-                    $('#ReVi').css({
-                        top: response.top + "%",
-                        left: response.left + "%",
-                        width: response.width+"%",
-                    });
-                    $('#ReVi').css({
-                        top: $('#ReVi').height() * ( response.top / response.width ) + "px",
-                        left: $('#ReVi').width() * ( response.left / response.width ) + "px",
-                        width: response.width+"%",
-                    });
-                    if(response.noSound)$("#ReVi").prop('muted', true);
-                    var time = Math.round(response.time / 1000);
-                    countDown(time);
-                }
-
-                if(response.action==="refresh"){
-                    location.reload();
-                }
-
-                if(response.action==="update"){
-                    {% if room.capitan_id == anon.id %}
-                        $("#submit").show();
-                        $("#countUsers").html("Количество участников: "+response.count);
-                    {% else %}
-                        $("#countUsers").html(response.count);
-                    {% endif %}
-                }
-            },
-            error:function(){}
-        });
-
-        setTimeout(step,speed);
-    },speed);
+    {#setTimeout(function step(){#}
+    {#    $.ajax({#}
+    {#        url:"/askAct/"+ID,#}
+    {#        type:"GET",#}
+    {#        dataType:"json",#}
+    {#        success:function(response)#}
+    {#        {#}
+    {#            if(response.action==="calibrate"){#}
+    {#                $('#Body').css('overflow', 'hidden');#}
+    {#                $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; ' +#}
+    {#                    'background:'+response.color+';"></div>');#}
+    {#                $('#calibrImage').click(fullscreen);#}
+    {#                $('#Footer').hide();#}
+    {#                $('#Header').hide();#}
+    {#            }#}
+    {##}
+    {#            if(response.action==="result"){#}
+    {#                $('#Body').css('overflow', 'hidden');#}
+    {#                setTimeout(Result,response.time);#}
+    {#                $('#ReVi').css({#}
+    {#                    top: response.top + "%",#}
+    {#                    left: response.left + "%",#}
+    {#                    width: response.width+"%",#}
+    {#                });#}
+    {#                $('#ReVi').css({#}
+    {#                    top: $('#ReVi').height() * ( response.top / response.width ) + "px",#}
+    {#                    left: $('#ReVi').width() * ( response.left / response.width ) + "px",#}
+    {#                    width: response.width+"%",#}
+    {#                });#}
+    {#                if(response.noSound)$("#ReVi").prop('muted', true);#}
+    {#                var time = Math.round(response.time / 1000);#}
+    {#                countDown(time);#}
+    {#            }#}
+    {##}
+    {#            if(response.action==="refresh"){#}
+    {#                location.reload();#}
+    {#            }#}
+    {##}
+    {#            if(response.action==="update"){#}
+    {#                {% if room.capitan_id == anon.id %}#}
+    {#                    $("#submit").show();#}
+    {#                    $("#countUsers").html("Количество участников: "+response.count);#}
+    {#                {% else %}#}
+    {#                    $("#countUsers").html(response.count);#}
+    {#                {% endif %}#}
+    {#            }#}
+    {#        },#}
+    {#        error:function(){}#}
+    {#    });#}
+    {##}
+    {#    setTimeout(step,speed);#}
+    {#{,speed);#}
 
     $(document).ready(function() {
         var ratio = window.devicePixelRatio || 1;
