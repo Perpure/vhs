@@ -1,4 +1,4 @@
-[![pipeline status](https://gitlab.com/multiscreen/vhs/badges/master/pipeline.svg)](https://gitlab.com/multiscreen/vhs/commits/master) [![coverage report](https://gitlab.com/multiscreen/vhs/badges/master/coverage.svg)](https://gitlab.com/multiscreen/vhs/commits/master)
+﻿[![pipeline status](https://gitlab.com/multiscreen/vhs/badges/master/pipeline.svg)](https://gitlab.com/multiscreen/vhs/commits/master) [![coverage report](https://gitlab.com/multiscreen/vhs/badges/master/coverage.svg)](https://gitlab.com/multiscreen/vhs/commits/master)
 
 
 ## Установка и развертывание web-приложения
@@ -42,7 +42,15 @@
     python migrate.py
     ```
 
-7. Запустить приложение
+7. Выполнить транспиляцию .less файла
+
+    ```
+    cd web/static
+    lessc base.less > base.css
+    cd ../..
+    ```
+
+8. Запустить приложение
 
     ```
     python run.py
