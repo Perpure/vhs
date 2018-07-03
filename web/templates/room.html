@@ -2,10 +2,11 @@
 {% block content %}
 <h1>Комната {{room.name}}</h1>
 {% if room.capitan_id == anon.id %}
-    <form id='calibrate' action="" method="post">
-        {{room_form.hidden_tag()}}
-        {{ room_form.submit }}
-    </form>
+    <button id="calibrate_btn">Калибровка</button>
+{#    <form id='calibrate' action="" method="post">#}
+{#        {{room_form.hidden_tag()}}#}
+{#        {{ room_form.submit }}#}
+{#    </form>#}
     <h5>Загрузите калибровочное фото</h5>
     <form action="" method="post" enctype="multipart/form-data">
         <div class="loader"><div><input id="image" name="image" type="file" accept="image/*" capture></div></div>
@@ -93,41 +94,33 @@
         <video class="result-video" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
     {% endif %}
 {% endif %}
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
 
 <script>
-    var ID = {{ room.id }};
+    var ROOM_ID = {{ room.id }};
+    var ROOM_COLOR = '{{ color }}';
     $(document).ready(function() {
     socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
     {% if room.capitan_id != anon.id %}
-        socket.on('my_response', function(msg) {
-            console.log('calibrate action get')
-            console.log(msg.data);
-            console.log('{{ color }}');
-            if(msg.data == 'calibrate'){
-                    {#socket.emit('color_event', {room: {{ anon.id }}, data: 'calibrate'});#}
-                    $('#Body').css('overflow', 'hidden');
-                    $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; ' +
-                        'background:' + '{{ color }}' + ';"></div>');
-                    $('#calibrImage').click(fullscreen);
-                    $('#Footer').hide();
-                    $('#Header').hide();
-            }
+        socket.on('multiscreen_show_calibrate', function(msg) {
+            $('#Body').css('overflow', 'hidden');
+            $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; ' +
+                'background:' + ROOM_COLOR + ';"></div>');
+            $('#calibrImage').click(fullscreen);
+            $('#Footer').hide();
+            $('#Header').hide();
     });
     {% endif %}
     socket.on('connect', function() {
-        console.log('join')
-        socket.emit('join', ID);
+        socket.emit('join', ROOM_ID);
     });
     socket.on('disconnect', function() {
-        socket.emit('leave', ID);
+        socket.emit('leave', ROOM_ID);
     });
     });
 
     {% if room.capitan_id == anon.id %}
-    $('form#calibrate').submit(function(event) {
-        console.log('calibration_event')
-        socket.emit('calibration_event', {room: {{ room.id }}, data: 'calibrate'});
+    $('#calibrate_btn').click(function(event) {
+        socket.emit('multiscreen_set_calibrate', {room: ROOM_ID, data: 'calibrate'});
         return false;
     });
     {% endif %}
@@ -139,7 +132,7 @@
             Time--;
             $('#cod').html("<h5>Показ начнётся через: " + Time + "с</h5>");
             if(Time)setTimeout(step,1000);
-            else $('#cod').myeventempty();
+            else $('#cod').empty();
         },1000);
     }
 
@@ -159,58 +152,48 @@
     }
 
 
-    {#setTimeout(function step(){#}
-    {#    $.ajax({#}
-    {#        url:"/askAct/"+ID,#}
-    {#        type:"GET",#}
-    {#        dataType:"json",#}
-    {#        success:function(response)#}
-    {#        {#}
-    {#            if(response.action==="calibrate"){#}
-    {#                $('#Body').css('overflow', 'hidden');#}
-    {#                $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; ' +#}
-    {#                    'background:'+response.color+';"></div>');#}
-    {#                $('#calibrImage').click(fullscreen);#}
-    {#                $('#Footer').hide();#}
-    {#                $('#Header').hide();#}
-    {#            }#}
-    {##}
-    {#            if(response.action==="result"){#}
-    {#                $('#Body').css('overflow', 'hidden');#}
-    {#                setTimeout(Result,response.time);#}
-    {#                $('#ReVi').css({#}
-    {#                    top: response.top + "%",#}
-    {#                    left: response.left + "%",#}
-    {#                    width: response.width+"%",#}
-    {#                });#}
-    {#                $('#ReVi').css({#}
-    {#                    top: $('#ReVi').height() * ( response.top / response.width ) + "px",#}
-    {#                    left: $('#ReVi').width() * ( response.left / response.width ) + "px",#}
-    {#                    width: response.width+"%",#}
-    {#                });#}
-    {#                if(response.noSound)$("#ReVi").prop('muted', true);#}
-    {#                var time = Math.round(response.time / 1000);#}
-    {#                countDown(time);#}
-    {#            }#}
-    {##}
-    {#            if(response.action==="refresh"){#}
-    {#                location.reload();#}
-    {#            }#}
-    {##}
-    {#            if(response.action==="update"){#}
-    {#                {% if room.capitan_id == anon.id %}#}
-    {#                    $("#submit").show();#}
-    {#                    $("#countUsers").html("Количество участников: "+response.count);#}
-    {#                {% else %}#}
-    {#                    $("#countUsers").html(response.count);#}
-    {#                {% endif %}#}
-    {#            }#}
-    {#        },#}
-    {#        error:function(){}#}
-    {#    });#}
-    {##}
-    {#    setTimeout(step,speed);#}
-    {#{,speed);#}
+    setTimeout(function step(){
+        $.ajax({
+            url:"/askAct/"+ROOM_ID,
+            type:"GET",
+            dataType:"json",
+            success:function(response)
+            {
+                if(response.action==="result"){
+                    $('#Body').css('overflow', 'hidden');
+                    setTimeout(Result,response.time);
+                    $('#ReVi').css({
+                        top: response.top + "%",
+                        left: response.left + "%",
+                        width: response.width+"%",
+                    });
+                    $('#ReVi').css({
+                        top: $('#ReVi').height() * ( response.top / response.width ) + "px",
+                        left: $('#ReVi').width() * ( response.left / response.width ) + "px",
+                        width: response.width+"%",
+                    });
+                    if(response.noSound)$("#ReVi").prop('muted', true);
+                    var time = Math.round(response.time / 1000);
+                    countDown(time);
+                }
+
+                if(response.action==="refresh"){
+                    location.reload();
+                }
+
+                if(response.action==="update"){
+                    {% if room.capitan_id == anon.id %}
+                        $("#submit").show();
+                        $("#countUsers").html("Количество участников: "+response.count);
+                    {% else %}
+                        $("#countUsers").html(response.count);
+                    {% endif %}
+                }
+            },
+            error:function(){}
+        });
+
+        setTimeout(step,speed)});
 
     $(document).ready(function() {
         var ratio = window.devicePixelRatio || 1;
