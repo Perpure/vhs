@@ -1,1 +1,1 @@
-import './web/static/base.less';
+import './web/static/css/base.less';
