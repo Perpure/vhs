@@ -1,7 +1,5 @@
-var elem = document.getElementById("logoTxt");
 var body = document.getElementById("Body");
 var wid = body.offsetWidth;
-if(wid<=550)elem.innerHTML="VHS";
 
 var searching=false;
 var search=document.getElementById("Search");
@@ -37,7 +35,7 @@ holder.addEventListener('click',function(){
     {
         for(var i = 0; i<els.length; i++)
             els[i].style.display="block";
-        holder.style.backgroundColor="rgba(240, 203, 142,0.4)";
+        holder.style.backgroundColor="rgb(73, 69, 59)";
         opned=true;
     }
 });

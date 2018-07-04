@@ -5,8 +5,8 @@
   border-radius:15px;
   width: 120px;
   margin-bottom: 10px;
-  border: 2px solid @color-main;
-  &_arm
+  border: 2px solid @color-border;
+  &_pill
   {
     display:inline-block;
     height:30px;
@@ -16,6 +16,18 @@
     padding:4px;
     width: 80px;
     border-right: 1px solid @color-border;
+    &__right
+    {
+      margin-left: 40px;
+      border-left: 1px solid @color-border;
+      border-right: none;
+    }
+  }
+  &_arm
+  {
+    display:inline-block;
+    width: 100%;
+    height: 100%;
     &__inv
     {
       display:none;
@@ -27,12 +39,6 @@
     &:hover > label
     {
       cursor:pointer;
-    }
-    &__right
-    {
-      margin-left: 40px;
-      border-left: 1px solid @color-border;
-      border-right: none;
     }
   }
   &_radio
@@ -55,7 +61,7 @@
   margin-right:2%;
   margin-bottom:10px;
   vertical-align: top;
-  height: 160px;
+  height: calc(8% + 100px);
   &-js
   {
     height: 40vw;
@@ -164,7 +170,11 @@
     border-top:2px solid @color-border;
     margin-top:10px;
     padding-top:10px;
-
+    &_refresh-btn
+    {
+      display: block;
+      margin-bottom: 10px;
+    }
   }
 }
 .comment
@@ -195,6 +205,14 @@
     font-weight:bold;
     font-size:110%;
   }
+  &__poster
+  {
+    margin-bottom: 55px;
+    textarea
+    {
+      width: 200%;
+    }
+  }
 }
 .tag
 {
@@ -223,6 +241,14 @@
     margin-bottom:10px;
 }
 
+.calibration-image
+{
+  position: fixed;
+  width: 110%;
+  height: 110%;
+  z-index: 5;
+}
+
 .result-video
 {
     z-index:5;
@@ -247,6 +273,7 @@
     padding: 7px;
     width: 100%;
     padding-bottom: 0;
+    color: #e7e7e7;
 }
 
 .tabs
@@ -285,6 +312,7 @@
   {
     background-color:fade(@color-main,70);
     min-height: 100%;
+    color:#e7e7e7;
   }
   &_set{
     margin-bottom: 10px;
@@ -296,10 +324,26 @@
   }
 }
 
+.buttondlc{
+    color:#e7e7e7;
+}
+
 .profile
 {
   height: 100px;
   margin-bottom: 20px;
+  &_subscribe-btn
+  {
+    color: white;
+    &:hover
+    {
+      color: @color-link;
+    }
+    &__sub-list
+    {
+      color: black;
+    }
+  }
   &_ava
   {
     height: 100%;
@@ -351,5 +395,13 @@
   {
     width: auto;
     margin-right: 20px;
+  }
+  &__small &_subscribe-btn
+  {
+    color: black;
+    &:hover
+    {
+      color: @color-link;
+    }
   }
 }

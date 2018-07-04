@@ -56,7 +56,6 @@
         <br>
         <input type="submit" value="Запостить" id="addC">
     {%endif%}
-
     <div id="CSect">
         {% for comment in video.comments|sort(attribute="id")|reverse %}
             <div class="comment">

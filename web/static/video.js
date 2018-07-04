@@ -5,7 +5,6 @@ for(var i=0;i<hash.length;i++)
     if(hash[i]=='/')sl=i;
 hash=hash.substring(sl+1);
 
-var commSection=document.getElementById("CSect");
 var curComms = document.getElementsByClassName("comment").length;
 setTimeout(function step(){
     $.ajax({
@@ -24,7 +23,12 @@ setTimeout(function step(){
                     success:function(response1)
                     {
                         response1.forEach(function(element){
-                            $("#CSect").get(0).innerHTML='<div class="comment"><div class="comment_ava"><img src="'+element.ava+'" alt="" class="comment_ava__img"></div><div class="comment_txt"><p class="comment_txt__auth"><a href="/cabinet/'+element.login+'">'+element.name+'</a></p><p>'+element.text+'</p></div></div>'+$("#CSect").get(0).innerHTML;
+                          var comment=$('<div class="comment"></div>');
+                          var ava=$('<div class="comment_ava"><img src="'+element.ava+'" alt="" class="comment_ava-img"></div>');
+                          var txt=$('<div><p class="comment_author"><a href="/cabinet/'+element.login+'">'+element.name+'</a></p><p>'+element.text+'</p></div></div>');
+                          comment.append(ava);
+                          comment.append(txt);
+                          $('#CSect').prepend(comment);
                         });
                     },
                     error:function(){}
@@ -37,10 +41,8 @@ setTimeout(function step(){
     setTimeout(step,speed);
 },speed);
 
-var addCom=document.getElementById("addC");
-var plate=document.getElementById("txtPlate");
-if(addCom!=null)addCom.addEventListener('click',function(){
-            var txt=plate.value;
+if($('#addC')!=null)$('#addC').click(function(){
+            var txt=$('#txtPlate').val();
             $.ajax({
                url:"/postComm/"+hash+"/",
                type:"GET",
