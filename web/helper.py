@@ -61,22 +61,22 @@ def read_video(vid):
         return b
 
 
+def delta_resolution(width, height, w, h):
+    return abs((width / height) - (w / h))
+
+
 def calibrate_resolution(resolution, w, h):
     width = resolution[0]
     height = resolution[1]
     if (width / height) > (w / h):
         while True:
-            e = abs((width / height) - (w / h))
             height += 2
-            if e < abs((width / height) - (w / h)):
-                height -= 2
+            if delta_resolution(width, height - 2, w, h) < delta_resolution(width, height, w, h):
                 return [width, height]
     if (width / height) < (w / h):
         while True:
-            e = abs((width / height) - (w / h))
             width += 2
-            if e < abs((w / h) - (width / height)):
-                width -= 2
+            if delta_resolution(width - 2, height, w, h) < delta_resolution(width, height, w, h):
                 return [width, height]
     return [width, height]
 
