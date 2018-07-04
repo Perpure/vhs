@@ -42,13 +42,7 @@
     python migrate.py
     ```
 
-7. Выполнить транспиляцию .less файла
-
-    ```
-    cd web/static
-    lessc base.less > base.css
-    cd ../..
-    ```
+7. Выполнить действия по установки инструментов для _frontend_
 
 8. Запустить приложение
 
@@ -91,3 +85,22 @@ export DATABASE_URL=sqlite:////tmp/db.sqlite
 ```
 export DATABASE_URL=postgres://username:password@host:port/datbase_name
 ```
+
+## Установка инструментов для _frontend_
+
+1. Установить _NodeJS_ (_LST version_): https://nodejs.org/en/download/
+2. Установить `yarn`: https://yarnpkg.com/en/docs/install
+3. Установить зависимости:
+
+    ```
+    yarn
+    ```
+
+4. Запустить сборщик:
+
+    ```
+    # одноразовая сборка
+    yarn build
+    # сборка по мере изменения файлов frontend
+    yarn watch
+    ```

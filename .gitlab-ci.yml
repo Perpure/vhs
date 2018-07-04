@@ -1,4 +1,4 @@
-image: python:latest
+image: python:3.6-stretch
 
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache"
@@ -16,10 +16,9 @@ before_script:
 
 stages:
   - code-test
- 
+
 code-test:
   stage: code-test
   script:
   - nose2 web -C
   - pycodestyle web --max-line-length=120 --ignore=E402 --show-source --show-pep8
- 

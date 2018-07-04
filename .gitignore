@@ -204,6 +204,8 @@ $RECYCLE.BIN/
 
 # NodeJS
 node_modules/
+yarn-error.log
+web/static/css/bundle.*
 
 # Project
 /uploads/*
