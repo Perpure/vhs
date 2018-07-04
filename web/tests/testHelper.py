@@ -3,7 +3,7 @@ import unittest
 import os
 from web import app, db
 from web.models import User, Video
-from web.helper import calibrate_resolution
+from web.parser import calibrate_resolution
 from flask import session
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
