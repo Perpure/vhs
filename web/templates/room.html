@@ -2,6 +2,7 @@
 {% block content %}
 <h1>Комната {{room.name}}</h1>
 {% if room.capitan_id == anon.id %}
+    {% if count > 1 %}
     <button id="calibrate_btn">Калибровка</button>
     <h5>Загрузите калибровочное фото</h5>
     <form action="" method="post" enctype="multipart/form-data">
@@ -19,6 +20,7 @@
         {% if map_ex %}
         {% endif %}
     </form>
+    {% endif %}
 {% endif %}
 
 {% if room.capitan_id != anon.id %}
@@ -95,31 +97,52 @@
     var ROOM_ID = {{ room.id }};
     var ROOM_COLOR = '{{ color }}';
     $(document).ready(function() {
-    socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
-    {% if room.capitan_id != anon.id %}
-        socket.on('multiscreen_show_calibrate', function(msg) {
+      socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+      {% if room.capitan_id != anon.id %}
+          socket.on('multiscreen_show_calibrate', function(msg) {
+              $('#Body').css('overflow', 'hidden');
+              $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; ' +
+                  'background:' + ROOM_COLOR + ';"></div>');
+              $('#calibrImage').click(fullscreen);
+              $('#Footer').hide();
+              $('#Header').hide();
+          });
+          socket.on('multiscreen_show_result', function(response) {
+            setTimeout(Result,4000);
+            console.log("");
             $('#Body').css('overflow', 'hidden');
-            $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; ' +
-                'background:' + ROOM_COLOR + ';"></div>');
-            $('#calibrImage').click(fullscreen);
-            $('#Footer').hide();
-            $('#Header').hide();
-    });
-    {% endif %}
-    socket.on('connect', function() {
-        socket.emit('join', ROOM_ID);
-    });
-    socket.on('disconnect', function() {
-        socket.emit('leave', ROOM_ID);
-    });
+            $('#ReVi').css({
+                top: response.top + "%",
+                left: response.left + "%",
+                width: response.width+"%",
+            });
+            $('#ReVi').css({
+                top: $('#ReVi').height() * ( response.top / response.width ) + "px",
+                left: $('#ReVi').width() * ( response.left / response.width ) + "px",
+                width: response.width+"%",
+            });
+            if(response.noSound)$("#ReVi").prop('muted', true);
+            countDown(4);
+          });
+      {% endif %}
+      socket.on('connect', function() {
+          socket.emit('join', ROOM_ID, socket.id);
+      });
+      socket.on('disconnect', function() {
+          socket.emit('leave', ROOM_ID);
+      });
     });
 
     {% if room.capitan_id == anon.id %}
-    $('#calibrate_btn').click(function() {
-        socket.emit('multiscreen_set_calibrate', {
-            room: ROOM_ID
-        });
-    });
+      $('#calibrate_btn').click(function() {
+          socket.emit('multiscreen_set_calibrate', {
+              room: ROOM_ID
+          });
+      });
+      $('#showRes').click(function() {
+          socket.emit('multiscreen_set_show', ROOM_ID);
+          countDown(4);
+      });
     {% endif %}
 
     function countDown(Time)
@@ -156,24 +179,6 @@
             dataType:"json",
             success:function(response)
             {
-                if(response.action==="result"){
-                    $('#Body').css('overflow', 'hidden');
-                    setTimeout(Result,response.time);
-                    $('#ReVi').css({
-                        top: response.top + "%",
-                        left: response.left + "%",
-                        width: response.width+"%",
-                    });
-                    $('#ReVi').css({
-                        top: $('#ReVi').height() * ( response.top / response.width ) + "px",
-                        left: $('#ReVi').width() * ( response.left / response.width ) + "px",
-                        width: response.width+"%",
-                    });
-                    if(response.noSound)$("#ReVi").prop('muted', true);
-                    var time = Math.round(response.time / 1000);
-                    countDown(time);
-                }
-
                 if(response.action==="refresh"){
                     location.reload();
                 }
@@ -246,28 +251,5 @@
         $("#instructionBtn").click(function(){
         $("#instruction").slideToggle("slow",function(){});
       });});
-
-
-{% if room.capitan_id == anon.id %}
-    {% if count == 1 %}
-        $('#submit').hide();
-    {% endif %}
-    {% if room.video_id %}
-        $('#showRes').click(function(){
-            var hash = window.location.href;
-            var sl = 0;
-            for(var i = 0;i<hash.length;i++) {
-                if (hash[i] === '/') sl = i;
-            }
-            hash = hash.substring(sl+1);
-            $.ajax({
-                url:"/showRes/"+hash,
-                type:"GET"
-            });
-            var time = 15;
-            countDown(time);
-        });
-    {% endif %}
-{% endif %}
 </script>
 {% endblock %}
