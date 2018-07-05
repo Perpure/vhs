@@ -34,13 +34,8 @@ def multiscreen_show_result(message):
         room = Room.query.get(room_id)
         users = room.get_devices()
         for member in users:
-            top = member.top
-            left = member.left
-            width = member.res_k
             noSound = True
             if member == users[0]:
                 noSound = False
-            emit('multiscreen_show_result', {'top': top,
-                                             'left': left,
-                                             'width': width,
-                                             'noSound': noSound}, room=member.socket_id)
+            params = {'top': member.top, 'left': member.left, 'width': member.res_k, 'noSound': noSound}
+            emit('multiscreen_show_result', params, room=member.socket_id)

@@ -1,40 +1,37 @@
 function Result()
 {
-    $('#Body').css('overflow', 'hidden');
-    $('#ReVi').show();
-    $('#ReVi').get(0).play();
-    $('#ReVi').on('ended',function(){
-        $('#ReVi').hide();
-        $('#Footer').show();
-        $('#Body').css('overflow', 'auto')
+    jQuery(function($) {
+        $('#Body').css('overflow', 'hidden');
+        $('#ReVi').show();
+        $('#ReVi').get(0).play();
+        $('#ReVi').on('ended',function(){
+            $('#ReVi').hide();
+            $('#Footer').show();
+            $('#Body').css('overflow', 'auto')
+        });
+        $('#Footer').hide();
     });
-    $('#Footer').hide();
 }
 
 $(document).ready(function() {
   socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
   socket.on('multiscreen_show_calibrate', function(msg) {
-      $('#Body').css('overflow', 'hidden');
-      $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; ' +
+      $('#Body').append('<div id="calibrImage" style="position:fixed; width:110%; height:110%; z-index:5;' +
           'background:' + ROOM_COLOR + ';"></div>');
       $('#calibrImage').click(fullscreen);
-      $('#Footer').hide();
-      $('#Header').hide();
   });
   socket.on('multiscreen_show_result', function(response) {
     setTimeout(Result,wait_time);
     $('#Body').css('overflow', 'hidden');
     $('#ReVi').css({
-        top: response.top + "%",
-        left: response.left + "%",
-        width: response.width+"%",
-    });
-    $('#ReVi').css({
         top: $('#ReVi').height() * ( response.top / response.width ) + "px",
         left: $('#ReVi').width() * ( response.left / response.width ) + "px",
         width: response.width+"%",
     });
-    if(response.noSound)$("#ReVi").prop('muted', true);
+    if(response.noSound)
+    {
+        $('#ReVi').get(0).muted=true;
+    }
     countDown(wait_time/1000);
   });
   socket.on('refresh', function() {
