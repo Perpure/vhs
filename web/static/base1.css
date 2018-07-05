@@ -395,6 +395,10 @@ header {
   margin-top: 10px;
   padding-top: 10px;
 }
+.video-comments_refresh-btn {
+  display: block;
+  margin-bottom: 10px;
+}
 .comment {
   height: 100px;
   margin-bottom: 15px;
@@ -418,6 +422,12 @@ header {
   color: black;
   font-weight: bold;
   font-size: 110%;
+}
+.comment__poster {
+  margin-bottom: 55px;
+}
+.comment__poster textarea {
+  width: 200%;
 }
 .tag {
   background-color: #bdafaf;
@@ -732,6 +742,9 @@ footer:hover span {
   .comment {
     max-width: 100%;
     text-align: left;
+  }
+  .comment__poster textarea {
+    width: 120%;
   }
   .video {
     width: 80%;

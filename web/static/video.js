@@ -1,46 +1,46 @@
-var speed=3000;
 var hash=window.location.href;
 var sl=0;
 for(var i=0;i<hash.length;i++)
     if(hash[i]=='/')sl=i;
 hash=hash.substring(sl+1);
 
-var commSection=document.getElementById("CSect");
+var commSection = document.getElementById("CSect");
+var refreshBtn = document.getElementById("refresh");
 var curComms = document.getElementsByClassName("comment").length;
-setTimeout(function step(){
-    $.ajax({
-        url:"/askNewComm/"+hash,
-        type:"GET",
-        dataType:"text",
-        success:function(response)
-        {
-            if(response>curComms)
-            {
-                var def=response-curComms;
-                $.ajax({
-                    url:"/getNewComm/"+hash+"/"+curComms,
-                    type:"GET",
-                    dataType:"json",
-                    success:function(response1)
-                    {
-                        response1.forEach(function(element){
-                          var comment=$('<div class="comment"></div>');
-                          var ava=$('<div class="comment_ava"><img src="'+element.ava+'" alt="" class="comment_ava-img"></div>');
-                          var txt=$('<div><p class="comment_author"><a href="/cabinet/'+element.login+'">'+element.name+'</a></p><p>'+element.text+'</p></div></div>');
-                          comment.append(ava);
-                          comment.append(txt);
-                          $('#CSect').prepend(comment);
-                        });
-                    },
-                    error:function(){}
-                });
-                curComms=response;
-            }
-        },
-        error:function(){}
-    });
-    setTimeout(step,speed);
-},speed);
+refreshBtn.addEventListener('click',function()
+{
+  $.ajax({
+      url:"/askNewComm/"+hash,
+      type:"GET",
+      dataType:"text",
+      success:function(response)
+      {
+          if(response>curComms)
+          {
+              var def=response-curComms;
+              $.ajax({
+                  url:"/getNewComm/"+hash+"/"+curComms,
+                  type:"GET",
+                  dataType:"json",
+                  success:function(response1)
+                  {
+                      response1.forEach(function(element){
+                        var comment=$('<div class="comment"></div>');
+                        var ava=$('<div class="comment_ava"><img src="'+element.ava+'" alt="" class="comment_ava-img"></div>');
+                        var txt=$('<div><p class="comment_author"><a href="/cabinet/'+element.login+'">'+element.name+'</a></p><p>'+element.text+'</p></div></div>');
+                        comment.append(ava);
+                        comment.append(txt);
+                        $('#CSect').prepend(comment);
+                      });
+                  },
+                  error:function(){}
+              });
+              curComms=response;
+          }
+      },
+      error:function(){}
+  });
+});
 
 var addCom=document.getElementById("addC");
 var plate=document.getElementById("txtPlate");
@@ -55,6 +55,12 @@ if(addCom!=null)addCom.addEventListener('click',function(){
                data:{comm: txt}
             });
             plate.value="";
+            var comment=$('<div class="comment"></div>');
+            var ava=$('<div class="comment_ava"><img src="'+$('#myAva').attr('src')+'" alt="" class="comment_ava-img"></div>');
+            var txt=$('<div><p class="comment_author"><a href="'+$('#myProf').attr('href')+'">'+$('#myProf').html()+'</a></p><p>'+txt+'</p></div></div>');
+            comment.append(ava);
+            comment.append(txt);
+            $('#CSect').prepend(comment);
 });
 
 function calc()
