@@ -16,8 +16,7 @@ function Result()
 $(document).ready(function() {
   socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
   socket.on('multiscreen_show_calibrate', function(msg) {
-      $('#Body').append('<div id="calibrImage" style="position:fixed; width:110%; height:110%; z-index:5;' +
-          'background:' + ROOM_COLOR + ';"></div>');
+      $('#Body').append('<div id="calibrImage" style="' + 'background:' + ROOM_COLOR + ';" class="calibration-image"></div>');
       $('#calibrImage').click(fullscreen);
   });
   socket.on('multiscreen_show_result', function(response) {

@@ -456,6 +456,12 @@ header {
   background-repeat: no-repeat;
   margin-bottom: 10px;
 }
+.calibration-image {
+  position: fixed;
+  width: 110%;
+  height: 110%;
+  z-index: 5;
+}
 .result-video {
   z-index: 5;
   position: absolute;
