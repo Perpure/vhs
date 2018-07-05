@@ -81,8 +81,7 @@ def room(room_id):
             col = Color.query.get(color_id)
             rac = RoomDeviceColorConnector(anon=user, room=room, color=col)
             db.session.add(rac)
-            socketio.emit('update', len(users)+2,
-                  broadcast=True)
+            socketio.emit('update', len(users) + 2, broadcast=True)
 
         users = room.get_devices()
 
@@ -115,12 +114,10 @@ def choosed_video(room_id, vid_id):
     room = Room.query.get(room_id)
     vid = Video.query.get(vid_id)
     if vid and room:
-        
         if user.id == room.capitan_id:
             room.video_id = vid_id
         db.session.commit()
-        socketio.emit('refresh',
-                  broadcast=True)
+        socketio.emit('refresh', broadcast=True)
         return redirect(url_for('room', room_id=room_id))
     else:
         return redirect(url_for('viewroom'))
