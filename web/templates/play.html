@@ -51,17 +51,10 @@
 
 <div class="video-comments">
     <p>Комментарии</p>
-    <button type="button" name="button" id="refresh" class="video-comments_refresh-btn">Обновить комментарии</button>
     {%if user %}
-        <div class="comment comment__poster">
-            <div class="comment_ava"><img src="{{ user.avatar_url() }}" alt="" class="comment_ava-img" id="myAva"></div>
-            <div>
-                <p class="comment_author"><a href="{{url_for('cabinet', usr=user.login)}}" id="myProf">{{ user.name }}</a></p>
-                <textarea id="txtPlate" maxlength="200" title=""></textarea>
-                <br>
-                <button type="button" id="addC">Запостить</button>
-            </div>
-        </div>
+        <textarea id="txtPlate" maxlength="200" title=""></textarea>
+        <br>
+        <input type="submit" value="Запостить" id="addC">
     {%endif%}
     <div id="CSect">
         {% for comment in video.comments|sort(attribute="id")|reverse %}
