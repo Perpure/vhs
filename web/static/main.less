@@ -6,7 +6,7 @@
   width: 120px;
   margin-bottom: 10px;
   border: 2px solid @color-border;
-  &_arm
+  &_pill
   {
     display:inline-block;
     height:30px;
@@ -16,6 +16,18 @@
     padding:4px;
     width: 80px;
     border-right: 1px solid @color-border;
+    &__right
+    {
+      margin-left: 40px;
+      border-left: 1px solid @color-border;
+      border-right: none;
+    }
+  }
+  &_arm
+  {
+    display:inline-block;
+    width: 100%;
+    height: 100%;
     &__inv
     {
       display:none;
@@ -27,12 +39,6 @@
     &:hover > label
     {
       cursor:pointer;
-    }
-    &__right
-    {
-      margin-left: 40px;
-      border-left: 1px solid @color-border;
-      border-right: none;
     }
   }
   &_radio
