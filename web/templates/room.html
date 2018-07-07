@@ -2,10 +2,7 @@
 {% block content %}
 <h1>Комната {{room.name}}</h1>
 {% if room.capitan_id == anon.id %}
-    <form action="" method="post">
-        {{room_form.hidden_tag()}}
-        {{ room_form.submit }}
-    </form>
+    <button id="calibrate_btn">Калибровка</button>
     <h5>Загрузите калибровочное фото</h5>
     <form action="" method="post" enctype="multipart/form-data">
         <div class="loader"><div><input id="image" name="image" type="file" accept="image/*" capture></div></div>
@@ -103,6 +100,36 @@
 {% endif %}
 
 <script>
+    var ROOM_ID = {{ room.id }};
+    var ROOM_COLOR = '{{ color }}';
+    $(document).ready(function() {
+    socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+    {% if room.capitan_id != anon.id %}
+        socket.on('multiscreen_show_calibrate', function(msg) {
+            $('#Body').css('overflow', 'hidden');
+            $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; ' +
+                'background:' + ROOM_COLOR + ';"></div>');
+            $('#calibrImage').click(fullscreen);
+            $('#Footer').hide();
+            $('#Header').hide();
+    });
+    {% endif %}
+    socket.on('connect', function() {
+        socket.emit('join', ROOM_ID);
+    });
+    socket.on('disconnect', function() {
+        socket.emit('leave', ROOM_ID);
+    });
+    });
+
+    {% if room.capitan_id == anon.id %}
+    $('#calibrate_btn').click(function() {
+        socket.emit('multiscreen_set_calibrate', {
+            room: ROOM_ID
+        });
+    });
+    {% endif %}
+
     function countDown(Time)
     {
         $('#cod').css("margin-top","10px");
@@ -113,8 +140,6 @@
             else $('#cod').empty();
         },1000);
     }
-
-    var ID = {{ room.id }};
 
     var speed = 4000;
 
@@ -131,22 +156,14 @@
         $('#Footer').hide();
     }
 
+
     setTimeout(function step(){
         $.ajax({
-            url:"/askAct/"+ID,
+            url:"/askAct/"+ROOM_ID,
             type:"GET",
             dataType:"json",
             success:function(response)
             {
-                if(response.action==="calibrate"){
-                    $('#Body').css('overflow', 'hidden');
-                    $('#Body').prepend('<div id="calibrImage" style="position:fixed; width:110%; height:110%; ' +
-                        'background:'+response.color+';"></div>');
-                    $('#calibrImage').click(fullscreen);
-                    $('#Footer').hide();
-                    $('#Header').hide();
-                }
-
                 if(response.action==="result"){
                     $('#Body').css('overflow', 'hidden');
                     setTimeout(Result,response.time);
@@ -181,8 +198,10 @@
             error:function(){}
         });
 
-        setTimeout(step,speed);
-    },speed);
+        setTimeout(function() {
+            step();
+        },speed);
+    }, speed);
 
     $(document).ready(function() {
         var ratio = window.devicePixelRatio || 1;
