@@ -1,7 +1,7 @@
-@color-link:#905a09;
-@color-main:#F7E2C0;
-@color-border:#e8ab4a;
-@color-secondary:#f0cb8e;
+@color-link:#cc8787;
+@color-main:#1c180b;
+@color-border:#bdafaf;
+@color-secondary:#e8e8e8;
 
 html
 {
@@ -36,13 +36,6 @@ textarea
     resize:none;
     width:40%;
     background-color: fade(@color-secondary,50);
-}
-
-header
-{
-  width: 100%;
-  vertical-align: top;
-  margin-bottom:10px;
 }
 
 main
@@ -92,24 +85,28 @@ input
     margin-bottom:10px;
     padding-left:5px;
     background-color: fade(@color-secondary,50);
+    &:focus
+    {
+      border-bottom:2px solid @color-main;
+    }
 }
 
 input[type="submit"], button
 {
     height:40px;
     padding:10px;
-    padding-top:8px;
-    background-color: @color-secondary;
+    padding-top:7px;
+    background: none;
     transition:0.5s;
     border:none;
-    border-bottom:2px solid @color-border;
+    border:2px solid @color-border;
     font-weight:bold;
     vertical-align: top;
+    transition: 0.4s;
     &:hover
     {
-      background-color: fade(@color-secondary,50);
+      border:2px solid @color-main;
       cursor: pointer;
-      color:black;
     }
 }
 

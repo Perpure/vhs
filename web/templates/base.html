@@ -18,13 +18,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='base1.css') }}">
     <link href="{{ url_for('static', filename='tagify.css') }}" rel="stylesheet">
     <script src="{{ url_for('static', filename='jquery.js') }}"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
 </head>
 <body id="Body">
     <header id="Header">
         <div class="mid-head">
             <div class="logo">
                 <a href="{{url_for('main')}}" class="Link"><img src="{{ url_for('static', filename='vhs4.png') }}" alt="" class="logo_img"></a>
-                <div class="logo_txt" id="logoTxt" title="VideoHostingService">VHS</div>
+
             </div>
 
             <div class="nav-menu">

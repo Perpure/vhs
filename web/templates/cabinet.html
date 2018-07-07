@@ -88,7 +88,7 @@
   </div>
 
   {% if settings %}
-    <div class="section section__settings" id="settings">
+    <div class="section" id="settings">
       <h3>Данные канала</h3>
       <form action="" method="post" enctype="multipart/form-data" >
         {{form.hidden_tag()}}
@@ -160,12 +160,12 @@
           </b>
         </div>
         <div class="section_set">
-          <input type="submit" class="buttondlc" value="Сохранить">
+          {{ form.submit_changes }}
         </div>
 
       </form>
     </div>
-    <div class="section section__settings" id="settingsAcc">
+    <div class="section" id="settingsAcc">
       <h3>Настройка данных аккаунта</h3>
       <form action="" method="post" enctype="multipart/form-data" >
         {{form_acc.hidden_tag()}}
@@ -193,7 +193,7 @@
           </b>
         </div>
         <div class="section_set">
-          <input type="submit" class="buttondlc" value="Сохранить">
+          {{ form_acc.save_changes }}
         </div>
       </form>
     </div>
