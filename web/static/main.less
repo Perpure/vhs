@@ -6,7 +6,7 @@
   width: 120px;
   margin-bottom: 10px;
   border: 2px solid @color-border;
-  &_arm
+  &_pill
   {
     display:inline-block;
     height:30px;
@@ -16,6 +16,18 @@
     padding:4px;
     width: 80px;
     border-right: 1px solid @color-border;
+    &__right
+    {
+      margin-left: 40px;
+      border-left: 1px solid @color-border;
+      border-right: none;
+    }
+  }
+  &_arm
+  {
+    display:inline-block;
+    width: 100%;
+    height: 100%;
     &__inv
     {
       display:none;
@@ -27,12 +39,6 @@
     &:hover > label
     {
       cursor:pointer;
-    }
-    &__right
-    {
-      margin-left: 40px;
-      border-left: 1px solid @color-border;
-      border-right: none;
     }
   }
   &_radio
@@ -164,7 +170,11 @@
     border-top:2px solid @color-border;
     margin-top:10px;
     padding-top:10px;
-
+    &_refresh-btn
+    {
+      display: block;
+      margin-bottom: 10px;
+    }
   }
 }
 .comment
@@ -195,6 +205,14 @@
     font-weight:bold;
     font-size:110%;
   }
+  &__poster
+  {
+    margin-bottom: 55px;
+    textarea
+    {
+      width: 200%;
+    }
+  }
 }
 .tag
 {
@@ -221,6 +239,14 @@
     background-image:url("Loader3.png");
     background-repeat:no-repeat;
     margin-bottom:10px;
+}
+
+.calibration-image
+{
+  position: fixed;
+  width: 110%;
+  height: 110%;
+  z-index: 5;
 }
 
 .result-video

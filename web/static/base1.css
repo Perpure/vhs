@@ -261,7 +261,7 @@ header {
   margin-bottom: 10px;
   border: 2px solid #bdafaf;
 }
-.switcher_arm {
+.switcher_pill {
   display: inline-block;
   height: 30px;
   border-radius: 15px;
@@ -271,6 +271,16 @@ header {
   width: 80px;
   border-right: 1px solid #bdafaf;
 }
+.switcher_pill__right {
+  margin-left: 40px;
+  border-left: 1px solid #bdafaf;
+  border-right: none;
+}
+.switcher_arm {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
 .switcher_arm__inv {
   display: none;
 }
@@ -279,11 +289,6 @@ header {
 }
 .switcher_arm:hover > label {
   cursor: pointer;
-}
-.switcher_arm__right {
-  margin-left: 40px;
-  border-left: 1px solid #bdafaf;
-  border-right: none;
 }
 .switcher_radio {
   visibility: hidden;
@@ -395,6 +400,10 @@ header {
   margin-top: 10px;
   padding-top: 10px;
 }
+.video-comments_refresh-btn {
+  display: block;
+  margin-bottom: 10px;
+}
 .comment {
   height: 100px;
   margin-bottom: 15px;
@@ -419,6 +428,12 @@ header {
   font-weight: bold;
   font-size: 110%;
 }
+.comment__poster {
+  margin-bottom: 55px;
+}
+.comment__poster textarea {
+  width: 200%;
+}
 .tag {
   background-color: #bdafaf;
   color: white;
@@ -440,6 +455,12 @@ header {
   background-image: url("Loader3.png");
   background-repeat: no-repeat;
   margin-bottom: 10px;
+}
+.calibration-image {
+  position: fixed;
+  width: 110%;
+  height: 110%;
+  z-index: 5;
 }
 .result-video {
   z-index: 5;
@@ -639,7 +660,6 @@ footer:hover span {
   }
   .nav-menu {
     text-align: center;
-    border-top: 2px solid rgba(232, 232, 232, 0.5);
     width: 100%;
   }
   .nav-menu_nav-men:hover {
@@ -732,6 +752,9 @@ footer:hover span {
   .comment {
     max-width: 100%;
     text-align: left;
+  }
+  .comment__poster textarea {
+    width: 120%;
   }
   .video {
     width: 80%;
