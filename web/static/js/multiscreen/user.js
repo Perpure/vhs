@@ -1,5 +1,4 @@
-function Result()
-{
+function Result() {
   $('#ReVi').show();
   $('#ReVi').get(0).play();
   $('#ReVi').on('ended',function(){
@@ -10,12 +9,12 @@ function Result()
 jQuery(function($) {
   socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
   socket.on('multiscreen_show_calibrate', function(msg) {
-    $('#Body').append('<div id="calibrImage" style="' + 'background:' + ROOM_COLOR + ';" class="calibration-image"></div>');
-    $('#calibrImage').click(fullscreen);
+    $('#Body').append('<div id="calibrImage" '
+        + 'style="' + 'background:' + ROOM_COLOR + ';" '
+        + 'class="calibration-image fullscreen-switcher"></div>');
   });
   socket.on('multiscreen_show_result', function(response) {
     $('#Body').css('overflow', 'hidden');
-    console.log(response);
     $('#ReVi').css({
         top: screen.height * (response.top / response.width) + "px",
         left: screen.width * (response.left / response.width) + "px",
@@ -40,38 +39,6 @@ jQuery(function($) {
     socket.emit('leave', ROOM_ID);
   });
 });
-
-function fullscreen() {
-  var isInFullScreen = (document.fullscreenElement && document.fullscreenElement !== null) ||
-    (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
-    (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
-    (document.msFullscreenElement && document.msFullscreenElement !== null);
-
-  var docElm = document.documentElement;
-  if (!isInFullScreen) {
-    if (docElm.requestFullscreen) {
-      docElm.requestFullscreen();
-    } else if (docElm.mozRequestFullScreen) {
-      docElm.mozRequestFullScreen();
-    } else if (docElm.webkitRequestFullScreen) {
-      docElm.webkitRequestFullScreen();
-    } else if (docElm.msRequestFullscreen) {
-      docElm.msRequestFullscreen();
-    }
-  } else {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
-    }
-  }
-}
-
-$("#fullS").click(fullscreen);
 
 jQuery(function($) {
   var ratio = window.devicePixelRatio || 1;

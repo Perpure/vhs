@@ -1,7 +1,8 @@
 jQuery(function($) {
-  socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+  var socketUrl = location.protocol + '//' + location.host;
+  socket = io.connect(socketUrl);
   socket.on('update', function(msg) {
-    $("#countUsers").html("Количество участников: "+msg);
+    $("#countUsers").html("Количество участников: " + msg);
   });
   socket.on('connect', function() {
     socket.emit('join', ROOM_ID, socket.id);
