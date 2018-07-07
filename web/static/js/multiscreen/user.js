@@ -16,9 +16,9 @@ jQuery(function($) {
   socket.on('multiscreen_show_result', function(response) {
     $('#Body').css('overflow', 'hidden');
     $('#ReVi').css({
-      top: $('#ReVi').height() * ( response.top / response.width ) + "px",
-      left: $('#ReVi').width() * ( response.left / response.width ) + "px",
-      width: response.width+"%",
+        top: screen.width*response.top + "px",
+        left: screen.width*response.left + "px",
+        width: screen.width*response.width + "px"
     });
     if(response.noSound)
     {
