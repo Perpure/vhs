@@ -42,10 +42,18 @@
         <form action="{{url_for('choose_video', room_id=room.id)}}">
             <button>Выбрать другое видео для демонстрации</button>
         </form>
+        <br>
+        <form action="{{url_for('choose_youtube_video', room_id=room.id)}}">
+            <button>Выбрать видео с youtube.com</button>
+        </form>
     {% else %}
         <hr>
         <form action="{{url_for('choose_video', room_id=room.id)}}">
             <button>Выберите видео для демонстрации</button>
+        </form>
+        <br>
+        <form action="{{url_for('choose_youtube_video', room_id=room.id)}}">
+            <button>Выбрать видео с youtube.com</button>
         </form>
     {% endif %}
 {% endif %}

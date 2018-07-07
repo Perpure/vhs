@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+
+{{ youtube_search.search }}
+{{ youtube_search.submit }}
+
+<div id="videos_block">
+
+</div>
+
+<script src="{{url_for('static', filename='youtube_search.js')}}"></script>
+<script src=https://momentjs.com/downloads/moment-with-locales.min.js></script>
+
+{% endblock %}

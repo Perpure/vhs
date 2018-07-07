@@ -8,7 +8,7 @@ from werkzeug.exceptions import Aborter
 from config import basedir
 from web import app, db, avatars, backgrounds
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
-    UserProfileForm, AddRoomForm, AccountSettingsForm
+    UserProfileForm, AddRoomForm, AccountSettingsForm, YoutubeVideoForm
 from web.models import User, Video, Room, Color, Geotag, Tag, AnonUser, RoomDeviceColorConnector
 from web.helper import cur_user, requiresauth, anon_user, image_loaded
 from web.video_handler import save_video
@@ -146,6 +146,12 @@ def choose_video(room_id):
                                now=now, sub_items=sub_items)
     else:
         return redirect(url_for('viewroom'))
+
+
+@app.route('/room/<int:room_id>/choose_youtube')
+def choose_youtube_video(room_id):
+    youtube_search = YoutubeVideoForm()
+    return render_template('choose_youtube.html', youtube_search=youtube_search)
 
 
 @app.route('/upload', methods=['GET', 'POST'])

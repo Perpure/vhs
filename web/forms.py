@@ -153,3 +153,8 @@ class AddRoomForm(FlaskForm):
                                                         exist_token,
                                                         Length(2, message='Текст слишком короткий')])
     submit = SubmitField("Создать")
+
+
+class YoutubeVideoForm(FlaskForm):
+    search = StringField('Название')
+    submit = SubmitField('Найти')

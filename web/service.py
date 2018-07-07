@@ -7,7 +7,8 @@ from flask import url_for, redirect, make_response, request, jsonify, session, r
 from web import app, db
 from web.helper import read_image, cur_user, read_multi
 from web.models import Video, Comment, Room, AnonUser, User
-from config import basedir, BUFF_SIZE
+from config import basedir, BUFF_SIZE, GOOGLE_API_KEY
+import requests
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -266,3 +267,38 @@ def subscribe(ID):
         user.follow(blog)
 
     return "nice"
+
+
+@app.route('/youtube_videos')
+def videos_from_youtube():
+    query = request.args.get('query')
+    params = {
+        'q': query,
+        'key': GOOGLE_API_KEY,
+        'part': 'id',
+        'type': 'video',
+        'maxResults': 10
+    }
+
+    if request.args.get('nextPageToken') is not None:
+        params.update({'pageToken': request.args.get('nextPageToken')})
+
+    search_res = requests.get('https://www.googleapis.com/youtube/v3/search', params).json()
+    if search_res.get('error') is not None:
+        return 'Error'
+
+    videos = []
+    for item in search_res['items']:
+        video = requests.get('https://www.googleapis.com/youtube/v3/videos', {
+            'id': item['id']['videoId'],
+            'part': 'snippet,contentDetails',
+            'key': GOOGLE_API_KEY
+        }).json()
+        videos.append(video['items'][0])
+
+    response = {
+        'nextPageToken': search_res['nextPageToken'],
+        'videos': videos
+    }
+    return jsonify(response)
+
