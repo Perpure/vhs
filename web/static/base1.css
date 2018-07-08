@@ -807,6 +807,19 @@ footer:hover span {
   .video_preview {
     height: 45vw;
   }
+  .video-control {
+    margin: 0 auto;
+    margin-bottom: 10px;
+  }
+  .video-control_btn {
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 10px;
+  }
+  .video-control_btn__round {
+    display: inline-block;
+    margin: 0 10px 10px 10px;
+  }
   .tabs_tab {
     display: block;
     border: none;

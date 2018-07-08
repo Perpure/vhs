@@ -5,9 +5,11 @@
     <div class="video-control">
       <button id="calibrate_btn" class="video-control_btn ib {% if not room.video_id %}ib__edge{% endif %}">Калибровка</button>
       {% if room.video_id %}
+      <div class="ib ib__edge">
         <button id="show_res" class="video-control_btn video-control_btn__round ib"><img src="{{ url_for('static', filename='play.png') }}" id="show_res_img" alt="" class="video-control_img"></button>
         <button id="stop_res" class="video-control_btn video-control_btn__round ib"><img src="{{ url_for('static', filename='stop.png') }}" id="stop_res_img" alt="" class="video-control_img"></button>
-        <button id="refresh_btn" class="video-control_btn ib ib__edge">Загрузить выбранное видео</button>
+      </div>
+      <button id="refresh_btn" class="video-control_btn ib ib__edge">Загрузить выбранное видео</button>
       {% endif %}
     </div>
     <h5>Загрузите калибровочное фото</h5>
