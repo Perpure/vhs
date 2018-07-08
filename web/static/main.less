@@ -185,7 +185,18 @@
     margin-bottom: 10px;
     &_img
     {
-      height: 100%;
+      width: 100%;
+      &-changing
+      {
+        width: 100%;
+        position: absolute;
+        top: -100%;
+        left: 0;
+        &__other
+        {
+          top:0;
+        }
+      }
     }
     &_btn
     {
@@ -214,6 +225,8 @@
         width: 40px;
         height: 40px;
         padding: 0;
+        overflow: hidden;
+        position: relative;
       }
       &__disabled,&__disabled:active,&__disabled:hover
       {

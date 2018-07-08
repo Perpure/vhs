@@ -417,6 +417,15 @@ header {
 .video-control_img {
   height: 100%;
 }
+.video-control_img-changing {
+  width: 100%;
+  position: absolute;
+  top: -100%;
+  left: 0;
+}
+.video-control_img-changing__other {
+  top: 0;
+}
 .video-control_btn {
   border-radius: 5px;
   background-color: rgba(232, 232, 232, 0.4);
@@ -441,6 +450,8 @@ header {
   width: 40px;
   height: 40px;
   padding: 0;
+  overflow: hidden;
+  position: relative;
 }
 .video-control_btn__disabled,
 .video-control_btn__disabled:active,

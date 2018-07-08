@@ -27,14 +27,14 @@ $('#show_res').click(function() {
     if(play)
     {
       play=false;
-      $('#show_res_img').attr('src','/static/play.png');
+      $('#show_res_img').removeClass('video-control_img-changing__other');
       $('#calibrate_btn').removeClass('video-control_btn__disabled');
       socket.emit('multiscreen_set_pause', ROOM_ID);
     }
     else
     {
       play=true;
-      $('#show_res_img').attr('src','/static/pause.png');
+      $('#show_res_img').addClass('video-control_img-changing__other');
       $('#calibrate_btn').addClass('video-control_btn__disabled');
       socket.emit('multiscreen_set_show', ROOM_ID);
     }
