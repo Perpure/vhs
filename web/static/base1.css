@@ -415,7 +415,7 @@ header {
   margin-bottom: 10px;
 }
 .video-control_img {
-  height: 100%;
+  width: 100%;
 }
 .video-control_img-changing {
   width: 100%;
@@ -456,7 +456,7 @@ header {
 .video-control_btn__disabled,
 .video-control_btn__disabled:active,
 .video-control_btn__disabled:hover {
-  filter: brightness(75%);
+  opacity: 0.3;
   box-shadow: 0px 0px 3px rgba(28, 24, 11, 0.5);
 }
 .comment {
@@ -518,7 +518,7 @@ header {
   z-index: 5;
 }
 .result-video {
-  z-index: 5;
+  z-index: 6;
   position: absolute;
   display: none;
 }
