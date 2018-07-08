@@ -1,17 +1,26 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>Комната {{room.name}}</h1>
-{% if room.capitan_id == anon.id %}
-    <div class="video-control">
-      <button id="calibrate_btn" class="video-control_btn ib {% if not room.video_id %}ib__edge{% endif %}">Калибровка</button>
-      {% if room.video_id %}
-      <div class="ib ib__edge">
-        <button id="show_res" class="video-control_btn video-control_btn__round ib"><img src="{{ url_for('static', filename='play.png') }}" id="show_res_img" alt="" class="video-control_img"></button>
-        <button id="stop_res" class="video-control_btn video-control_btn__round ib"><img src="{{ url_for('static', filename='stop.png') }}" id="stop_res_img" alt="" class="video-control_img"></button>
-      </div>
-      <button id="refresh_btn" class="video-control_btn ib ib__edge">Загрузить выбранное видео</button>
-      {% endif %}
+<div class="video-control">
+  {% if count > 1 %}
+    <h5>Количество участников: <span id="countUsers">{{count}}</span></h5>
+  {% else %}
+    <p id="countUsers">Пригласите участников в комнату</p>
+  {% endif %}
+  {% if room.capitan_id == anon.id %}
+    <hr>
+    <button id="calibrate_btn" class="video-control_btn ib">Калибровка</button>
+    <div class="ib ib__edge">
+      <button id="show_res" class="video-control_btn video-control_btn__round ib {% if not room.video_id %}video-control_btn__disabled{% endif %}"><img src="{{ url_for('static', filename='play.png') }}" id="show_res_img" alt="" class="video-control_img"></button>
+      <button id="stop_res" class="video-control_btn video-control_btn__round ib {% if not room.video_id %}video-control_btn__disabled{% endif %}"><img src="{{ url_for('static', filename='stop.png') }}" id="stop_res_img" alt="" class="video-control_img"></button>
     </div>
+    <button id="refresh_btn" class="video-control_btn ib ib__edge">Обновить устройства</button>
+  {% else %}
+    <hr>
+    <button class="video-control_btn fullscreen-switcher">Перейти в полноэкранный режим</button>
+  {% endif %}
+</div>
+{% if room.capitan_id == anon.id %}
     <h5>Загрузите калибровочное фото</h5>
     <form action="" method="post" enctype="multipart/form-data">
         <div class="loader"><div><input id="image" name="image" type="file" accept="image/*" capture></div></div>
@@ -24,13 +33,6 @@
         {% if map_ex %}
         {% endif %}
     </form>
-{% endif %}
-
-{% if room.capitan_id != anon.id %}
-    <hr>
-    <button class="fullscreen-switcher">
-        Перейти в полноэкранный режим
-    </button>
 {% endif %}
 
 {% if room.capitan_id == anon.id %}
@@ -52,18 +54,7 @@
             <button>Выберите видео для демонстрации</button>
         </form>
     {% endif %}
-{% endif %}
-
-{% if count > 1 %}
     <hr>
-    <h5>Количество участников: <span id="countUsers">{{count}}</span></h5>
-{% else %}
-    <hr>
-    <p id="countUsers">Пригласите участников в комнату</p>
-{% endif %}
-
-{% if room.capitan_id != anon.id %}
-    <div id="cod"></div>
 {% endif %}
 
 {% if map_ex %}
@@ -76,7 +67,6 @@
     <p>{{msg}}</p>
 {% endif %}
 
-<hr>
 <span id="instructionBtn" class="fact">Инструкция</span>
 <ol id="instruction" class="instr">
     <li>Пригласите участников.</li>

@@ -23,13 +23,8 @@ def on_leave(room):
 
 
 @socketio.on('multiscreen_set_calibrate')
-def multiscreen_show_calibrate():
-    socketio.emit('multiscreen_show_calibrate', broadcast=True)
-
-
-@socketio.on('multiscreen_set_calibrate_stop')
-def multiscreen_show_calibrate_stop():
-    socketio.emit('multiscreen_show_calibrate_stop', broadcast=True)
+def multiscreen_show_calibrate(msg):
+    socketio.emit('multiscreen_show_calibrate', room=msg)
 
 
 @socketio.on('multiscreen_set_show')
@@ -47,15 +42,15 @@ def multiscreen_show_result(message):
 
 
 @socketio.on('multiscreen_set_pause')
-def multiscreen_show_pause():
-    socketio.emit('multiscreen_show_pause', broadcast=True)
+def multiscreen_show_pause(msg):
+    socketio.emit('multiscreen_show_pause', room=msg)
 
 
 @socketio.on('multiscreen_set_stop')
-def multiscreen_show_stop():
-    socketio.emit('multiscreen_show_stop', broadcast=True)
+def multiscreen_show_stop(msg):
+    socketio.emit('multiscreen_show_stop', room=msg)
 
 
 @socketio.on('multiscreen_refresh')
-def multiscreen_refresh():
-    socketio.emit('refresh', broadcast=True)
+def multiscreen_refresh(msg):
+    socketio.emit('refresh', room=msg)

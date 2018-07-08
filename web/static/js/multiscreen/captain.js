@@ -12,37 +12,32 @@ jQuery(function($) {
   });
 });
 
-var calib=false;
-
 $('#calibrate_btn').click(function() {
-  if(calib)
+  if($('#calibrate_btn').hasClass('video-control_btn__disabled')==false)
   {
-    calib=false;
-    $('#calibrate_btn').html('Калибровка');
-    socket.emit('multiscreen_set_calibrate_stop');
-  }
-  else
-  {
-    calib=true;
-    $('#calibrate_btn').html('Остановить калибровку');
-    socket.emit('multiscreen_set_calibrate');
+    socket.emit('multiscreen_set_calibrate', ROOM_ID);
   }
 });
 
 var play=false;
 
 $('#show_res').click(function() {
-  if(play)
+  if($('#show_res').hasClass('video-control_btn__disabled')==false)
   {
-    play=false;
-    $('#show_res_img').attr('src','/static/play.png');
-    socket.emit('multiscreen_set_pause');
-  }
-  else
-  {
-    play=true;
-    $('#show_res_img').attr('src','/static/pause.png');
-    socket.emit('multiscreen_set_show', ROOM_ID);
+    if(play)
+    {
+      play=false;
+      $('#show_res_img').attr('src','/static/play.png');
+      $('#calibrate_btn').removeClass('video-control_btn__disabled');
+      socket.emit('multiscreen_set_pause', ROOM_ID);
+    }
+    else
+    {
+      play=true;
+      $('#show_res_img').attr('src','/static/pause.png');
+      $('#calibrate_btn').addClass('video-control_btn__disabled');
+      socket.emit('multiscreen_set_show', ROOM_ID);
+    }
   }
 });
 
@@ -55,11 +50,14 @@ function drop_state()
 }
 
 $('#stop_res').click(function() {
-  socket.emit('multiscreen_set_stop');
-  drop_state();
+  if($('#stop_res').hasClass('video-control_btn__disabled')==false)
+  {
+    socket.emit('multiscreen_set_stop', ROOM_ID);
+    drop_state();
+  }
 });
 
 $('#refresh_btn').click(function() {
-  socket.emit('multiscreen_refresh');
+  socket.emit('multiscreen_refresh', ROOM_ID);
   drop_state();
 });

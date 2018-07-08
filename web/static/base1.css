@@ -442,6 +442,12 @@ header {
   height: 40px;
   padding: 0;
 }
+.video-control_btn__disabled,
+.video-control_btn__disabled:active,
+.video-control_btn__disabled:hover {
+  filter: brightness(75%);
+  box-shadow: 0px 0px 3px rgba(28, 24, 11, 0.5);
+}
 .comment {
   height: 100px;
   margin-bottom: 15px;
