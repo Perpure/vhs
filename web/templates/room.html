@@ -2,7 +2,14 @@
 {% block content %}
 <h1>Комната {{room.name}}</h1>
 {% if room.capitan_id == anon.id %}
-    <button id="calibrate_btn">Калибровка</button>
+    <div class="video-control">
+      <button id="calibrate_btn" class="video-control_btn ib {% if not room.video_id %}ib__edge{% endif %}">Калибровка</button>
+      {% if room.video_id %}
+        <button id="show_res" class="video-control_btn video-control_btn__round ib"><img src="{{ url_for('static', filename='play.png') }}" id="show_res_img" alt="" class="video-control_img"></button>
+        <button id="stop_res" class="video-control_btn video-control_btn__round ib"><img src="{{ url_for('static', filename='stop.png') }}" id="stop_res_img" alt="" class="video-control_img"></button>
+        <button id="refresh_btn" class="video-control_btn ib ib__edge">Загрузить выбранное видео</button>
+      {% endif %}
+    </div>
     <h5>Загрузите калибровочное фото</h5>
     <form action="" method="post" enctype="multipart/form-data">
         <div class="loader"><div><input id="image" name="image" type="file" accept="image/*" capture></div></div>
@@ -12,10 +19,6 @@
         {% endfor %}
     {% endif %}
         <div id="Calibr"> {{ image_form.submit }} </div>
-        {% if room.video_id %}
-            <button id="showRes" type="button">Начать демонстрацию</button>
-            <div id="cod"></div>
-        {% endif %}
         {% if map_ex %}
         {% endif %}
     </form>
@@ -82,9 +85,8 @@
     <li>Капитан делает фотографию утсройств и нажимает “Инициализировать”</li>
     <li>Через некоторое время появится карта устройств.<br>
     6.1. Если положение устройств определено неверно повторите действия описанные в п.5</li>
-    <li>Капитан нажимает “Начать демонстрацию”<br>
-    7.1. Запускается обратный отсчёт</li>
-    <li>Через 15 чекунд начинается показ видео.</li>
+    <li>Капитан нажимает “Начать демонстрацию”</li>
+    <li>Начинается показ видео.</li>
 </ol>
 
 {% if room.capitan_id != anon.id %}

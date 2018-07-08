@@ -117,7 +117,6 @@ def choosed_video(room_id, vid_id):
         if user.id == room.capitan_id:
             room.video_id = vid_id
         db.session.commit()
-        socketio.emit('refresh', broadcast=True)
         return redirect(url_for('room', room_id=room_id))
     else:
         return redirect(url_for('viewroom'))
