@@ -12,10 +12,8 @@ def calibrate_resolution(resolution, w, h):
     height = resolution[1]
     if (width / height) > (w / h):
         height = int(width * h / w)
-        return width, height
-    if (width / height) < (w / h):
+    elif (width / height) < (w / h):
         width = int(height * w / h)
-        return width, height
     return width, height
 
 
