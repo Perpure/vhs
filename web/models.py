@@ -190,7 +190,6 @@ class User(db.Model):
     channel_info = db.Column(db.String(64))
     avatar = db.Column(db.String(128))
     background = db.Column(db.String(128))
-    action = db.Column(db.String(64))
     color = db.Column(db.String(64))
     top = db.Column(db.Integer)
     left = db.Column(db.Integer)
@@ -254,11 +253,6 @@ class User(db.Model):
 
     def follow(self, user):
         self.subscriptions.append(user)
-        db.session.add(self)
-        db.session.commit()
-
-    def update_action(self, action):
-        self.action = action
         db.session.add(self)
         db.session.commit()
 
@@ -357,11 +351,11 @@ class AnonUser(db.Model):
     """
     __tablename__ = 'AnonUser'
     id = db.Column(db.String(), primary_key=True)
-    action = db.Column(db.String(64))
     time = db.Column(db.Integer)
     device_width = db.Column(db.Integer)
     device_height = db.Column(db.Integer)
     color = db.Column(db.String(64))
+    socket_id = db.Column(db.String(64))
     top = db.Column(db.Integer)
     left = db.Column(db.Integer)
     res_k = db.Column(db.Integer)
@@ -387,10 +381,5 @@ class AnonUser(db.Model):
             return()
         self.device_height = height
         self.device_width = width
-        db.session.add(self)
-        db.session.commit()
-
-    def update_action(self, action):
-        self.action = action
         db.session.add(self)
         db.session.commit()

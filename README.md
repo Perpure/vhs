@@ -62,7 +62,7 @@ pycodestyle web --max-line-length=120 --ignore=E402 --show-source --show-pep8
 Запуск юнит-тестов производится с помощью:
 
 ```
-nose2 -v
+nose2 web -C
 ```
 
 Перед снятием WIP статуса с Merge Request удостоверьтесь, что все тесты пройдены без ошибок.
