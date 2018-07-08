@@ -18,7 +18,7 @@ module.exports = {
   },
   plugins: [
     new ExtractTextPlugin({
-      filename: 'bundle.css'
+      filename: 'base.css'
     })
   ]
 };

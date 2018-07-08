@@ -17,6 +17,7 @@
         {% endfor %}
     )</p>
     <div class="loader">
+        <img src="{{ url_for('static', filename='Loader3.png') }}" alt="" class="loader_img">
         <div style="margin-bottom:-25px"> {{ form.video }} </div>
         <p id="fileName"></p>
     </div>
@@ -80,7 +81,7 @@
 <script type="text/javascript">
     $( ".loader" )
       .change(function () {
-        $( ".loader" ).css('background-image', 'url("/static/LoaderChange.png")');
+        $( ".loader_img" ).attr('src', '/static/LoaderChange.png');
           var filename = $('#video').val();
           $('#fileName').html(filename);
         $('#OuterDiv').append('<div id="innerDiv"></div>');
