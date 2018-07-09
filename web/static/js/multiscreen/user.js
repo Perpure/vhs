@@ -14,7 +14,6 @@ jQuery(function($) {
         + 'class="calibration-image fullscreen-switcher"></div>');
   });
   socket.on('multiscreen_show_result', function(response) {
-    $('#Body').css('overflow', 'hidden');
     $('#ReVi').css({
         top: screen.height * (response.top / response.width) + "px",
         left: screen.width * (response.left / response.width) + "px",

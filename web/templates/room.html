@@ -83,7 +83,9 @@
 
 {% if room.capitan_id != anon.id %}
     {% if room.video_id %}
-        <video class="result-video" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
+      <div class="result">
+        <video class="result__video" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
+      </div>
     {% endif %}
 {% endif %}
 <script src="{{ url_for('static', filename='js/multiscreen/fullscreen.js') }}"></script>

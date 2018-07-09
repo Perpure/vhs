@@ -517,7 +517,15 @@ header {
   height: 110%;
   z-index: 5;
 }
-.result-video {
+.result {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+}
+.result__video {
   z-index: 6;
   position: absolute;
   display: none;
