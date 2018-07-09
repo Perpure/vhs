@@ -2,7 +2,7 @@
 {% block content %}
 <div class="mid mid_wider">
     <h2>Регистрация</h2>
-    <div class="ib">
+    <div class="inline-block">
       <h3>Зачем регистрироваться?</h3>
       Вы сможете:
       <ul>
@@ -11,7 +11,7 @@
         <li>Подписываться на других пользователей</li>
       </ul>
     </div>
-    <form action="" method="post" class="ib">
+    <form action="" method="post" class="inline-block">
         {{form.hidden_tag()}}
         <div>{{ form.login_reg.label}}</div>
         <div>{{ form.login_reg }}</div>

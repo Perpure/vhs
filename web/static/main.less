@@ -6,7 +6,7 @@
   width: 120px;
   margin-bottom: 10px;
   border: 2px solid @color-border;
-  &_pill
+  &__pill
   {
     display:inline-block;
     height:30px;
@@ -16,19 +16,19 @@
     padding:4px;
     width: 80px;
     border-right: 1px solid @color-border;
-    &__right
+    &_right
     {
       margin-left: 40px;
       border-left: 1px solid @color-border;
       border-right: none;
     }
   }
-  &_arm
+  &__arm
   {
     display:inline-block;
     width: 100%;
     height: 100%;
-    &__inv
+    &_inv
     {
       display:none;
     }
@@ -41,11 +41,11 @@
       cursor:pointer;
     }
   }
-  &_radio
+  &__radio
   {
     visibility:hidden;
   }
-  &_label
+  &__label
   {
     width: 100%;
     -moz-user-select: none;
@@ -71,11 +71,11 @@
   {
     cursor: pointer;
   }
-  &:hover &_preview
+  &:hover &__preview
   {
     filter: brightness(90%);
   }
-  &_preview
+  &__preview
   {
     width: 100%;
     height: 5.5vw;
@@ -86,7 +86,7 @@
       height: 100%;
     }
   }
-  &_title
+  &__title
   {
     font-weight:bold;
     font-size:90%;
@@ -94,21 +94,21 @@
     overflow:hidden;
     max-height:42px;
   }
-  &__ath:hover
+  &_ath:hover
   {
     font-weight: bold;
   }
   &-titling
   {
     height:50px;
-    &_title
+    &__title
     {
       margin-top:10px;
       margin-bottom:10px;
       font-size:120%;
       display:inline-block;
     }
-    &_views
+    &__views
     {
       display:inline-block;
       float:right;
@@ -122,29 +122,29 @@
     vertical-align:top;
     margin-bottom:10px;
     float: right;
-    &_rateline
+    &__rateline
     {
       height:3px;
       margin-bottom:5px;
     }
-    &_like-line,&_dis-line
+    &__like-line,&__dis-line
     {
       display:inline-block;
       height:3px;
       width:50%;
       vertical-align:top;
     }
-    &_like-line
+    &__like-line
     {
       background-color:green;
     }
-    &_dis-line
+    &__dis-line
     {
       background-color:red;
       margin-left:-6px;
       float:right;
     }
-    &_btn
+    &__btn
     {
       background-size:40%;
       background-repeat:no-repeat;
@@ -170,7 +170,7 @@
     border-top:2px solid @color-border;
     margin-top:10px;
     padding-top:10px;
-    &_refresh-btn
+    &__refresh-btn
     {
       display: block;
       margin-bottom: 10px;
@@ -183,7 +183,7 @@
     border-radius: 10px;
     width: fit-content;
     margin-bottom: 10px;
-    &_img
+    &__img
     {
       width: 100%;
       &-changing
@@ -192,13 +192,13 @@
         position: absolute;
         top: -100%;
         left: 0;
-        &__other
+        &_other
         {
           top:0;
         }
       }
     }
-    &_btn
+    &__btn
     {
       border-radius: 5px;
       background-color: fade(@color-secondary,40);
@@ -219,7 +219,7 @@
       {
         box-shadow: 0 0 3px fade(@color-main,50);
       }
-      &__round
+      &_round
       {
         border-radius: 50%;
         width: 40px;
@@ -228,7 +228,7 @@
         overflow: hidden;
         position: relative;
       }
-      &__disabled,&__disabled:active,&__disabled:hover
+      &_disabled,&_disabled:active,&_disabled:hover
       {
         opacity: 0.3;
         box-shadow: 0px 0px 3px fade(@color-main,50);
@@ -245,7 +245,7 @@
   {
     display: inline-block;
   }
-  &_ava
+  &__ava
   {
     height:100px;
     width:100px;
@@ -258,13 +258,13 @@
       min-width: 100%;
     }
   }
-  &_author
+  &__author
   {
     color:black;
     font-weight:bold;
     font-size:110%;
   }
-  &__poster
+  &_poster
   {
     margin-bottom: 55px;
     textarea
@@ -337,7 +337,7 @@
 
 .tabs
 {
-  &_tab
+  &__tab
   {
     display: inline-block;
     padding: 7px;
@@ -347,11 +347,11 @@
     -ms-user-select: none;
     -o-user-select: none;
     -webkit-user-select: none;
-    &__open
+    &_open
     {
       border-bottom: 4px solid @color-secondary;
     }
-    &__edge
+    &_edge
     {
       margin-left: 0;
     }
@@ -363,17 +363,17 @@
   display: none;
   width: 100%;
   padding: 7px;
-  &__open
+  &_open
   {
     display: block;
   }
-  &__settings
+  &_settings
   {
     background-color:fade(@color-main,70);
     min-height: 100%;
     color:#e7e7e7;
   }
-  &_set{
+  &__set{
     margin-bottom: 10px;
     &-left
     {
@@ -391,19 +391,19 @@
 {
   height: 100px;
   margin-bottom: 20px;
-  &_subscribe-btn
+  &__subscribe-btn
   {
     color: white;
     &:hover
     {
       color: @color-link;
     }
-    &__sub-list
+    &_sub-list
     {
       color: black;
     }
   }
-  &_ava
+  &__ava
   {
     height: 100%;
     width: 100px;
@@ -417,14 +417,14 @@
       height: 100%;
     }
   }
-  &_txt
+  &__txt
   {
     display: inline-block;
     vertical-align: top;
     margin-right: 10px;
     width: 300px;
   }
-  &_sub
+  &__sub
   {
     float: right;
     height: 40px;
@@ -437,25 +437,25 @@
       margin-right: 10px;
     }
   }
-  &__small
+  &_small
   {
     height: 50px;
     display: inline-block;
   }
-  &__small &_ava
+  &_small &__ava
   {
     width: 50px;
   }
-  &__small &_sub
+  &_small &__sub
   {
     margin-top: 0;
   }
-  &__small &_txt
+  &_small &__txt
   {
     width: auto;
     margin-right: 20px;
   }
-  &__small &_subscribe-btn
+  &_small &__subscribe-btn
   {
     color: black;
     &:hover
