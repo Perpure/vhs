@@ -1,6 +1,6 @@
 var videos = [];
 var next_page_token = '';
-var more_videos = '<button id="more_videos">Больше видео</button>';
+var more_videos = '<button class="yt-search_more" id="more_videos">Больше видео</button>';
 var search;
 
 function find_videos() {
@@ -47,26 +47,42 @@ function handle_data(data) {
     for (var id in videos) {
         output_video(videos[id]);
     }
-    $('#videos_block').append(more_videos);
-    $('#more_videos').click(get_more_videos);
+    if (next_page_token != 0) {
+        $('#videos_block').append(more_videos);
+        $('#more_videos').click(get_more_videos);
+    }
 }
 
 
 function output_video(video_item) {
+    var title = truncate(video_item['snippet']['title'], 25);
+    var author = truncate(video_item['snippet']['channelTitle'], 20);
     var duration = moment.duration(video_item['contentDetails']['duration']);
 
-    var html = '<div>' +
-                    '<div>' +
-                    '<img width="320px" height="180px" src="' + video_item['snippet']['thumbnails']['medium']['url'] + '">' +
+    var html = '<div class="yt-video">' +
+                    '<div class="yt-video_img">' +
+                    '<img src="' + video_item['snippet']['thumbnails']['medium']['url'] + '">' +
                     '</div>' +
-                    '<div>' +
-                    '<h5>' + video_item['snippet']['title'] + '</h5>' +
-                    '<p>Автор: ' + video_item['snippet']['channelTitle'] + '</p>' +
-                    '<p> Длина: ' + duration.humanize() + '</p>' +
+                    '<div class="yt-video_info">' +
+                    '<h6>' + title + '</h6>' +
+                    '<p>Автор: ' + author + '<br>' +
+                    'Длина: ' + duration.humanize() + '</p>' +
                     '<span hidden="true">' + video_item['id'] + '</span>' +
                     '</div>' +
                 '</div>';
     $('#videos_block').append(html);
+}
+
+
+function truncate(string, length){
+    var trunc_str;
+    if (string.length > length) {
+        trunc_str = string.substr(0, length-3) + '...';
+    } else {
+        trunc_str = string;
+    }
+
+    return trunc_str;
 }
 
 

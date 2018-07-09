@@ -13,6 +13,7 @@ ul {
 body {
   font-family: 'Roboto', sans-serif;
   /*background-image:url("bg4.png");*/
+
   background-color: rgba(232, 232, 232, 0.2);
   height: 100%;
   position: relative;
@@ -562,6 +563,32 @@ header {
 }
 .profile__small .profile_subscribe-btn:hover {
   color: #cc8787;
+}
+.yt-video {
+  margin-left: 10px;
+  width: 200px;
+  box-sizing: border-box;
+  float: left;
+}
+.yt-video_img {
+  width: 100%;
+}
+.yt-video_img img {
+  width: 100%;
+}
+.yt-video_info {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin-top: 10px;
+  color: gray;
+  font-size: small;
+  height: 100px;
+}
+.yt-video_info h6 {
+  color: black;
+}
+.yt-search_more {
+  width: 100%;
 }
 .footer_line {
   display: inline-block;

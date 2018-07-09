@@ -284,16 +284,19 @@ def videos_from_youtube():
         return 'Error'
 
     videos = []
+    ids = ''
     for item in search_res['items']:
-        video = requests.get('https://www.googleapis.com/youtube/v3/videos', {
-            'id': item['id']['videoId'],
-            'part': 'snippet,contentDetails',
-            'key': GOOGLE_API_KEY
-        }).json()
-        videos.append(video['items'][0])
+        ids += item['id']['videoId'] + ','
+
+    videos = requests.get('https://www.googleapis.com/youtube/v3/videos', {
+        'id': ids,
+        'part': 'snippet,contentDetails',
+        'key': GOOGLE_API_KEY
+    }).json()
 
     response = {
-        'nextPageToken': search_res['nextPageToken'],
-        'videos': videos
+        'nextPageToken': search_res.get('nextPageToken', 0),
+        'videos': videos['items']
     }
+
     return jsonify(response)
