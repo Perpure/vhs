@@ -7,28 +7,33 @@ from config import basedir
 from PIL import Image, ImageDraw
 
 
-def calibrate_resolution(resolution, w, h):
-    width = resolution[0]
-    height = resolution[1]
-    if (width / height) > (w / h):
-        height = int(width * h / w)
-        return width, height
-    if (width / height) < (w / h):
-        width = int(height * w / h)
-        return width, height
-    return width, height
+class Screen():
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+
+    def calibrate_resolution(self, w, h):
+        width = self.width
+        height = self.height
+        if (width / height) > (w / h):
+            height = int(width * h / w)
+        elif (width / height) < (w / h):
+            width = int(height * w / h)
+        deltax = (width - self.width) // 2
+        deltay = (height - self.height) // 2
+        self.width = width
+        self.height = height
+        return deltax, deltay
 
 
 def handle_parse(items, minX, minY, maxX, maxY, room):
-    resolution = (maxX - minX, maxY - minY)
-    new_width, new_height = calibrate_resolution(resolution, 16, 9)
-    deltax = (new_width - resolution[0]) / 2
-    deltay = (new_height - resolution[1]) / 2
-    draw, room_map = create_map(new_width, new_height)
+    screen = Screen(maxX - minX, maxY - minY)
+    deltax, deltay = screen.calibrate_resolution(16, 9)
+    draw, room_map = create_map(screen.width, screen.height)
     for item in items:
         user, rect, color = item
         rect = ((rect[0][0] - minX, rect[0][1] - minY), rect[1], rect[2])
-        save_parse(user, rect, deltax, deltay, new_width, new_height)
+        save_parse(user, rect, deltax, deltay, screen.width, screen.height)
         draw_map(draw, rect, color)
     save_map(draw, room, room_map)
 

@@ -37,5 +37,5 @@ def multiscreen_show_result(message):
             noSound = True
             if member == users[0]:
                 noSound = False
-            params = {'top': member.top, 'left': member.left, 'width': member.res_k, 'noSound': noSound}
+            params = {'top': member.top, 'left': member.left, 'scale': member.res_k, 'noSound': noSound}
             emit('multiscreen_show_result', params, room=member.socket_id)
