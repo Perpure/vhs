@@ -7,13 +7,14 @@ from config import basedir
 from PIL import Image, ImageDraw
 
 
-<<<<<<< HEAD
 class Screen():
-    def __init__(self, width, height):
+    def __init__(self, width, height, deltax = 0, deltay = 0):
         self.width = width
         self.height = height
+        self.deltax = deltax
+        self.deltay = deltay
 
-    def calibrate_resolution(self, w, h):
+    def get_formatted_screen(self, w, h):
         width = self.width
         height = self.height
         if (width / height) > (w / h):
@@ -22,29 +23,17 @@ class Screen():
             width = int(height * w / h)
         deltax = (width - self.width) // 2
         deltay = (height - self.height) // 2
-        self.width = width
-        self.height = height
-        return deltax, deltay
-=======
-def calibrate_resolution(resolution, w, h):
-    width = resolution[0]
-    height = resolution[1]
-    if (width / height) > (w / h):
-        height = int(width * h / w)
-    elif (width / height) < (w / h):
-        width = int(height * w / h)
-    return width, height
->>>>>>> 042ce21620fac92a45faec120d4e374ab4ab320e
+        return Screen(width, height, deltax, deltay)
 
 
 def handle_parse(items, minX, minY, maxX, maxY, room):
-    screen = Screen(maxX - minX, maxY - minY)
-    deltax, deltay = screen.calibrate_resolution(16, 9)
-    draw, room_map = create_map(screen.width, screen.height)
+    trimmed_screen = Screen(maxX - minX, maxY - minY)
+    final_screen = trimmed_screen.get_formatted_screen(16, 9)
+    draw, room_map = create_map(final_screen.width, final_screen.height)
     for item in items:
         user, rect, color = item
         rect = ((rect[0][0] - minX, rect[0][1] - minY), rect[1], rect[2])
-        save_parse(user, rect, deltax, deltay, screen.width, screen.height)
+        save_parse(user, rect, final_screen.deltax, final_screen.deltay, final_screen.width, final_screen.height)
         draw_map(draw, rect, color)
     save_map(draw, room, room_map)
 
