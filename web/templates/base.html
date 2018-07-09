@@ -24,48 +24,48 @@
     <header id="Header">
         <div class="mid-head">
             <div class="logo">
-                <a href="{{url_for('main')}}" class="Link"><img src="{{ url_for('static', filename='vhs4.png') }}" alt="" class="logo_img"></a>
+                <a href="{{url_for('main')}}" class="Link"><img src="{{ url_for('static', filename='vhs4.png') }}" alt="" class="logo__img"></a>
 
             </div>
 
             <div class="nav-menu">
-                <div class="nav-menu_menu-holder" id="mHolder">Меню</div>
-                <a href="{{url_for('main')}}"><div class="nav-menu_nav-men">Главная</div></a>
-                <div class="nav-menu_nav-men" id="Search">Поиск</div>
-                <div class="nav-menu_nav-men nav-menu_nav-men__nav-clast">
+                <div class="nav-menu__menu-holder" id="mHolder">Меню</div>
+                <a href="{{url_for('main')}}"><div class="nav-menu__nav-men">Главная</div></a>
+                <div class="nav-menu__nav-men" id="Search">Поиск</div>
+                <div class="nav-menu__nav-men nav-menu__nav-men_nav-clast">
                     Мультискрин
-                    <img src="{{ url_for('static', filename='down.png') }}" class="nav-menu_img">
-                    <div class="nav-menu_in-btn">
-                        <img src="{{ url_for('static', filename='updown.png') }}" class="nav-menu_img nav-menu_img__up-down">
-                        <a href="{{url_for('viewroom')}}"><div class="nav-menu_sub-btn nav-menu_sub-btn__upst">Все комнаты</div></a>
-                        <a href="{{url_for('createroom')}}"><div class="nav-menu_sub-btn">Создать комнату</div></a>
+                    <img src="{{ url_for('static', filename='down.png') }}" class="nav-menu__img">
+                    <div class="nav-menu__in-btn">
+                        <img src="{{ url_for('static', filename='updown.png') }}" class="nav-menu__img nav-menu__img_up-down">
+                        <a href="{{url_for('viewroom')}}"><div class="nav-menu__sub-btn nav-menu__sub-btn_upst">Все комнаты</div></a>
+                        <a href="{{url_for('createroom')}}"><div class="nav-menu__sub-btn">Создать комнату</div></a>
                     </div>
                 </div>
                 {%if user %}
-                    <div class="nav-menu_nav-men nav-menu_nav-men__nav-clast nav-menu_nav-men__nav-edge">
+                    <div class="nav-menu__nav-men nav-menu__nav-men_nav-clast nav-menu__nav-men_nav-edge">
                         Кабинет
-                        <img src="{{ url_for('static', filename='down.png') }}" class="nav-menu_img">
-                        <div class="nav-menu_in-btn">
-                            <img src="{{ url_for('static', filename='updown.png') }}" class="nav-menu_img nav-menu_img__up-down">
-                            <a href="{{url_for('cabinet', usr=user.login)}}"><div class="nav-menu_sub-btn nav-menu_sub-btn__upst">Мой канал</div></a>
-                            <a href="{{url_for('views_story')}}"><div class="nav-menu_sub-btn">История</div></a>
-                            <a href="{{url_for('subs_s')}}"><div class="nav-menu_sub-btn">Подписки</div></a>
-                            <a href="{{url_for('upload')}}"><div class="nav-menu_sub-btn">Загрузить</div></a>
-                            <a href="{{url_for('logout')}}"><div class="nav-menu_sub-btn">Выйти</div></a>
+                        <img src="{{ url_for('static', filename='down.png') }}" class="nav-menu__img">
+                        <div class="nav-menu__in-btn">
+                            <img src="{{ url_for('static', filename='updown.png') }}" class="nav-menu__img nav-menu__img_up-down">
+                            <a href="{{url_for('cabinet', usr=user.login)}}"><div class="nav-menu__sub-btn nav-menu__sub-btn_upst">Мой канал</div></a>
+                            <a href="{{url_for('views_story')}}"><div class="nav-menu__sub-btn">История</div></a>
+                            <a href="{{url_for('subs_s')}}"><div class="nav-menu__sub-btn">Подписки</div></a>
+                            <a href="{{url_for('upload')}}"><div class="nav-menu__sub-btn">Загрузить</div></a>
+                            <a href="{{url_for('logout')}}"><div class="nav-menu__sub-btn">Выйти</div></a>
                         </div>
                     </div>
                 {%else%}
-                    <a href="{{url_for('log')}}"><div class="nav-menu_nav-men">Войти</div></a>
-                    <a href="{{url_for('reg')}}"><div class="nav-menu_nav-men nav-menu_nav-men__nav-edge">Регистрация</div></a>
+                    <a href="{{url_for('log')}}"><div class="nav-menu__nav-men">Войти</div></a>
+                    <a href="{{url_for('reg')}}"><div class="nav-menu__nav-men nav-menu__nav-men_nav-edge">Регистрация</div></a>
                 {%endif%}
             </div>
         </div>
 
         <div class="searcher" id="searcher">
-            <input type="text" class="searcher_input" id="searchKey" title="">
-            <div class="searcher_field" value=0 id="Date">Дата</div>
-            <div class="searcher_field" value=0 id="byViews">Просмотры</div>
-            <input type="submit" value="Поиск" class="searcher_btn" id="startSearch">
+            <input type="text" class="searcher__input" id="searchKey" title="">
+            <div class="searcher__field" value=0 id="Date">Дата</div>
+            <div class="searcher__field" value=0 id="byViews">Просмотры</div>
+            <input type="submit" value="Поиск" class="searcher__btn" id="startSearch">
         </div>
     </header>
 
@@ -73,11 +73,11 @@
           {% block content %}{% endblock %}
     </main>
     <footer id="Footer">
-      <span class="italic footer_line footer_line__left">Video Hosting Service</span>
-      <div class="footer_contact">
-        <a href="https://vk.com/shpteam"><img src="{{ url_for('static', filename='vk.png') }}" alt="" class="footer_img"></a>
+      <span class="italic footer__line footer__line_left">Video Hosting Service</span>
+      <div class="footer__contact">
+        <a href="https://vk.com/shpteam"><img src="{{ url_for('static', filename='vk.png') }}" alt="" class="footer__img"></a>
       </div>
-      <span class="italic footer_line footer_line__right">by 53rd Group, 2018</span>
+      <span class="italic footer__line footer__line_right">by 53rd Group, 2018</span>
     </footer>
 
     <search></search>

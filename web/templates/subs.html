@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="mid mid__wider">
+<div class="mid mid_wider">
 <h1>Подписки</h1>
 {% for sub in subs %}
 <div class="profile">
-    <div class="profile_ava">
-      <img src="{{ sub.avatar_url() }}" alt="" class="profile_ava-img">
+    <div class="profile__ava">
+      <img src="{{ sub.avatar_url() }}" alt="" class="profile__ava-img">
     </div>
-    <div class="profile_txt">
+    <div class="profile__txt">
         <h2><a href="{{url_for('cabinet', usr=sub.login)}}">{{sub.name}}</a></h2>
         <p>{{sub.channel_info}}</p>
     </div>
-    <div class="profile_sub">
-      <span class="profile_sub-count"  id="subCnt{{sub.id}}">{{ sub.subscribers|length }}</span>
-      <button type="button" name="button" value="{{sub.id}}"  class="profile_subscribe-btn profile_subscribe-btn__sub-list">Отписаться</button>
+    <div class="profile__sub">
+      <span class="profile__sub-count"  id="subCnt{{sub.id}}">{{ sub.subscribers|length }}</span>
+      <button type="button" name="button" value="{{sub.id}}"  class="profile__subscribe-btn profile__subscribe-btn_sub-list">Отписаться</button>
     </div>
 </div>
 {% endfor %}

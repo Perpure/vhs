@@ -3,43 +3,43 @@
 <div class="canal">
   <div class="solid">
     <div class="profile">
-        <div class="profile_ava"><img src="{{ usr.avatar_url() }}" alt="" class="profile_ava-img"></div>
-        <div class="profile_txt">
+        <div class="profile__ava"><img src="{{ usr.avatar_url() }}" alt="" class="profile__ava-img"></div>
+        <div class="profile__txt">
             <h2>{{usr.name}}</h2>
             <p>{{usr.channel_info}}</p>
         </div>
         {% if settings==False %}
-        <div class="profile_sub">
-          <span class="profile_sub-count" id="subCnt{{usr.id}}">{{ usr.subscribers|length }}</span>
-          <button type="button" name="button" value="{{usr.id}}" class="profile_subscribe-btn">{% if subscribed %}Отписаться{% else %}Подписаться{% endif %}</button>
+        <div class="profile__sub">
+          <span class="profile__sub-count" id="subCnt{{usr.id}}">{{ usr.subscribers|length }}</span>
+          <button type="button" name="button" value="{{usr.id}}" class="profile__subscribe-btn">{% if subscribed %}Отписаться{% else %}Подписаться{% endif %}</button>
         </div>
         {%endif%}
     </div>
 
     <div class="tabs">
-      <div value="about" class="tabs_tab tabs_tab__edge">Главная</div>
-      <div value="videos" class="tabs_tab">Видео пользователя</div>
+      <div value="about" class="tabs__tab tabs__tab_edge">Главная</div>
+      <div value="videos" class="tabs__tab">Видео пользователя</div>
       {% if settings %}
-        <div value="settings" class="tabs_tab">Настройки канала</div>
-        <div value="settingsAcc" class="tabs_tab">Настройки аккаунта</div>
+        <div value="settings" class="tabs__tab">Настройки канала</div>
+        <div value="settingsAcc" class="tabs__tab">Настройки аккаунта</div>
       {% endif %}
     </div>
   </div>
 
-  <div class="section section__open" id="about">
+  <div class="section section_open" id="about">
     {% if last %}
     <h2>Последние видео</h2>
     {%endif%}
     {% for item in last|reverse %}
       <div class="video">
-        <div class="video_preview">
+        <div class="video__preview">
           <a href="{{ url_for('play', vid=item.id) }}">
-            <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video_preview-img">
+            <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video__preview-img">
           </a>
         </div>
         <div>
           <a href="{{ url_for('play', vid=item.id) }}">
-            <p class="video_title" title="{{item.title}}">{{item.title}}</p>
+            <p class="video__title" title="{{item.title}}">{{item.title}}</p>
           </a>
           <a href="/cabinet/{{ item.user.login }}">
             <p class="italic">
@@ -61,14 +61,14 @@
   <div class="section" id="videos">
     {% for item in items|reverse %}
     <div class="video">
-      <div class="video_preview">
+      <div class="video__preview">
         <a href="{{ url_for('play', vid=item.id) }}">
-          <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video_preview-img">
+          <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video__preview-img">
         </a>
       </div>
       <div>
         <a href="{{ url_for('play', vid=item.id) }}">
-          <p class="video_title" title="{{item.title}}">{{item.title}}</p>
+          <p class="video__title" title="{{item.title}}">{{item.title}}</p>
         </a>
         <a href="/cabinet/{{ item.user.login }}">
           <p class="italic">
@@ -93,7 +93,7 @@
       <form action="" method="post" enctype="multipart/form-data" >
         {{form.hidden_tag()}}
         <input type="hidden" name="form-name" value="form">
-        <div class="section_set">
+        <div class="section__set">
           {{ form.change_name.label }}
           <br>
           {{ form.change_name }}
@@ -103,7 +103,7 @@
             {% endfor %}
           {% endif %}
         </div>
-        <div clss="section_set">
+        <div clss="section__set">
           {{ form.channel_info.label }}
           <br>
           {{ form.channel_info }}
@@ -116,7 +116,7 @@
 
         <hr>
         <h3>Оформление</h3>
-        <div class="section_set">
+        <div class="section__set">
           {{ form.avatar.label }}
 		      <div class="loader">
    			    <div>{{ form.avatar }}</div>
@@ -128,7 +128,7 @@
           {% endif %}
         </div>
 
-        <div class="section_set">
+        <div class="section__set">
 	 	      {{ form.background.label }}
 		      <div class="loader">
    			    <div> {{ form.background }}</div>
@@ -148,7 +148,7 @@
           </ol>
         </div>
         <hr>
-        <div class="section_set">
+        <div class="section__set">
           <b>
           {{ form.current_password.label }}
           {{ form.current_password }}
@@ -159,7 +159,7 @@
           {% endif %}
           </b>
         </div>
-        <div class="section_set">
+        <div class="section__set">
           {{ form.submit_changes }}
         </div>
 
@@ -170,7 +170,7 @@
       <form action="" method="post" enctype="multipart/form-data" >
         {{form_acc.hidden_tag()}}
         <input type="hidden" name="form-name" value="form_acc">
-        <div class="section_set">
+        <div class="section__set">
           {{ form_acc.change_password.label }}
           <br>
           {{ form_acc.change_password }}
@@ -181,7 +181,7 @@
           {% endif %}
         </div>
         <hr>
-        <div class="section_set">
+        <div class="section__set">
           <b>
           {{ form_acc.cur_password.label }}
           {{ form_acc.cur_password }}
@@ -192,7 +192,7 @@
           {% endif %}
           </b>
         </div>
-        <div class="section_set">
+        <div class="section__set">
           {{ form_acc.save_changes }}
         </div>
       </form>
@@ -219,14 +219,14 @@
 </style>
 <script>
     $(document).ready(function(){
-      $('.tabs_tab').click(function(){
-        $('.tabs_tab').removeClass('tabs_tab__open');
-        this.classList.add('tabs_tab__open');
-        $('.section').removeClass('section__open');
+      $('.tabs__tab').click(function(){
+        $('.tabs__tab').removeClass('tabs__tab_open');
+        this.classList.add('tabs__tab_open');
+        $('.section').removeClass('section_open');
         var id=$(this).attr('value');
-        $('#' + id).addClass('section__open');
+        $('#' + id).addClass('section_open');
       });
-      $('.tabs_tab').get({{tab}}).click();
+      $('.tabs__tab').get({{tab}}).click();
     });
 
     $(document).ready(function(){
