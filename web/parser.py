@@ -7,6 +7,7 @@ from config import basedir
 from PIL import Image, ImageDraw
 
 
+<<<<<<< HEAD
 class Screen():
     def __init__(self, width, height):
         self.width = width
@@ -24,6 +25,16 @@ class Screen():
         self.width = width
         self.height = height
         return deltax, deltay
+=======
+def calibrate_resolution(resolution, w, h):
+    width = resolution[0]
+    height = resolution[1]
+    if (width / height) > (w / h):
+        height = int(width * h / w)
+    elif (width / height) < (w / h):
+        width = int(height * w / h)
+    return width, height
+>>>>>>> 042ce21620fac92a45faec120d4e374ab4ab320e
 
 
 def handle_parse(items, minX, minY, maxX, maxY, room):
