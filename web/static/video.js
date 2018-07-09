@@ -24,8 +24,8 @@ setTimeout(function step(){
                     {
                         response1.forEach(function(element){
                           var comment=$('<div class="comment"></div>');
-                          var ava=$('<div class="comment_ava"><img src="'+element.ava+'" alt="" class="comment_ava-img"></div>');
-                          var txt=$('<div><p class="comment_author"><a href="/cabinet/'+element.login+'">'+element.name+'</a></p><p>'+element.text+'</p></div></div>');
+                          var ava=$('<div class="comment__ava"><img src="'+element.ava+'" alt="" class="comment__ava-img"></div>');
+                          var txt=$('<div><p class="comment__author"><a href="/cabinet/'+element.login+'">'+element.name+'</a></p><p>'+element.text+'</p></div></div>');
                           comment.append(ava);
                           comment.append(txt);
                           $('#CSect').prepend(comment);
