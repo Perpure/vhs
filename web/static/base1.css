@@ -589,6 +589,45 @@ header {
 }
 .yt-search_more {
   width: 100%;
+  background-color: #1c180b;
+  color: white;
+  padding: 10px;
+}
+.yt-search_more:hover {
+  color: #cc8787;
+}
+.yt-search_searcher {
+  background-color: #1c180b;
+  border-spacing: 5px;
+  margin: auto;
+  display: table;
+  width: 70%;
+}
+.yt-search_searcher_input {
+  width: 80%;
+  display: table-cell;
+}
+.yt-search_searcher_input__field {
+  vertical-align: top;
+  height: 100%;
+  margin: 0px;
+  width: 100%;
+  padding: 10px;
+}
+.yt-search_searcher_submit {
+  width: 20%;
+  display: table-cell;
+}
+.yt-search_searcher_submit__field {
+  vertical-align: top;
+  width: 100%;
+  color: white;
+  margin: 0px;
+  padding: 10px;
+  height: 100%;
+}
+.yt-search_searcher_submit__field:hover {
+  color: #cc8787;
 }
 .footer_line {
   display: inline-block;

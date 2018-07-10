@@ -418,5 +418,57 @@
   &_more
   {
     width:100%;
+    background-color:@color-main;
+    color:white;
+    padding:10px;
+
+    &:hover
+    {
+      color: @color-link;
+    }
+  }
+
+  &_searcher
+  {
+    background-color:@color-main;
+    border-spacing:5px;
+    margin:auto;
+    display:table;
+    width:70%;
+
+    &_input
+    {
+      width:80%;
+      display: table-cell;
+
+        &__field
+        {
+          vertical-align:top;
+          height:100%;
+          margin:0px;
+          width:100%;
+          padding:10px;
+        }
+    }
+
+    &_submit
+    {
+      width:20%;
+      display: table-cell;
+
+      &__field
+        {
+          vertical-align:top;
+          width:100%;
+          color:white;
+          margin:0px;
+          padding:10px;
+          height:100%;
+          &:hover
+            {
+              color: @color-link;
+            }
+        }
+    }
   }
 }

@@ -273,7 +273,7 @@ def videos_from_youtube():
         'key': GOOGLE_API_KEY,
         'part': 'id',
         'type': 'video',
-        'maxResults': 10
+        'maxResults': 20
     }
 
     if request.args.get('nextPageToken') is not None:
