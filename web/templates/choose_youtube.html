@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div id="searcher_block" class="yt-search_searcher">
-    <div class="yt-search_searcher_input">
-        {{ youtube_search.search(class_="yt-search_searcher_input__field") }}
+<div id="searcher_block" class="yt-search__searcher">
+    <div class="yt-search__searcher__input">
+        <input class="yt-search__searcher__input__field" id="search">
     </div>
 
-    <div class="yt-search_searcher_submit">
-        {{ youtube_search.submit(class_="yt-search_searcher_submit__field") }}
+    <div class="yt-search__searcher__submit">
+        <button class="yt-search__searcher__submit__field" id="submit">Найти</button>
     </div>
 </div>
 
@@ -15,10 +15,10 @@
 <br>
 <br>
 
-<div id="videos_block">
+<div class="section section__open" id="videos_block">
 
 </div>
 
-<script src="{{url_for('static', filename='youtube_search.js')}}"></script>
+<script src="{{url_for('static', filename='js/multiscreen/youtube_search.js')}}"></script>
 
 {% endblock %}
