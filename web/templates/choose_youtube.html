@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="yt-search_searcher">
+<div id="searcher_block" class="yt-search_searcher">
     <div class="yt-search_searcher_input">
         {{ youtube_search.search(class_="yt-search_searcher_input__field") }}
     </div>
@@ -20,6 +20,5 @@
 </div>
 
 <script src="{{url_for('static', filename='youtube_search.js')}}"></script>
-<script src=https://momentjs.com/downloads/moment-with-locales.min.js></script>
 
 {% endblock %}

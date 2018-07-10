@@ -564,6 +564,12 @@ header {
 .profile__small .profile_subscribe-btn:hover {
   color: #cc8787;
 }
+.yt-video_error {
+  color: red;
+  font-style: italic;
+  width: 100%;
+  text-align: center;
+}
 .yt-video {
   margin-left: 10px;
   width: 200px;
