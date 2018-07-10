@@ -89,46 +89,6 @@ def get_video_data_search():
                      "geotags": [(gt.longitude, gt.latitude) for gt in video.geotags]} for video in videos])
 
 
-@app.route('/askAct/<int:room_id>', methods=['GET', 'POST'])
-def askAct(room_id):
-    if 'anon_id' in session:
-        room = Room.query.get(room_id)
-        user = AnonUser.query.get(session['anon_id'])
-        action = user.action
-        if action == 'result' or action == 'resultS':
-            return result(action, user)
-        elif action == 'refresh':
-            user.update_action('')
-            return jsonify({"action": action})
-        elif action == 'update':
-            user.update_action('')
-            users = room.get_devices()
-            return jsonify({"action": action, "count": len(users) + 1})
-    return jsonify({"action": ''})
-
-
-def result(action, user):
-    noSound = True
-    if action == 'resultS':
-        noSound = False
-    user.update_action('')
-    time = datetime.now(tz=None)
-    hr = time.hour
-    mt = time.minute
-    sc = time.second
-    ms = round(time.microsecond / 1000)
-    new = hr * 3600000 + mt * 60000 + sc * 1000 + ms
-    action = "result"
-    old = user.time
-    time = str(old - new)
-    return jsonify({"action": action,
-                    "time": time,
-                    "top": user.top,
-                    "left": user.left,
-                    "width": user.res_k,
-                    "noSound": noSound})
-
-
 @app.route('/askNewComm/<string:vid>', methods=['GET', 'POST'])
 def askNewComm(vid):
     video = Video.get(video_id=vid)
@@ -224,31 +184,6 @@ def startSearch():
         return render_template('main.html', user=cur_user(), items=Video.get(search=ask, sort=sort), now=now)
 
     return render_template('main.html', user=cur_user(), items=Video.get(), now=now)
-
-
-@app.route('/showRes/<int:room_id>', methods=['GET', 'POST'])
-def showRes(room_id):
-    room = Room.query.get(room_id)
-    users = room.get_devices()
-    time = datetime.now(tz=None)
-    hr = time.hour
-    mt = time.minute
-    sc = time.second
-    ms = round(time.microsecond / 1000)
-    zero = hr * 3600000 + mt * 60000 + sc * 1000 + ms
-    for member in users:
-        time = datetime.now(tz=None)
-        hr = time.hour
-        mt = time.minute
-        sc = time.second
-        ms = round(time.microsecond / 1000)
-        now = hr * 3600000 + mt * 60000 + sc * 1000 + ms
-        now += 15000 - (now - zero)
-        member.action = "result"
-        member.time = now
-    users[0].action = "resultS"
-    db.session.commit()
-    return ""
 
 
 @app.route('/subscribe/<int:ID>', methods=['GET', 'POST'])

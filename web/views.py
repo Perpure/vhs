@@ -6,13 +6,14 @@ from flask import redirect, render_template, session, url_for, request
 from flask.json import JSONDecoder, dumps
 from werkzeug.exceptions import Aborter
 from config import basedir
-from web import app, db, avatars, backgrounds
+from web import app, db, avatars, backgrounds, socketio
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
     UserProfileForm, AddRoomForm, AccountSettingsForm, YoutubeVideoForm
 from web.models import User, Video, Room, Color, Geotag, Tag, AnonUser, RoomDeviceColorConnector
 from web.helper import cur_user, requiresauth, anon_user, image_loaded
 from web.video_handler import save_video
 from datetime import datetime
+from flask_socketio import emit
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -80,11 +81,7 @@ def room(room_id):
             col = Color.query.get(color_id)
             rac = RoomDeviceColorConnector(anon=user, room=room, color=col)
             db.session.add(rac)
-            for member in users:
-                member.action = "update"
-            capt = AnonUser.get(room.capitan_id)
-            capt.action = "update"
-            db.session.commit()
+            socketio.emit('update', len(users) + 2, broadcast=True)
 
         users = room.get_devices()
 
@@ -117,9 +114,6 @@ def choosed_video(room_id, vid_id):
     room = Room.query.get(room_id)
     vid = Video.query.get(vid_id)
     if vid and room:
-        users = room.get_devices()
-        for member in users:
-            member.action = "refresh"
         if user.id == room.capitan_id:
             room.video_id = vid_id
         db.session.commit()

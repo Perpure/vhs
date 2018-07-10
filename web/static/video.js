@@ -5,7 +5,6 @@ for(var i=0;i<hash.length;i++)
     if(hash[i]=='/')sl=i;
 hash=hash.substring(sl+1);
 
-var commSection=document.getElementById("CSect");
 var curComms = document.getElementsByClassName("comment").length;
 setTimeout(function step(){
     $.ajax({
@@ -42,10 +41,8 @@ setTimeout(function step(){
     setTimeout(step,speed);
 },speed);
 
-var addCom=document.getElementById("addC");
-var plate=document.getElementById("txtPlate");
-if(addCom!=null)addCom.addEventListener('click',function(){
-            var txt=plate.value;
+if($('#addC')!=null)$('#addC').click(function(){
+            var txt=$('#txtPlate').val();
             $.ajax({
                url:"/postComm/"+hash+"/",
                type:"GET",

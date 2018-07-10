@@ -19,7 +19,6 @@
     .nav-menu
     {
       text-align:center;
-      border-top: 2px solid fade(@color-secondary,50);
       width:100%;
       &_nav-men:hover
       {
@@ -148,6 +147,13 @@
     {
         max-width:100%;
         text-align:left;
+        &__poster
+        {
+          textarea
+          {
+            width: 120%;
+          }
+        }
     }
     .video
     {
@@ -162,6 +168,22 @@
       &_preview
       {
         height: 45vw;
+      }
+      &-control
+      {
+        margin: 0 auto;
+        margin-bottom: 10px;
+        &_btn
+        {
+          display: block;
+          margin: 0 auto;
+          margin-bottom: 10px;
+          &__round
+          {
+            display: inline-block;
+            margin: 0 10px 10px 10px;
+          }
+        }
       }
     }
     .tabs
