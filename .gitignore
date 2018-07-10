@@ -208,3 +208,4 @@ $RECYCLE.BIN/
 /video/*
 *.sqlite-journal
 .env
+/node_modules/*
