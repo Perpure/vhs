@@ -24,6 +24,16 @@ module.exports = {
                         outputPath: 'fonts/'
                     }
                 }]
+            },
+            {
+                test: /\.(png)(\?v=\d+\.\d+\.\d+)?$/,
+                use: [{
+                    loader: 'file-loader',
+                    options: {
+                        name: '[name].[ext]',
+                        outputPath: 'imgs/'
+                    }
+                }]
             }]
   },
   plugins: [
