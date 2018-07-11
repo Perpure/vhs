@@ -1,4 +1,4 @@
-[![pipeline status](https://gitlab.com/multiscreen/vhs/badges/master/pipeline.svg)](https://gitlab.com/multiscreen/vhs/commits/master) [![coverage report](https://gitlab.com/multiscreen/vhs/badges/master/coverage.svg)](https://gitlab.com/multiscreen/vhs/commits/master)
+﻿[![pipeline status](https://gitlab.com/multiscreen/vhs/badges/master/pipeline.svg)](https://gitlab.com/multiscreen/vhs/commits/master) [![coverage report](https://gitlab.com/multiscreen/vhs/badges/master/coverage.svg)](https://gitlab.com/multiscreen/vhs/commits/master)
 
 
 ## Установка и развертывание web-приложения
@@ -42,7 +42,9 @@
     python migrate.py
     ```
 
-7. Запустить приложение
+7. Выполнить действия по установки инструментов для _frontend_
+
+8. Запустить приложение
 
     ```
     python run.py
@@ -70,7 +72,7 @@ nose2 web -C
 
 ## Переменные среды
 
-Среди переменных среды важна `DATABASE_URL`, содержимое которой определяет местонахожение и параметры доступа к базе данных приложения. Проект поддерживает два типа СУБД: _SQLite_ и _PostgreSQL_.
+Среди переменных среды важна `DATABASE_URL`, содержимое которой определяет местонахождение и параметры доступа к базе данных приложения. Проект поддерживает два типа СУБД: _SQLite_ и _PostgreSQL_.
 
 Чтобы использовать _SQLite_ нужно указать **полный абсолютный** путь до файла с БД. Например, файл БД располагается в `/tmp/db.sqlite`. Тогда необходимо записать в переменную следующий _URI_:
 
@@ -83,3 +85,27 @@ export DATABASE_URL=sqlite:////tmp/db.sqlite
 ```
 export DATABASE_URL=postgres://username:password@host:port/datbase_name
 ```
+
+## Установка инструментов для _frontend_
+
+1. Установить _NodeJS_ (_LST version_): https://nodejs.org/en/download/
+2. Установить `yarn`: https://yarnpkg.com/en/docs/install
+3. Установить зависимости:
+
+    ```
+    yarn
+    ```
+
+4. Запустить сборщик (использовать один из двух способов):
+
+    + _единоразовая сборка_ - команду надо запускать после каждого изменения в файлах _frontend_:
+    
+        ```
+        yarn build
+        ```
+
+    + _автоматическая сборка_ - команда запускается один раз, и после каждого изменения файлах _frontend_ сборка будет выполняться автоматически:
+    
+        ```
+        yarn watch
+        ```

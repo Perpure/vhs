@@ -17,10 +17,9 @@ before_script:
 
 stages:
   - code-test
- 
+
 code-test:
   stage: code-test
   script:
   - nose2 web -C
   - pycodestyle web --max-line-length=120 --ignore=E402 --show-source --show-pep8
- 
