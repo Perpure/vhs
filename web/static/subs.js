@@ -1,8 +1,5 @@
-
-var subBtns=document.getElementsByClassName("profile_subscribe-btn");
-for(var i=0;i<subBtns.length;i++)
-    subBtns[i].addEventListener('click',function(){
-      var val=this.value;
+$(".profile_subscribe-btn").click(function(){
+      var val=this.value();
       $.ajax({
          url:"/subscribe/"+val,
          type:"GET",
@@ -11,16 +8,16 @@ for(var i=0;i<subBtns.length;i++)
 
          error:function(){}
       });
-      var cnt=document.getElementById("subCnt"+val);
+      var cnt=$("#subCnt"+val);
       if(this.innerHTML=="Подписаться")
         {
-          cnt.innerHTML-=(-1);
+          cnt.html(cnt.html()-(-1));
           this.innerHTML="Отписаться";
         }
       else
       {
-        cnt.innerHTML-=1;
+        cnt.html(cnt.html()-1);
         this.innerHTML="Подписаться";
       }
 
-    });
+});

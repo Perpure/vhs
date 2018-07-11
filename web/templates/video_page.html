@@ -73,35 +73,35 @@
     div[name="like"]
     {
         {%if lkd!=1 %}
-            background-image:url({{ url_for('static', filename='lik1.png') }});
+            background-image:url({{ url_for('static', filename='images/lik1.png') }});
         {%else%}
-            background-image:url({{ url_for('static', filename='lik1L.png') }});
+            background-image:url({{ url_for('static', filename='images/lik1L.png') }});
         {%endif%}
     }
 
     div[name="dislike"]
     {
         {%if lkd!=-1 %}
-            background-image:url({{ url_for('static', filename='dis1.png') }});
+            background-image:url({{ url_for('static', filename='images/dis1.png') }});
         {%else%}
-            background-image:url({{ url_for('static', filename='dis1D.png') }});
+            background-image:url({{ url_for('static', filename='images/dis1D.png') }});
         {%endif%}
     }
 
     div[name="like"]:hover
     {
-        background-image:url({{ url_for('static', filename='lik1H.png') }});
+        background-image:url({{ url_for('static', filename='images/lik1H.png') }});
     }
 
     div[name="dislike"]:hover
     {
-        background-image:url({{ url_for('static', filename='dis1H.png') }});
+        background-image:url({{ url_for('static', filename='images/dis1H.png') }});
     }
 </style>
 
-<script src="{{ url_for('static', filename='video.js') }}"></script>
+<script src="{{ url_for('static', filename='js/video_page/video.js') }}"></script>
 {%if user %}
-  <script src="{{ url_for('static', filename='video_like.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/video_page/video_like.js') }}"></script>
 {%endif%}
 {% if user!=video.user %}
   <script src="{{ url_for('static', filename='subs.js') }}"></script>

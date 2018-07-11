@@ -56,12 +56,12 @@ if($('#addC')!=null)$('#addC').click(function(){
 
 function calc()
 {
-    var lkes=document.getElementById("lik");
-    var disl=document.getElementById("dis");
-    var lkesIn=document.getElementById("likSh");
-    var disIn=document.getElementById("disSh");
-    lkes=lkes.innerHTML;
-    disl=disl.innerHTML;
+    var lkes=$("#lik");
+    var disl=$("#dis");
+    var lkesIn=$("#likSh");
+    var disIn=$("#disSh");
+    lkes=lkes.html();
+    disl=disl.html();
     denom=lkes*1+disl*1;
     if(!denom)
     {
@@ -69,15 +69,13 @@ function calc()
       disl=0.5;
       denom=1;
     }
-    lkesIn.style.width=(lkes*100)/denom+"%";
-    disIn.style.width=(disl*100)/denom+"%";
+    lkesIn.css('width',(lkes*100)/denom+"%");
+    disIn.css('width',(disl*100)/denom+"%");
 }
 
 calc();
 
-var taggs=document.getElementsByClassName("tag");
-for(var i=0;i<taggs.length;i++)
-    taggs[i].addEventListener('click',function(){
+$('.tag').click(function(){
         var val = this.innerText;
         var vw=0;
         var dt=0;
