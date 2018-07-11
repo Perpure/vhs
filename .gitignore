@@ -182,10 +182,11 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-# Windows thumbnail cache files
+# Windows and MacOS thumbnail cache files
 Thumbs.db
 ehthumbs.db
 ehthumbs_vista.db
+.DS_Store
 
 # Folder config file
 Desktop.ini
@@ -205,12 +206,13 @@ $RECYCLE.BIN/
 # NodeJS
 node_modules/
 yarn-error.log
-web/static/css/bundle.*
 
 # Project
 /uploads/*
 /avatar/*
 /images/*
 /video/*
+web/static/**/bundle.*
+/web/static/css/base.css
 *.sqlite-journal
 .env

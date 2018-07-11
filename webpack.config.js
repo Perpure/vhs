@@ -15,26 +15,26 @@ module.exports = {
         use: ["css-loader", "less-loader"]
       })
     },
-            {
-                test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-                use: [{
-                    loader: 'file-loader',
-                    options: {
-                        name: '[name].[ext]',
-                        outputPath: 'fonts/'
-                    }
-                }]
-            },
-            {
-                test: /\.(png)(\?v=\d+\.\d+\.\d+)?$/,
-                use: [{
-                    loader: 'file-loader',
-                    options: {
-                        name: '[name].[ext]',
-                        outputPath: 'imgs/'
-                    }
-                }]
-            }]
+    {
+      test: /\.(woff(2)?|ttf|eot|svg)$/,
+      use: [{
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]',
+          outputPath: '../fonts/'
+        }
+      }]
+    },
+    {
+      test: /\.(png|jpg|jpeg|gif)$/,
+      use: [{
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]',
+          outputPath: '../images/'
+        }
+      }]
+    }]
   },
   plugins: [
     new ExtractTextPlugin({
