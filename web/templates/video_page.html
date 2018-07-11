@@ -52,9 +52,15 @@
 <div class="video-comments">
     <p>Комментарии</p>
     {%if user %}
-        <textarea id="txtPlate" maxlength="200" title=""></textarea>
-        <br>
-        <input type="submit" value="Запостить" id="addC">
+        <div class="comment comment__poster">
+            <div class="comment_ava"><img src="{{ user.avatar_url() }}" alt="" class="comment_ava-img" id="myAva"></div>
+            <div>
+                <p class="comment_author"><a href="{{url_for('cabinet', usr=user.login)}}" id="myProf">{{ user.name }}</a></p>
+                <textarea id="txtPlate" maxlength="200" title=""></textarea>
+                <br>
+                <button type="button" id="addC">Запостить</button>
+            </div>
+        </div>
     {%endif%}
     <div id="CSect">
         {% for comment in video.comments|sort(attribute="id")|reverse %}
@@ -104,7 +110,7 @@
   <script src="{{ url_for('static', filename='js/video_page/video_like.js') }}"></script>
 {%endif%}
 {% if user!=video.user %}
-  <script src="{{ url_for('static', filename='subs.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/user/subscribe.js') }}"></script>
 {%endif%}
 
 <script src="https://vjs.zencdn.net/7.0.3/video.min.js"></script>
