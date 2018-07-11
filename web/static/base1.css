@@ -1,4 +1,9 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto');
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto'), local('Roboto-Regular'), url(https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu4mxP.ttf) format('truetype');
+}
 html {
   height: 100%;
 }
@@ -309,7 +314,7 @@ header {
   margin-right: 2%;
   margin-bottom: 10px;
   vertical-align: top;
-  height: calc(108%);
+  height: calc(8% + 100px);
 }
 .video-js {
   height: 40vw;
@@ -637,6 +642,63 @@ header {
   color: black;
 }
 .profile__small .profile_subscribe-btn:hover {
+  color: #cc8787;
+}
+.yt-video_error {
+  color: red;
+  font-style: italic;
+  width: 100%;
+  text-align: center;
+}
+.yt-search {
+  padding: 0 0 20px;
+}
+.yt-search__more {
+  display: block;
+  width: 200px;
+  margin: 0 auto;
+  background-color: #1c180b;
+  color: white;
+}
+.yt-search__more:hover {
+  color: #cc8787;
+}
+.yt-search__more_hidden {
+  display: none;
+}
+.yt-search__searcher {
+  background-color: #1c180b;
+  margin: auto;
+  width: 70%;
+}
+.yt-searcher {
+  display: table;
+  border-spacing: 5px;
+}
+.yt-searcher__input {
+  width: 80%;
+  display: table-cell;
+}
+.yt-searcher__input input {
+  vertical-align: top;
+  margin: 0px;
+  margin-top: 1px;
+  width: 100%;
+  padding: 10px;
+}
+.yt-searcher__submit {
+  width: 20%;
+  display: table-cell;
+}
+.yt-searcher__submit button {
+  vertical-align: top;
+  width: 100%;
+  color: white;
+  margin: 0px;
+  padding: 10px;
+  height: 100%;
+}
+.yt-searcher__submit button:hover {
   color: #cc8787;
 }
 .footer_line {

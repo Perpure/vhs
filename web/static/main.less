@@ -464,3 +464,88 @@
     }
   }
 }
+
+.yt-video_error
+{
+  color: red;
+  font-style: italic;
+  width: 100%;
+  text-align: center;
+}
+
+.yt-search
+{
+  padding: 0 0 20px;
+
+  &__more
+  {
+    display: block;
+    width: 200px;
+    margin: 0 auto;
+    background-color: @color-main;
+    color: white;
+
+    &:hover
+    {
+      color: @color-link;
+    }
+
+    &_hidden
+    {
+      display: none;
+    }
+  }
+
+  &__searcher
+  {
+    background-color: @color-main;
+    margin: auto;
+    width: 70%;
+
+    &__submit
+    {
+
+    }
+  }
+}
+
+.yt-searcher
+{
+  display: table;
+  border-spacing: 5px;
+
+  &__input
+  {
+    width:80%;
+    display: table-cell;
+
+    input
+    {
+      vertical-align: top;
+      margin: 0px;
+      margin-top: 1px;
+      width: 100%;
+      padding: 10px;
+    }
+  }
+
+  &__submit
+  {
+    width:20%;
+    display: table-cell;
+
+    button
+    {
+      vertical-align: top;
+      width: 100%;
+      color: white;
+      margin: 0px;
+      padding: 10px;
+      height: 100%;
+      &:hover
+      {
+        color: @color-link;
+      }
+    }
+  }
+}

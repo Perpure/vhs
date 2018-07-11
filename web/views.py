@@ -142,6 +142,11 @@ def choose_video(room_id):
         return redirect(url_for('viewroom'))
 
 
+@app.route('/room/<int:room_id>/choose_youtube')
+def choose_youtube_video(room_id):
+    return render_template('choose_youtube.html')
+
+
 @app.route('/upload', methods=['GET', 'POST'])
 @requiresauth
 def upload():
