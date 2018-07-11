@@ -1,24 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
+<div class="yt-search">
+    <div class="yt-search__searcher yt-searcher">
+        <div class="yt-searcher__input">
+            <input type="text" />
+        </div>
 
-<div id="searcher_block" class="yt-search__searcher">
-    <div class="yt-search__searcher__input">
-        <input class="yt-search__searcher__input__field" id="search">
+        <div class="yt-searcher__submit">
+            <button type="button">Найти</button>
+        </div>
     </div>
 
-    <div class="yt-search__searcher__submit">
-        <button class="yt-search__searcher__submit__field" id="submit">Найти</button>
-    </div>
+    <div class="section section__open yt-search__result"></div>
+
+    <button type="button" class="yt-search__more yt-search__more_hidden">Больше видео</button>
 </div>
-
-<br>
-<br>
-<br>
-
-<div class="section section__open" id="videos_block">
-
-</div>
-
 <script src="{{url_for('static', filename='js/multiscreen/youtube_search.js')}}"></script>
 
 {% endblock %}
