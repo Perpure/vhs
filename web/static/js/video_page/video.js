@@ -44,7 +44,7 @@ function calc()
 calc();
 
 $('.tag').click(function(){
-    var val = this.innerText;
+    var val = $(this).text();
     var vw = 0;
     var dt = 0;
     if (pr_page == "" ) {
