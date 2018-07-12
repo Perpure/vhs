@@ -176,6 +176,65 @@
       margin-bottom: 10px;
     }
   }
+  &-control
+  {
+    border: 1px solid @color-border;
+    padding: 10px;
+    border-radius: 10px;
+    width: fit-content;
+    margin-bottom: 10px;
+    &_img
+    {
+      width: 100%;
+      &-changing
+      {
+        width: 100%;
+        position: absolute;
+        top: -100%;
+        left: 0;
+        &__other
+        {
+          top:0;
+        }
+      }
+    }
+    &_btn
+    {
+      border-radius: 5px;
+      background-color: fade(@color-secondary,40);
+      box-shadow: 2px 2px 3px fade(@color-main,50);
+      border: none;
+      transition: 0.2s;
+      &:hover
+      {
+        border: none;
+        box-shadow: 1px 1px 3px fade(@color-main,50);
+      }
+      &:active, &:focus
+      {
+        outline: 0;
+        outline-offset: 0;
+      }
+      &:active
+      {
+        box-shadow: 0 0 3px fade(@color-main,50);
+      }
+      &__round
+      {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        overflow: hidden;
+        position: relative;
+      }
+      &__disabled,&__disabled:active,&__disabled:hover
+      {
+        opacity: 0.3;
+        box-shadow: 0px 0px 3px fade(@color-main,50);
+      }
+    }
+  }
 }
 .comment
 {
@@ -236,9 +295,9 @@
 {
     width:300px;
     height:60px;
-    background-image:url("Loader3.png");
     background-repeat:no-repeat;
     margin-bottom:10px;
+    background-image:url("~../images/Loader3.png");
 }
 
 .calibration-image
@@ -251,7 +310,7 @@
 
 .result-video
 {
-    z-index:5;
+    z-index:6;
     position:absolute;
     display:none;
 }
@@ -402,6 +461,91 @@
     &:hover
     {
       color: @color-link;
+    }
+  }
+}
+
+.yt-video_error
+{
+  color: red;
+  font-style: italic;
+  width: 100%;
+  text-align: center;
+}
+
+.yt-search
+{
+  padding: 0 0 20px;
+
+  &__more
+  {
+    display: block;
+    width: 200px;
+    margin: 0 auto;
+    background-color: @color-main;
+    color: white;
+
+    &:hover
+    {
+      color: @color-link;
+    }
+
+    &_hidden
+    {
+      display: none;
+    }
+  }
+
+  &__searcher
+  {
+    background-color: @color-main;
+    margin: auto;
+    width: 70%;
+
+    &__submit
+    {
+
+    }
+  }
+}
+
+.yt-searcher
+{
+  display: table;
+  border-spacing: 5px;
+
+  &__input
+  {
+    width:80%;
+    display: table-cell;
+
+    input
+    {
+      vertical-align: top;
+      margin: 0px;
+      margin-top: 1px;
+      width: 100%;
+      padding: 10px;
+    }
+  }
+
+  &__submit
+  {
+    width:20%;
+    display: table-cell;
+
+    button
+    {
+      vertical-align: top;
+      width: 100%;
+      color: white;
+      margin: 0px;
+      padding: 10px;
+      height: 100%;
+      &:hover
+      {
+        color: @color-link;
+      }
     }
   }
 }

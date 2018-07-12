@@ -8,8 +8,8 @@ function Result() {
 
 jQuery(function($) {
   socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
-  socket.on('multiscreen_show_calibrate', function(msg) {
-    $('#Body').append('<div id="calibrImage" '
+  socket.on('multiscreen_show_calibrate', function() {
+    $('#Body').append('<div '
         + 'style="' + 'background:' + ROOM_COLOR + ';" '
         + 'class="calibration-image fullscreen-switcher"></div>');
   });
@@ -25,6 +25,13 @@ jQuery(function($) {
       $('#ReVi').get(0).muted=true;
     }
     Result();
+  });
+  socket.on('multiscreen_show_pause', function() {
+    $('#ReVi').get(0).pause();
+  });
+  socket.on('multiscreen_show_stop', function() {
+    $('#ReVi').hide();
+    $('#ReVi').get(0).currentTime=0;
   });
   socket.on('refresh', function() {
     location.reload();

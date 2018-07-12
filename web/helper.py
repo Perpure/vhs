@@ -81,3 +81,24 @@ def image_loaded(request, room, user, users, image_form, room_form):
                                image_form=image_form, anon=user,
                                room_form=room_form, loaded=True, room_map=room_map_url, count=len(users) + 1,
                                map_ex=os.path.exists(room_map_filename))
+
+
+def decode_iso8601_duration(duration):
+    x = ''
+    data = {}
+    res = ''
+
+    for char in duration[2:]:
+        if char in ['H', 'M', 'S']:
+            data.update({char: x})
+            x = ''
+        else:
+            x += char
+    if data.get('H') is not None:
+        res += data.get('H') + ' час. '
+    if data.get('M') is not None:
+        res += data.get('M') + ' мин. '
+    if data.get('S') is not None:
+        res += data.get('S') + ' сек.'
+
+    return res

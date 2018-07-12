@@ -117,7 +117,6 @@ def choosed_video(room_id, vid_id):
         if user.id == room.capitan_id:
             room.video_id = vid_id
         db.session.commit()
-        socketio.emit('refresh', broadcast=True)
         return redirect(url_for('room', room_id=room_id))
     else:
         return redirect(url_for('viewroom'))
@@ -141,6 +140,11 @@ def choose_video(room_id):
                                now=now, sub_items=sub_items)
     else:
         return redirect(url_for('viewroom'))
+
+
+@app.route('/room/<int:room_id>/choose_youtube')
+def choose_youtube_video(room_id):
+    return render_template('choose_youtube.html')
 
 
 @app.route('/upload', methods=['GET', 'POST'])

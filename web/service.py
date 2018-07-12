@@ -2,12 +2,14 @@
 import mimetypes
 import os
 import re
+import textwrap
 from datetime import datetime
-from flask import url_for, redirect, make_response, request, jsonify, session, render_template, Response
+from flask import url_for, redirect, make_response, request, jsonify, session, render_template, Response, abort
 from web import app, db
-from web.helper import read_image, cur_user, read_multi
+from web.helper import read_image, cur_user, read_multi, decode_iso8601_duration
 from web.models import Video, Comment, Room, AnonUser, User
-from config import basedir, BUFF_SIZE
+from config import basedir, BUFF_SIZE, GOOGLE_API_KEY
+import requests
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -197,3 +199,52 @@ def subscribe(ID):
         user.follow(blog)
 
     return "nice"
+
+
+@app.route('/youtube_videos')
+def videos_from_youtube():
+    query = request.args.get('query')
+    params = {
+        'q': query,
+        'key': GOOGLE_API_KEY,
+        'part': 'id',
+        'type': 'video',
+        'maxResults': 20
+    }
+
+    if request.args.get('nextPageToken') is not None:
+        params.update({'pageToken': request.args.get('nextPageToken')})
+
+    search_res = requests.get('https://www.googleapis.com/youtube/v3/search', params).json()
+    if search_res.get('error') is not None:
+        return abort(500)
+
+    ids = ''
+    for item in search_res['items']:
+        ids += item['id']['videoId'] + ','
+    if ids == '':
+        return abort(404)
+    videos_data = requests.get('https://www.googleapis.com/youtube/v3/videos', {
+        'id': ids,
+        'part': 'snippet,contentDetails',
+        'key': GOOGLE_API_KEY
+    }).json()
+
+    response = {}
+    response.update({'nextPageToken': search_res.get('nextPageToken', 0)})
+    videos = []
+    for data in videos_data['items']:
+        snippet = data.get('snippet')
+        duration = decode_iso8601_duration(data.get('contentDetails').get('duration'))
+        video = {
+            'title': textwrap.shorten(snippet.get('title'), width=25, placeholder='...'),
+            'preview': snippet.get('thumbnails').get('medium').get('url'),
+            'author': textwrap.shorten(snippet.get('channelTitle'), width=20, placeholder='...'),
+            'duration': duration,
+            'id': data.get('id')
+        }
+        videos.append(video)
+
+    response.update({'videos': videos})
+
+    return jsonify(response)
