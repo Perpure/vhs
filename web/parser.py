@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw
 
 
 class Screen():
-    def __init__(self, width, height, left = 0, top = 0):
+    def __init__(self, width, height, left=0, top=0):
         self.width = width
         self.height = height
         self.left = left
