@@ -1,14 +1,13 @@
-var speed=3000;
-var hash=window.location.href;
+var HASH=window.location.href;
 var sl=0;
-for(var i=0; i<hash.length; i++)
-    if(hash[i] == '/')sl = i;
-hash=hash.substring(sl + 1);
+for(var i=0; i<HASH.length; i++)
+    if(HASH[i] == '/')sl = i;
+HASH=HASH.substring(sl + 1);
 
 if($('#addC')!=null)$('#addC').click(function(){
     var txt = $('#txtPlate').val();
     $.ajax({
-        url: "/postComm/" + hash + "/",
+        url: "/postComm/" + HASH + "/",
         type: "GET",
         dataType: "text",
         data: {comm: txt}
