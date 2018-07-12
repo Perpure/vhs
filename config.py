@@ -16,3 +16,4 @@ ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 MB = 1 << 20
 BUFF_SIZE = 10 * MB
 plugins.ffmpeg.download()
+GOOGLE_API_KEY = os.environ['GOOGLE_API_KEY']

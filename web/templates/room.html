@@ -23,7 +23,11 @@
 {% if room.capitan_id == anon.id %}
     <h5>Загрузите калибровочное фото</h5>
     <form action="" method="post" enctype="multipart/form-data">
-        <div class="loader"><div><input id="image" name="image" type="file" accept="image/*" capture></div></div>
+        <div class="loader">
+          <div>
+            <input id="image" name="image" type="file" accept="image/*" capture>
+          </div>
+        </div>
         {% if image_form.image.errors %}
         {% for error in image_form.image.errors %}
             <div style="color: red;">{{ error }}</div>
@@ -48,10 +52,18 @@
         <form action="{{url_for('choose_video', room_id=room.id)}}">
             <button>Выбрать другое видео для демонстрации</button>
         </form>
+        <br>
+        <form action="{{url_for('choose_youtube_video', room_id=room.id)}}">
+            <button>Выбрать видео с youtube.com</button>
+        </form>
     {% else %}
         <hr>
         <form action="{{url_for('choose_video', room_id=room.id)}}">
             <button>Выберите видео для демонстрации</button>
+        </form>
+        <br>
+        <form action="{{url_for('choose_youtube_video', room_id=room.id)}}">
+            <button>Выбрать видео с youtube.com</button>
         </form>
     {% endif %}
     <hr>

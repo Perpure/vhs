@@ -193,7 +193,7 @@ class User(db.Model):
     color = db.Column(db.String(64))
     top = db.Column(db.Integer)
     left = db.Column(db.Integer)
-    res_k = db.Column(db.Integer)
+    scale = db.Column(db.Integer)
 
     videos = db.relationship("Video",
                              backref="user",
@@ -358,7 +358,7 @@ class AnonUser(db.Model):
     socket_id = db.Column(db.String(64))
     top = db.Column(db.Integer)
     left = db.Column(db.Integer)
-    res_k = db.Column(db.Integer)
+    scale = db.Column(db.Integer)
     rooms_colors = db.relationship('RoomDeviceColorConnector', backref='anon', lazy=True)
     room_capitan = db.relationship("Room", backref='captain')
 
@@ -375,6 +375,12 @@ class AnonUser(db.Model):
         if id:
             return AnonUser.query.get(id)
         return AnonUser.query.all()
+
+    def save_screen_params(self, device_screen):
+        self.scale = int(device_screen.width)
+        self.top = int(device_screen.top)
+        self.left = int(device_screen.left)
+        db.session.commit()
 
     def update_resolution(self, width, height):
         if self.device_width == width and self.device_height == height:
