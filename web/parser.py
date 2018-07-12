@@ -18,11 +18,11 @@ class Screen():
         width = self.width
         height = self.height
         if (width / height) > (picture_size):
-            height = int(width / picture_size)
+            height = int(1 / picture_size * width)
         elif (width / height) < (picture_size):
-            width = int(height * picture_size)
-        left = - (width - self.width) // 2
-        top = - (height - self.height) // 2
+            width = int(picture_size * height)
+        left = (self.width -width) // 2
+        top = - (self.height -height) // 2
         return Screen(width, height, left, top)
 
     def get_device_screen(self, device, rect):
