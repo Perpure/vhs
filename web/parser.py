@@ -101,6 +101,4 @@ def parse(room, devices, impath):
             pass
     if is_parsed:
         handle_parse(items, minX, minY, maxX, maxY, room)
-        return True
-    else:
-        return False
+    return is_parsed
