@@ -296,7 +296,7 @@ def play(vid):
         likened = 1
     if user in video.dislikes:
         likened = -1
-    return render_template('play.html', user=user, vid=vid, video=video, lkd=likened,
+    return render_template('video_page.html', user=user, vid=vid, video=video, lkd=likened,
                            usr=usr, subscribed=(user in usr.subscribers))
 
 
