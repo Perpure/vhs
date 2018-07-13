@@ -142,6 +142,11 @@ def choose_video(room_id):
         return redirect(url_for('viewroom'))
 
 
+@app.route('/room/<int:room_id>/choose_youtube')
+def choose_youtube_video(room_id):
+    return render_template('choose_youtube.html')
+
+
 @app.route('/upload', methods=['GET', 'POST'])
 @requiresauth
 def upload():
@@ -291,7 +296,7 @@ def play(vid):
         likened = 1
     if user in video.dislikes:
         likened = -1
-    return render_template('play.html', user=user, vid=vid, video=video, lkd=likened,
+    return render_template('video_page.html', user=user, vid=vid, video=video, lkd=likened,
                            usr=usr, subscribed=(user in usr.subscribers))
 
 

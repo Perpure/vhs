@@ -4,6 +4,7 @@ variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache"
   SECRET_KEY: "SuperSecret"
   DATABASE_URL: "sqlite:////tmp/db.sqlite"
+  GOOGLE_API_KEY: "GOOGLE_API_KEY"
 
 cache:
   paths:
@@ -16,10 +17,9 @@ before_script:
 
 stages:
   - code-test
- 
+
 code-test:
   stage: code-test
   script:
   - nose2 web -C
   - pycodestyle web --max-line-length=120 --ignore=E402 --show-source --show-pep8
- 

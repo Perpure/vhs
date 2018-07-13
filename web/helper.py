@@ -1,14 +1,12 @@
 # coding=utf-8
-import math
 import os
-from functools import wraps
-import numpy as np
 import cv2
-from PIL import Image, ImageDraw
+from functools import wraps
 from flask import session, redirect, url_for, render_template
 from web import db, app
 from web.models import User, AnonUser
 from config import basedir
+from web.parser import parse
 
 
 def requiresauth(f):
@@ -61,120 +59,6 @@ def read_video(vid):
         return b
 
 
-# def is_true_pixel(r, g, b, R, G, B):
-#     k = 60
-#     return (r in range(R - k, R + k)) and (g in range(G - k, G + k)) and (b in range(B - k, B + k))
-
-
-def calibrate_resolution(resolution, w, h):
-    width = resolution[0]
-    height = resolution[1]
-    if (width / height) > (w / h):
-        while True:
-            e = abs((width / height) - (w / h))
-            height += 2
-            if e < abs((width / height) - (w / h)):
-                height -= 2
-                return [width, height]
-    if (width / height) < (w / h):
-        while True:
-            e = abs((width / height) - (w / h))
-            width += 2
-            if e < abs((w / h) - (width / height)):
-                width -= 2
-                return [width, height]
-    return [width, height]
-
-
-def parse(room, users, impath):
-    img = cv2.imread(impath)  # Читаем изображение
-    hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # Меняем цветовую схему с BGR на HSV
-
-    items = list()
-
-    maxX = maxY = -math.inf
-    minY = minX = math.inf
-
-    for user in users:
-        R = int(user.color[1:3], 16)
-        G = int(user.color[3:5], 16)
-        B = int(user.color[5:7], 16)
-        color = (B, G, R)
-
-        # Меняем схему цвета на HSV, достаём из него только Hue
-        hsv_color = np.array(color, dtype=np.uint8, ndmin=3)
-        hue = cv2.cvtColor(hsv_color, cv2.COLOR_BGR2HSV).flatten()[0]
-
-        # Создаём минимальный предел
-        h_min = np.array([max(hue - 10, 0), 100, 100], dtype=np.uint8)
-        # И максимальный
-        h_max = np.array([min(hue + 10, 179), 255, 255], dtype=np.uint8)
-
-        # Накладываем цветовой фильтр
-        thresh = cv2.inRange(hsv_img, h_min, h_max)
-        # Ищем контуры
-        _, contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-        # Создаём прямоугольник из контура с наибольшей площадью
-        rect = cv2.minAreaRect(sorted(contours, key=cv2.contourArea, reverse=True)[0])
-
-        # Переводим в вершины, округляя координаты
-        box = np.int0(cv2.boxPoints(rect))
-        minX = min(minX, np.ndarray.min(box[..., 0]))
-        maxX = max(maxX, np.ndarray.max(box[..., 0]))
-        minY = min(minY, np.ndarray.min(box[..., 1]))
-        maxY = max(maxY, np.ndarray.max(box[..., 1]))
-
-        items.append([user, rect, (color[2], color[1], color[0])])
-
-    resolution = (maxX - minX, maxY - minY)
-    new_resolution = calibrate_resolution(resolution, 16, 9)
-    deltax = (new_resolution[0] - resolution[0]) / 2
-    deltay = (new_resolution[1] - resolution[1]) / 2
-
-    room_map = Image.new('RGB', resolution, (255, 255, 255))
-    draw = ImageDraw.Draw(room_map)
-
-    for item in items:
-
-        rect = item[1]
-        item = (item[0], ((rect[0][0] - minX, rect[0][1] - minY), rect[1], rect[2]), item[2])
-
-        user, rect, color = item
-
-        draw.polygon(np.int0(cv2.boxPoints(rect)).flatten().tolist(), fill=color)
-
-        if (rect[2] < -85) and (rect[2] > -95):
-            firsty = int(rect[0][1] - rect[1][0] / 2) + deltay
-            # lasty = int(rect[0][1] + rect[1][0] / 2) + deltay
-            firstx = int(rect[0][0] - rect[1][1] / 2) + deltax
-            lastx = int(rect[0][0] + rect[1][1] / 2) + deltax
-        else:
-            firsty = int(rect[0][1] - rect[1][1] / 2) + deltay
-            # lasty = int(rect[0][1] + rect[1][1] / 2) + deltay
-            firstx = int(rect[0][0] - rect[1][0] / 2) + deltax
-            lastx = int(rect[0][0] + rect[1][0] / 2) + deltax
-        width = (new_resolution[0] / (lastx - firstx)) * 100
-
-        left = - (firstx / new_resolution[0]) * width
-        top = - (firsty / new_resolution[1]) * width
-
-        print(top, left)
-
-        user.res_k = int(width)
-        user.top = int(top)
-        user.left = int(left)
-
-        db.session.commit()
-
-    del draw
-
-    filename = basedir + '/images/' + str(room.id) + '_map.jpg'
-    if os.path.exists(filename):
-        os.remove(filename)
-    room_map.save(filename)
-
-
 def image_loaded(request, room, user, users, image_form, room_form):
     room_id = room.id
     room_map_filename = basedir + '/images/' + str(room_id) + '_map.jpg'
@@ -197,3 +81,24 @@ def image_loaded(request, room, user, users, image_form, room_form):
                                image_form=image_form, anon=user,
                                room_form=room_form, loaded=True, room_map=room_map_url, count=len(users) + 1,
                                map_ex=os.path.exists(room_map_filename))
+
+
+def decode_iso8601_duration(duration):
+    x = ''
+    data = {}
+    res = ''
+
+    for char in duration[2:]:
+        if char in ['H', 'M', 'S']:
+            data.update({char: x})
+            x = ''
+        else:
+            x += char
+    if data.get('H') is not None:
+        res += data.get('H') + ' час. '
+    if data.get('M') is not None:
+        res += data.get('M') + ' мин. '
+    if data.get('S') is not None:
+        res += data.get('S') + ' сек.'
+
+    return res

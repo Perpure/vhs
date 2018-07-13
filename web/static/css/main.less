@@ -295,9 +295,9 @@
 {
     width:300px;
     height:60px;
-    background-image:url("Loader3.png");
     background-repeat:no-repeat;
     margin-bottom:10px;
+    background-image:url("~../images/Loader3.png");
 }
 
 .calibration-image
@@ -316,11 +316,11 @@
   top: 0;
   left: 0;
   overflow: hidden;
+  display:none;
   &__video
   {
     z-index:6;
     position:absolute;
-    display:none;
   }
 }
 
@@ -470,6 +470,86 @@
     &:hover
     {
       color: @color-link;
+    }
+  }
+}
+
+.yt-video_error
+{
+  color: red;
+  font-style: italic;
+  width: 100%;
+  text-align: center;
+}
+
+.yt-search
+{
+  padding: 0 0 20px;
+
+  &__more
+  {
+    display: block;
+    width: 200px;
+    margin: 0 auto;
+    background-color: @color-main;
+    color: white;
+
+    &:hover
+    {
+      color: @color-link;
+    }
+
+    &_hidden
+    {
+      display: none;
+    }
+  }
+
+  &__searcher
+  {
+    background-color: @color-main;
+    margin: auto;
+    width: 70%;
+  }
+}
+
+.yt-searcher
+{
+  display: table;
+  border-spacing: 5px;
+  margin-bottom: 20px;
+  &__input
+  {
+    width:80%;
+    display: table-cell;
+
+    input
+    {
+      vertical-align: top;
+      margin: 0px;
+      margin-top: 1px;
+      width: 100%;
+      padding: 10px;
+    }
+  }
+
+  &__submit
+  {
+    width:20%;
+    display: table-cell;
+
+    button
+    {
+      vertical-align: top;
+      width: 100%;
+      color: white;
+      margin: 0px;
+      padding: 10px;
+      height: 100%;
+      &:hover
+      {
+        color: @color-link;
+      }
     }
   }
 }
