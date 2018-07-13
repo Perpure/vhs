@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="INP">
+<div class="mid">
     <h2>Вход</h2>
     <form action="" method="post">
     {{form.hidden_tag()}}
@@ -23,7 +23,7 @@
         {% endif %}
         {{ form.submit_log }}
         <br>
-        <i><a href="{{url_for('reg')}}" class="Link">Нет профиля?</a></i>
+        <i><a href="{{url_for('reg')}}">Нет профиля?</a></i>
     </form>
 </div>
 {% endblock %}

@@ -21,6 +21,10 @@ Dislikes = db.Table('Dislikes', db.Model.metadata,
                     db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
                     db.Column('Video_id', db.String(32), db.ForeignKey('Video.id')))
 
+Subscription = db.Table('Subscription', db.Model.metadata,
+                        db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
+                        db.Column('UserB_id', db.Integer, db.ForeignKey('User.id')))
+
 
 class Comment(db.Model):
     __tablename__ = 'Comment'
@@ -64,7 +68,6 @@ class Video(db.Model):
     path = db.Column(db.String(256), nullable=False)
     date = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
-    user_login = db.Column(db.String)
 
     longitude = db.Column(db.Float(), nullable=True)
     latitude = db.Column(db.Float(), nullable=True)
@@ -187,11 +190,10 @@ class User(db.Model):
     channel_info = db.Column(db.String(64))
     avatar = db.Column(db.String(128))
     background = db.Column(db.String(128))
-    action = db.Column(db.String(64))
     color = db.Column(db.String(64))
     top = db.Column(db.Integer)
     left = db.Column(db.Integer)
-    res_k = db.Column(db.Integer)
+    scale = db.Column(db.Integer)
 
     videos = db.relationship("Video",
                              backref="user",
@@ -200,9 +202,17 @@ class User(db.Model):
     comments = db.relationship('Comment',
                                backref='user',
                                lazy='joined')
+
     tags = db.relationship('Tag',
                            backref='user',
                            lazy='joined')
+
+    subscriptions = db.relationship('User',
+                                    secondary=Subscription,
+                                    primaryjoin=(Subscription.c.User_id == id),
+                                    secondaryjoin=(Subscription.c.UserB_id == id),
+                                    backref='subscribers',
+                                    lazy='joined')
 
     def __init__(self, login):
         self.login = login
@@ -241,8 +251,8 @@ class User(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def update_action(self, action):
-        self.action = action
+    def follow(self, user):
+        self.subscriptions.append(user)
         db.session.add(self)
         db.session.commit()
 
@@ -341,14 +351,14 @@ class AnonUser(db.Model):
     """
     __tablename__ = 'AnonUser'
     id = db.Column(db.String(), primary_key=True)
-    action = db.Column(db.String(64))
     time = db.Column(db.Integer)
     device_width = db.Column(db.Integer)
     device_height = db.Column(db.Integer)
     color = db.Column(db.String(64))
+    socket_id = db.Column(db.String(64))
     top = db.Column(db.Integer)
     left = db.Column(db.Integer)
-    res_k = db.Column(db.Integer)
+    scale = db.Column(db.Integer)
     rooms_colors = db.relationship('RoomDeviceColorConnector', backref='anon', lazy=True)
     room_capitan = db.relationship("Room", backref='captain')
 
@@ -365,6 +375,12 @@ class AnonUser(db.Model):
         if id:
             return AnonUser.query.get(id)
         return AnonUser.query.all()
+
+    def save_screen_params(self, device_screen):
+        self.scale = int(device_screen.width)
+        self.top = int(device_screen.top)
+        self.left = int(device_screen.left)
+        db.session.commit()
 
     def update_resolution(self, width, height):
         if self.device_width == width and self.device_height == height:

@@ -1,4 +1,4 @@
-# coding=utf-8
+﻿# coding=utf-8
 import os
 import json
 from wtforms.validators import ValidationError
@@ -6,17 +6,28 @@ from flask import redirect, render_template, session, url_for, request
 from flask.json import JSONDecoder, dumps
 from werkzeug.exceptions import Aborter
 from config import basedir
-from web import app, db, avatars, backgrounds
+from web import app, db, avatars, backgrounds, socketio
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
-    UserProfileForm, AddRoomForm
+    UserProfileForm, AddRoomForm, AccountSettingsForm
 from web.models import User, Video, Room, Color, Geotag, Tag, AnonUser, RoomDeviceColorConnector
 from web.helper import cur_user, requiresauth, anon_user, image_loaded
 from web.video_handler import save_video
+from datetime import datetime
+from flask_socketio import emit
 
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    return render_template('main.html', user=cur_user(), items=Video.get())
+    user = cur_user()
+    sub_items = []
+    if user:
+        subs = user.subscriptions
+        for sub in subs:
+            for video in sub.videos:
+                sub_items.append(video)
+
+    now = time = datetime.now(tz=None)
+    return render_template('main.html', user=user, items=Video.get(), sub_items=sub_items, now=now)
 
 
 @app.route('/createroom', methods=['GET', 'POST'])
@@ -70,11 +81,7 @@ def room(room_id):
             col = Color.query.get(color_id)
             rac = RoomDeviceColorConnector(anon=user, room=room, color=col)
             db.session.add(rac)
-            for member in users:
-                member.action = "update"
-            capt = AnonUser.get(room.capitan_id)
-            capt.action = "update"
-            db.session.commit()
+            socketio.emit('update', len(users) + 2, broadcast=True)
 
         users = room.get_devices()
 
@@ -107,9 +114,6 @@ def choosed_video(room_id, vid_id):
     room = Room.query.get(room_id)
     vid = Video.query.get(vid_id)
     if vid and room:
-        users = room.get_devices()
-        for member in users:
-            member.action = "refresh"
         if user.id == room.capitan_id:
             room.video_id = vid_id
         db.session.commit()
@@ -124,9 +128,23 @@ def choose_video(room_id):
     room = Room.query.get(room_id)
     cap = room.capitan_id
     if room:
-        return render_template('choose_video.html', user=cur_user(), items=Video.get(), cap=cap, room=room, anon=user)
+        now = time = datetime.now(tz=None)
+        sub_items = []
+        real_user = cur_user()
+        if real_user:
+            subs = real_user.subscriptions
+            for sub in subs:
+                for video in sub.videos:
+                    sub_items.append(video)
+        return render_template('choose_video.html', user=cur_user(), items=Video.get(), cap=cap, room=room, anon=user,
+                               now=now, sub_items=sub_items)
     else:
         return redirect(url_for('viewroom'))
+
+
+@app.route('/room/<int:room_id>/choose_youtube')
+def choose_youtube_video(room_id):
+    return render_template('choose_youtube.html')
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -206,7 +224,7 @@ def log():
 
 @app.route('/cabinet/<string:usr>', methods=['GET', 'POST'])
 @requiresauth
-def cabinet(usr):
+def cabinet(usr, tab=0):
     """
     Отвечает за вывод страницы личного кабинета
     :return: Страница личного кабинета
@@ -226,24 +244,38 @@ def cabinet(usr):
             items.append(item)
 
     form = UserProfileForm()
-    if form.validate_on_submit():
-        user = cur_user()
-        folder = str(user.id)
-        if form.change_name.data:
-            user.change_name(form.change_name.data)
-        if form.change_password.data:
-            user.save(form.change_password.data)
-        if form.channel_info.data:
-            user.change_channel_info(form.channel_info.data)
-        if 'avatar' in request.files:
-            avatar_url = avatars.save(form.avatar.data, folder=folder)
-            user.update_avatar(json.dumps({"url": avatar_url}))
-        if 'background' in request.files:
-            background_url = backgrounds.save(form.background.data, folder=folder)
-            user.update_background(json.dumps({"url": background_url}))
-        return redirect(url_for("cabinet", usr=cabinet_owner.login))
-    return render_template('cabinet.html', form=form, user=cur_user(), items=items,
-                           settings=is_cabinet_settings_available, usr=cabinet_owner)
+    form_acc = AccountSettingsForm()
+    if request.method == 'POST':
+        form_name = request.form['form-name']
+        tab = 3
+        if form_name == 'form':
+            tab = 2
+        if form_name == 'form' and form.validate():
+            tab = 2
+            user = cur_user()
+            folder = str(user.id)
+            if form.change_name.data:
+                user.change_name(form.change_name.data)
+            if form.channel_info.data:
+                user.change_channel_info(form.channel_info.data)
+            if 'avatar' in request.files:
+                avatar_url = avatars.save(form.avatar.data, folder=folder)
+                user.update_avatar(json.dumps({"url": avatar_url}))
+            if 'background' in request.files:
+                background_url = backgrounds.save(form.background.data, folder=folder)
+                user.update_background(json.dumps({"url": background_url}))
+            return redirect(url_for("cabinet", usr=cabinet_owner.login, tab=tab))
+        elif form_name == 'form_acc' and form_acc.validate():
+            tab = 3
+            user = cur_user()
+            if form_acc.change_password.data:
+                user.save(form_acc.change_password.data)
+            return redirect(url_for("cabinet", usr=cabinet_owner.login, tab=tab))
+    last = items[-6:]
+    now = time = datetime.now(tz=None)
+    return render_template('cabinet.html', form=form, form_acc=form_acc, user=user, items=items,
+                           settings=is_cabinet_settings_available, usr=cabinet_owner, last=last,
+                           subscribed=(user in cabinet_owner.subscribers), now=now, tab=tab)
 
 
 @app.route('/play/<string:vid>', methods=['GET', 'POST'])
@@ -254,7 +286,7 @@ def play(vid):
         return abort(404)
 
     user = cur_user()
-    usr = User.get(login=video.user_login)
+    usr = User.get(login=video.user.login)
 
     if user and user not in video.viewers:
         video.add_viewer(user)
@@ -264,7 +296,8 @@ def play(vid):
         likened = 1
     if user in video.dislikes:
         likened = -1
-    return render_template('play.html', user=user, vid=vid, video=video, lkd=likened, usr=usr)
+    return render_template('video_page.html', user=user, vid=vid, video=video, lkd=likened,
+                           usr=usr, subscribed=(user in usr.subscribers))
 
 
 @app.route('/video/map', methods=["GET"])
@@ -288,6 +321,13 @@ def views_story():
             items.append(video)
 
     return render_template('views_story.html', user=cur_user(), items=items)
+
+
+@app.route('/subscriptions', methods=['GET', 'POST'])
+def subs_s():
+    user = cur_user()
+    subs = user.subscriptions
+    return render_template('subs.html', user=user, subs=subs)
 
 
 @app.errorhandler(403)

@@ -1,0 +1,117 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<video id="my-video" class="video-js" poster="{{url_for('get_image', pid=vid)}}" data-setup='{"controls": true, "autoplay": false, "preload": "auto"}'>
+    <source src="{{url_for('get_video', vid=vid)}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+</video>
+
+<div class="video-titling">
+    <h2 class="video-titling__title">{{ video.title }}</h2>
+    <p class="video-titling__views">Просмотры: {{ video.viewers | length }}</p>
+</div>
+
+
+<div class="profile profile_small">
+    <div class="profile__ava"><img src="{{ usr.avatar_url() }}" alt="" class="profile__ava-img"></div>
+    <div class="profile__txt">
+        <b><a href="{{url_for('cabinet', usr=usr.login)}}">{{usr.name}}</a></b>
+        <p class="italic" id="Dating">{{video.date.date()}}</p>
+    </div>
+    {% if user!=video.user and user %}
+    <div class="profile__sub">
+      <span class="profile__sub-count" id="subCnt{{usr.id}}">{{ usr.subscribers|length }}</span>
+      <button type="button" name="button" value="{{usr.id}}"  class="profile__subscribe-btn">{% if subscribed %}Отписаться{% else %}Подписаться{% endif %}</button>
+    </div>
+    {%endif%}
+</div>
+
+<div class="video-rating">
+    <div class="video-rating__rateline">
+        <div id="likSh" class="video-rating__like-line"></div>
+        <div id="disSh" class="video-rating__dis-line"></div>
+    </div>
+
+    <div>
+        <div class="video-rating__btn" id="like" name="like"></div>
+        <span id="lik">{{ video.likes | length }}</span>
+        <div class="video-rating__btn" id="dislike" name="dislike"></div>
+        <span id="dis">{{ video.dislikes | length }}</span>
+    </div>
+</div>
+
+
+<div class="video-tags">
+    {% for tag in video.tags %}
+        <span class="tag">#{{ tag.text }}</span>
+    {% endfor %}
+</div>
+
+{%if not user%}
+    <br><a href="{{url_for('log')}}"><b>Войдите</b></a>, чтобы оценить видео
+{%endif%}
+
+<div class="video-comments">
+    <p>Комментарии</p>
+    {%if user %}
+        <div class="comment comment__poster">
+            <div class="comment__ava"><img src="{{ user.avatar_url() }}" alt="" class="comment__ava-img" id="myAva"></div>
+            <div>
+                <p class="comment__author"><a href="{{url_for('cabinet', usr=user.login)}}" id="myProf">{{ user.name }}</a></p>
+                <textarea id="txtPlate" maxlength="200" title=""></textarea>
+                <br>
+                <button type="button" id="addC">Запостить</button>
+            </div>
+        </div>
+    {%endif%}
+    <div id="CSect">
+        {% for comment in video.comments|sort(attribute="id")|reverse %}
+            <div class="comment">
+                <div class="comment__ava"><img src="{{ comment.user.avatar_url() }}" alt="" class="comment__ava-img"></div>
+                <div>
+                    <p class="comment__author"><a href="{{url_for('cabinet', usr=comment.user.login)}}">{{ comment.user.name }}</a></p>
+                    <p>{{ comment.text }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    div[name="like"]
+    {
+        {%if lkd!=1 %}
+            background-image:url({{ url_for('static', filename='images/lik1.png') }});
+        {%else%}
+            background-image:url({{ url_for('static', filename='images/lik1L.png') }});
+        {%endif%}
+    }
+
+    div[name="dislike"]
+    {
+        {%if lkd!=-1 %}
+            background-image:url({{ url_for('static', filename='images/dis1.png') }});
+        {%else%}
+            background-image:url({{ url_for('static', filename='images/dis1D.png') }});
+        {%endif%}
+    }
+
+    div[name="like"]:hover
+    {
+        background-image:url({{ url_for('static', filename='images/lik1H.png') }});
+    }
+
+    div[name="dislike"]:hover
+    {
+        background-image:url({{ url_for('static', filename='images/dis1H.png') }});
+    }
+</style>
+
+<script src="{{ url_for('static', filename='js/video_page/video.js') }}"></script>
+{%if user %}
+  <script src="{{ url_for('static', filename='js/video_page/video_like.js') }}"></script>
+{%endif%}
+{% if user!=video.user %}
+  <script src="{{ url_for('static', filename='js/user/subscribe.js') }}"></script>
+{%endif%}
+
+<script src="https://vjs.zencdn.net/7.0.3/video.min.js"></script>
+{% endblock %}

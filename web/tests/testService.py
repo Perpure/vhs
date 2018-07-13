@@ -36,10 +36,6 @@ class TestService(unittest.TestCase):
         response = self.client.get("/logout", follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
-    def test_is_askAct_work(self):
-        response = self.client.get("/askAct/" + str(self.room.id), follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
     def test_is_askNewComm_work(self):
         response = self.client.get("/askNewComm/" + str(self.video.id), follow_redirects=True)
         self.assertEqual(response.status_code, 200)
@@ -56,6 +52,3 @@ class TestService(unittest.TestCase):
     def test_is_dislikeVideo_work(self):
         response = self.client.get("/dislikeVideo/" + str(self.video.id), follow_redirects=True)
         self.assertEqual(response.status_code, 200)
-
-
-

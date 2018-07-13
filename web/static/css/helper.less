@@ -1,0 +1,145 @@
+@color-link:#cc8787;
+@color-main:#1c180b;
+@color-border:#bdafaf;
+@color-secondary:#e8e8e8;
+
+html
+{
+    height:100%;
+}
+
+.inline-block
+{
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 20px;
+  &_edge
+  {
+    margin-right: 0;
+  }
+}
+
+ul
+{
+  padding-left: 20px;
+}
+
+body
+{
+  font-family: Roboto;
+  background-color: fade(@color-secondary,20);
+  height:100%;
+  position:relative;
+  display: flex;
+  flex-direction: column;
+}
+
+textarea
+{
+    resize:none;
+    width:40%;
+    background-color: fade(@color-secondary,50);
+}
+
+main
+{
+  width: 70%;
+  margin: 0 auto;
+  flex: 1 0 auto;
+}
+
+a,.fact
+{
+    color:@color-link;
+    text-decoration:none;
+    &:hover
+    {
+      text-decoration:none;
+      color:@color-link/1.5;
+      cursor: pointer;
+    }
+}
+
+.fact
+{
+  font-weight: bold;
+  font-size: 125%;
+}
+
+.instr
+{
+    display:none;
+    padding-top:10px;
+    padding-left:20px;
+    text-align:left;
+}
+
+.italic
+{
+  font-style:italic;
+  font-size:80%;
+  color:grey;
+}
+
+input
+{
+    border:none;
+    border-bottom:2px solid @color-border;
+    margin-bottom:10px;
+    padding-left:5px;
+    background-color: fade(@color-secondary,50);
+    &:focus
+    {
+      border-bottom:2px solid @color-main;
+    }
+}
+
+input[type="submit"], button
+{
+    height:40px;
+    padding:10px;
+    padding-top:7px;
+    background: none;
+    transition:0.5s;
+    border:none;
+    border:2px solid @color-border;
+    font-weight:bold;
+    vertical-align: top;
+    transition: 0.4s;
+    &:hover
+    {
+      border:2px solid @color-main;
+      cursor: pointer;
+    }
+}
+
+input[type="file"]
+{
+    opacity:0;
+    width:300px;
+    height:60px;
+    &:hover
+    {
+      cursor:pointer;
+    }
+}
+
+h5
+{
+  line-height: 1;
+}
+
+search
+{
+    display:none;
+}
+
+.mid
+{
+  width:200px;
+  margin:0 auto;
+  &_wider
+  {
+    width: 600px;
+  }
+}

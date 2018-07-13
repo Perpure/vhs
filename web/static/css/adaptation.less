@@ -1,0 +1,210 @@
+@media (max-width:1065px)
+{
+    .mid-head
+    {
+      height:100%;
+      padding-bottom:0;
+    }
+
+    main,.logo
+    {
+      width:100%;
+    }
+
+    main
+    {
+      padding: 7px;
+    }
+
+    .nav-menu
+    {
+      text-align:center;
+      width:100%;
+      &__nav-men:hover
+      {
+        border:none;
+        display:inline-block;
+      }
+    }
+
+    .logo
+    {
+      margin:0 auto;
+      height:50px;
+      display:block;
+      text-align:center;
+    }
+    .video
+    {
+      width:18%;
+      &__preview
+      {
+        height: 10.125vw;
+      }
+    }
+
+    .searcher
+    {
+        top:110px;
+        width:100%;
+        left:0;
+    }
+
+    .canal
+    {
+      position: static;
+      width: 100%;
+    }
+
+    footer
+    {
+      width: 100%;
+      text-align: center;
+    }
+}
+
+@media (max-width:860px)
+{
+  .video
+  {
+    &-rating
+    {
+      display:block;
+      float:none;
+      margin-bottom:10px;
+      text-align:center;
+    }
+  }
+}
+
+@media (max-width:570px)
+{
+    body
+    {
+      text-align: center;
+    }
+    .searcher
+    {
+      height:100px;
+      z-index:2;
+      top:310px;
+      &__input
+      {
+        display:block;
+        width:100%;
+      }
+      &__btn
+      {
+        width:45%;
+      }
+    }
+
+    .nav-menu
+    {
+      &__nav-men
+      {
+        display:none;
+        border-right:none;
+        border-bottom: 1px solid fade(@color-secondary,50);
+      }
+      &__menu-holder
+      {
+        display:block;
+      }
+    }
+
+    .switcher
+    {
+      margin:0 auto;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+
+    .profile
+    {
+      height: auto;
+      width: 100%;
+      &__ava
+      {
+        height: 100px;
+      }
+      &__sub
+      {
+        float: none;
+        margin-top: 0;
+      }
+      &_small &__ava
+      {
+        height: 50px;
+      }
+    }
+
+    .comment,.video-info,textarea,.tabs__tab
+    {
+        width:100%;
+    }
+    .comment
+    {
+        max-width:100%;
+        text-align:left;
+        &__poster
+        {
+          textarea
+          {
+            width: 120%;
+          }
+        }
+    }
+    .video
+    {
+      width:80%;
+      margin:0 auto;
+      display:block;
+      height: auto;
+      &-titling,&-info
+      {
+        text-align:left;
+      }
+      &__preview
+      {
+        height: 45vw;
+      }
+      &-control
+      {
+        margin: 0 auto;
+        margin-bottom: 10px;
+        &__btn
+        {
+          display: block;
+          margin: 0 auto;
+          margin-bottom: 10px;
+          &_round
+          {
+            display: inline-block;
+            margin: 0 10px 10px 10px;
+          }
+        }
+      }
+    }
+    .tabs
+    {
+      &__tab
+      {
+        display: block;
+        border: none;
+        margin-left: 0px;
+        &_open
+        {
+          font-weight: bold;
+        }
+      }
+    }
+    .mid_wider
+    {
+      width: 90%;
+    }
+    ul
+    {
+      text-align: left;
+    }
+}

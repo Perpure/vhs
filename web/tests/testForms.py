@@ -4,7 +4,7 @@ import os
 from web import app, db
 from wtforms import IntegerField, StringField, SubmitField, ValidationError, PasswordField, FileField
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
-    UserProfileForm, AddRoomForm, exist
+    UserProfileForm, AddRoomForm, AccountSettingsForm, exist
 from web.models import User
 
 
@@ -82,7 +82,6 @@ class TestUserProfileForm(unittest.TestCase):
 
     def test_should_has_need_fields(self):
         self.assertTrue(hasattr(self.form, "change_name"))
-        self.assertTrue(hasattr(self.form, "change_password"))
         self.assertTrue(hasattr(self.form, "avatar"))
         self.assertTrue(hasattr(self.form, "background"))
         self.assertTrue(hasattr(self.form, "channel_info"))
@@ -91,9 +90,6 @@ class TestUserProfileForm(unittest.TestCase):
 
     def test_should_change_name_field_is_string_field(self):
         self.assertIsInstance(self.form.change_name, StringField)
-
-    def test_should_change_password_field_is_password_field(self):
-        self.assertIsInstance(self.form.change_password, PasswordField)
 
     def test_should_avatar_field_is_file_field(self):
         self.assertIsInstance(self.form.avatar, FileField)
@@ -109,6 +105,31 @@ class TestUserProfileForm(unittest.TestCase):
 
     def test_should_submit_changes_password_is_submit_field(self):
         self.assertIsInstance(self.form.submit_changes, SubmitField)
+
+
+class TestAccountSettingsForm(unittest.TestCase):
+    def setUp(self):
+        app.config['TESTING'] = True
+        app.config['CSRF_ENABLED'] = False
+        with app.test_request_context():
+            self.form = AccountSettingsForm()
+
+    def tearDown(self):
+        del self.form
+
+    def test_should_has_need_fields(self):
+        self.assertTrue(hasattr(self.form, "change_password"))
+        self.assertTrue(hasattr(self.form, "cur_password"))
+        self.assertTrue(hasattr(self.form, "save_changes"))
+
+    def test_should_change_password_field_is_password_field(self):
+        self.assertIsInstance(self.form.change_password, PasswordField)
+
+    def test_should_current_password_field_is_password_field(self):
+        self.assertIsInstance(self.form.cur_password, PasswordField)
+
+    def test_should_submit_changes_password_is_submit_field(self):
+        self.assertIsInstance(self.form.save_changes, SubmitField)
 
 
 class TestAddRoomForm(unittest.TestCase):

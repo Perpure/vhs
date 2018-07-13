@@ -1,9 +1,15 @@
 # coding=utf-8
+import mimetypes
+import os
+import re
+import textwrap
 from datetime import datetime
-from flask import url_for, redirect, make_response, request, jsonify, session, render_template
+from flask import url_for, redirect, make_response, request, jsonify, session, render_template, Response, abort
 from web import app, db
-from web.helper import read_image, read_video, cur_user, read_multi
-from web.models import Video, Comment, Room, AnonUser
+from web.helper import read_image, cur_user, read_multi, decode_iso8601_duration
+from web.models import Video, Comment, Room, AnonUser, User
+from config import basedir, BUFF_SIZE, GOOGLE_API_KEY
+import requests
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -33,14 +39,44 @@ def get_image(pid):
     return response
 
 
+def partial_response(path, start, end=None):
+    file_size = os.path.getsize(path)
+
+    if end is None:
+        end = start + BUFF_SIZE - 1
+    end = min(end, file_size - 1, start + BUFF_SIZE - 1)
+    length = end - start + 1
+
+    with open(path, 'rb') as fd:
+        fd.seek(start)
+        bytes = fd.read(length)
+    assert len(bytes) == length
+
+    response = Response(bytes, 206, mimetype=mimetypes.guess_type(path)[0], direct_passthrough=True)
+    response.headers.add('Content-Range', 'bytes {0}-{1}/{2}'.format(start, end, file_size))
+    response.headers.add('Accept-Ranges', 'bytes')
+    return response
+
+
+def get_bounds_of_header_range(range):
+    m = re.match(r'bytes=(?P<start>\d+)-(?P<end>\d+)?', range)
+    if m:
+        start = m.group('start')
+        end = m.group('end')
+        start = int(start)
+        if end is not None:
+            end = int(end)
+        return start, end
+    else:
+        return 0, None
+
+
 @app.route('/video/<string:vid>/video.mp4')
 def get_video(vid):
-    video_binary = read_video(vid)
-    response = make_response(video_binary)
-    response.headers.set('Content-Type', 'video/mp4')
-    response.headers.set(
-        'Content-Disposition', 'attachment', filename='video/%s/video.mp4' % vid)
-    return response
+    path = basedir + '/video/%s/video.mp4' % vid
+    range = request.headers.get('Range')
+    start, end = get_bounds_of_header_range(range)
+    return partial_response(path, start, end)
 
 
 @app.route('/video/data', methods=['GET'])
@@ -52,50 +88,6 @@ def get_video_data_search():
                      "link": url_for("play", vid=video.id),
                      "preview": url_for("get_image", pid=video.id),
                      "geotags": [(gt.longitude, gt.latitude) for gt in video.geotags]} for video in videos])
-
-
-@app.route('/askAct/<int:room_id>', methods=['GET', 'POST'])
-def askAct(room_id):
-    if 'anon_id' in session:
-        room = Room.query.get(room_id)
-        user = AnonUser.query.get(session['anon_id'])
-        action = user.action
-        if action == 'calibrate':
-            user.update_action('')
-            return jsonify({"action": action,
-                            "color": user.color})
-        elif action == 'result' or action == 'resultS':
-            return result(action, user)
-        elif action == 'refresh':
-            user.update_action('')
-            return jsonify({"action": action})
-        elif action == 'update':
-            user.update_action('')
-            users = room.get_devices()
-            return jsonify({"action": action, "count": len(users)+1})
-    return jsonify({"action": ''})
-
-
-def result(action, user):
-    noSound = True
-    if action == 'resultS':
-        noSound = False
-    user.update_action('')
-    time = datetime.now(tz=None)
-    hr = time.hour
-    mt = time.minute
-    sc = time.second
-    ms = round(time.microsecond / 1000)
-    new = hr * 3600000 + mt * 60000 + sc * 1000 + ms
-    action = "result"
-    old = user.time
-    time = str(old - new)
-    return jsonify({"action": action,
-                    "time": time,
-                    "top": user.top,
-                    "left": user.left,
-                    "width": user.res_k,
-                    "noSound": noSound})
 
 
 @app.route('/askNewComm/<string:vid>', methods=['GET', 'POST'])
@@ -111,7 +103,7 @@ def getNewComm(vid, cont):
     result = []
     for i in range(cont, len(comms)):
         result.append({"login": comms[i].user.login, "name": comms[i].user.name, "text": comms[i].text,
-                       "ava": comms[i].user.avatar})
+                       "ava": comms[i].user.avatar_url()})
     return jsonify(result)
 
 
@@ -183,37 +175,76 @@ def startSearch():
     ask = request.args.get('ask')
     view = request.args.get('view')
     dat = request.args.get('dat')
+    now = time = datetime.now(tz=None)
 
     if dat:
         sort += "date"
     if view:
         sort += "views"
     if ask != " ":
-        return render_template('main.html', user=cur_user(), items=Video.get(search=ask, sort=sort))
+        return render_template('main.html', user=cur_user(), items=Video.get(search=ask, sort=sort), now=now)
 
-    return render_template('main.html', user=cur_user(), items=Video.get())
+    return render_template('main.html', user=cur_user(), items=Video.get(), now=now)
 
 
-@app.route('/showRes/<int:room_id>', methods=['GET', 'POST'])
-def showRes(room_id):
-    room = Room.query.get(room_id)
-    users = room.get_devices()
-    time = datetime.now(tz=None)
-    hr = time.hour
-    mt = time.minute
-    sc = time.second
-    ms = round(time.microsecond / 1000)
-    zero = hr * 3600000 + mt * 60000 + sc * 1000 + ms
-    for member in users:
-        time = datetime.now(tz=None)
-        hr = time.hour
-        mt = time.minute
-        sc = time.second
-        ms = round(time.microsecond / 1000)
-        now = hr * 3600000 + mt * 60000 + sc * 1000 + ms
-        now += 15000 - (now - zero)
-        member.action = "result"
-        member.time = now
-    users[0].action = "resultS"
-    db.session.commit()
-    return ""
+@app.route('/subscribe/<int:ID>', methods=['GET', 'POST'])
+def subscribe(ID):
+    user = cur_user()
+    blog = User.get(id=ID)
+    if user in blog.subscribers:
+        blog.subscribers.remove(user)
+        db.session.add(user)
+        db.session.commit()
+    else:
+        user.follow(blog)
+
+    return "nice"
+
+
+@app.route('/youtube_videos')
+def videos_from_youtube():
+    query = request.args.get('query')
+    params = {
+        'q': query,
+        'key': GOOGLE_API_KEY,
+        'part': 'id',
+        'type': 'video',
+        'maxResults': 20
+    }
+
+    if request.args.get('nextPageToken') is not None:
+        params.update({'pageToken': request.args.get('nextPageToken')})
+
+    search_res = requests.get('https://www.googleapis.com/youtube/v3/search', params).json()
+    if search_res.get('error') is not None:
+        return abort(500)
+
+    ids = ''
+    for item in search_res['items']:
+        ids += item['id']['videoId'] + ','
+    if ids == '':
+        return abort(404)
+    videos_data = requests.get('https://www.googleapis.com/youtube/v3/videos', {
+        'id': ids,
+        'part': 'snippet,contentDetails',
+        'key': GOOGLE_API_KEY
+    }).json()
+
+    response = {}
+    response.update({'nextPageToken': search_res.get('nextPageToken', 0)})
+    videos = []
+    for data in videos_data['items']:
+        snippet = data.get('snippet')
+        duration = decode_iso8601_duration(data.get('contentDetails').get('duration'))
+        video = {
+            'title': textwrap.shorten(snippet.get('title'), width=25, placeholder='...'),
+            'preview': snippet.get('thumbnails').get('medium').get('url'),
+            'author': textwrap.shorten(snippet.get('channelTitle'), width=20, placeholder='...'),
+            'duration': duration,
+            'id': data.get('id')
+        }
+        videos.append(video)
+
+    response.update({'videos': videos})
+
+    return jsonify(response)

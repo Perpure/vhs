@@ -1,8 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="INP">
+<div class="mid mid_wider">
     <h2>Регистрация</h2>
-    <form action="" method="post">
+    <div class="inline-block">
+      <h3>Зачем регистрироваться?</h3>
+      Вы сможете:
+      <ul>
+        <li>Загружать видео</li>
+        <li>Комментировать и оценивать видео</li>
+        <li>Подписываться на других пользователей</li>
+      </ul>
+    </div>
+    <form action="" method="post" class="inline-block">
         {{form.hidden_tag()}}
         <div>{{ form.login_reg.label}}</div>
         <div>{{ form.login_reg }}</div>

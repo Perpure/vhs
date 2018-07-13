@@ -6,9 +6,9 @@ var height = 700;
 
 function add_geotags(videos) {
     map.geoObjects.removeAll();
-    
+
     var myClusterer = new ymaps.Clusterer({
-        clusterDisableClickZoom: true,    
+        clusterDisableClickZoom: true,
     });
 
     for (var i in videos) {
@@ -18,11 +18,11 @@ function add_geotags(videos) {
             var geotag = new ymaps.Placemark([gt[0], gt[1]],
             {
                 balloonContentHeader: videos[i]['title'],
-                balloonContentBody: 
-                        '<a href="' + videos[i]['link'] + '">' +
-                            '<img width="200px" height="200px"' +
-                                'src="' + videos[i]['preview'] + '" href="' + videos[i]['link'] + '">' +
-                        '</a>',
+                balloonContentBody:
+                        '<div class="video__preview"><a href="' + videos[i]['link'] + '">' +
+                            '<img ' +
+                                'src="' + videos[i]['preview'] + '" href="' + videos[i]['link'] + '" class="video__preview-img">' +
+                        '</a></div>',
                 clusterCaption: videos[i]['title']
             });
             myClusterer.add(geotag);
