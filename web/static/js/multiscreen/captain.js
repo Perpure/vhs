@@ -13,7 +13,7 @@ jQuery(function($) {
 });
 
 $('#calibrate_btn').click(function() {
-  if($('#calibrate_btn').hasClass('video-control_btn__disabled')==false)
+  if($('#calibrate_btn').hasClass('video-control__btn_disabled')==false)
   {
     socket.emit('multiscreen_set_calibrate', ROOM_ID);
   }
@@ -22,20 +22,20 @@ $('#calibrate_btn').click(function() {
 var play=false;
 
 $('#show_res').click(function() {
-  if($('#show_res').hasClass('video-control_btn__disabled')==false)
+  if($('#show_res').hasClass('video-control__btn_disabled')==false)
   {
     if(play)
     {
       play=false;
-      $('#show_res_img').removeClass('video-control_img-changing__other');
-      $('#calibrate_btn').removeClass('video-control_btn__disabled');
+      $('#show_res_img').removeClass('video-control__img-changing_other');
+      $('#calibrate_btn').removeClass('video-control__btn_disabled');
       socket.emit('multiscreen_set_pause', ROOM_ID);
     }
     else
     {
       play=true;
-      $('#show_res_img').addClass('video-control_img-changing__other');
-      $('#calibrate_btn').addClass('video-control_btn__disabled');
+      $('#show_res_img').addClass('video-control__img-changing_other');
+      $('#calibrate_btn').addClass('video-control__btn_disabled');
       socket.emit('multiscreen_set_show', ROOM_ID);
     }
   }
@@ -50,7 +50,7 @@ function drop_state()
 }
 
 $('#stop_res').click(function() {
-  if($('#stop_res').hasClass('video-control_btn__disabled')==false)
+  if($('#stop_res').hasClass('video-control__btn_disabled')==false)
   {
     socket.emit('multiscreen_set_stop', ROOM_ID);
     drop_state();

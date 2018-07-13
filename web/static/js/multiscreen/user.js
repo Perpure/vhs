@@ -1,8 +1,8 @@
 function Result() {
-  $('#ReVi').show();
+  $('#ReShell').show();
   $('#ReVi').get(0).play();
   $('#ReVi').on('ended',function(){
-    $('#ReVi').hide();
+    $('#ReShell').hide();
   });
 }
 
@@ -14,7 +14,6 @@ jQuery(function($) {
         + 'class="calibration-image fullscreen-switcher"></div>');
   });
   socket.on('multiscreen_show_result', function(response) {
-    $('#Body').css('overflow', 'hidden');
     $('#ReVi').css({
         top: screen.height * (response.top / response.scale) + "px",
         left: screen.width * (response.left / response.scale) + "px",

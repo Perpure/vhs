@@ -59,11 +59,11 @@ jQuery(function($) {
 
     function output_video(video_item) {
         var html = '<div class="video">' +
-                        '<div class="video_preview">' +
-                            '<img class="video_preview-img" src="' + video_item.preview + '">' +
+                        '<div class="video__preview">' +
+                            '<img class="video__preview-img" src="' + video_item.preview + '">' +
                         '</div>' +
                         '<div>' +
-                            '<p class="video_title">' + video_item.title + '</p>' +
+                            '<p class="video__title">' + video_item.title + '</p>' +
                             '<p class="italic">' + video_item.author + '<br>' + video_item.duration + '</p>' +
                             '<span hidden="true">' + video_item.id + '</span>' +
                         '</div>' +

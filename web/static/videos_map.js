@@ -19,9 +19,9 @@ function add_geotags(videos) {
             {
                 balloonContentHeader: videos[i]['title'],
                 balloonContentBody:
-                        '<div class="video_preview"><a href="' + videos[i]['link'] + '">' +
+                        '<div class="video__preview"><a href="' + videos[i]['link'] + '">' +
                             '<img ' +
-                                'src="' + videos[i]['preview'] + '" href="' + videos[i]['link'] + '" class="video_preview-img">' +
+                                'src="' + videos[i]['preview'] + '" href="' + videos[i]['link'] + '" class="video__preview-img">' +
                         '</a></div>',
                 clusterCaption: videos[i]['title']
             });

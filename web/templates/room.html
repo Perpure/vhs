@@ -9,15 +9,15 @@
   {% endif %}
   {% if room.capitan_id == anon.id %}
     <hr>
-    <button id="calibrate_btn" class="video-control_btn ib">Калибровка</button>
-    <div class="ib ib__edge">
-      <button id="show_res" class="video-control_btn video-control_btn__round ib {% if not room.video_id %}video-control_btn__disabled{% endif %}"><img src="{{ url_for('static', filename='play.png') }}" id="show_res_img" alt="" class="video-control_img-changing"></button>
-      <button id="stop_res" class="video-control_btn video-control_btn__round ib {% if not room.video_id %}video-control_btn__disabled{% endif %}"><img src="{{ url_for('static', filename='stop.png') }}" id="stop_res_img" alt="" class="video-control_img"></button>
+    <button id="calibrate_btn" class="video-control__btn inline-block">Калибровка</button>
+    <div class="inline-block inline-block_edge">
+      <button id="show_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id %}video-control__btn_disabled{% endif %}"><img src="{{ url_for('static', filename='play.png') }}" id="show_res_img" alt="" class="video-control__img-changing"></button>
+      <button id="stop_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id %}video-control__btn_disabled{% endif %}"><img src="{{ url_for('static', filename='stop.png') }}" id="stop_res_img" alt="" class="video-control__img"></button>
     </div>
-    <button id="refresh_btn" class="video-control_btn ib ib__edge">Обновить устройства</button>
+    <button id="refresh_btn" class="video-control__btn inline-block inline-block_edge">Обновить устройства</button>
   {% else %}
     <hr>
-    <button class="video-control_btn fullscreen-switcher">Перейти в полноэкранный режим</button>
+    <button class="video-control__btn fullscreen-switcher">Перейти в полноэкранный режим</button>
   {% endif %}
 </div>
 {% if room.capitan_id == anon.id %}
@@ -43,9 +43,9 @@
     {% if room.video_id %}
         <hr>
         <div class="video">
-          <div class="video_preview">
+          <div class="video__preview">
             <a href="{{ url_for('play', vid=room.video_id) }}">
-              <img src="{{url_for('get_image', pid=room.video_id)}}" alt="" class="video_preview-img">
+              <img src="{{url_for('get_image', pid=room.video_id)}}" alt="" class="video__preview-img">
             </a>
           </div>
         </div>
@@ -95,7 +95,9 @@
 
 {% if room.capitan_id != anon.id %}
     {% if room.video_id %}
-        <video class="result-video" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
+      <div class="result" id="ReShell">
+        <video class="result__video" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
+      </div>
     {% endif %}
 {% endif %}
 <script src="{{ url_for('static', filename='js/multiscreen/fullscreen.js') }}"></script>

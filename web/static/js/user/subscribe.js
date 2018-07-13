@@ -1,4 +1,4 @@
-$(".profile_subscribe-btn").click(function(){
+$(".profile__subscribe-btn").click(function(){
     var me=$(this);
     var val = me.val();
     $.ajax({

@@ -14,8 +14,8 @@ if($('#addC')!=null)$('#addC').click(function(){
     });
     $('#txtPlate').val('');
     var comment = $('<div class="comment"></div>');
-    var ava = $('<div class="comment_ava"><img src="' + $('#myAva').attr('src') + '" alt="" class="comment_ava-img"></div>');
-    var txt = $('<div><p class="comment_author"><a href="' + $('#myProf').attr('href')+'">' + $('#myProf').html() + '</a></p><p>' + txt + '</p></div></div>');
+    var ava = $('<div class="comment__ava"><img src="' + $('#myAva').attr('src') + '" alt="" class="comment__ava-img"></div>');
+    var txt = $('<div><p class="comment__author"><a href="' + $('#myProf').attr('href')+'">' + $('#myProf').html() + '</a></p><p>' + txt + '</p></div></div>');
     comment.append(ava);
     comment.append(txt);
     $('#CSect').prepend(comment);
