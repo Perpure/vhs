@@ -16,7 +16,7 @@
         {%endif%}
     </div>
 
-    <div class="tabs">
+    <div class="tabs" id="Tabs" data-value={{tab}}>
       <div value="about" class="tabs__tab tabs__tab_edge">Главная</div>
       <div value="videos" class="tabs__tab">Видео пользователя</div>
       {% if settings %}
@@ -218,11 +218,6 @@
     }
 </style>
 <script src="{{ url_for('static', filename='js/tabs.js') }}"></script>
-<script>
-    $(document).ready(function(){
-      $('.tabs__tab').get({{tab}}).click();
-    });
-</script>
 <script src="{{ url_for('static', filename='js/slide.js') }}"></script>
 <script src="{{ url_for('static', filename='js/user/subscribe.js') }}"></script>
 {% endblock %}

@@ -6,4 +6,5 @@ $(document).ready(function(){
         var id=$(this).attr('value');
         $('#' + id).addClass('section_open');
     });
+    $('.tabs__tab').get($("#Tabs").data('value')).click();
 });
