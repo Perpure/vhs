@@ -188,7 +188,7 @@ def upload():
     return render_template('upload_video.html', form=form, user=cur_user(), formats=app.config['ALLOWED_EXTENSIONS'])
 
 
-@app.route('/reg', methods=['GET', 'POST'])
+@app.route('/registration', methods=['GET', 'POST'])
 def reg():
     """
     Отвечает за вывод страницы регистрации и регистрацию
@@ -203,10 +203,10 @@ def reg():
         session["Login"] = user.login
         return redirect(url_for("main"))
 
-    return render_template('user/reg.html', form=form, user=cur_user())
+    return render_template('user/registration.html', form=form, user=cur_user())
 
 
-@app.route('/auth', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def log():
     """
     Отвечает за вывод страницы входа и вход
@@ -219,7 +219,7 @@ def log():
         session["Login"] = form.login_log.data
         return redirect(url_for("main"))
 
-    return render_template('user/auth.html', form=form, user=cur_user())
+    return render_template('user/login.html', form=form, user=cur_user())
 
 
 @app.route('/cabinet/<string:usr>', methods=['GET', 'POST'])

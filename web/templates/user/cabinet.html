@@ -17,11 +17,11 @@
     </div>
 
     <div class="tabs" id="Tabs" data-value={{tab}}>
-      <div value="about" class="tabs__tab tabs__tab_edge">Главная</div>
-      <div value="videos" class="tabs__tab">Видео пользователя</div>
+      <div data-value="about" class="tabs__tab tabs__tab_edge">Главная</div>
+      <div data-value="videos" class="tabs__tab">Видео пользователя</div>
       {% if settings %}
-        <div value="settings" class="tabs__tab">Настройки канала</div>
-        <div value="settingsAcc" class="tabs__tab">Настройки аккаунта</div>
+        <div data-value="settings" class="tabs__tab">Настройки канала</div>
+        <div data-value="settingsAcc" class="tabs__tab">Настройки аккаунта</div>
       {% endif %}
     </div>
   </div>
@@ -138,8 +138,8 @@
               <div style="color: red;">{{ error }}</div>
             {% endfor %}
           {% endif %}
-          <span id="instructionBtn" class="fact">Что такое Фон?</span>
-          <ol id="instruction" class="instr">
+          <span class="fact instruction">Что такое Фон?</span>
+          <ol class="instruction__content">
             <p>
               Хотите иметь уникальный фон канала?
               <br>
