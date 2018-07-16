@@ -203,7 +203,7 @@ def reg():
         session["Login"] = user.login
         return redirect(url_for("main"))
 
-    return render_template('reg.html', form=form, user=cur_user())
+    return render_template('user/reg.html', form=form, user=cur_user())
 
 
 @app.route('/auth', methods=['GET', 'POST'])
@@ -219,7 +219,7 @@ def log():
         session["Login"] = form.login_log.data
         return redirect(url_for("main"))
 
-    return render_template('auth.html', form=form, user=cur_user())
+    return render_template('user/auth.html', form=form, user=cur_user())
 
 
 @app.route('/cabinet/<string:usr>', methods=['GET', 'POST'])
@@ -273,7 +273,7 @@ def cabinet(usr, tab=0):
             return redirect(url_for("cabinet", usr=cabinet_owner.login, tab=tab))
     last = items[-6:]
     now = time = datetime.now(tz=None)
-    return render_template('cabinet.html', form=form, form_acc=form_acc, user=user, items=items,
+    return render_template('user/cabinet.html', form=form, form_acc=form_acc, user=user, items=items,
                            settings=is_cabinet_settings_available, usr=cabinet_owner, last=last,
                            subscribed=(user in cabinet_owner.subscribers), now=now, tab=tab)
 
