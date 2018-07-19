@@ -65,7 +65,6 @@ class Tag(db.Model):
         return tag
 
 
-
 class Video(db.Model):
     """Класс описывающий модель Видео"""
     __tablename__ = 'Video'
