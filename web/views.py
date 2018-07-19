@@ -231,7 +231,6 @@ def cabinet(usr, tab=0):
     """
 
     video_list = Video.get()
-    items = []
     user = cur_user()
     cabinet_owner = User.get(login=usr)
     is_cabinet_settings_available = False
@@ -239,9 +238,7 @@ def cabinet(usr, tab=0):
     if user == cabinet_owner:
         is_cabinet_settings_available = True
 
-    for item in video_list:
-        if item.user_id == cabinet_owner.id:
-            items.append(item)
+    items = cabinet_owner.videos
 
     form = UserProfileForm()
     form_acc = AccountSettingsForm()
@@ -271,10 +268,9 @@ def cabinet(usr, tab=0):
             if form_acc.change_password.data:
                 user.save(form_acc.change_password.data)
             return redirect(url_for("cabinet", usr=cabinet_owner.login, tab=tab))
-    last = items[-6:]
     now = time = datetime.now(tz=None)
     return render_template('user/cabinet.html', form=form, form_acc=form_acc, user=user, items=items,
-                           settings=is_cabinet_settings_available, usr=cabinet_owner, last=last,
+                           settings=is_cabinet_settings_available, usr=cabinet_owner,
                            subscribed=(user in cabinet_owner.subscribers), now=now, tab=tab)
 
 
