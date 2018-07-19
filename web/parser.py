@@ -7,6 +7,46 @@ from config import basedir
 from PIL import Image, ImageDraw
 
 
+class ImageObject():
+    is_display = False
+    is_number = False
+
+    def __init__(self, contour, id):
+        self.id = id
+        self.contour = contour
+        rect = cv2.minAreaRect(contour)
+        box = np.int0(cv2.boxPoints(rect))
+        self.min_x = np.ndarray.min(box[..., 0])
+        self.max_x = np.ndarray.max(box[..., 0])
+        self.min_y = np.ndarray.min(box[..., 1])
+        self.max_y = np.ndarray.max(box[..., 1])
+
+    def find_relation(self, image_objects):
+        for image_object in image_objects:
+            if (self.min_x < image_object.min_x < self.max_x) and (self.min_y < image_object.min_y < self.max_y):
+                self.is_display = True
+                self.relation = image_object.id
+                image_object.is_number = True
+                image_object.relation = self.id
+
+    def indentify(self):
+        matrix = [[0 for x in range(3)] for y in range(3)]
+        min_x = display.min_x
+        max_x = display.max_x
+        min_y = display.min_y
+        max_y = display.max_y
+        width = max_x - min_x
+        height = max_y - min_y
+        for y in range(1,4):
+            h = min_y + (height * (1 + y*2)) // 10
+            for x in range(1,4):
+                print(y, min_y, height)
+                w = min_x + (width * (1 + x*2)) // 10
+                cv2.circle(img,(w,h),3,255,-1)
+                if mask[h][w] == 0:
+                    matrix[y-1][x-1] = 1
+        return matrix
+
 class Screen():
     def __init__(self, width, height, left=0, top=0):
         self.width = width
@@ -45,11 +85,11 @@ def handle_parse(items, minX, minY, maxX, maxY, room):
     final_screen = trimmed_screen.get_formatted_screen(16 / 9)
     draw, room_map = create_map(final_screen.width, final_screen.height)
     for item in items:
-        device, rect, color = item
+        device, rect, display = item
         rect = ((rect[0][0] - minX, rect[0][1] - minY), rect[1], rect[2])
         device_screen = final_screen.get_device_screen(device, rect)
         device.save_screen_params(device_screen)
-        draw_map(draw, rect, color)
+        draw_map(draw, rect, (255, 0, 0))
     save_map(draw, room, room_map)
 
 
@@ -71,34 +111,36 @@ def save_map(draw, room, room_map):
 
 
 def parse(room, devices, impath):
+    device_amount = len(devices) #TODO take device amount on calibrate pic
     is_parsed = False
+    maxX = maxY = -math.inf
+    minY = minX = math.inf
+    image_objects = []
     img = cv2.imread(impath)
     hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     items = list()
-    maxX = maxY = -math.inf
-    minY = minX = math.inf
-    for device in devices:
-        R = int(device.color[1:3], 16)
-        G = int(device.color[3:5], 16)
-        B = int(device.color[5:7], 16)
-        color = (B, G, R)
-        hsv_color = np.array(color, dtype=np.uint8, ndmin=3)
-        hue = cv2.cvtColor(hsv_color, cv2.COLOR_BGR2HSV).flatten()[0]
-        hue_min = np.array([max(hue - 10, 0), 100, 100], dtype=np.uint8)
-        hue_max = np.array([min(hue + 10, 179), 255, 255], dtype=np.uint8)
-        thresh = cv2.inRange(hsv_img, hue_min, hue_max)
-        _, contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        try:
-            rect = cv2.minAreaRect(sorted(contours, key=cv2.contourArea, reverse=True)[0])
-            box = np.int0(cv2.boxPoints(rect))
-            minX = min(minX, np.ndarray.min(box[..., 0]))
-            maxX = max(maxX, np.ndarray.max(box[..., 0]))
-            minY = min(minY, np.ndarray.min(box[..., 1]))
-            maxY = max(maxY, np.ndarray.max(box[..., 1]))
-            items.append([device, rect, (color[2], color[1], color[0])])
-            is_parsed = True
-        except IndexError:
-            pass
-    if is_parsed:
-        handle_parse(items, minX, minY, maxX, maxY, room)
+    lower_red = np.array((0, 150, 150), np.uint8)
+    upper_red = np.array((20, 255, 255), np.uint8)
+    mask = cv2.inRange(frame, lower_red, upper_red)
+    _, contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE,
+                                              cv2.CHAIN_APPROX_NONE)
+    contours = sorted(contours, key=lambda x: len(x))[-device_amount*2:]
+    i = 0
+    for contour in contours:
+        image_object = ImageObject(contour, i)
+        image_objects.append(image_object)
+        minX = min(minX, image_object.min_x)
+        maxX = max(maxX, image_object.max_x)
+        minY = min(minY, image_object.min_y)
+        maxY = max(maxY, image_object.max_y)
+        i+=1
+    for image_object in image_objects:
+        image_object.find_relation(image_objects)
+    displays = sorted(image_objects, key=lambda x: x.is_display)[-device_amount:]
+    for display in displays:
+        matrix = display.identify()
+        device = None #TODO detect which device had this matrix on calibrate pic
+        items.append([device, rect, display])
+    handle_parse(items, minX, minY, maxX, maxY, room)
+    is_parsed = True
     return is_parsed
