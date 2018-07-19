@@ -154,7 +154,6 @@ def upload():
     Отвечает за вывод страницы загрузки и загрузку файлов
     :return: Страница загрузки
     """
-    user = cur_user()
 
     form = UploadVideoForm()
 
@@ -171,15 +170,15 @@ def upload():
         data = JSONDecoder().decode(form.geotag_data.data)
         if data['needed']:
             for coords in data['coords']:
-                gt = Geotag(*coords)
-                gt.save(video)
+                geo_tag = Geotag(*coords)
+                video.geotags.append(geo_tag)
 
         if form.tags.data:
             tags = form.tags.data.split(',')
-            for tag in tags:
-                tag_data = Tag(tag, video.id, user.id)
-                tag_data.save()
-
+            for tag_name in tags:
+                video_tag = Tag.create_unique(text=tag_name)
+                video.tags.append(video_tag)
+        db.session.commit()
         return redirect(url_for("main"))
 
     if not form.geotag_data.data:
