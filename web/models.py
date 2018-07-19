@@ -53,13 +53,17 @@ class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     text = db.Column(db.Text(), unique=True)
 
-    # def __init__(self, text, video_id):
-    #     self.text = text
-    #     self.video_id = video_id
-
     def save(self):
         db.session.add(self)
         db.session.commit()
+
+    @staticmethod
+    def create_unique(text):
+        tag = Tag.query.filter_by(text=text).first()
+        if tag is None:
+            tag = Tag(text=text)
+        return tag
+
 
 
 class Video(db.Model):
@@ -79,7 +83,7 @@ class Video(db.Model):
 
     comments = db.relationship('Comment', backref='video', lazy='joined')
 
-    tags = db.relationship('Tag', secondary=VideoTags, lazy='joined', backref='videos')
+    tags = db.relationship('Tag', secondary=VideoTags, cascade='all, delete', lazy='joined', backref='videos')
 
     viewers = db.relationship('User', secondary=Views, backref='views', lazy='joined')
 

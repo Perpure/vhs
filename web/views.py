@@ -176,7 +176,7 @@ def upload():
         if form.tags.data:
             tags = form.tags.data.split(',')
             for tag_name in tags:
-                video_tag = Tag(text=tag_name)
+                video_tag = Tag.create_unique(text=tag_name)
                 video.tags.append(video_tag)
         db.session.commit()
         return redirect(url_for("main"))
