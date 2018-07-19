@@ -78,9 +78,9 @@
     <hr>
     <p>{{msg}}</p>
 {% endif %}
-
-<span  class="fact instruction">Инструкция</span>
-<ol class="instruction__content">
+<div class="slider">
+  <span  class="fact slider__btn">Инструкция</span>
+  <ol class="slider__content">
     <li>Пригласите участников.</li>
     <li>Выберите видео для демонстрации.</li>
     <li>Разместите устройства на площади для показа.</li>
@@ -91,7 +91,8 @@
     6.1. Если положение устройств определено неверно повторите действия описанные в п.5</li>
     <li>Капитан нажимает “Начать демонстрацию”</li>
     <li>Начинается показ видео.</li>
-</ol>
+  </ol>
+</div>
 
 {% if room.capitan_id != anon.id %}
     {% if room.video_id %}

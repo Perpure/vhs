@@ -1,5 +1,5 @@
 jQuery(function($){
-    $(".instruction").click(function(){
-        $(".instruction__btn").slideToggle("slow", function(){});
+    $(".slider__btn").click(function(){
+        $(this).parent().children(".slider__content").slideToggle("slow", function(){});
     });
 });

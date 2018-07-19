@@ -11,6 +11,6 @@ jQuery(function($){
     });
     $('.tabs').each(function(){
         var id = $(this).data('value');
-        $(this).children('label:eq('+id+')').click();
+        $(this).children('div:eq('+id+')').click();
     });
 });

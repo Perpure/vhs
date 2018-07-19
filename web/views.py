@@ -247,11 +247,11 @@ def cabinet(usr, tab=0):
     form_acc = AccountSettingsForm()
     if request.method == 'POST':
         form_name = request.form['form-name']
-        tab = 3
+        tab = 2
         if form_name == 'form':
-            tab = 2
+            tab = 1
         if form_name == 'form' and form.validate():
-            tab = 2
+            tab = 1
             user = cur_user()
             folder = str(user.id)
             if form.change_name.data:
@@ -266,7 +266,7 @@ def cabinet(usr, tab=0):
                 user.update_background(json.dumps({"url": background_url}))
             return redirect(url_for("cabinet", usr=cabinet_owner.login, tab=tab))
         elif form_name == 'form_acc' and form_acc.validate():
-            tab = 3
+            tab = 2
             user = cur_user()
             if form_acc.change_password.data:
                 user.save(form_acc.change_password.data)
