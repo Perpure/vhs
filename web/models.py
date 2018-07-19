@@ -266,14 +266,14 @@ class User(db.Model):
             avatar_json = json.loads(self.avatar)
             return url_for('_uploads.uploaded_file', setname=avatars.name, filename=avatar_json['url'])
         else:
-            return '../static/avatar.jpg'
+            return '../static/images/avatar.jpg'
 
     def background_url(self):
         if self.background:
             background_json = json.loads(self.background)
             return url_for('_uploads.uploaded_file', setname=backgrounds.name, filename=background_json['url'])
         else:
-            return '../static/background.jpg'
+            return '../static/images/background.jpg'
 
     @staticmethod
     def get(id=None, login=None):

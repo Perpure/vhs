@@ -1,4 +1,4 @@
-﻿{% extends "base.html" %}
+{% extends "base.html" %}
 {% block content %}
 <div class="canal">
   <div class="solid">
@@ -16,46 +16,13 @@
         {%endif%}
     </div>
 
-    <div class="tabs">
-      <div value="about" class="tabs__tab tabs__tab_edge">Главная</div>
-      <div value="videos" class="tabs__tab">Видео пользователя</div>
+    <div class="tabs" data-value={{tab}}>
+      <div data-value="videos" class="tabs__tab tabs__tab_edge">Загруженные видео</div>
       {% if settings %}
-        <div value="settings" class="tabs__tab">Настройки канала</div>
-        <div value="settingsAcc" class="tabs__tab">Настройки аккаунта</div>
+        <div data-value="settings" class="tabs__tab">Настройки канала</div>
+        <div data-value="settingsAcc" class="tabs__tab">Настройки аккаунта</div>
       {% endif %}
     </div>
-  </div>
-
-  <div class="section section_open" id="about">
-    {% if last %}
-    <h2>Последние видео</h2>
-    {%endif%}
-    {% for item in last|reverse %}
-      <div class="video">
-        <div class="video__preview">
-          <a href="{{ url_for('play', vid=item.id) }}">
-            <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video__preview-img">
-          </a>
-        </div>
-        <div>
-          <a href="{{ url_for('play', vid=item.id) }}">
-            <p class="video__title" title="{{item.title}}">{{item.title}}</p>
-          </a>
-          <a href="/cabinet/{{ item.user.login }}">
-            <p class="italic">
-              {{ item.user.name }} <br>
-              {{ item.viewers | length }} просмотров <br>
-              {% if (now - item.date).days>1 %}
-                {{item.date.date()}}
-              {% elif (now - item.date).days==1 %} вчера
-              {% elif (now - item.date).seconds/60< 60 %} {{((now - item.date).seconds/60)|int}} минут назад
-              {% else %} {{((now - item.date).seconds/3600)|int}} часов назад
-              {%endif%}
-            </p>
-          </a>
-        </div>
-      </div>
-    {% endfor %}
   </div>
 
   <div class="section" id="videos">
@@ -85,6 +52,9 @@
       </div>
     </div>
     {% endfor %}
+    {% if items|length == 0 %}
+        <h3>Пользователь ещё не загрузил ни одного видео</h3>
+    {% endif %}
   </div>
 
   {% if settings %}
@@ -138,14 +108,16 @@
               <div style="color: red;">{{ error }}</div>
             {% endfor %}
           {% endif %}
-          <span id="instructionBtn" class="fact">Что такое Фон?</span>
-          <ol id="instruction" class="instr">
-            <p>
-              Хотите иметь уникальный фон канала?
-              <br>
-              Просто создайте картинку с креативно заполненной рамкой (отступ 15%).
-            </p>
-          </ol>
+          <div class="slider">
+            <span class="fact slider__btn">Что такое Фон?</span>
+            <ol class="slider__content">
+              <p>
+                Хотите иметь уникальный фон канала?
+                <br>
+                Просто создайте картинку с креативно заполненной рамкой (отступ 15%).
+              </p>
+            </ol>
+          </div>
         </div>
         <hr>
         <div class="section__set">
@@ -217,23 +189,7 @@
       }
     }
 </style>
-<script>
-    $(document).ready(function(){
-      $('.tabs__tab').click(function(){
-        $('.tabs__tab').removeClass('tabs__tab_open');
-        this.classList.add('tabs__tab_open');
-        $('.section').removeClass('section_open');
-        var id=$(this).attr('value');
-        $('#' + id).addClass('section_open');
-      });
-      $('.tabs__tab').get({{tab}}).click();
-    });
-
-    $(document).ready(function(){
-        $("#instructionBtn").click(function(){
-        $("#instruction").slideToggle("slow",function(){});
-    });
-    });
-</script>
+<script src="{{ url_for('static', filename='js/tabs.js') }}"></script>
+<script src="{{ url_for('static', filename='js/slide.js') }}"></script>
 <script src="{{ url_for('static', filename='js/user/subscribe.js') }}"></script>
 {% endblock %}

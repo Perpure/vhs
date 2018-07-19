@@ -1,4 +1,4 @@
-﻿{% extends "base.html" %}
+{% extends "base.html" %}
 {% block content %}
 <video id="my-video" class="video-js" poster="{{url_for('get_image', pid=vid)}}" data-setup='{"controls": true, "autoplay": false, "preload": "auto"}'>
     <source src="{{url_for('get_video', vid=vid)}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
