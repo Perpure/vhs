@@ -73,7 +73,7 @@ def get_bounds_of_header_range(range):
 
 @app.route('/video/<string:vid>/video.mp4')
 def get_video(vid):
-    path = basedir + '/video/%s/video.mp4' % vid
+    path = basedir + '/uploads/videos/%s/video.mp4' % vid
     range = request.headers.get('Range')
     start, end = get_bounds_of_header_range(range)
     return partial_response(path, start, end)

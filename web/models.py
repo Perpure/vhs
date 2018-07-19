@@ -65,7 +65,7 @@ class Video(db.Model):
     __tablename__ = 'Video'
     id = db.Column(db.String(32), primary_key=True)
     title = db.Column(db.String(140), nullable=False)
-    path = db.Column(db.String(256), nullable=False)
+    path = db.Column(db.String(256))
     date = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
 
@@ -89,7 +89,6 @@ class Video(db.Model):
     def save(self, hash, user):
         self.date = datetime.now(tz=None)
         self.id = hashlib.md5((hash + self.date.isoformat()).encode("utf-8")).hexdigest()
-        self.path = os.path.join(app.config['VIDEO_SAVE_PATH'], self.id)
         self.user_id = user.id
         self.user_login = user.login
 
@@ -97,6 +96,12 @@ class Video(db.Model):
         db.session.commit()
 
         return self.path
+
+    def add_path(self, path):
+        self.path = path
+
+        db.session.add(self)
+        db.session.commit()
 
     def add_viewer(self, user):
         self.viewers.append(user)

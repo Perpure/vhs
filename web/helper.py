@@ -44,15 +44,7 @@ def read_multi(pid):
 
 
 def read_image(pid):
-    path = basedir + '/video/%s/preview.png' % pid
-    with open(path, "rb") as im:
-        f = im.read()
-        b = bytearray(f)
-        return b
-
-
-def read_video(vid):
-    path = basedir + '/video/%s/video.mp4' % vid
+    path = basedir + '/uploads/videos/%s/preview.png' % pid
     with open(path, "rb") as im:
         f = im.read()
         b = bytearray(f)

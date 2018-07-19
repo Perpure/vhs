@@ -98,8 +98,6 @@ class LogForm(FlaskForm):
 
 class UploadVideoForm(FlaskForm):
     """Форма загрузки видео"""
-    class Meta:
-        csrf = False
 
     title = StringField("Введите название видео", validators=[Length(3, message='Название слишком короткое')])
     video = FileField("Выберите файл", validators=[FileAllowed(app.config['ALLOWED_EXTENSIONS'],

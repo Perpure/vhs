@@ -4,6 +4,7 @@ import os
 from flask import request
 from web import app, db
 from web.models import User, Video
+from os.path import join as join_path
 from web.video_handler import save_video
 
 TEST_DB = 'test.sqlite'
@@ -49,9 +50,6 @@ class TestModelUser(unittest.TestCase):
     def test_video_title_should_be_string(self):
         self.assertIsInstance(self.video.title, str)
 
-    def test_video_path_should_be_string(self):
-        self.assertIsInstance(self.video.path, str)
-
     def test_video_user_id_should_be_string(self):
         self.assertIsInstance(self.video.user_id, int)
 
@@ -87,6 +85,7 @@ class TestModelVideo(unittest.TestCase):
         self.user.save('testpassword')
         self.video = Video('TestVideo')
         self.video.save(hash='Teststring', user=self.user)
+        self.video.add_path(join_path(app.config['VIDEO_SAVE_PATH'], self.video.id))
 
     def tearDown(self):
         db.session.remove()
