@@ -99,9 +99,8 @@ def room(room_id):
 
         matrix_path = None
         if room.captain != user:
-            matrix_path = basedir + '/images/calibrate/' + user.matrix + '.png'
+            matrix_path = '/images/calibrate/' + user.matrix + '.png'
         image_form = UploadImageForm()
-        print(matrix_path)
         if image_form.validate_on_submit():
             return image_loaded(request, room, user, users, image_form, room_form)
         return render_template('room.html', room=room, user=cur_user(), matrix=matrix_path, users=users,
