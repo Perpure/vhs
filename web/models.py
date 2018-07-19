@@ -3,6 +3,8 @@ import shutil
 import hashlib
 import os
 import json
+import cv2
+import numpy as np
 from datetime import datetime
 from uuid import uuid4
 from flask import url_for
@@ -190,10 +192,6 @@ class User(db.Model):
     channel_info = db.Column(db.String(64))
     avatar = db.Column(db.String(128))
     background = db.Column(db.String(128))
-    color = db.Column(db.String(64))
-    top = db.Column(db.Integer)
-    left = db.Column(db.Integer)
-    scale = db.Column(db.Integer)
 
     videos = db.relationship("Video",
                              backref="user",
@@ -296,7 +294,7 @@ class Room(db.Model):
     video_id = db.Column(db.String(32))
     capitan_id = db.Column(db.String(), db.ForeignKey('AnonUser.id'))
     name = db.Column(db.String(64), nullable=False)
-    devices_in_room = db.relationship('RoomDeviceColorConnector', backref='room', lazy=True)
+    devices_in_room = db.relationship('RoomDeviceMatrixConnector', backref='room', lazy=True)
 
     def __init__(self, name, capitan_id):
         self.name = name
@@ -312,7 +310,7 @@ class Room(db.Model):
         return self.date.strftime("%H:%M %d.%m.%Y")
 
     def get_devices(self):
-        raw_users = RoomDeviceColorConnector.query.filter_by(room=self)
+        raw_users = RoomDeviceMatrixConnector.query.filter_by(room=self)
         return [rac.anon for rac in raw_users]
 
     @staticmethod
@@ -324,25 +322,37 @@ class Room(db.Model):
         return Room.query.all()
 
 
-class Color(db.Model):
-    __tablename__ = 'Color'
+class Calibrate_matrix(db.Model):
+    __tablename__ = 'Calibrate_matrix'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    color = db.Column(db.String(64), nullable=False)
-    anons_rooms = db.relationship('RoomDeviceColorConnector', backref='color', lazy=True)
+    matrix = db.Column(db.String(64), nullable=False)
+    anons_rooms = db.relationship('RoomDeviceMatrixConnector', backref='calibrate_matrix', lazy=True)
 
     @staticmethod
     def get(id=None):
         if id:
-            return Color.query.get(id)
-        return Color.query.all()
+            return Calibrate_matrix.query.get(id)
+        return Calibrate_matrix.query.all()
 
+    def create_calibrate_matrix_image(self):
+        img = np.zeros((5,5,3), np.uint8)
+        img[:,0:5] = (0, 0, 255)
+        matrix = self.matrix
+        i = 0
+        for x in range(1,4):
+            for y in range(1,4):
+                if matrix[i] == '1':
+                    img[x][y] = (255,0,0)
+                i+=1
+        res = cv2.resize(img,(1000, 1000), interpolation = cv2.INTER_NEAREST)
+        cv2.imwrite('images/calibrate/' + matrix + '.png', res)
 
-class RoomDeviceColorConnector(db.Model):
-    __tablename__ = 'RoomDeviceColorConnector'
+class RoomDeviceMatrixConnector(db.Model):
+    __tablename__ = 'RoomDeviceMatrixConnector'
     id = db.Column(db.Integer, primary_key=True)
     room_id = db.Column(db.Integer, db.ForeignKey('Room.id'))
     anon_id = db.Column(db.String(), db.ForeignKey('AnonUser.id'))
-    color_id = db.Column(db.Integer, db.ForeignKey('Color.id'))
+    calibrate_matrix_id = db.Column(db.Integer, db.ForeignKey('Calibrate_matrix.id'))
 
 
 class AnonUser(db.Model):
@@ -354,12 +364,12 @@ class AnonUser(db.Model):
     time = db.Column(db.Integer)
     device_width = db.Column(db.Integer)
     device_height = db.Column(db.Integer)
-    color = db.Column(db.String(64))
+    matrix = db.Column(db.String(64))
     socket_id = db.Column(db.String(64))
     top = db.Column(db.Integer)
     left = db.Column(db.Integer)
     scale = db.Column(db.Integer)
-    rooms_colors = db.relationship('RoomDeviceColorConnector', backref='anon', lazy=True)
+    rooms_calibrate_matrixes = db.relationship('RoomDeviceMatrixConnector', backref='anon', lazy=True)
     room_capitan = db.relationship("Room", backref='captain')
 
     def __init__(self):

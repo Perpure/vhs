@@ -139,8 +139,10 @@ def parse(room, devices, impath):
     displays = sorted(image_objects, key=lambda x: x.is_display)[-device_amount:]
     for display in displays:
         matrix = display.identify()
-        device = None #TODO detect which device had this matrix on calibrate pic
-        items.append([device, rect, display])
+        for device in devices:
+            if matrix == device.matrix:
+                items.append([device, rect, display])
+                break
     handle_parse(items, minX, minY, maxX, maxY, room)
     is_parsed = True
     return is_parsed

@@ -9,9 +9,9 @@ function Result() {
 jQuery(function($) {
   socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
   socket.on('multiscreen_show_calibrate', function() {
-    $('#Body').append('<div '
-        + 'style="' + 'background:' + ROOM_COLOR + ';" '
-        + 'class="calibration-image fullscreen-switcher"></div>');
+    $('#Body').append('<img '
+        + 'src = "' ROOM_IMAGE '"'
+        + 'class="calibration-image fullscreen-switcher"></img>');
   });
   socket.on('multiscreen_show_result', function(response) {
     $('#ReVi').css({

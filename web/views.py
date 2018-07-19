@@ -9,7 +9,7 @@ from config import basedir
 from web import app, db, avatars, backgrounds, socketio
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
     UserProfileForm, AddRoomForm, AccountSettingsForm
-from web.models import User, Video, Room, Color, Geotag, Tag, AnonUser, RoomDeviceColorConnector
+from web.models import User, Video, Room, Calibrate_matrix, Geotag, Tag, AnonUser, RoomDeviceMatrixConnector
 from web.helper import cur_user, requiresauth, anon_user, image_loaded
 from web.video_handler import save_video
 from datetime import datetime
@@ -70,16 +70,17 @@ def room(room_id):
     room = Room.query.get(room_id)
     if room:
         room_map_url = str(room_id) + '_map'
-        raw_user_rooms = RoomDeviceColorConnector.query.filter_by(anon=user)
+        raw_user_rooms = RoomDeviceMatrixConnector.query.filter_by(anon=user)
         user_rooms = [rac.room for rac in raw_user_rooms]
         users = room.get_devices()
 
         if not (room in user_rooms) and (room.captain != user):
-            color_id = len(users) + 1
-            if color_id > 6:
+            matrix_id = len(users) + 1
+            if matrix_id > 6:
                 return redirect(url_for('viewroom'))
-            col = Color.query.get(color_id)
-            rac = RoomDeviceColorConnector(anon=user, room=room, color=col)
+            matrix = Calibrate_matrix.query.get(matrix_id)
+            matrix.create_calibrate_matrix_image()
+            rac = RoomDeviceMatrixConnector(anon=user, room=room, calibrate_matrix=matrix)
             db.session.add(rac)
             socketio.emit('update', len(users) + 2, broadcast=True)
 
@@ -91,15 +92,19 @@ def room(room_id):
             db.session.commit()
 
         for member in users:
-            rac = RoomDeviceColorConnector.query.filter_by(room=room,
+            rac = RoomDeviceMatrixConnector.query.filter_by(room=room,
                                                            anon=member).first()
-            member.color = rac.color.color
+            member.matrix = rac.calibrate_matrix.matrix
             db.session.commit()
 
+        matrix_path = None
+        if room.captain != user:
+            matrix_path = basedir + '/images/calibrate/' + user.matrix + '.png'
         image_form = UploadImageForm()
+        print(matrix_path)
         if image_form.validate_on_submit():
             return image_loaded(request, room, user, users, image_form, room_form)
-        return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users,
+        return render_template('room.html', room=room, user=cur_user(), matrix=matrix_path, users=users,
                                count=len(users) + 1,
                                image_form=image_form, room_form=room_form, loaded=False, anon=user,
                                room_map=room_map_url,

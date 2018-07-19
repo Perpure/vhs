@@ -7,18 +7,18 @@ db.drop_all()
 db.create_all()
 user = User("TestUser")
 user.save("testpassword")
-yellow = Color(color='#ffff00')
-db.session.add(yellow)  # 1
-cyan = Color(color='#00ffff')
-db.session.add(cyan)  # 2
-pink = Color(color='#ff00ff')
-db.session.add(pink)  # 3
-red = Color(color='#ff0000')
-db.session.add(red)  # 4
-blue = Color(color='#0000ff')
-db.session.add(blue)  # 5
-green = Color(color='#00ff00')
-db.session.add(green)  # 6
+matrix_1 = Calibrate_matrix(matrix='100000000')
+db.session.add(matrix_1)
+matrix_2 = Calibrate_matrix(matrix='110000000')
+db.session.add(matrix_2)
+matrix_3 = Calibrate_matrix(matrix='111000000')
+db.session.add(matrix_3)
+matrix_4 = Calibrate_matrix(matrix='111100000')
+db.session.add(matrix_4)
+matrix_5 = Calibrate_matrix(matrix='111110000')
+db.session.add(matrix_5)
+matrix_6 = Calibrate_matrix(matrix='111111000')
+db.session.add(matrix_6)
 user = User("tsarkov")
 user.save("tsarkov1")
 user = User("konnov")

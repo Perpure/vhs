@@ -104,7 +104,7 @@
 <script src="{{ url_for('static', filename='js/multiscreen/common.js') }}"></script>
 <script>
     var ROOM_ID = {{ room.id }};
-    var ROOM_COLOR = '{{ color }}';
+    var ROOM_IMAGE = '{{ matrix }}';
 </script>
 {% if room.capitan_id == anon.id %}
     <script src="{{ url_for('static', filename='js/multiscreen/captain.js') }}"></script>
