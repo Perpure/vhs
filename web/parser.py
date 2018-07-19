@@ -30,7 +30,7 @@ class ImageObject():
                 image_object.relation = self.id
 
     def indentify(self):
-        matrix = [[0 for x in range(3)] for y in range(3)]
+        matrix = ""
         min_x = display.min_x
         max_x = display.max_x
         min_y = display.min_y
@@ -44,7 +44,9 @@ class ImageObject():
                 w = min_x + (width * (1 + x*2)) // 10
                 cv2.circle(img,(w,h),3,255,-1)
                 if mask[h][w] == 0:
-                    matrix[y-1][x-1] = 1
+                    matrix += '1'
+                else:
+                    matrix += '0'
         return matrix
 
 class Screen():
