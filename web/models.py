@@ -387,7 +387,7 @@ class AnonUser(db.Model):
         return AnonUser.query.all()
 
     def save_screen_params(self, device_screen):
-        self.scale = int(device_screen.width)
+        self.scale = int(device_screen.scale)
         self.top = int(device_screen.top)
         self.left = int(device_screen.left)
         db.session.commit()

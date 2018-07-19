@@ -76,10 +76,12 @@ class Screen():
             firsty = int(rect[0][1] - rect[1][1] / 2) - self.top
             firstx = int(rect[0][0] - rect[1][0] / 2) - self.left
             lastx = int(rect[0][0] + rect[1][0] / 2) - self.left
-        width = (self.width / (lastx - firstx)) * 100
+        scale = (self.width / (lastx - firstx)) * 100
         left = - (firstx / self.width) * width
         top = - (firsty / self.height) * width
-        return Screen(width, None, left, top)
+        device_screen = Screen(lastx - firstx, None, left, top)
+        device_screen.scale = scale
+        return device_screen
 
 
 def handle_parse(items, minX, minY, maxX, maxY, room):
@@ -123,7 +125,7 @@ def parse(room, devices, impath):
     items = list()
     lower_red = np.array((0, 150, 150), np.uint8)
     upper_red = np.array((20, 255, 255), np.uint8)
-    mask = cv2.inRange(frame, lower_red, upper_red)
+    mask = cv2.inRange(img, lower_red, upper_red)
     _, contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE,
                                               cv2.CHAIN_APPROX_NONE)
     contours = sorted(contours, key=lambda x: len(x))[-device_amount*2:]
