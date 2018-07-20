@@ -308,11 +308,40 @@
 
 .loader
 {
-    width:300px;
-    height:60px;
     background-repeat:no-repeat;
-    margin-bottom:10px;
-    background-image:url("~../images/Loader3.png");
+    margin-bottom:20px;
+    &__btn, &__path
+    {
+      display: inline-block;
+    }
+    &__btn
+    {
+      margin-right: 20px;
+      width: 200px;
+      padding: 0;
+      position: relative;
+      &:hover
+      {
+        cursor:pointer;
+      }
+    }
+    &__txt
+    {
+      &:hover
+      {
+        cursor:pointer;
+      }
+    }
+    &__path, &__path:focus
+    {
+      border: none;
+      vertical-align: bottom;
+      margin-bottom: 7px;
+      &:hover
+      {
+        cursor: default;
+      }
+    }
 }
 
 .calibration-image
