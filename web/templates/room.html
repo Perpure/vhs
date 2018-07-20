@@ -11,8 +11,8 @@
     <hr>
     <button id="calibrate_btn" class="video-control__btn inline-block">Калибровка</button>
     <div class="inline-block inline-block_edge">
-      <button id="show_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id %}video-control__btn_disabled{% endif %}"><img src="{{ url_for('static', filename='play.png') }}" id="show_res_img" alt="" class="video-control__img-changing"></button>
-      <button id="stop_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id %}video-control__btn_disabled{% endif %}"><img src="{{ url_for('static', filename='stop.png') }}" id="stop_res_img" alt="" class="video-control__img"></button>
+      <button id="show_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id %}video-control__btn_disabled{% endif %}"><span class="fa fa-play video-control__img" id="show_res_img"></span></button>
+      <button id="stop_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id %}video-control__btn_disabled{% endif %}"><span class="fa fa-stop video-control__img" id="stop_res_img"></span></button>
     </div>
     <button id="refresh_btn" class="video-control__btn inline-block inline-block_edge">Обновить устройства</button>
   {% else %}

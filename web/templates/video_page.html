@@ -75,22 +75,6 @@
     </div>
 </div>
 
-<style>
-    /*div[name="like"]
-    {
-        {%if lkd==1 %}
-            background-image:url({{ url_for('static', filename='images/lik1L.png') }});
-        {%endif%}
-    }
-
-    div[name="dislike"]
-    {
-        {%if lkd==-1 %}
-            background-image:url({{ url_for('static', filename='images/dis1D.png') }});
-        {%endif%}
-    }*/
-</style>
-
 <script src="{{ url_for('static', filename='js/video_page/video.js') }}"></script>
 {%if user %}
   <script src="{{ url_for('static', filename='js/video_page/video_like.js') }}"></script>

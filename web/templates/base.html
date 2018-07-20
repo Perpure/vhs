@@ -34,9 +34,9 @@
                 <div class="nav-menu__nav-men" id="Search">Поиск</div>
                 <div class="nav-menu__nav-men nav-menu__nav-men_nav-clast">
                     Мультискрин
-                    <img src="{{ url_for('static', filename='down.png') }}" class="nav-menu__img">
+                    <span class="fa fa-caret-down nav-menu__img"></span>
                     <div class="nav-menu__in-btn">
-                        <img src="{{ url_for('static', filename='updown.png') }}" class="nav-menu__img nav-menu__img_up-down">
+                        <span class="fa fa-caret-up nav-menu__img nav-menu__img_up-down"></span>
                         <a href="{{url_for('viewroom')}}"><div class="nav-menu__sub-btn nav-menu__sub-btn_upst">Все комнаты</div></a>
                         <a href="{{url_for('createroom')}}"><div class="nav-menu__sub-btn">Создать комнату</div></a>
                     </div>
@@ -44,9 +44,9 @@
                 {%if user %}
                     <div class="nav-menu__nav-men nav-menu__nav-men_nav-clast nav-menu__nav-men_nav-edge">
                         Кабинет
-                        <img src="{{ url_for('static', filename='down.png') }}" class="nav-menu__img">
+                        <span class="fa fa-caret-down nav-menu__img"></span>
                         <div class="nav-menu__in-btn">
-                            <img src="{{ url_for('static', filename='updown.png') }}" class="nav-menu__img nav-menu__img_up-down">
+                            <span class="fa fa-caret-up nav-menu__img nav-menu__img_up-down"></span>
                             <a href="{{url_for('cabinet', usr=user.login)}}"><div class="nav-menu__sub-btn nav-menu__sub-btn_upst">Мой канал</div></a>
                             <a href="{{url_for('views_story')}}"><div class="nav-menu__sub-btn">История</div></a>
                             <a href="{{url_for('subs_s')}}"><div class="nav-menu__sub-btn">Подписки</div></a>
