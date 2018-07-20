@@ -25,6 +25,11 @@ Subscription = db.Table('Subscription', db.Model.metadata,
                         db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
                         db.Column('UserB_id', db.Integer, db.ForeignKey('User.id')))
 
+VideoTags = db.Table('VideoTags',
+                     db.Model.metadata,
+                     db.Column('video_id', db.String(32), db.ForeignKey('Video.id'), primary_key=True),
+                     db.Column('tag_id', db.Integer, db.ForeignKey('Tag.id'), primary_key=True))
+
 
 class Comment(db.Model):
     __tablename__ = 'Comment'
@@ -46,18 +51,18 @@ class Comment(db.Model):
 class Tag(db.Model):
     __tablename__ = 'Tag'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    text = db.Column(db.Text())
-    video_id = db.Column(db.Text(), db.ForeignKey('Video.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
-
-    def __init__(self, text, video_id, user_id):
-        self.text = text
-        self.user_id = user_id
-        self.video_id = video_id
+    text = db.Column(db.Text(), unique=True)
 
     def save(self):
         db.session.add(self)
         db.session.commit()
+
+    @staticmethod
+    def create_unique(text):
+        tag = Tag.query.filter_by(text=text).first()
+        if tag is None:
+            tag = Tag(text=text)
+        return tag
 
 
 class Video(db.Model):
@@ -77,7 +82,7 @@ class Video(db.Model):
 
     comments = db.relationship('Comment', backref='video', lazy='joined')
 
-    tags = db.relationship('Tag', backref='video', lazy='joined')
+    tags = db.relationship('Tag', secondary=VideoTags, cascade='all, delete', lazy='joined', backref='videos')
 
     viewers = db.relationship('User', secondary=Views, backref='views', lazy='joined')
 
@@ -166,19 +171,12 @@ class Geotag(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     longitude = db.Column(db.Float, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
-    date = db.Column(db.DateTime, nullable=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     video_id = db.Column(db.String(32), db.ForeignKey("Video.id"), nullable=False)
 
     def __init__(self, longitude, latitude):
         self.longitude = longitude
         self.latitude = latitude
-
-    def save(self, video):
-        self.date = datetime.now()
-        self.video_id = video.id
-
-        db.session.add(self)
-        db.session.commit()
 
 
 class User(db.Model):
@@ -202,10 +200,6 @@ class User(db.Model):
     comments = db.relationship('Comment',
                                backref='user',
                                lazy='joined')
-
-    tags = db.relationship('Tag',
-                           backref='user',
-                           lazy='joined')
 
     subscriptions = db.relationship('User',
                                     secondary=Subscription,
@@ -271,14 +265,14 @@ class User(db.Model):
             avatar_json = json.loads(self.avatar)
             return url_for('_uploads.uploaded_file', setname=avatars.name, filename=avatar_json['url'])
         else:
-            return '../static/avatar.jpg'
+            return '../static/images/avatar.jpg'
 
     def background_url(self):
         if self.background:
             background_json = json.loads(self.background)
             return url_for('_uploads.uploaded_file', setname=backgrounds.name, filename=background_json['url'])
         else:
-            return '../static/background.jpg'
+            return '../static/images/background.jpg'
 
     @staticmethod
     def get(id=None, login=None):
