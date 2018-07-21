@@ -106,7 +106,7 @@ class UploadVideoForm(FlaskForm):
                                                                message="Некорректное расширение"),
                                                    DataRequired(message='Выберите видео')])
     geotag_data = HiddenField(validators=[have_geodata])
-    tags = TextAreaField("Тэги", validators=[Length(2, message='Тэг слишком короткий'), Optional()])
+    tags = TextAreaField("Текстовые теги", validators=[Length(2, message='Тэг слишком короткий'), Optional()])
     submit = SubmitField("Загрузить")
 
 

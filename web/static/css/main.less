@@ -146,21 +146,36 @@
     }
     &__btn
     {
-      background-size:40%;
-      background-repeat:no-repeat;
-      background-position:center;
-      color:rgba(0,0,0,0);
+      color:black;
       border:none;
-      background-color:rgba(0,0,0,0);
       width:40px;
       height: 22px;
       display: inline-block;
-      vertical-align: top;
+      text-align: center;
+      &_good
+      {
+        &:hover
+        {
+          color: #658a46;
+        }
+        &_active
+        {
+          color: #81dc3e;
+        }
+      }
+      &_bad
+      {
+        &:hover
+        {
+          color: #b04458;
+        }
+        &_active
+        {
+          color: #e11d45;
+        }
+      }
       &:hover
       {
-        background-color:rgba(0,0,0,0);
-        color:rgba(0,0,0,0);
-        background-size:41%;
         cursor: pointer;
       }
     }
@@ -185,18 +200,9 @@
     margin-bottom: 10px;
     &__img
     {
-      width: 100%;
-      &-changing
-      {
-        width: 100%;
-        position: absolute;
-        top: -100%;
-        left: 0;
-        &_other
-        {
-          top:0;
-        }
-      }
+      font-size: 150%;
+      color: @color-main;
+      vertical-align: bottom;
     }
     &__btn
     {
@@ -302,11 +308,40 @@
 
 .loader
 {
-    width:300px;
-    height:60px;
     background-repeat:no-repeat;
-    margin-bottom:10px;
-    background-image:url("~../images/Loader3.png");
+    margin-bottom:20px;
+    &__btn, &__path
+    {
+      display: inline-block;
+    }
+    &__btn
+    {
+      margin-right: 20px;
+      width: 200px;
+      padding: 0;
+      position: relative;
+      &:hover
+      {
+        cursor:pointer;
+      }
+    }
+    &__txt
+    {
+      &:hover
+      {
+        cursor:pointer;
+      }
+    }
+    &__path, &__path:focus
+    {
+      border: none;
+      vertical-align: bottom;
+      margin-bottom: 7px;
+      &:hover
+      {
+        cursor: default;
+      }
+    }
 }
 
 .calibration-image
