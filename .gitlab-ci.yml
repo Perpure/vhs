@@ -12,6 +12,8 @@ cache:
     - .imageio/ffmpeg/*
 
 before_script:
+  - curl -sL https://deb.nodesource.com/setup_10.x | -E bash -
+  - apt-get install -y nodejs
   - apt-get install nodejs
   - npm install --global yarn
   - python3 -V
