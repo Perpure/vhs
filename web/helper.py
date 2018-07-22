@@ -13,6 +13,7 @@ from web.parser import parse
 def override_url_for():
     return dict(url_for=dated_url_for)
 
+
 def dated_url_for(endpoint, **values):
     if endpoint == 'static':
         filename = values.get('filename', None)
