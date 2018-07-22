@@ -4,7 +4,7 @@ import cv2
 from functools import wraps
 from flask import session, redirect, url_for, render_template
 from web import db, app
-from web.models import User, AnonUser
+from web.models import User, Device
 from config import basedir
 from web.parser import parse
 
@@ -28,9 +28,9 @@ def cur_user():
 def anon_user():
     user = None
     if 'anon_id' in session:
-        user = AnonUser.query.get(session['anon_id'])
+        user = Device.query.get(session['anon_id'])
     if not user:
-        user = AnonUser()
+        user = Device()
         session['anon_id'] = user.id
     return user
 

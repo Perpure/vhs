@@ -85,8 +85,6 @@ class TestModelVideo(BaseTestModelSuite):
         self.assertTrue(hasattr(self.video, "date"))
         self.assertTrue(hasattr(self.video, "user_id"))
         self.assertTrue(hasattr(self.video, "user_login"))
-        self.assertTrue(hasattr(self.video, "longitude"))
-        self.assertTrue(hasattr(self.video, "latitude"))
         self.assertTrue(hasattr(self.video, "likes"))
         self.assertTrue(hasattr(self.video, "dislikes"))
         self.assertTrue(hasattr(self.video, "comments"))

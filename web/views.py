@@ -9,7 +9,7 @@ from config import basedir
 from web import app, db, avatars, backgrounds, socketio
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
     UserProfileForm, AddRoomForm, AccountSettingsForm
-from web.models import User, Video, Room, Color, Geotag, Tag, AnonUser, RoomDeviceColorConnector
+from web.models import User, Video, Room, Color, Geotag, Tag, Device, RoomDeviceColorConnector
 from web.helper import cur_user, requiresauth, anon_user, image_loaded
 from web.video_handler import save_video
 from datetime import datetime
