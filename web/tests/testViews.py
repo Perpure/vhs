@@ -44,7 +44,7 @@ class TestPageAvail(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_should_reg_page_be_exist(self):
-        response = self.client.get("/reg", follow_redirects=True)
+        response = self.client.get("/registration", follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
     def test_should_views_story_page_be_exist(self):
@@ -52,7 +52,7 @@ class TestPageAvail(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_should_auth_page_be_exist(self):
-        response = self.client.get("/auth", follow_redirects=True)
+        response = self.client.get("/login", follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
     def test_should_play_page_be_exist(self):

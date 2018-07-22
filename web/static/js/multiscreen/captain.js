@@ -27,14 +27,16 @@ $('#show_res').click(function() {
     if(play)
     {
       play=false;
-      $('#show_res_img').removeClass('video-control__img-changing_other');
+      $('#show_res_img').removeClass('fa-pause');
+      $('#show_res_img').addClass('fa-play');
       $('#calibrate_btn').removeClass('video-control__btn_disabled');
       socket.emit('multiscreen_set_pause', ROOM_ID);
     }
     else
     {
       play=true;
-      $('#show_res_img').addClass('video-control__img-changing_other');
+      $('#show_res_img').removeClass('fa-play');
+      $('#show_res_img').addClass('fa-pause');
       $('#calibrate_btn').addClass('video-control__btn_disabled');
       socket.emit('multiscreen_set_show', ROOM_ID);
     }
