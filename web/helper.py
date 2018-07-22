@@ -20,7 +20,7 @@ def dated_url_for(endpoint, **values):
         if filename:
             file_path = os.path.join(app.root_path,
                                      endpoint, filename)
-            values['q'] = int(os.stat(file_path).st_mtime)
+            values['v'] = int(os.stat(file_path).st_mtime)
     return url_for(endpoint, **values)
 
 

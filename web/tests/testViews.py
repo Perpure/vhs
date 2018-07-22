@@ -1,11 +1,17 @@
 # coding=utf-8
 import unittest
 import os
+from flask import url_for
 from web import app, db
 from web.models import User, Video, Room, AnonUser, Color
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 TEST_DB_PATH = os.path.join(BASE_DIR, 'test.sqlite')
+
+
+@app.context_processor
+def override_url_for():
+    return dict(url_for=url_for)
 
 
 class TestPageAvail(unittest.TestCase):
