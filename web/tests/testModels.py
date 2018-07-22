@@ -3,6 +3,7 @@ import unittest
 import os
 from web import app, db
 from web.models import User, Video, Tag
+from os.path import join as join_path
 
 TEST_DB = 'test.sqlite'
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -20,6 +21,7 @@ class BaseTestModelSuite(unittest.TestCase):
         self.user.save('testpassword')
         self.video = Video('TestVideo')
         self.video.save(hash='Teststring', user=self.user)
+        self.video.add_path(join_path(app.config['VIDEO_SAVE_PATH'], self.video.id))
 
     def tearDown(self):
         db.session.remove()
