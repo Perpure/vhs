@@ -36,7 +36,7 @@ def save_video(video_file, title):
 
     video = Video(title)
     video.save(video_hash, cur_user())
-    videos.save(video_file, folder=str(video.id))
+    videos.save(video_file, folder=str(video.id), name='video.' + ext)
     video.add_path(join_path(app.config['VIDEO_SAVE_PATH'], video.id))
 
     try:
