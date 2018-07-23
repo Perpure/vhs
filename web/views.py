@@ -85,11 +85,6 @@ def room(room_id):
 
         users = room.get_devices()
 
-        if room_form.validate_on_submit():
-            for member in users:
-                member.action = "calibrate"
-            db.session.commit()
-
         for member in users:
             rac = RoomDeviceColorConnector.query.filter_by(room=room,
                                                            anon=member).first()
@@ -99,7 +94,7 @@ def room(room_id):
         image_form = UploadImageForm()
         if image_form.validate_on_submit():
             return image_loaded(request, room, user, users, image_form, room_form)
-        return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users,
+        return render_template('room.html', room=room, user=cur_user(), users=users,
                                count=len(users) + 1,
                                image_form=image_form, room_form=room_form, loaded=False, anon=user,
                                room_map=room_map_url,

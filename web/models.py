@@ -81,7 +81,7 @@ class Video(db.Model):
 
     tags = db.relationship('Tag', secondary=VideoTags, cascade='all, delete', lazy='joined', backref='videos')
 
-    viewers = db.relationship('User', secondary=WatchHistory, backref='WatchHistory', lazy='joined')
+    viewers = db.relationship('User', secondary=WatchHistory, backref='watch_history', lazy='joined')
 
     geotags = db.relationship("Geotag", backref="video", lazy="joined")
 
@@ -93,7 +93,6 @@ class Video(db.Model):
         self.id = hashlib.md5((hash + self.date.isoformat()).encode("utf-8")).hexdigest()
         self.path = os.path.join(app.config['VIDEO_SAVE_PATH'], self.id)
         self.user_id = user.id
-        self.user_login = user.login
 
         db.session.add(self)
         db.session.commit()

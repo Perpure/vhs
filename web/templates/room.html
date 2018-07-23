@@ -106,7 +106,7 @@
 <script src="{{ url_for('static', filename='js/slide.js') }}"></script>
 <script>
     var ROOM_ID = {{ room.id }};
-    var ROOM_COLOR = '{{ color }}';
+    var ROOM_COLOR = '{{ anon.color }}';
 </script>
 {% if room.capitan_id == anon.id %}
     <script src="{{ url_for('static', filename='js/multiscreen/captain.js') }}"></script>
