@@ -2,18 +2,18 @@ var LK = $("#like");
 var DLK = $("#dislike");
 var CONDITION = 0;
 
-if(LK.css('background-image')[LK.css('background-image').length-7] == 'L')
+if(LK.hasClass('video-rating__btn_good_active'))
 {
     CONDITION = 1;
 }
-if(DLK.css('background-image')[DLK.css('background-image').length-7] == 'D')
+if(DLK.hasClass('video-rating__btn_bad_active'))
 {
     CONDITION = -1;
 }
 
 $('#like').click(function(){
     $.ajax({
-        url: "/likeVideo/"+hash,
+        url: "/likeVideo/"+HASH,
         type: "GET",
         dataType: "text",
         error: function(){
@@ -21,20 +21,20 @@ $('#like').click(function(){
     });
     if(CONDITION == 1)
     {
-        LK.css('background-image', "url(/static/images/lik1.png)");
+        LK.removeClass('video-rating__btn_good_active');
         $("#lik").html($("#lik").html() - 1);
         CONDITION = 0;
     }
     else if(CONDITION){
-        LK.css('background-image', "url(/static/images/lik1L.png)");
-        DLK.css('background-image', "url(/static/images/dis1.png)");
+        LK.addClass('video-rating__btn_good_active');
+        DLK.removeClass('video-rating__btn_bad_active');
         CONDITION = 1;
         $("#lik").html($("#lik").html() - (-1));
         $("#dis").html($("#dis").html() - 1);
     }
     else
     {
-        LK.css('background-image', "url(/static/images/lik1L.png)");
+        LK.addClass('video-rating__btn_good_active');
         CONDITION = 1;
         $("#lik").html($("#lik").html() - (-1));
     }
@@ -43,7 +43,7 @@ $('#like').click(function(){
 
 $('#dislike').click(function(){
     $.ajax({
-        url: "/dislikeVideo/"+hash,
+        url: "/dislikeVideo/"+HASH,
         type: "GET",
         dataType: "text",
         error: function(){
@@ -51,21 +51,21 @@ $('#dislike').click(function(){
     });
     if(CONDITION == -1)
     {
-        DLK.css('background-image', "url(/static/images/dis1.png)");
+        DLK.removeClass('video-rating__btn_bad_active');
         CONDITION = 0;
         $("#dis").html($("#dis").html() - 1);
     }
     else if(CONDITION)
     {
-        DLK.css('background-image', "url(/static/images/dis1D.png)");
-        LK.css('background-image', "url(/static/images/lik1.png)");
+        DLK.addClass('video-rating__btn_bad_active');
+        LK.removeClass('video-rating__btn_good_active');
         CONDITION = -1;
         $("#dis").html($("#dis").html() - (-1));
         $("#lik").html($("#lik").html() - 1);
     }
     else
     {
-        DLK.css('background-image', "url(/static/images/dis1D.png)");
+        DLK.addClass('video-rating__btn_bad_active');
         CONDITION = -1;
         $("#dis").html($("#dis").html() - (-1));
     }

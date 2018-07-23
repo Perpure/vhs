@@ -13,7 +13,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Video Hosting Service</title>
     <link href="https://vjs.zencdn.net/7.0.3/video-js.min.css" rel="stylesheet">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='vhs4.png') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/x-icon">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     <link href="{{ url_for('static', filename='tagify.css') }}" rel="stylesheet">
@@ -24,7 +24,7 @@
     <header id="Header">
         <div class="mid-head">
             <div class="logo">
-                <a href="{{url_for('main')}}" class="Link"><img src="{{ url_for('static', filename='vhs4.png') }}" alt="" class="logo__img"></a>
+                <a href="{{url_for('main')}}" class="Link"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="" class="logo__img"></a>
 
             </div>
 
@@ -34,9 +34,9 @@
                 <div class="nav-menu__nav-men" id="Search">Поиск</div>
                 <div class="nav-menu__nav-men nav-menu__nav-men_nav-clast">
                     Мультискрин
-                    <img src="{{ url_for('static', filename='down.png') }}" class="nav-menu__img">
+                    <span class="fa fa-caret-down nav-menu__img"></span>
                     <div class="nav-menu__in-btn">
-                        <img src="{{ url_for('static', filename='updown.png') }}" class="nav-menu__img nav-menu__img_up-down">
+                        <span class="fa fa-caret-up nav-menu__img nav-menu__img_up-down"></span>
                         <a href="{{url_for('viewroom')}}"><div class="nav-menu__sub-btn nav-menu__sub-btn_upst">Все комнаты</div></a>
                         <a href="{{url_for('createroom')}}"><div class="nav-menu__sub-btn">Создать комнату</div></a>
                     </div>
@@ -45,9 +45,9 @@
                 {%if user %}
                     <div class="nav-menu__nav-men nav-menu__nav-men_nav-clast nav-menu__nav-men_nav-edge">
                         Кабинет
-                        <img src="{{ url_for('static', filename='down.png') }}" class="nav-menu__img">
+                        <span class="fa fa-caret-down nav-menu__img"></span>
                         <div class="nav-menu__in-btn">
-                            <img src="{{ url_for('static', filename='updown.png') }}" class="nav-menu__img nav-menu__img_up-down">
+                            <span class="fa fa-caret-up nav-menu__img nav-menu__img_up-down"></span>
                             <a href="{{url_for('cabinet', usr=user.login)}}"><div class="nav-menu__sub-btn nav-menu__sub-btn_upst">Мой канал</div></a>
                             <a href="{{url_for('views_story')}}"><div class="nav-menu__sub-btn">История</div></a>
                             <a href="{{url_for('subs_s')}}"><div class="nav-menu__sub-btn">Подписки</div></a>
@@ -73,13 +73,6 @@
     <main id="Main">
           {% block content %}{% endblock %}
     </main>
-    <footer id="Footer">
-      <span class="italic footer__line footer__line_left">Video Hosting Service</span>
-      <div class="footer__contact">
-        <a href="https://vk.com/shpteam"><img src="{{ url_for('static', filename='vk.png') }}" alt="" class="footer__img"></a>
-      </div>
-      <span class="italic footer__line footer__line_right">by 53rd Group, 2018</span>
-    </footer>
 
     <search></search>
 </body>

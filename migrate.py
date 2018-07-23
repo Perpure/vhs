@@ -1,8 +1,9 @@
 # coding=utf-8
 """Файл миграции приложения"""
 from web import db
-from web.models import *
+from web.models import User, Color
 
+db.reflect()
 db.drop_all()
 db.create_all()
 user = User("TestUser")

@@ -9,6 +9,21 @@ from config import basedir
 from web.parser import parse
 
 
+@app.context_processor
+def override_url_for():
+    return dict(url_for=dated_url_for)
+
+
+def dated_url_for(endpoint, **values):
+    if endpoint == 'static':
+        filename = values.get('filename', None)
+        if filename:
+            file_path = os.path.join(app.root_path,
+                                     endpoint, filename)
+            values['v'] = int(os.stat(file_path).st_mtime)
+    return url_for(endpoint, **values)
+
+
 def requiresauth(f):
     @wraps(f)
     def wrapped(*args, **kwargs):
@@ -44,15 +59,7 @@ def read_multi(pid):
 
 
 def read_image(pid):
-    path = basedir + '/video/%s/preview.png' % pid
-    with open(path, "rb") as im:
-        f = im.read()
-        b = bytearray(f)
-        return b
-
-
-def read_video(vid):
-    path = basedir + '/video/%s/video.mp4' % vid
+    path = app.config['VIDEO_SAVE_PATH'] + '/%s/preview.png' % pid
     with open(path, "rb") as im:
         f = im.read()
         b = bytearray(f)

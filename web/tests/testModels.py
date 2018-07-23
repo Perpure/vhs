@@ -1,16 +1,15 @@
 # coding=utf-8
 import unittest
 import os
-from flask import request
 from web import app, db
-from web.models import User, Video
-from web.video_handler import save_video
+from web.models import User, Video, Tag
+from os.path import join as join_path
 
 TEST_DB = 'test.sqlite'
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 
-class TestModelUser(unittest.TestCase):
+class BaseTestModelSuite(unittest.TestCase):
     def setUp(self):
         app.config['TESTING'] = True
         app.config['CSRF_ENABLED'] = False
@@ -22,10 +21,14 @@ class TestModelUser(unittest.TestCase):
         self.user.save('testpassword')
         self.video = Video('TestVideo')
         self.video.save(hash='Teststring', user=self.user)
+        self.video.add_path(join_path(app.config['VIDEO_SAVE_PATH'], self.video.id))
 
     def tearDown(self):
         db.session.remove()
         db.drop_all()
+
+
+class TestModelUser(BaseTestModelSuite):
 
     def test_should_has_need_fields(self):
         self.assertTrue(hasattr(self.user, "id"))
@@ -48,9 +51,6 @@ class TestModelUser(unittest.TestCase):
 
     def test_video_title_should_be_string(self):
         self.assertIsInstance(self.video.title, str)
-
-    def test_video_path_should_be_string(self):
-        self.assertIsInstance(self.video.path, str)
 
     def test_video_user_id_should_be_string(self):
         self.assertIsInstance(self.video.user_id, int)
@@ -75,22 +75,7 @@ class TestModelUser(unittest.TestCase):
         self.assertEqual(User.get(self.user.id), self.user)
 
 
-class TestModelVideo(unittest.TestCase):
-    def setUp(self):
-        app.config['TESTING'] = True
-        app.config['CSRF_ENABLED'] = False
-        app.config['DEBUG'] = False
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, TEST_DB)
-        self.app = app.test_client()
-        db.create_all()
-        self.user = User('TestUser')
-        self.user.save('testpassword')
-        self.video = Video('TestVideo')
-        self.video.save(hash='Teststring', user=self.user)
-
-    def tearDown(self):
-        db.session.remove()
-        db.drop_all()
+class TestModelVideo(BaseTestModelSuite):
 
     def test_should_has_need_fields(self):
         self.assertTrue(hasattr(self.video, "id"))
@@ -127,3 +112,34 @@ class TestModelVideo(unittest.TestCase):
         id = self.video.id
         with self.assertRaises(FileNotFoundError):
             self.video.delete_video()
+
+
+class TestModelTag(BaseTestModelSuite):
+
+    def setUp(self):
+        BaseTestModelSuite.setUp(self)
+        self.tag1 = Tag(text="hello")
+        self.tag2 = Tag(text="world")
+        self.video.tags.append(self.tag1)
+        db.session.commit()
+
+    def test_should_has_need_fields(self):
+        self.assertTrue(hasattr(self.tag1, "id"))
+        self.assertTrue(hasattr(self.tag1, "text"))
+
+    def test_should_tag_linked_to_video(self):
+        linked_videos = self.tag1.videos
+        self.assertEqual(len(linked_videos), 1)
+        self.assertEqual(linked_videos[0], self.video)
+
+    def test_should_create_one_tag_with_same_text(self):
+        tag_name = "tag name"
+        tag1 = Tag(text=tag_name)
+        tag1.save()
+        tags_with_name = Tag.query.filter_by(text=tag_name).all()
+        self.assertEqual(len(tags_with_name), 1)
+
+        tag2 = Tag.create_unique(tag_name)
+        tags_with_name = Tag.query.filter_by(text=tag_name).all()
+        self.assertEqual(len(tags_with_name), 1)
+        self.assertEqual(tag2, tag1)

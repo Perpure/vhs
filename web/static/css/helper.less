@@ -66,12 +66,15 @@ a,.fact
   font-size: 125%;
 }
 
-.instr
+.slider
 {
+  &__content
+  {
     display:none;
     padding-top:10px;
     padding-left:20px;
     text-align:left;
+  }
 }
 
 .italic
@@ -116,8 +119,11 @@ input[type="submit"], button
 input[type="file"]
 {
     opacity:0;
-    width:300px;
-    height:60px;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
     &:hover
     {
       cursor:pointer;

@@ -98,15 +98,13 @@ class LogForm(FlaskForm):
 
 class UploadVideoForm(FlaskForm):
     """Форма загрузки видео"""
-    class Meta:
-        csrf = False
 
     title = StringField("Введите название видео", validators=[Length(3, message='Название слишком короткое')])
     video = FileField("Выберите файл", validators=[FileAllowed(app.config['ALLOWED_EXTENSIONS'],
                                                                message="Некорректное расширение"),
                                                    DataRequired(message='Выберите видео')])
     geotag_data = HiddenField(validators=[have_geodata])
-    tags = TextAreaField("Тэги", validators=[Length(2, message='Тэг слишком короткий'), Optional()])
+    tags = TextAreaField("Текстовые теги", validators=[Length(2, message='Тэг слишком короткий'), Optional()])
     submit = SubmitField("Загрузить")
 
 

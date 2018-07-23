@@ -11,8 +11,8 @@
     <hr>
     <button id="calibrate_btn" class="video-control__btn inline-block">Калибровка</button>
     <div class="inline-block inline-block_edge">
-      <button id="show_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id %}video-control__btn_disabled{% endif %}"><img src="{{ url_for('static', filename='play.png') }}" id="show_res_img" alt="" class="video-control__img-changing"></button>
-      <button id="stop_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id %}video-control__btn_disabled{% endif %}"><img src="{{ url_for('static', filename='stop.png') }}" id="stop_res_img" alt="" class="video-control__img"></button>
+      <button id="show_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id %}video-control__btn_disabled{% endif %}"><span class="fa fa-play video-control__img" id="show_res_img"></span></button>
+      <button id="stop_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id %}video-control__btn_disabled{% endif %}"><span class="fa fa-stop video-control__img" id="stop_res_img"></span></button>
     </div>
     <button id="refresh_btn" class="video-control__btn inline-block inline-block_edge">Обновить устройства</button>
   {% else %}
@@ -24,9 +24,10 @@
     <h5>Загрузите калибровочное фото</h5>
     <form action="" method="post" enctype="multipart/form-data">
         <div class="loader">
-          <div>
-            <input id="image" name="image" type="file" accept="image/*" capture>
-          </div>
+            <button class="loader__btn" type="button">
+                <span class="loader__txt">Выбрать фото</span>
+                <input id="image" name="image" type="file" accept="image/*" capture>
+            </button>
         </div>
         {% if image_form.image.errors %}
         {% for error in image_form.image.errors %}
@@ -78,9 +79,9 @@
     <hr>
     <p>{{msg}}</p>
 {% endif %}
-
-<span id="instructionBtn" class="fact">Инструкция</span>
-<ol id="instruction" class="instr">
+<div class="slider">
+  <span  class="fact slider__btn">Инструкция</span>
+  <ol class="slider__content">
     <li>Пригласите участников.</li>
     <li>Выберите видео для демонстрации.</li>
     <li>Разместите устройства на площади для показа.</li>
@@ -91,7 +92,8 @@
     6.1. Если положение устройств определено неверно повторите действия описанные в п.5</li>
     <li>Капитан нажимает “Начать демонстрацию”</li>
     <li>Начинается показ видео.</li>
-</ol>
+  </ol>
+</div>
 
 {% if room.capitan_id != anon.id %}
     {% if room.video_id %}
@@ -101,7 +103,7 @@
     {% endif %}
 {% endif %}
 <script src="{{ url_for('static', filename='js/multiscreen/fullscreen.js') }}"></script>
-<script src="{{ url_for('static', filename='js/multiscreen/common.js') }}"></script>
+<script src="{{ url_for('static', filename='js/slide.js') }}"></script>
 <script>
     var ROOM_ID = {{ room.id }};
     var ROOM_COLOR = '{{ color }}';
