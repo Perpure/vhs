@@ -5,6 +5,7 @@ from os import makedirs
 from os.path import join as join_path
 from moviepy.editor import VideoFileClip
 from werkzeug.utils import secure_filename
+from web import videos, db, app
 from web.models import Video
 from web.helper import cur_user
 
@@ -34,10 +35,10 @@ def save_video(video_file, title):
     video_file.seek(0)
 
     video = Video(title)
-    directory = video.save(video_hash, cur_user())
-    makedirs(directory)
-    video_path = join_path(directory, 'video.' + ext)
-    video_file.save(video_path)
+    video.save(video_hash, cur_user())
+    videos.save(video_file, folder=str(video.id), name='video.' + ext)
+    video.add_path(join_path(app.config['VIDEO_SAVE_PATH'], video.id))
+
     try:
         prepare_video(video.id, ext)
     except OSError:

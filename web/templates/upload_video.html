@@ -4,6 +4,7 @@
 <h1>Загрузите видео</h1>
 <h4>Введите название видео</h4>
 <form action="" method="post" enctype="multipart/form-data">
+    {{ form.csrf_token }}
     <div> {{ form.title }} </div>
     {% if form.title.errors %}
         {% for error in form.title.errors %}
