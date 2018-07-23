@@ -19,6 +19,23 @@ $('#calibrate_btn').click(function() {
   }
 });
 
+$('#from_site').change(function () {
+    $('#choose_site').hide();
+    $('#choose_yt').show();
+    $('#showYT').hide();
+    $('#showSite').show();
+});
+
+$('#from_yt').change(function () {
+    $('#choose_site').show();
+    $('#choose_yt').hide();
+    $('#showYT').show();
+    $('#showSite').hide();
+});
+
+$('#from_yt').trigger('change');
+$('#from_yt').prop('checked', true);
+
 var play=false;
 
 $('#show_res').click(function() {

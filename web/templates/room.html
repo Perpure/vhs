@@ -41,32 +41,37 @@
 {% endif %}
 
 {% if room.capitan_id == anon.id %}
-    {% if room.video_id %}
-        <hr>
-        <div class="video">
-          <div class="video__preview">
-            <a href="{{ url_for('play', vid=room.video_id) }}">
-              <img src="{{url_for('get_image', pid=room.video_id)}}" alt="" class="video__preview-img">
-            </a>
-          </div>
-        </div>
-        <form action="{{url_for('choose_video', room_id=room.id)}}">
-            <button>Выбрать другое видео для демонстрации</button>
-        </form>
-        <br>
-        <form action="{{url_for('choose_youtube_video', room_id=room.id)}}">
-            <button>Выбрать видео с youtube.com</button>
-        </form>
-    {% else %}
-        <hr>
-        <form action="{{url_for('choose_video', room_id=room.id)}}">
-            <button>Выберите видео для демонстрации</button>
-        </form>
-        <br>
-        <form action="{{url_for('choose_youtube_video', room_id=room.id)}}">
-            <button>Выбрать видео с youtube.com</button>
-        </form>
-    {% endif %}
+<hr>
+<h3>Выбрать видео</h3>
+{% if room.video_id %}
+  <div class="video">
+    <div class="video__preview">
+      <a href="{{ url_for('play', vid=room.video_id) }}">
+        <img src="{{url_for('get_image', pid=room.video_id)}}" alt="" class="video__preview-img">
+      </a>
+    </div>
+  </div>
+{% endif %}
+  <div class="switcher">
+    <div class="switcher__arm" id="showYT">
+      <label class="switcher__label" for="from_site"><div class="switcher__pill">С сайта</div></label>
+      <input name="selector" id="from_site" type="radio" class="switcher__radio">
+    </div>
+    <div class="switcher__arm switcher__arm_inv" id="showSite">
+      <label class="switcher__label" for="from_yt"><div class="switcher__pill switcher__pill_right">YouTube</div></label>
+      <input name="selector" id="from_yt" type="radio" checked class="switcher__radio">
+    </div>
+  </div>
+    <div id="choose_site">
+      <form action="{{url_for('choose_video', room_id=room.id)}}">
+          <button>Выбрать видео для демонстрации</button>
+      </form>
+    </div>
+    <div id="choose_yt">
+      <!--<form action="{{url_for('choose_youtube_video', room_id=room.id)}}">
+          <button>Выбрать видео с youtube.com</button>
+      </form>-->
+    </div>
     <hr>
 {% endif %}
 
@@ -99,6 +104,9 @@
     {% if room.video_id %}
       <div class="result" id="ReShell">
         <video class="result__video" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
+      </div>
+      <div class="result-yt">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/uzoWJ33bJRg?controls=0&rel=0&showinfo=0&modestbranding=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
       </div>
     {% endif %}
 {% endif %}
