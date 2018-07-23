@@ -5,10 +5,10 @@ from wtforms.validators import ValidationError
 from flask import redirect, render_template, session, url_for, request
 from flask.json import JSONDecoder, dumps
 from werkzeug.exceptions import Aborter
-from config import basedir
+from config import basedir, CAPTCHA_PUBLIC_KEY
 from web import app, db, avatars, backgrounds, socketio
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
-    UserProfileForm, AddRoomForm, AccountSettingsForm
+    UserProfileForm, AddRoomForm, AccountSettingsForm, FeedbackForm
 from web.models import User, Video, Room, Color, Geotag, Tag, AnonUser, RoomDeviceColorConnector
 from web.helper import cur_user, requiresauth, anon_user, image_loaded
 from web.video_handler import save_video
@@ -310,6 +310,20 @@ def videos_map():
             videos_with_coords.append(video)
 
     return render_template('videos_map.html', user=user, videos=videos_with_coords)
+
+
+@app.route('/feedback', methods=["GET", "POST"])
+def feedback():
+
+    form = FeedbackForm()
+    if form.validate_on_submit():
+        email = form.feedback_email
+        text = form.feedback_text
+
+        return render_template('feedback.html', form=form, CAPTCHA_KEY=CAPTCHA_PUBLIC_KEY,
+                               message='Спасибо за ваше сообщение!')
+
+    return render_template('feedback.html', form=form, CAPTCHA_KEY=CAPTCHA_PUBLIC_KEY, message='')
 
 
 @app.route('/views_story', methods=['GET', 'POST'])
