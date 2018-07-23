@@ -157,7 +157,10 @@ class AddRoomForm(FlaskForm):
 
 class FeedbackForm(FlaskForm):
     feedback_email = StringField('Ваш email', validators=[DataRequired(message='Введите email'),
-                                                          Email()])
+                                                          Email(message='Введите корректный email'),
+                                                          Length(max=32, message='Слишком длинный email')])
     feedback_text = TextAreaField('Ваше сообщение', validators=[DataRequired(message='Сообщение не должно быть пустым'),
-                                                                Length(5, message='Текст слишком короткий')])
+                                                                Length(min=5, max=250,
+                                                                       message='Сообщение должно быть не '
+                                                                               'меньше 5 и не больше 250 символов')])
     feedback_submit = SubmitField('Отправить')

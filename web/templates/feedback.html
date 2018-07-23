@@ -5,7 +5,7 @@
     <p style="color:green;">{{message}}</p>
 
     <form method="post" action="/feedback">
-
+    {{form.hidden_tag()}}
     <label for="feedback_email">Ваш email:</label>
     <br>
     {{ form.feedback_email }}

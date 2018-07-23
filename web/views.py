@@ -9,7 +9,7 @@ from config import basedir, CAPTCHA_PUBLIC_KEY
 from web import app, db, avatars, backgrounds, socketio
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
     UserProfileForm, AddRoomForm, AccountSettingsForm, FeedbackForm
-from web.models import User, Video, Room, Color, Geotag, Tag, AnonUser, RoomDeviceColorConnector
+from web.models import User, Video, Room, Color, Geotag, Tag, AnonUser, RoomDeviceColorConnector, Feedback
 from web.helper import cur_user, requiresauth, anon_user, image_loaded
 from web.video_handler import save_video
 from datetime import datetime
@@ -317,8 +317,11 @@ def feedback():
 
     form = FeedbackForm()
     if form.validate_on_submit():
-        email = form.feedback_email
-        text = form.feedback_text
+        email = form.feedback_email.data
+        form.feedback_email.data = ''
+        text = form.feedback_text.data
+        form.feedback_text.data = ''
+        feedback = Feedback(email, text)
 
         return render_template('feedback.html', form=form, CAPTCHA_KEY=CAPTCHA_PUBLIC_KEY,
                                message='Спасибо за ваше сообщение!')
