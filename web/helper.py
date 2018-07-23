@@ -44,7 +44,7 @@ def read_multi(pid):
 
 
 def read_image(pid):
-    path = basedir + '/uploads/videos/%s/preview.png' % pid
+    path = app.config['VIDEO_SAVE_PATH'] + '/%s/preview.png' % pid
     with open(path, "rb") as im:
         f = im.read()
         b = bytearray(f)
