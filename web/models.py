@@ -9,9 +9,9 @@ from flask import url_for
 from web import db, app, avatars, backgrounds
 
 
-Views = db.Table('Views', db.Model.metadata,
-                 db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
-                 db.Column('Video_id', db.String(32), db.ForeignKey('Video.id')))
+WatchHistory = db.Table('WatchHistory', db.Model.metadata,
+                        db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
+                        db.Column('Video_id', db.String(32), db.ForeignKey('Video.id')))
 
 Likes = db.Table('Likes', db.Model.metadata,
                  db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
@@ -74,9 +74,6 @@ class Video(db.Model):
     date = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
 
-    longitude = db.Column(db.Float(), nullable=True)
-    latitude = db.Column(db.Float(), nullable=True)
-
     likes = db.relationship('User', secondary=Likes, backref='likes', lazy='joined')
     dislikes = db.relationship('User', secondary=Dislikes, backref='dislikes', lazy='joined')
 
@@ -84,7 +81,7 @@ class Video(db.Model):
 
     tags = db.relationship('Tag', secondary=VideoTags, cascade='all, delete', lazy='joined', backref='videos')
 
-    viewers = db.relationship('User', secondary=Views, backref='views', lazy='joined')
+    viewers = db.relationship('User', secondary=WatchHistory, backref='watch_history', lazy='joined')
 
     geotags = db.relationship("Geotag", backref="video", lazy="joined")
 
@@ -95,7 +92,6 @@ class Video(db.Model):
         self.date = datetime.now(tz=None)
         self.id = hashlib.md5((hash + self.date.isoformat()).encode("utf-8")).hexdigest()
         self.user_id = user.id
-        self.user_login = user.login
 
         db.session.add(self)
         db.session.commit()
@@ -158,13 +154,6 @@ class Video(db.Model):
             tags.append(tag.text.lower())
         return tags
 
-    def add_geotag(self, coords):
-        self.latitude = coords[0]
-        self.longitude = coords[1]
-
-        db.session.add(self)
-        db.session.commit()
-
     def delete_video(self):
         shutil.rmtree(self.path)
         db.session.delete(self)
@@ -193,10 +182,6 @@ class User(db.Model):
     channel_info = db.Column(db.String(64))
     avatar = db.Column(db.String(128))
     background = db.Column(db.String(128))
-    color = db.Column(db.String(64))
-    top = db.Column(db.Integer)
-    left = db.Column(db.Integer)
-    scale = db.Column(db.Integer)
 
     videos = db.relationship("Video",
                              backref="user",
@@ -293,7 +278,7 @@ class Room(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     date = db.Column(db.DateTime, nullable=False)
     video_id = db.Column(db.String(32))
-    capitan_id = db.Column(db.String(), db.ForeignKey('AnonUser.id'))
+    capitan_id = db.Column(db.String(), db.ForeignKey('Device.id'))
     name = db.Column(db.String(64), nullable=False)
     devices_in_room = db.relationship('RoomDeviceColorConnector', backref='room', lazy=True)
 
@@ -340,24 +325,23 @@ class RoomDeviceColorConnector(db.Model):
     __tablename__ = 'RoomDeviceColorConnector'
     id = db.Column(db.Integer, primary_key=True)
     room_id = db.Column(db.Integer, db.ForeignKey('Room.id'))
-    anon_id = db.Column(db.String(), db.ForeignKey('AnonUser.id'))
+    anon_id = db.Column(db.String(), db.ForeignKey('Device.id'))
     color_id = db.Column(db.Integer, db.ForeignKey('Color.id'))
 
 
-class AnonUser(db.Model):
+class Device(db.Model):
     """
-    Таблица для анонимного пользователя.
+    Таблица устройства.
     """
-    __tablename__ = 'AnonUser'
+    __tablename__ = 'Device'
     id = db.Column(db.String(), primary_key=True)
-    time = db.Column(db.Integer)
     device_width = db.Column(db.Integer)
     device_height = db.Column(db.Integer)
     color = db.Column(db.String(64))
     socket_id = db.Column(db.String(64))
-    top = db.Column(db.Integer)
-    left = db.Column(db.Integer)
-    scale = db.Column(db.Integer)
+    top = db.Column(db.Float)
+    left = db.Column(db.Float)
+    scale = db.Column(db.Float)
     rooms_colors = db.relationship('RoomDeviceColorConnector', backref='anon', lazy=True)
     room_capitan = db.relationship("Room", backref='captain')
 
@@ -372,13 +356,13 @@ class AnonUser(db.Model):
     @staticmethod
     def get(id=None):
         if id:
-            return AnonUser.query.get(id)
-        return AnonUser.query.all()
+            return Device.query.get(id)
+        return Device.query.all()
 
     def save_screen_params(self, device_screen):
-        self.scale = int(device_screen.width)
-        self.top = int(device_screen.top)
-        self.left = int(device_screen.left)
+        self.scale = float(device_screen.width)
+        self.top = float(device_screen.top)
+        self.left = float(device_screen.left)
         db.session.commit()
 
     def update_resolution(self, width, height):

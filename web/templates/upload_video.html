@@ -21,7 +21,7 @@
     <div class="loader">
         <button class="loader__btn" type="button">
             <span class="loader__txt">Выбрать файл</span>
-            {{ form.video }}
+            {{ form.video(class="loader__file") }}
         </button>
         <input type="text" id="fileName" readonly class="loader__path">
     </div>
