@@ -19,52 +19,25 @@ $('#calibrate_btn').click(function() {
   }
 });
 
-function site_chg_visual()
+function change_youtube_state()
 {
-    $('#choose_site').hide();
-    $('#choose_yt').show();
-    $('#showYT').hide();
-    $('#showSite').show();
-}
-
-function yt_chg_visual()
-{
-  $('#choose_site').show();
-  $('#choose_yt').hide();
-  $('#showYT').show();
-  $('#showSite').hide();
-}
-
-$('#from_site').change(function () {
-    site_chg_visual();
     $.ajax({
-        url: "/chg_yt/" + ROOM_ID,
+        url: "/change_youtube_state/" + ROOM_ID,
         type: "GET",
         dataType: "text"
     });
-});
-
-$('#from_yt').change(function () {
-    yt_chg_visual();
-    $.ajax({
-        url: "/chg_yt/" + ROOM_ID,
-        type: "GET",
-        dataType: "text"
-    });
-});
-
-if(YT_VID)
-{
-    site_chg_visual();
-    $('#from_site').prop('checked', true);
-}
-else
-{
-    yt_chg_visual()
-    $('#from_yt').prop('checked', true);
 }
 
-var play=false;
+jQuery(function($) {
+  if(FROM_YOUTUBE)
+  {
+      $('#go_to_youtube').click();
+  }
+
+  $('#video_switcher').bind('action', change_youtube_state);
+});
+
+var play = false;
 
 $('#show_res').click(function() {
   if($('#show_res').hasClass('video-control__btn_disabled')==false)

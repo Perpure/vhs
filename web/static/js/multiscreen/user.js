@@ -1,5 +1,37 @@
 var PLAYER;
-if(YT_VID)
+
+class native_player {
+    constructor(Me)
+    {
+        this.me = Me.get(0);
+        this.me_jq = Me;
+    }
+
+    stopVideo()
+    {
+        this.me.currentTime=0;
+    }
+
+    pauseVideo()
+    {
+        this.me.pause();
+    }
+
+    playVideo()
+    {
+        this.me.play();
+        this.me_jq.on('ended',function(){
+            $('#ReShell').hide();
+        });
+    }
+
+    mute()
+    {
+        this.me.muted = true;
+    }
+}
+
+if(FROM_YOUTUBE)
 {
   var tag = document.createElement('script');
 
@@ -10,21 +42,21 @@ if(YT_VID)
   function onYouTubeIframeAPIReady() {
       PLAYER = new YT.Player('ReVi');
   }
+
+  function onPlayerStateChange(event) {
+      if(event.data === 0) {
+          $('#ReShell').hide();
+      }
+  }
+}
+else
+{
+  PLAYER = new native_player($('#ReVi'));
 }
 
 function Result() {
   $('#ReShell').show();
-  if(YT_VID)
-  {
-      PLAYER.playVideo();
-  }
-  else
-  {
-      $('#ReVi').get(0).play();
-  }
-  $('#ReVi').on('ended',function(){
-      $('#ReShell').hide();
-  });
+  PLAYER.playVideo();
 }
 
 jQuery(function($) {
@@ -42,30 +74,16 @@ jQuery(function($) {
     });
     if(response.noSound)
     {
-      $('#ReVi').get(0).muted=true;
+      PLAYER.mute();
     }
     Result();
   });
   socket.on('multiscreen_show_pause', function() {
-    if(YT_VID)
-    {
-        PLAYER.pauseVideo();
-    }
-    else
-    {
-        $('#ReVi').get(0).pause();
-    }
+      PLAYER.pauseVideo();
   });
   socket.on('multiscreen_show_stop', function() {
-    $('#ReShell').hide();
-    if(YT_VID)
-    {
-        PLAYER.stopVideo();
-    }
-    else
-    {
-        $('#ReVi').get(0).currentTime=0;
-    }
+      $('#ReShell').hide();
+      PLAYER.stopVideo();
   });
   socket.on('refresh', function() {
     location.reload();

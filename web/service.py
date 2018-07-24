@@ -251,12 +251,9 @@ def videos_from_youtube():
     return jsonify(response)
 
 
-@app.route('/chg_yt/<int:ID>', methods=['GET', 'POST'])
-def change_yt(ID):
+@app.route('/change_youtube_state/<int:ID>', methods=['GET', 'POST'])
+def change_youtube_state(ID):
     room = Room.query.get(ID)
-    if(room.you_tube):
-        room.you_tube = False
-    else:
-        room.you_tube = True
+    room.is_playing_you_tube = not room.is_playing_you_tube
     db.session.commit()
     return "nice"

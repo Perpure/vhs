@@ -11,8 +11,8 @@
     <hr>
     <button id="calibrate_btn" class="video-control__btn inline-block">Калибровка</button>
     <div class="inline-block inline-block_edge">
-      <button id="show_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id %}video-control__btn_disabled{% endif %}"><span class="fa fa-play video-control__img" id="show_res_img"></span></button>
-      <button id="stop_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id %}video-control__btn_disabled{% endif %}"><span class="fa fa-stop video-control__img" id="stop_res_img"></span></button>
+      <button id="show_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id and not room.is_playing_you_tube %}video-control__btn_disabled{% endif %}"><span class="fa fa-play video-control__img" id="show_res_img"></span></button>
+      <button id="stop_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id and not room.is_playing_you_tube %}video-control__btn_disabled{% endif %}"><span class="fa fa-stop video-control__img" id="stop_res_img"></span></button>
     </div>
     <button id="refresh_btn" class="video-control__btn inline-block inline-block_edge">Обновить устройства</button>
   {% else %}
@@ -43,14 +43,18 @@
 {% if room.capitan_id == anon.id %}
 <hr>
 <h3>Выбрать видео</h3>
-  <div class="switcher">
-    <div class="switcher__arm" id="showYT">
-      <label class="switcher__label" for="from_site"><div class="switcher__pill">С сайта</div></label>
-      <input name="selector" id="from_site" type="radio" class="switcher__radio">
+  <div class="switcher" id="video_switcher">
+    <div class="switcher__arm">
+      <label class="switcher__label" id="go_to_youtube">
+        <div class="switcher__pill">С сайта</div>
+        <input name="selector" type="radio" class="switcher__radio" value="choose_site">
+      </label>
     </div>
-    <div class="switcher__arm switcher__arm_inv" id="showSite">
-      <label class="switcher__label" for="from_yt"><div class="switcher__pill switcher__pill_right">YouTube</div></label>
-      <input name="selector" id="from_yt" type="radio" checked class="switcher__radio">
+    <div class="switcher__arm switcher__arm_inv">
+      <label class="switcher__label">
+        <div class="switcher__pill switcher__pill_right">YouTube</div>
+        <input name="selector" type="radio" checked class="switcher__radio" value="choose_yt">
+      </label>
     </div>
   </div>
     <div id="choose_site">
@@ -68,9 +72,6 @@
       </form>
     </div>
     <div id="choose_yt">
-      <!--<form action="{{url_for('choose_youtube_video', room_id=room.id)}}">
-          <button>Выбрать видео с youtube.com</button>
-      </form>-->
     </div>
     <hr>
 {% endif %}
@@ -101,7 +102,7 @@
 </div>
 
 {% if room.capitan_id != anon.id %}
-  {% if room.you_tube == True %}
+  {% if room.is_playing_you_tube == True %}
   <div class="result" id="ReShell">
     <iframe src="https://www.youtube.com/embed/uzoWJ33bJRg?controls=0&enablejsapi=1&rel=0&showinfo=0&modestbranding=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen id="ReVi" type="text/html"></iframe>
   </div>
@@ -116,12 +117,10 @@
 <script>
     var ROOM_ID = {{ room.id }};
     var ROOM_COLOR = '{{ color }}';
-    var YT_VID = false;
-    {% if room.you_tube == True %}
-      YT_VID = true;
-    {% endif %}
+    var FROM_YOUTUBE = {{ 'true' if room.is_playing_you_tube else 'false' }};
 </script>
 {% if room.capitan_id == anon.id %}
+    <script src="{{ url_for('static', filename='js/switcher.js') }}"></script>
     <script src="{{ url_for('static', filename='js/multiscreen/captain.js') }}"></script>
 {% else %}
     <script src="{{ url_for('static', filename='js/multiscreen/user.js') }}"></script>
