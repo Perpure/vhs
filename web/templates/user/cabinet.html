@@ -88,8 +88,11 @@
         <h3>Оформление</h3>
         <div class="section__set">
           {{ form.avatar.label }}
-		      <div class="loader">
-   			    <div>{{ form.avatar }}</div>
+          <div class="loader">
+              <button class="loader__btn" type="button">
+                  <span class="loader__txt">Выбрать аватар</span>
+                  {{ form.avatar(class="loader__file") }}
+              </button>
           </div>
           {% if form.avatar.errors %}
             {% for error in avatar_form.avatar.errors %}
@@ -100,9 +103,12 @@
 
         <div class="section__set">
 	 	      {{ form.background.label }}
-		      <div class="loader">
-   			    <div> {{ form.background }}</div>
-    		  </div>
+          <div class="loader">
+              <button class="loader__btn" type="button">
+                  <span class="loader__txt">Выбрать фон</span>
+                  {{ form.background(class="loader__file") }}
+              </button>
+          </div>
           {% if form.background.errors %}
             {% for error in avatar_form.background.errors %}
               <div style="color: red;">{{ error }}</div>
