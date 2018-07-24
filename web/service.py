@@ -250,6 +250,7 @@ def videos_from_youtube():
 
     return jsonify(response)
 
+
 @app.route('/chg_yt/<int:ID>', methods=['GET', 'POST'])
 def change_yt(ID):
     room = Room.query.get(ID)
