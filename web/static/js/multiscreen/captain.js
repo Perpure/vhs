@@ -19,22 +19,50 @@ $('#calibrate_btn').click(function() {
   }
 });
 
-$('#from_site').change(function () {
+function site_chg_visual()
+{
     $('#choose_site').hide();
     $('#choose_yt').show();
     $('#showYT').hide();
     $('#showSite').show();
+}
+
+function yt_chg_visual()
+{
+  $('#choose_site').show();
+  $('#choose_yt').hide();
+  $('#showYT').show();
+  $('#showSite').hide();
+}
+
+$('#from_site').change(function () {
+    site_chg_visual();
+    $.ajax({
+        url: "/chg_yt/" + ROOM_ID,
+        type: "GET",
+        dataType: "text"
+    });
 });
 
 $('#from_yt').change(function () {
-    $('#choose_site').show();
-    $('#choose_yt').hide();
-    $('#showYT').show();
-    $('#showSite').hide();
+    yt_chg_visual();
+    $.ajax({
+        url: "/chg_yt/" + ROOM_ID,
+        type: "GET",
+        dataType: "text"
+    });
 });
 
-$('#from_yt').trigger('change');
-$('#from_yt').prop('checked', true);
+if(YT_VID)
+{
+    site_chg_visual();
+    $('#from_site').prop('checked', true);
+}
+else
+{
+    yt_chg_visual()
+    $('#from_yt').prop('checked', true);
+}
 
 var play=false;
 

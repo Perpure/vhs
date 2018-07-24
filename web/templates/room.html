@@ -43,15 +43,6 @@
 {% if room.capitan_id == anon.id %}
 <hr>
 <h3>Выбрать видео</h3>
-{% if room.video_id %}
-  <div class="video">
-    <div class="video__preview">
-      <a href="{{ url_for('play', vid=room.video_id) }}">
-        <img src="{{url_for('get_image', pid=room.video_id)}}" alt="" class="video__preview-img">
-      </a>
-    </div>
-  </div>
-{% endif %}
   <div class="switcher">
     <div class="switcher__arm" id="showYT">
       <label class="switcher__label" for="from_site"><div class="switcher__pill">С сайта</div></label>
@@ -63,6 +54,15 @@
     </div>
   </div>
     <div id="choose_site">
+      {% if room.video_id %}
+        <div class="video">
+          <div class="video__preview">
+            <a href="{{ url_for('play', vid=room.video_id) }}">
+              <img src="{{url_for('get_image', pid=room.video_id)}}" alt="" class="video__preview-img">
+            </a>
+          </div>
+        </div>
+      {% endif %}
       <form action="{{url_for('choose_video', room_id=room.id)}}">
           <button>Выбрать видео для демонстрации</button>
       </form>
@@ -101,20 +101,25 @@
 </div>
 
 {% if room.capitan_id != anon.id %}
-    {% if room.video_id %}
+  {% if room.you_tube == True %}
+  <div class="result" id="ReShell">
+    <iframe src="https://www.youtube.com/embed/uzoWJ33bJRg?controls=0&enablejsapi=1&rel=0&showinfo=0&modestbranding=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen id="ReVi" type="text/html"></iframe>
+  </div>
+  {% elif room.video_id %}
       <div class="result" id="ReShell">
         <video class="result__video" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
       </div>
-      <div class="result-yt">
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/uzoWJ33bJRg?controls=0&rel=0&showinfo=0&modestbranding=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-      </div>
-    {% endif %}
+  {% endif %}
 {% endif %}
 <script src="{{ url_for('static', filename='js/multiscreen/fullscreen.js') }}"></script>
 <script src="{{ url_for('static', filename='js/slide.js') }}"></script>
 <script>
     var ROOM_ID = {{ room.id }};
     var ROOM_COLOR = '{{ color }}';
+    var YT_VID = false;
+    {% if room.you_tube == True %}
+      YT_VID = true;
+    {% endif %}
 </script>
 {% if room.capitan_id == anon.id %}
     <script src="{{ url_for('static', filename='js/multiscreen/captain.js') }}"></script>

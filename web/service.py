@@ -249,3 +249,13 @@ def videos_from_youtube():
     response.update({'videos': videos})
 
     return jsonify(response)
+
+@app.route('/chg_yt/<int:ID>', methods=['GET', 'POST'])
+def change_yt(ID):
+    room = Room.query.get(ID)
+    if(room.you_tube):
+        room.you_tube = False
+    else:
+        room.you_tube = True
+    db.session.commit()
+    return "nice"
