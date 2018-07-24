@@ -372,3 +372,16 @@ class Device(db.Model):
         self.device_width = width
         db.session.add(self)
         db.session.commit()
+
+
+class Feedback(db.Model):
+    __tablename__ = 'Feedback'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    email = db.Column(db.String(32))
+    text = db.Column(db.String(250))
+
+    def __init__(self, email, text):
+        self.email = email
+        self.text = text
+        db.session.add(self)
+        db.session.commit()
