@@ -309,6 +309,7 @@ def videos_map():
 
 @app.route('/feedback', methods=["GET", "POST"])
 def feedback():
+    user = cur_user()
 
     form = FeedbackForm()
     if form.validate_on_submit():
@@ -318,10 +319,10 @@ def feedback():
         form.feedback_text.data = ''
         feedback = Feedback(email, text)
 
-        return render_template('feedback.html', form=form, CAPTCHA_KEY=CAPTCHA_PUBLIC_KEY,
+        return render_template('feedback.html', user=user, form=form, CAPTCHA_KEY=CAPTCHA_PUBLIC_KEY,
                                message='Спасибо за ваше сообщение!')
 
-    return render_template('feedback.html', form=form, CAPTCHA_KEY=CAPTCHA_PUBLIC_KEY, message='')
+    return render_template('feedback.html', user=user, form=form, CAPTCHA_KEY=CAPTCHA_PUBLIC_KEY, message='')
 
 
 @app.route('/views_story', methods=['GET', 'POST'])
