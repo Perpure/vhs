@@ -5,6 +5,8 @@ variables:
   SECRET_KEY: "SuperSecret"
   DATABASE_URL: "sqlite:////tmp/db.sqlite"
   GOOGLE_API_KEY: "GOOGLE_API_KEY"
+  CAPTCHA_PUBLIC_KEY: $CAPTCHA_PUBLIC_KEY
+  CAPTCHA_PRIVATE_KEY: $CAPTCHA_PRIVATE_KEY
 
 cache:
   paths:
