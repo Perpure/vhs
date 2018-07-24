@@ -9,7 +9,7 @@ from config import basedir
 from web import app, db, avatars, backgrounds, socketio
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
     UserProfileForm, AddRoomForm, AccountSettingsForm
-from web.models import User, Video, Room, Color, Geotag, Tag, AnonUser, RoomDeviceColorConnector
+from web.models import User, Video, Room, Color, Geotag, Tag, Device, RoomDeviceColorConnector
 from web.helper import cur_user, requiresauth, anon_user, image_loaded
 from web.video_handler import save_video
 from datetime import datetime
@@ -85,11 +85,6 @@ def room(room_id):
 
         users = room.get_devices()
 
-        if room_form.validate_on_submit():
-            for member in users:
-                member.action = "calibrate"
-            db.session.commit()
-
         for member in users:
             rac = RoomDeviceColorConnector.query.filter_by(room=room,
                                                            anon=member).first()
@@ -99,7 +94,7 @@ def room(room_id):
         image_form = UploadImageForm()
         if image_form.validate_on_submit():
             return image_loaded(request, room, user, users, image_form, room_form)
-        return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users,
+        return render_template('room.html', room=room, user=cur_user(), users=users,
                                count=len(users) + 1,
                                image_form=image_form, room_form=room_form, loaded=False, anon=user,
                                room_map=room_map_url,

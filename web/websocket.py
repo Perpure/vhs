@@ -3,7 +3,7 @@
 from flask import jsonify, session
 from flask_socketio import emit, send, join_room, leave_room
 from web import app, socketio, db
-from .models import AnonUser, Room
+from .models import Device, Room
 from web.helper import cur_user
 
 
@@ -11,7 +11,7 @@ from web.helper import cur_user
 def on_join(room, id):
     if 'anon_id' in session:
         cur_room = Room.query.get(room)
-        user = AnonUser.query.get(session['anon_id'])
+        user = Device.query.get(session['anon_id'])
         user.socket_id = id
         db.session.commit()
     join_room(room)
