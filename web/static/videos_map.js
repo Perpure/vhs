@@ -51,30 +51,22 @@ function init_all() {
     map.events.add('wheel', function(e){e.preventDefault();});
 
 
-    function switcher_tabs()
+    function changeTab(showingMode)
     {
-        if(switcher_tabs.cur)
+        if (showingMode === 'table')
         {
             $('#video_table').show();
             $('#videos_map').hide();
-            switcher_tabs.cur = 0;
         }
-        else
+        else if (showingMode === 'map')
         {
             $('#video_table').hide();
             $('#videos_map').show();
-            switcher_tabs.cur = 1;
         }
     }
 
-    switcher_tabs.cur = 0;
-
-    if (map_needed) {
-        $('#showMap').click();
-    }
-
-    $('#map_switcher').bind('action', function() {
-        switcher_tabs();
+    $('#map_switcher').bind('switch', function(e, showingMode) {
+        changeTab(showingMode);
         $('#videos_map').css({
             'width': width,
             'height': height + 'px'
@@ -82,6 +74,9 @@ function init_all() {
         map.container.fitToViewport();
     });
 
+    if (map_needed) {
+        $('#showMap').click();
+    }
 
     $.get("/video/data", {search: key.value}).done(add_geotags);
 }
