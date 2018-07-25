@@ -9,12 +9,20 @@ if(from_youtube)
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
   function onYouTubeIframeAPIReady() {
-      PLAYER = new YT.Player('ReVi');
+      PLAYER = new YT.Player('ReVi',{
+          events: {
+              onStateChange: onPlayerStateChange
+          }
+      });
   }
 
   function onPlayerStateChange(event) {
-      if(event.data === 0) {
+      if(event.data == 0) {
           $('#ReShell').hide();
+          if(PLAYER.isMuted() == false)
+          {
+              socket.emit('ended', ROOM_ID);
+          }
       }
   }
 }
@@ -36,6 +44,10 @@ else
           this.me.play();
           this.me_jq.on('ended',function(){
               $('#ReShell').hide();
+              if(this.muted == false)
+              {
+                  socket.emit('ended', ROOM_ID);
+              }
           });
       },
       mute: function()

@@ -4,6 +4,9 @@ jQuery(function($) {
   socket.on('update', function(msg) {
     $("#countUsers").html("Количество участников: " + msg);
   });
+  socket.on('video_ended', function() {
+    drop_state();
+  });
   socket.on('connect', function() {
     socket.emit('join', ROOM_ID, socket.id);
   });
