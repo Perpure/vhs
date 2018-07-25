@@ -254,6 +254,6 @@ def videos_from_youtube():
 @app.route('/change_youtube_state/<int:ID>', methods=['GET', 'POST'])
 def change_youtube_state(ID):
     room = Room.query.get(ID)
-    room.is_playing_you_tube = not room.is_playing_you_tube
+    room.is_playing_youtube = not room.is_playing_youtube
     db.session.commit()
     return "nice"

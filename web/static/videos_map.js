@@ -50,20 +50,40 @@ function init_all() {
 
     map.events.add('wheel', function(e){e.preventDefault();});
 
-    function show_map()
+
+    function switcher_tabs()
     {
-        $('#videos_map').css('width', width);
-        $('#videos_map').css('height', height + 'px');
-        map.container.fitToViewport();
+        if(switcher_tabs.cur)
+        {
+            $('#video_table').show();
+            $('#videos_map').hide();
+            switcher_tabs.cur = 0;
+        }
+        else
+        {
+            $('#video_table').hide();
+            $('#videos_map').show();
+            switcher_tabs.cur = 1;
+        }
     }
 
-    $('#map_switcher').bind('action', show_map);
-
-    $.get("/video/data", {search: key.value}).done(add_geotags);
+    switcher_tabs.cur = 0;
 
     if (map_needed) {
         $('#showMap').click();
     }
+
+    $('#map_switcher').bind('action', function() {
+        switcher_tabs();
+        $('#videos_map').css({
+            'width': width,
+            'height': height + 'px'
+        });
+        map.container.fitToViewport();
+    });
+
+
+    $.get("/video/data", {search: key.value}).done(add_geotags);
 }
 
 ymaps.ready(init_all);

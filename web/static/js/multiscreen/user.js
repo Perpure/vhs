@@ -1,37 +1,6 @@
 var PLAYER;
 
-class native_player {
-    constructor(Me)
-    {
-        this.me = Me.get(0);
-        this.me_jq = Me;
-    }
-
-    stopVideo()
-    {
-        this.me.currentTime=0;
-    }
-
-    pauseVideo()
-    {
-        this.me.pause();
-    }
-
-    playVideo()
-    {
-        this.me.play();
-        this.me_jq.on('ended',function(){
-            $('#ReShell').hide();
-        });
-    }
-
-    mute()
-    {
-        this.me.muted = true;
-    }
-}
-
-if(FROM_YOUTUBE)
+if(from_youtube)
 {
   var tag = document.createElement('script');
 
@@ -51,7 +20,29 @@ if(FROM_YOUTUBE)
 }
 else
 {
-  PLAYER = new native_player($('#ReVi'));
+  PLAYER = {
+      me: $('#ReVi').get(0),
+      me_jq: $('#ReVi'),
+      stopVideo: function()
+      {
+          this.me.currentTime=0;
+      },
+      pauseVideo: function()
+      {
+          this.me.pause();
+      },
+      playVideo: function()
+      {
+          this.me.play();
+          this.me_jq.on('ended',function(){
+              $('#ReShell').hide();
+          });
+      },
+      mute: function()
+      {
+          this.me.muted = true;
+      }
+  }
 }
 
 function Result() {

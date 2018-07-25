@@ -19,8 +19,32 @@ $('#calibrate_btn').click(function() {
   }
 });
 
+function switcher_tabs()
+{
+    if(switcher_tabs.cur)
+    {
+        $('#choose_site').show();
+        $('#choose_yt').hide();
+        if($('.video__preview').length == 0)
+        {
+            $('#stop_res').addClass('video-control__btn_disabled');
+            $('#show_res').addClass('video-control__btn_disabled');
+        }
+        switcher_tabs.cur = 0;
+    }
+    else
+    {
+        $('#choose_site').hide();
+        $('#choose_yt').show();
+        $('#stop_res').removeClass('video-control__btn_disabled');
+        $('#show_res').removeClass('video-control__btn_disabled');
+        switcher_tabs.cur = 1;
+    }
+}
+
 function change_youtube_state()
 {
+    switcher_tabs();
     $.ajax({
         url: "/change_youtube_state/" + ROOM_ID,
         type: "GET",
@@ -29,9 +53,12 @@ function change_youtube_state()
 }
 
 jQuery(function($) {
-  if(FROM_YOUTUBE)
+  switcher_tabs.cur = 0;
+
+  if(from_youtube)
   {
       $('#go_to_youtube').click();
+      switcher_tabs();
   }
 
   $('#video_switcher').bind('action', change_youtube_state);
@@ -40,7 +67,7 @@ jQuery(function($) {
 var play = false;
 
 $('#show_res').click(function() {
-  if($('#show_res').hasClass('video-control__btn_disabled')==false)
+  if($('#show_res').hasClass('video-control__btn_disabled') == false)
   {
     if(play)
     {
@@ -70,7 +97,7 @@ function drop_state()
 }
 
 $('#stop_res').click(function() {
-  if($('#stop_res').hasClass('video-control__btn_disabled')==false)
+  if($('#stop_res').hasClass('video-control__btn_disabled') == false)
   {
     socket.emit('multiscreen_set_stop', ROOM_ID);
     drop_state();
