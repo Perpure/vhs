@@ -47,13 +47,13 @@
     <div class="switcher__arm">
       <label class="switcher__label" id="go_to_youtube">
         <div class="switcher__pill">С сайта</div>
-        <input name="selector" type="radio" class="switcher__radio">
+        <input class="switcher__radio" type="radio" name="videoMode" value="youtube">
       </label>
     </div>
     <div class="switcher__arm switcher__arm_inv">
       <label class="switcher__label">
         <div class="switcher__pill switcher__pill_right">YouTube</div>
-        <input name="selector" type="radio" checked class="switcher__radio">
+        <input class="switcher__radio" type="radio" name="videoMode" value="self" checked>
       </label>
     </div>
   </div>
@@ -103,12 +103,15 @@
 
 {% if room.capitan_id != anon.id %}
   {% if room.is_playing_youtube == True %}
-  <div class="result" id="ResultVideoShell">
-    <iframe src="https://www.youtube.com/embed/uzoWJ33bJRg?controls=0&enablejsapi=1&rel=0&showinfo=0&modestbranding=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen id="ResultVideo" type="text/html"></iframe>
-  </div>
+      <div class="result" id="ResultVideoShell">
+        <iframe id="ResultVideo"
+                src="https://www.youtube.com/embed/uzoWJ33bJRg?controls=0&enablejsapi=1&rel=0&showinfo=0&modestbranding=1"
+                frameborder="0" allow="autoplay; encrypted-media" type="text/html" allowfullscreen></iframe>
+      </div>
   {% elif room.video_id %}
       <div class="result" id="ResultVideoShell">
-        <video class="result__video" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ResultVideo"></video>
+        <video class="result__video" id="ResultVideo"
+               src="{{url_for('get_video', vid=room.video_id)}}" preload="auto"></video>
       </div>
   {% endif %}
 {% endif %}

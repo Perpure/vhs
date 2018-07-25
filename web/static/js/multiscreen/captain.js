@@ -13,59 +13,43 @@ jQuery(function($) {
   socket.on('disconnect', function() {
     socket.emit('leave', ROOM_ID);
   });
-});
 
-$('#calibrate_btn').click(function() {
-  if($('#calibrate_btn').hasClass('video-control__btn_disabled')==false)
-  {
-    socket.emit('multiscreen_set_calibrate', ROOM_ID);
-  }
-});
-
-function switcher_tabs()
-{
-    if(switcher_tabs.cur)
-    {
-        $('#choose_site').show();
-        $('#choose_yt').hide();
-        if($('.video__preview').length == 0)
-        {
-            $('#stop_res').addClass('video-control__btn_disabled');
-            $('#show_res').addClass('video-control__btn_disabled');
+    $('#calibrate_btn').click(function() {
+        if( !$('#calibrate_btn').hasClass('video-control__btn_disabled') ) {
+            socket.emit('multiscreen_set_calibrate', ROOM_ID);
         }
-        switcher_tabs.cur = 0;
-    }
-    else
-    {
-        $('#choose_site').hide();
-        $('#choose_yt').show();
-        $('#stop_res').removeClass('video-control__btn_disabled');
-        $('#show_res').removeClass('video-control__btn_disabled');
-        switcher_tabs.cur = 1;
-    }
-}
-
-function change_youtube_state()
-{
-    switcher_tabs();
-    $.ajax({
-        url: "/change_youtube_state/" + ROOM_ID,
-        type: "GET",
-        dataType: "text"
     });
-}
 
-jQuery(function($) {
-  switcher_tabs.cur = 0;
+    function changeVideoMode(videoMode) {
+        if (videoMode === "self") {
+            $('#choose_site').show();
+            $('#choose_yt').hide();
+            if($('.video__preview').length == 0) {
+                $('#stop_res').addClass('video-control__btn_disabled');
+                $('#show_res').addClass('video-control__btn_disabled');
+            }
+        } else if (videoMode === "youtube") {
+            $('#choose_site').hide();
+            $('#choose_yt').show();
+            $('#stop_res').removeClass('video-control__btn_disabled');
+            $('#show_res').removeClass('video-control__btn_disabled');
+        }
+    }
 
-  if(from_youtube)
-  {
-      $('#go_to_youtube').click();
-      switcher_tabs();
-  }
+    if(from_youtube) {
+        $('#go_to_youtube').click();
+        changeVideoMode('youtube');
+    }
 
-  $('#video_switcher').bind('action', change_youtube_state);
-});
+    $('#video_switcher').bind('switch', function(e, videoMode) {
+        changeVideoMode(videoMode);
+        $.ajax({
+            url: "/change_youtube_state/" + ROOM_ID,
+            type: "GET",
+            dataType: "text"
+        });
+    });
+
 
 var play = false;
 
@@ -110,4 +94,6 @@ $('#stop_res').click(function() {
 $('#refresh_btn').click(function() {
   socket.emit('multiscreen_refresh', ROOM_ID);
   drop_state();
+});
+
 });

@@ -1,7 +1,6 @@
 var PLAYER;
 
-if(from_youtube)
-{
+if(from_youtube) {
   var tag = document.createElement('script');
 
   tag.src = "https://www.youtube.com/iframe_api";
@@ -11,55 +10,40 @@ if(from_youtube)
   function onYouTubeIframeAPIReady() {
       PLAYER = new YT.Player('ResultVideo',{
           events: {
-              onStateChange: onPlayerStateChange
+              onStateChange: function(event) {
+                  if(event.data == 0) {
+                      $('#ResultVideoShell').hide();
+                      if ( !PLAYER.isMuted() ) {
+                          socket.emit('ended', ROOM_ID);
+                      }
+                  }
+              }
           }
       });
   }
-
-  function onPlayerStateChange(event) {
-      if(event.data == 0) {
-          $('#ResultVideoShell').hide();
-          if(PLAYER.isMuted() == false)
-          {
-              socket.emit('ended', ROOM_ID);
-          }
-      }
-  }
-}
-else
-{
+} else {
   PLAYER = {
-      me: $('#ResultVideo').get(0),
-      me_jq: $('#ResultVideo'),
-      stopVideo: function()
-      {
-          this.me.currentTime=0;
+      el: $('#ResultVideo').get(0),
+      elJQ: $('#ResultVideo'),
+      stopVideo: function() {
+          this.el.currentTime = 0;
       },
-      pauseVideo: function()
-      {
-          this.me.pause();
+      pauseVideo: function() {
+          this.el.pause();
       },
-      playVideo: function()
-      {
-          this.me.play();
-          this.me_jq.on('ended',function(){
+      playVideo: function() {
+          this.el.play();
+          this.elJQ.on('ended',function(){
               $('#ResultVideoShell').hide();
-              if(this.muted == false)
-              {
+              if( !this.muted ) {
                   socket.emit('ended', ROOM_ID);
               }
           });
       },
-      mute: function()
-      {
-          this.me.muted = true;
+      mute: function() {
+          this.el.muted = true;
       }
   }
-}
-
-function Result() {
-  $('#ResultVideoShell').show();
-  PLAYER.playVideo();
 }
 
 jQuery(function($) {
@@ -75,11 +59,11 @@ jQuery(function($) {
         left: screen.width * (response.left / response.scale) + "px",
         width: response.scale + "%"
     });
-    if(response.noSound)
-    {
+    if(response.noSound) {
       PLAYER.mute();
     }
-    Result();
+    $('#ResultVideoShell').show();
+    PLAYER.playVideo();
   });
   socket.on('multiscreen_show_pause', function() {
       PLAYER.pauseVideo();
@@ -100,9 +84,7 @@ jQuery(function($) {
   socket.on('disconnect', function() {
     socket.emit('leave', ROOM_ID);
   });
-});
 
-jQuery(function($) {
   var ratio = window.devicePixelRatio || 1;
   var width = screen.width * ratio;
   var height = screen.height * ratio;
