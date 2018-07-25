@@ -9,7 +9,7 @@ if(from_youtube)
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
   function onYouTubeIframeAPIReady() {
-      PLAYER = new YT.Player('ReVi',{
+      PLAYER = new YT.Player('ResultVideo',{
           events: {
               onStateChange: onPlayerStateChange
           }
@@ -18,7 +18,7 @@ if(from_youtube)
 
   function onPlayerStateChange(event) {
       if(event.data == 0) {
-          $('#ReShell').hide();
+          $('#ResultVideoShell').hide();
           if(PLAYER.isMuted() == false)
           {
               socket.emit('ended', ROOM_ID);
@@ -29,8 +29,8 @@ if(from_youtube)
 else
 {
   PLAYER = {
-      me: $('#ReVi').get(0),
-      me_jq: $('#ReVi'),
+      me: $('#ResultVideo').get(0),
+      me_jq: $('#ResultVideo'),
       stopVideo: function()
       {
           this.me.currentTime=0;
@@ -43,7 +43,7 @@ else
       {
           this.me.play();
           this.me_jq.on('ended',function(){
-              $('#ReShell').hide();
+              $('#ResultVideoShell').hide();
               if(this.muted == false)
               {
                   socket.emit('ended', ROOM_ID);
@@ -58,7 +58,7 @@ else
 }
 
 function Result() {
-  $('#ReShell').show();
+  $('#ResultVideoShell').show();
   PLAYER.playVideo();
 }
 
@@ -70,7 +70,7 @@ jQuery(function($) {
         + 'class="calibration-image fullscreen-switcher"></div>');
   });
   socket.on('multiscreen_show_result', function(response) {
-    $('#ReVi').css({
+    $('#ResultVideo').css({
         top: screen.height * (response.top / response.scale) + "px",
         left: screen.width * (response.left / response.scale) + "px",
         width: response.scale + "%"
@@ -85,7 +85,7 @@ jQuery(function($) {
       PLAYER.pauseVideo();
   });
   socket.on('multiscreen_show_stop', function() {
-      $('#ReShell').hide();
+      $('#ResultVideoShell').hide();
       PLAYER.stopVideo();
   });
   socket.on('refresh', function() {

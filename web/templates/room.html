@@ -103,12 +103,12 @@
 
 {% if room.capitan_id != anon.id %}
   {% if room.is_playing_youtube == True %}
-  <div class="result" id="ReShell">
-    <iframe src="https://www.youtube.com/embed/uzoWJ33bJRg?controls=0&enablejsapi=1&rel=0&showinfo=0&modestbranding=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen id="ReVi" type="text/html"></iframe>
+  <div class="result" id="ResultVideoShell">
+    <iframe src="https://www.youtube.com/embed/uzoWJ33bJRg?controls=0&enablejsapi=1&rel=0&showinfo=0&modestbranding=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen id="ResultVideo" type="text/html"></iframe>
   </div>
   {% elif room.video_id %}
-      <div class="result" id="ReShell">
-        <video class="result__video" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
+      <div class="result" id="ResultVideoShell">
+        <video class="result__video" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ResultVideo"></video>
       </div>
   {% endif %}
 {% endif %}
@@ -116,6 +116,7 @@
 <script src="{{ url_for('static', filename='js/slide.js') }}"></script>
 <script>
     var ROOM_COLOR = '{{ anon.color }}';
+    var ROOM_ID = {{ room.id }};
     var from_youtube = {{ 'true' if room.is_playing_youtube else 'false' }};
 </script>
 {% if room.capitan_id == anon.id %}
