@@ -93,7 +93,7 @@ def room(room_id):
 
         for member in users:
             rac = RoomDeviceMatrixConnector.query.filter_by(room=room,
-                                                           anon=member).first()
+                                                            anon=member).first()
             member.matrix = rac.calibrate_matrix.matrix
             db.session.commit()
 

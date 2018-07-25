@@ -342,16 +342,16 @@ class Calibrate_matrix(db.Model):
 
     def create_calibrate_matrix_image(self):
         print('create_calibrate_matrix_image function start')
-        img = np.zeros((5,5,3), np.uint8)
-        img[:,0:5] = (0, 0, 255)
+        img = np.zeros((5, 5, 3), np.uint8)
+        img[:, 0:5] = (0, 0, 255)
         matrix = self.matrix
         i = 0
-        for x in range(1,4):
-            for y in range(1,4):
+        for x in range(1, 4):
+            for y in range(1, 4):
                 if matrix[i] == '1':
-                    img[x][y] = (255,0,0)
-                i+=1
-        res = cv2.resize(img,(1000, 1000), interpolation = cv2.INTER_NEAREST)
+                    img[x][y] = (255, 0, 0)
+                i += 1
+        res = cv2.resize(img, (1000, 1000), interpolation=cv2.INTER_NEAREST)
         cv2.imwrite('images/calibrate/' + matrix + '.png', res)
 
 

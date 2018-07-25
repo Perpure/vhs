@@ -38,12 +38,12 @@ class ImageObject():
         max_y = display.max_y
         width = max_x - min_x
         height = max_y - min_y
-        for y in range(1,4):
-            h = min_y + (height * (1 + y*2)) // 10
-            for x in range(1,4):
+        for y in range(1, 4):
+            h = min_y + (height * (1 + y * 2)) // 10
+            for x in range(1, 4):
                 print(y, min_y, height)
-                w = min_x + (width * (1 + x*2)) // 10
-                cv2.circle(img,(w,h),3,255,-1)
+                w = min_x + (width * (1 + x * 2)) // 10
+                cv2.circle(img, (w, h), 3, 255, -1)
                 if mask[h][w] == 0:
                     matrix += '1'
                 else:
@@ -61,9 +61,9 @@ class Screen():
     def get_formatted_screen(self, picture_size):
         width = self.width
         height = self.height
-        if (width / height) > (picture_size):
+        if (width / height) > picture_size:
             height = int(1 / picture_size * width)
-        elif (width / height) < (picture_size):
+        elif (width / height) < picture_size:
             width = int(picture_size * height)
         left = (self.width - width) // 2
         top = (self.height - height) // 2
@@ -138,7 +138,7 @@ def parse(room, devices, impath):
     cv2.imwrite('images/calibrate/' + 'mask' + '.png', mask)
     _, contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE,
                                               cv2.CHAIN_APPROX_NONE)
-    contours = sorted(contours, key=lambda x: len(x))[-device_amount*2:]
+    contours = sorted(contours, key=lambda x: len(x))[-device_amount * 2:]
     print('contours: ', contours)
     i = 0
     for contour in contours:
@@ -148,7 +148,7 @@ def parse(room, devices, impath):
         maxX = max(maxX, image_object.max_x)
         minY = min(minY, image_object.min_y)
         maxY = max(maxY, image_object.max_y)
-        i+=1
+        i += 1
     print('i = ', i)
     for image_object in image_objects:
         image_object.find_relation(image_objects)
