@@ -338,6 +338,13 @@ def subs_s():
     return render_template('subs.html', user=user, subs=subs)
 
 
+@app.route('/search/<string:ask>/<string:sort>', methods=['GET', 'POST'])
+def search_results(ask, sort):
+    user = cur_user()
+    now = time = datetime.now(tz=None)
+    return render_template('search_results.html', user=user, items=Video.get(search=ask, sort=sort), now=now)
+
+
 @app.errorhandler(403)
 def forbidden(e):
     return render_template('403.html', user=cur_user()), 403

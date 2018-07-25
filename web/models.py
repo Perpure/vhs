@@ -8,7 +8,6 @@ from uuid import uuid4
 from flask import url_for
 from web import db, app, avatars, backgrounds
 
-
 WatchHistory = db.Table('WatchHistory', db.Model.metadata,
                         db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
                         db.Column('Video_id', db.String(32), db.ForeignKey('Video.id')))
@@ -125,26 +124,30 @@ class Video(db.Model):
         if video_id:
             return Video.query.get(video_id)
 
-        videos = Video.query.all()
-
-        if sort:
-            sort = sort.lower()
-            if "date" in sort:
-                videos.sort(key=lambda video: video.date, reverse=True)
-            if "views" in sort:
-                videos.sort(key=lambda video: len(video.viewers), reverse=True)
+        videos = []
+        
 
         if search:
-            if '#' in search:
-                temp = [(video, len([word for word in search.split('#')
-                                     if word.lower() in video.get_tags()])) for video in videos]
+            elements = search.split(' ')
+            print(elements)
+            if elements[0][0] == '*':
+                videos = Tag.query.filter(Tag.text == elements[0][1:]).first().videos
             else:
-                temp = [(video, len([word for word in search.lower().split()
-                                     if word in video.title.lower()])) for video in videos]
+                videos = Video.query.filter(Video.title.like('%' + elements[0] + '%'))
+            for item in elements[1:]:
+                if item[0] == '*':
+                    videos = videos.filter(Tag.text == search[1:]).first().videos
+                else:
+                    videos = videos.filter(Video.title.like('%' + search + '%'))
+        else:
+            videos = Video.query.all()
 
-            temp = [item for item in temp if item[1] > 0]
-            temp.sort(key=lambda item: item[1], reverse=True)
-            videos = [item[0] for item in temp]
+        if sort != 'empty' and sort:
+            sort = sort.lower()
+            if "date" in sort:
+                videos = videos.order_by(Video.date.desc())
+            if "views" in sort:
+                videos = videos.order_by(Video.viewers)
 
         return videos
 

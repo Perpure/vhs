@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="video_table">
+  <div class="section section_open"  id="all">
+  {% for item in items %}
+    <div class="video">
+      <div class="video__preview">
+        <a href="{{ url_for('play', vid=item.id) }}">
+          <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video__preview-img">
+        </a>
+      </div>
+      <div>
+        <a href="{{ url_for('play', vid=item.id) }}">
+          <p class="video__title" title="{{item.title}}">{{item.title}}</p>
+        </a>
+        <a href="/cabinet/{{ item.user.login }}">
+          <p class="italic">
+            {{ item.user.name }} <br>
+            {{ item.viewers | length }} просмотров <br>
+            {% if (now - item.date).days>1 %}
+              {{item.date.date()}}
+            {% elif (now - item.date).days==1 %} вчера
+            {% elif (now - item.date).seconds/60< 60 %} {{((now - item.date).seconds/60)|int}} минут назад
+            {% else %} {{((now - item.date).seconds/3600)|int}} часов назад
+            {%endif%}
+          </p>
+        </a>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}
