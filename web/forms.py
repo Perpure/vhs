@@ -3,7 +3,7 @@
 import re
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, BooleanField, FileField, HiddenField
-from wtforms.validators import Length, EqualTo, ValidationError, DataRequired, Optional
+from wtforms.validators import Length, EqualTo, ValidationError, DataRequired, Optional, Email
 from flask.json import JSONDecoder
 from flask_wtf.file import FileAllowed
 from web.models import User, Room
@@ -151,3 +151,14 @@ class AddRoomForm(FlaskForm):
                                                         exist_token,
                                                         Length(2, message='Текст слишком короткий')])
     submit = SubmitField("Создать")
+
+
+class FeedbackForm(FlaskForm):
+    feedback_email = StringField('Ваш email', validators=[DataRequired(message='Введите email'),
+                                                          Email(message='Введите корректный email'),
+                                                          Length(max=32, message='Слишком длинный email')])
+    feedback_text = TextAreaField('Ваше сообщение', validators=[DataRequired(message='Сообщение не должно быть пустым'),
+                                                                Length(min=5, max=250,
+                                                                       message='Сообщение должно быть не '
+                                                                               'меньше 5 и не больше 250 символов')])
+    feedback_submit = SubmitField('Отправить')

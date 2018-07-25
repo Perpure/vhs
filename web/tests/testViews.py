@@ -3,7 +3,7 @@ import unittest
 import os
 from flask import url_for
 from web import app, db
-from web.models import User, Video, Room, AnonUser, Color
+from web.models import User, Video, Room, Device, Color
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 TEST_DB_PATH = os.path.join(BASE_DIR, 'test.sqlite')
@@ -29,7 +29,7 @@ class TestPageAvail(unittest.TestCase):
         self.video = Video('TestVideo')
         self.video.save(hash='Teststring', user=self.user)
         self.video_id = self.video.id
-        self.anonuser = AnonUser()
+        self.anonuser = Device()
         self.room = Room('roomname', self.anonuser.id)
         self.room.save(self.video.id)
 

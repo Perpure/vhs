@@ -7,7 +7,7 @@ from datetime import datetime
 from flask import url_for, redirect, make_response, request, jsonify, session, render_template, Response, abort
 from web import app, db
 from web.helper import read_image, cur_user, read_multi, decode_iso8601_duration
-from web.models import Video, Comment, Room, AnonUser, User
+from web.models import Video, Comment, Room, Device, User
 from config import basedir, BUFF_SIZE, GOOGLE_API_KEY
 import requests
 
@@ -162,7 +162,7 @@ def dislikeVideo(vid):
 @app.route('/tellRes', methods=['GET', 'POST'])
 def tellRes():
     if 'anon_id' in session:
-        user = AnonUser.query.get(session['anon_id'])
+        user = Device.query.get(session['anon_id'])
         if request.method == 'POST':
             width = request.json['width']
             height = request.json['height']
