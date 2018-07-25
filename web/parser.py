@@ -15,12 +15,12 @@ class ImageObject():
     def __init__(self, contour, id):
         self.id = id
         self.contour = contour
-        rect = cv2.minAreaRect(contour)
-        box = np.int0(cv2.boxPoints(rect))
-        self.min_x = np.ndarray.min(box[..., 0])
-        self.max_x = np.ndarray.max(box[..., 0])
-        self.min_y = np.ndarray.min(box[..., 1])
-        self.max_y = np.ndarray.max(box[..., 1])
+        self.rect = cv2.minAreaRect(contour)
+        self.box = np.int0(cv2.boxPoints(self.rect))
+        self.min_x = np.ndarray.min(self.box[..., 0])
+        self.max_x = np.ndarray.max(self.box[..., 0])
+        self.min_y = np.ndarray.min(self.box[..., 1])
+        self.max_y = np.ndarray.max(self.box[..., 1])
 
     def find_relation(self, image_objects):
         for image_object in image_objects:
@@ -91,11 +91,11 @@ def handle_parse(items, minX, minY, maxX, maxY, room):
     final_screen = trimmed_screen.get_formatted_screen(16 / 9)
     draw, room_map = create_map(final_screen.width, final_screen.height)
     for item in items:
-        device, rect, display = item
-        rect = ((rect[0][0] - minX, rect[0][1] - minY), rect[1], rect[2])
-        device_screen = final_screen.get_device_screen(device, rect)
+        device, display = item
+        display.rect = ((display.rect[0][0] - minX, display.rect[0][1] - minY), display.rect[1], display.rect[2])
+        device_screen = final_screen.get_device_screen(device, display.rect)
         device.save_screen_params(device_screen)
-        draw_map(draw, rect, (255, 0, 0))
+        draw_map(draw, display.rect, (255, 0, 0))
     save_map(draw, room, room_map)
 
 
@@ -125,10 +125,8 @@ def parse(room, devices, impath):
     image_objects = []
     img = cv2.imread(impath)
     cv2.imwrite('images/calibrate/' + 'img_non_hsv' + '.png', img)
-    img = cv2.medianBlur(img, 1)
+    img = cv2.medianBlur(img, 5)
     cv2.imwrite('images/calibrate/' + 'img_medianBlur' + '.png', img)
-    # img = cv2.bilateralFilter(img, 15, 75, 75)
-    # cv2.imwrite('images/calibrate/' + 'img_bilateral' + '.png', img)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     cv2.imwrite('images/calibrate/' + 'img_hsv' + '.png', img)
     items = list()
@@ -140,7 +138,6 @@ def parse(room, devices, impath):
     cv2.imwrite('images/calibrate/' + 'mask' + '.png', mask)
     _, contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE,
                                               cv2.CHAIN_APPROX_NONE)
-    rect = cv2.minAreaRect(sorted(contours, key=cv2.contourArea, reverse=True)[0])
     contours = sorted(contours, key=lambda x: len(x))[-device_amount*2:]
     print('contours: ', contours)
     i = 0
@@ -155,14 +152,16 @@ def parse(room, devices, impath):
     print('i = ', i)
     for image_object in image_objects:
         image_object.find_relation(image_objects)
+        print(image_object.rect)
     displays = sorted(image_objects, key=lambda x: x.is_display)[-device_amount:]
     print('displays: ', displays)
     for display in displays:
         matrix = display.indentify(display, mask, img)
         print('matrix: ', matrix)
+        print('rect: ', display.rect)
         for device in devices:
             if matrix == device.matrix:
-                items.append([device, rect, display])
+                items.append([device, display])
                 break
     print('items: ', items)
     handle_parse(items, minX, minY, maxX, maxY, room)
