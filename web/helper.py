@@ -69,7 +69,7 @@ def image_loaded(request, room, user, users, image_form, room_form):
     msg = None
     if not parse(room, users, image_path):
         msg = "Мы не смогли идентифицировать устройства, попробуйте загрузить другую фотографию."
-    return render_template('room.html', room=room, user=cur_user(), color=user.color, users=users,
+    return render_template('room.html', room=room, user=cur_user(), users=users,
                            image_form=image_form, anon=user,
                            room_form=room_form, loaded=True, room_map=room_map_url, count=len(users) + 1,
                            map_ex=os.path.exists(room_map_filename), msg=msg)

@@ -12,7 +12,8 @@ app.config.from_object("config")
 db = SQLAlchemy(app)
 avatars = UploadSet('avatars', IMAGES)
 backgrounds = UploadSet('backgrounds', IMAGES)
-configure_uploads(app, (avatars, backgrounds))
+calibrate = UploadSet('calibrate', IMAGES)
+configure_uploads(app, (avatars, backgrounds, calibrate))
 
 
 import web.views

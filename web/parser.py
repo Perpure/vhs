@@ -2,6 +2,7 @@ import numpy as np
 import math
 import os
 import cv2
+import sys
 from web import db, app
 from config import basedir
 from PIL import Image, ImageDraw
@@ -29,7 +30,7 @@ class ImageObject():
                 image_object.is_number = True
                 image_object.relation = self.id
 
-    def indentify(self):
+    def indentify(self, display, mask, img):
         matrix = ""
         min_x = display.min_x
         max_x = display.max_x
@@ -48,6 +49,7 @@ class ImageObject():
                 else:
                     matrix += '0'
         return matrix
+
 
 class Screen():
     def __init__(self, width, height, left=0, top=0):
@@ -77,8 +79,8 @@ class Screen():
             firstx = int(rect[0][0] - rect[1][0] / 2) - self.left
             lastx = int(rect[0][0] + rect[1][0] / 2) - self.left
         scale = (self.width / (lastx - firstx)) * 100
-        left = - (firstx / self.width) * width
-        top = - (firsty / self.height) * width
+        left = - (firstx / self.width) * scale
+        top = - (firsty / self.height) * scale
         device_screen = Screen(lastx - firstx, None, left, top)
         device_screen.scale = scale
         return device_screen
@@ -115,20 +117,32 @@ def save_map(draw, room, room_map):
 
 
 def parse(room, devices, impath):
-    device_amount = len(devices) #TODO take device amount on calibrate pic
+    device_amount = len(devices)  # TODO take device amount on calibrate pic
+    print('device amount: ', device_amount)
     is_parsed = False
     maxX = maxY = -math.inf
     minY = minX = math.inf
     image_objects = []
     img = cv2.imread(impath)
-    hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    cv2.imwrite('images/calibrate/' + 'img_non_hsv' + '.png', img)
+    img = cv2.medianBlur(img, 1)
+    cv2.imwrite('images/calibrate/' + 'img_medianBlur' + '.png', img)
+    # img = cv2.bilateralFilter(img, 15, 75, 75)
+    # cv2.imwrite('images/calibrate/' + 'img_bilateral' + '.png', img)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    cv2.imwrite('images/calibrate/' + 'img_hsv' + '.png', img)
     items = list()
     lower_red = np.array((0, 150, 150), np.uint8)
+    print('lower_red: ', lower_red)
     upper_red = np.array((20, 255, 255), np.uint8)
+    print('upper_red: ', upper_red)
     mask = cv2.inRange(img, lower_red, upper_red)
+    cv2.imwrite('images/calibrate/' + 'mask' + '.png', mask)
     _, contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE,
                                               cv2.CHAIN_APPROX_NONE)
+    rect = cv2.minAreaRect(sorted(contours, key=cv2.contourArea, reverse=True)[0])
     contours = sorted(contours, key=lambda x: len(x))[-device_amount*2:]
+    print('contours: ', contours)
     i = 0
     for contour in contours:
         image_object = ImageObject(contour, i)
@@ -138,15 +152,19 @@ def parse(room, devices, impath):
         minY = min(minY, image_object.min_y)
         maxY = max(maxY, image_object.max_y)
         i+=1
+    print('i = ', i)
     for image_object in image_objects:
         image_object.find_relation(image_objects)
     displays = sorted(image_objects, key=lambda x: x.is_display)[-device_amount:]
+    print('displays: ', displays)
     for display in displays:
-        matrix = display.identify()
+        matrix = display.indentify(display, mask, img)
+        print('matrix: ', matrix)
         for device in devices:
             if matrix == device.matrix:
                 items.append([device, rect, display])
                 break
+    print('items: ', items)
     handle_parse(items, minX, minY, maxX, maxY, room)
     is_parsed = True
     return is_parsed

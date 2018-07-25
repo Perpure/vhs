@@ -328,6 +328,12 @@ class Calibrate_matrix(db.Model):
     matrix = db.Column(db.String(64), nullable=False)
     anons_rooms = db.relationship('RoomDeviceMatrixConnector', backref='calibrate_matrix', lazy=True)
 
+    def __init__(self, matrix):
+        self.matrix = matrix
+        self.create_calibrate_matrix_image()
+        db.session.add(self)
+        db.session.commit()
+
     @staticmethod
     def get(id=None):
         if id:
@@ -335,6 +341,7 @@ class Calibrate_matrix(db.Model):
         return Calibrate_matrix.query.all()
 
     def create_calibrate_matrix_image(self):
+        print('create_calibrate_matrix_image function start')
         img = np.zeros((5,5,3), np.uint8)
         img[:,0:5] = (0, 0, 255)
         matrix = self.matrix
@@ -346,6 +353,7 @@ class Calibrate_matrix(db.Model):
                 i+=1
         res = cv2.resize(img,(1000, 1000), interpolation = cv2.INTER_NEAREST)
         cv2.imwrite('images/calibrate/' + matrix + '.png', res)
+
 
 class RoomDeviceMatrixConnector(db.Model):
     __tablename__ = 'RoomDeviceMatrixConnector'
