@@ -6,7 +6,7 @@ from flask import session, redirect, url_for, render_template
 from web import db, app
 from web.models import User, AnonUser
 from config import basedir
-from web.parser import parse
+from web.parser import Parser
 
 
 def requiresauth(f):
@@ -67,8 +67,11 @@ def image_loaded(request, room, user, users, image_form, room_form):
     file.save(basedir + '/images/' + str(room_id) + '.' + file.filename.split('.')[-1].lower())
     image_path = basedir + '/images/' + str(room_id) + '.jpg'
     msg = None
-    if not parse(room, users, image_path):
+    parser = Parser(room, users, image_path)
+    flag = parser.parse()
+    if not flag:
         msg = "Мы не смогли идентифицировать устройства, попробуйте загрузить другую фотографию."
+
     return render_template('room.html', room=room, user=cur_user(), users=users,
                            image_form=image_form, anon=user,
                            room_form=room_form, loaded=True, room_map=room_map_url, count=len(users) + 1,
