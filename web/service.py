@@ -80,17 +80,6 @@ def get_video(vid):
     return partial_response(path, start, end)
 
 
-@app.route('/video/data', methods=['GET'])
-def get_video_data_search():
-    search = request.args.get('search')
-    videos = Video.get(search=search)
-
-    return jsonify([{"title": video.title,
-                     "link": url_for("play", vid=video.id),
-                     "preview": url_for("get_image", pid=video.id),
-                     "geotags": [(gt.longitude, gt.latitude) for gt in video.geotags]} for video in videos])
-
-
 @app.route('/askNewComm/<string:vid>', methods=['GET', 'POST'])
 def askNewComm(vid):
     video = Video.get(video_id=vid)

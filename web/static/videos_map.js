@@ -68,7 +68,7 @@ function init_all() {
         map.container.fitToViewport();
     });
 
-    $.get("/video/data", {search: $("#searchKey").val()}).done(add_geotags);
+    add_geotags(geo_videos);
 
     if (map_needed) {
         $('#show_video_map').trigger('change');

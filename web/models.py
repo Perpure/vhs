@@ -82,13 +82,10 @@ class Video(db.Model):
 
     viewers = db.relationship('User', secondary=WatchHistory, backref='watch_history', lazy='joined')
 
-    views = db.Column(db.Integer)
-
     geotags = db.relationship("Geotag", backref="video", lazy="joined")
 
     def __init__(self, title):
         self.title = title
-        self.views = 0
 
     def save(self, hash, user):
         self.date = datetime.now(tz=None)
@@ -108,7 +105,6 @@ class Video(db.Model):
 
     def add_viewer(self, user):
         self.viewers.append(user)
-        self.views += 1
         db.session.add(self)
         db.session.commit()
 
@@ -144,14 +140,23 @@ class Video(db.Model):
         else:
             videos = Video.query.all()
 
-        if sort != 'empty' and sort:
+        if sort:
             sort = sort.lower()
             if "date" in sort:
                 videos = videos.order_by(Video.date.desc())
-            if "views" in sort:
-                videos = videos.order_by(Video.views.desc())
+            geo_videos = videos.filter(Video.geotags != None)
+            
+            return videos, geo_videos
 
         return videos
+    
+    def serialize(self):
+       return {
+           'title' : self.title,
+           'link': url_for("play", vid=self.id),
+           'preview' : url_for("get_image", pid=self.id),
+           'geotags' : [(gt.longitude, gt.latitude) for gt in self.geotags]
+       }
 
     def get_tags(self):
         tags = []

@@ -342,7 +342,8 @@ def subs_s():
 def search_results(ask, sort):
     user = cur_user()
     now = time = datetime.now(tz=None)
-    return render_template('search_results.html', user=user, items=Video.get(search=ask, sort=sort), now=now)
+    video_pack = Video.get(search=ask, sort=sort)
+    return render_template('search_results.html', user=user, items=video_pack[0], now=now, geo_items=json.dumps([video.serialize() for video in video_pack[1]]))
 
 
 @app.errorhandler(403)
