@@ -152,7 +152,7 @@ class Video(db.Model):
                     videos = videos.order_by(Video.title)
                 else:
                     videos = videos.order_by(Video.title.desc())
-            geo_videos = videos.filter(Video.geotags not None)
+            geo_videos = videos.filter(Video.geotags is not None)
 
             return videos, geo_videos
 
