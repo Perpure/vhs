@@ -159,15 +159,15 @@ def dislikeVideo(vid):
                      "dislikes": str(len(video.dislikes))}])
 
 
-@app.route('/tellRes', methods=['GET', 'POST'])
+@app.route('/tellRes', methods=['POST'])
 def tellRes():
     if 'anon_id' in session:
         user = Device.query.get(session['anon_id'])
         if request.method == 'POST':
-            width = request.json['width']
-            height = request.json['height']
+            width = request.form['width']
+            height = request.form['height']
             user.update_resolution(width=width, height=height)
-            return jsonify(width=width, height=height)
+            return '0'
 
 
 @app.route('/startSearch', methods=['GET'])

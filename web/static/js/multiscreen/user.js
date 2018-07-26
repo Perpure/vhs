@@ -88,13 +88,14 @@ jQuery(function($) {
   var ratio = window.devicePixelRatio || 1;
   var width = screen.width * ratio;
   var height = screen.height * ratio;
+  var Data = {
+    "width": width,
+     "height" : height
+  };
   $.ajax({
     url: '/tellRes',
-    contentType: "application/json; charset=utf-8",
     type: "POST",
     dataType:"json",
-    data: JSON.stringify({ "width": width, "height" : height }),
-    success: function () {
-      console.log(JSON.stringify({ "width": width, "height" : height }));},
+    data: Data
   });
 });
