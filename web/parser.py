@@ -1,14 +1,12 @@
-import numpy as np
 import math
 import os
 import cv2
-import sys
-from web import db, app
-from config import basedir
+import numpy as np
 from PIL import Image, ImageDraw
+from config import basedir
 
 
-class ImageObject():
+class ImageObject:
     is_display = False
     is_number = False
 
@@ -30,7 +28,8 @@ class ImageObject():
                 image_object.is_number = True
                 image_object.relation = self.id
 
-    def indentify(self, display, mask, img):
+    @staticmethod
+    def identify(display, mask, img):
         matrix = ""
         min_x = display.min_x
         max_x = display.max_x
@@ -51,7 +50,7 @@ class ImageObject():
         return matrix
 
 
-class Screen():
+class Screen:
     def __init__(self, width, height, left=0, top=0):
         self.width = width
         self.height = height
@@ -69,7 +68,7 @@ class Screen():
         top = (self.height - height) // 2
         return Screen(width, height, left, top)
 
-    def get_device_screen(self, device, rect):
+    def get_device_screen(self, rect):
         if -95 < rect[2] < -85:
             firsty = int(rect[0][1] - rect[1][0] / 2) - self.top
             firstx = int(rect[0][0] - rect[1][1] / 2) - self.left
@@ -86,56 +85,20 @@ class Screen():
         return device_screen
 
 
-class Parser():
+class Parser:
     def __init__(self, room, devices, impath):
         self.room = room
         self.devices = devices
         self.impath = impath
 
-    def __handle_parse(self, items, minX, minY, maxX, maxY):
-        self.trimmed_screen = Screen(maxX - minX, maxY - minY)
-        self.final_screen = self.trimmed_screen.get_formatted_screen(16 / 9)
-        self.draw, self.room_map = self.__create_map(self.final_screen)
-        for item in items:
-            device, display = item
-            display.rect = ((display.rect[0][0] - minX, display.rect[0][1] - minY), display.rect[1], display.rect[2])
-            device_screen = self.final_screen.get_device_screen(device, display.rect)
-            device.save_screen_params(device_screen)
-            self.__draw_map(self.draw, display.rect, (255, 0, 0))
-
-        self.__save_map(self.draw, self.room, self.room_map)
-
-    @classmethod
-    def __draw_map(cls, draw, rect, color):
-        draw.polygon(np.int0(cv2.boxPoints(rect)).flatten().tolist(), fill=color)
-
-    @classmethod
-    def __create_map(self, final_screen):
-        room_map = Image.new('RGB', [final_screen.width, final_screen.height], (255, 255, 255))
-        return ImageDraw.Draw(room_map), room_map
-
-    @classmethod
-    def __save_map(self, draw, room, room_map):
-        del draw
-        filename = basedir + '/images/' + str(room.id) + '_map.jpg'
-        if os.path.exists(filename):
-            os.remove(filename)
-        room_map.save(filename)
-
     def parse(self):
-        device_amount, image_objects, items, lower_red, maxX, maxY, minX, minY, upper_red = self.variables_initialise(
-            self.devices)
+        device_amount, image_objects, items = self.__variables_initialise(self.devices)
 
-        img = self.image_converting(self.impath)
-        mask = cv2.inRange(img, lower_red, upper_red)
-        cv2.imwrite('images/calibrate/' + 'mask' + '.png', mask)
-        _, contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE,
-                                                  cv2.CHAIN_APPROX_NONE)
-        contours = sorted(contours, key=lambda x: len(x))[-device_amount * 2:]
+        img = self.__image_converting(self.impath)
+        mask = self.create_mask(img)
+        contours = self.find_contours(device_amount, mask)
 
-        print('contours: ', contours)
-
-        maxX, maxY, minX, minY = self.contur_calculation(contours, image_objects, maxX, maxY, minX, minY)
+        maxX, maxY, minX, minY = self.__contour_calculation(contours, image_objects)
 
         for image_object in image_objects:
             image_object.find_relation(image_objects)
@@ -146,7 +109,7 @@ class Parser():
 
         print('displays: ', displays)
 
-        self.matrix_identify(self.devices, displays, img, items, mask)
+        self.__matrix_identify(self.devices, displays, img, items, mask)
 
         print('items: ', items)
 
@@ -156,23 +119,64 @@ class Parser():
 
         return is_parsed
 
-    @classmethod
-    def variables_initialise(cls, devices):
-        device_amount = len(devices)  # TODO take device amount on calibrate pic
-        print('device amount: ', device_amount)
-        is_parsed = False
-        maxX = maxY = -math.inf
-        minY = minX = math.inf
-        image_objects = []
-        items = list()
+    def __handle_parse(self, items, minX, minY, maxX, maxY):
+        trimmed_screen = Screen(maxX - minX, maxY - minY)
+        final_screen = trimmed_screen.get_formatted_screen(16 / 9)
+        draw, room_map = self.__create_map(final_screen)
+        for item in items:
+            device, display = item
+            display.rect = ((display.rect[0][0] - minX, display.rect[0][1] - minY), display.rect[1], display.rect[2])
+            device_screen = final_screen.get_device_screen(display.rect)
+            device.save_screen_params(device_screen)
+            self.__draw_map(draw, display.rect, (255, 0, 0))
+
+        self.__save_map(draw, self.room, room_map)
+
+    @staticmethod
+    def find_contours(device_amount, mask):
+        _, contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE,
+                                                  cv2.CHAIN_APPROX_NONE)
+        contours = sorted(contours, key=lambda x: len(x))[-device_amount * 2:]
+        print('contours: ', contours)
+        return contours
+
+    @staticmethod
+    def create_mask(img):
         lower_red = np.array((0, 150, 150), np.uint8)
         print('lower_red: ', lower_red)
         upper_red = np.array((20, 255, 255), np.uint8)
         print('upper_red: ', upper_red)
-        return device_amount, image_objects, items, lower_red, maxX, maxY, minX, minY, upper_red
+        mask = cv2.inRange(img, lower_red, upper_red)
+        cv2.imwrite('images/calibrate/' + 'mask' + '.png', mask)
+        return mask
 
     @classmethod
-    def image_converting(cls, impath):
+    def __draw_map(cls, draw, rect, color):
+        draw.polygon(np.int0(cv2.boxPoints(rect)).flatten().tolist(), fill=color)
+
+    @classmethod
+    def __create_map(cls, final_screen):
+        room_map = Image.new('RGB', [final_screen.width, final_screen.height], (255, 255, 255))
+        return ImageDraw.Draw(room_map), room_map
+
+    @classmethod
+    def __save_map(cls, draw, room, room_map):
+        del draw
+        filename = basedir + '/images/' + str(room.id) + '_map.jpg'
+        if os.path.exists(filename):
+            os.remove(filename)
+        room_map.save(filename)
+
+    @classmethod
+    def __variables_initialise(cls, devices):
+        device_amount = len(devices)  # TODO take device amount on calibrate pic
+        print('device amount: ', device_amount)
+        image_objects = []
+        items = list()
+        return device_amount, image_objects, items
+
+    @classmethod
+    def __image_converting(cls, impath):
         img = cv2.imread(impath)
         cv2.imwrite('images/calibrate/' + 'img_non_hsv' + '.png', img)
         img = cv2.medianBlur(img, 5)
@@ -182,9 +186,9 @@ class Parser():
         return img
 
     @classmethod
-    def matrix_identify(cls, devices, displays, img, items, mask):
+    def __matrix_identify(cls, devices, displays, img, items, mask):
         for display in displays:
-            matrix = display.indentify(display, mask, img)
+            matrix = display.identify(display, mask, img)
 
             print('matrix: ', matrix)
             print('rect: ', display.rect)
@@ -195,8 +199,10 @@ class Parser():
                     break
 
     @classmethod
-    def contur_calculation(cls, contours, image_objects, maxX, maxY, minX, minY):
+    def __contour_calculation(cls, contours, image_objects):
         i = 0
+        maxX = maxY = -math.inf
+        minY = minX = math.inf
         for contour in contours:
             image_object = ImageObject(contour, i)
             image_objects.append(image_object)

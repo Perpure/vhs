@@ -61,9 +61,10 @@ class TestPageAvail(unittest.TestCase):
         response = self.client.get("/cabinet/TestUser", follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
-    # def test_should_room_page_be_exist(self):
-    #     response = self.client.get("/room/" + str(self.room.id), follow_redirects=True)
-    #     self.assertEqual(response.status_code, 200)
+    @unittest.skip("unable to fix now")
+    def test_should_room_page_be_exist(self):
+        response = self.client.get("/room/" + str(self.room.id), follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
 
     def test_should_upload_page_be_exist(self):
         response = self.client.get("/upload", follow_redirects=True)
@@ -73,10 +74,11 @@ class TestPageAvail(unittest.TestCase):
         response = self.client.get("/notavail", follow_redirects=True)
         self.assertEqual(response.status_code, 404)
 
-    # def test_should_choose_video1_page_be_exist(self):
-    #     response = self.client.get("/room/" + str(self.room.id) + "/choose_video/" + str(self.video.id),
-    #                                follow_redirects=True)
-    #     self.assertEqual(response.status_code, 200)
+    @unittest.skip("unable to fix now")
+    def test_should_choose_video1_page_be_exist(self):
+        response = self.client.get("/room/" + str(self.room.id) + "/choose_video/" + str(self.video.id),
+                                   follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
 
     def test_should_choose_video2_page_be_exist(self):
         response = self.client.get("/room/" + str(self.room.id) + "/choose_video", follow_redirects=True)

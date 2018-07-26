@@ -330,7 +330,6 @@ class Calibrate_matrix(db.Model):
 
     def __init__(self, matrix):
         self.matrix = matrix
-        self.create_calibrate_matrix_image()
         db.session.add(self)
         db.session.commit()
 
