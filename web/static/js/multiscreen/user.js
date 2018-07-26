@@ -54,10 +54,12 @@ jQuery(function($) {
         + 'class="calibration-image fullscreen-switcher"></div>');
   });
   socket.on('multiscreen_show_result', function(response) {
+    var coefficient = $('#ResultVideo').height() / $('#ResultVideo').width();
     $('#ResultVideo').css({
         top: screen.height * (response.top / response.scale) + "px",
         left: screen.width * (response.left / response.scale) + "px",
-        width: response.scale + "%"
+        width: response.scale + "%",
+        height: coefficient * response.scale + "vw"
     });
     if(response.noSound) {
       PLAYER.mute();
