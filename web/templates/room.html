@@ -20,9 +20,9 @@
     <button class="video-control__btn fullscreen-switcher">Перейти в полноэкранный режим</button>
   {% endif %}
 </div>
-{% if room.capitan_id == anon.id %}
+{% if room.capitan_id == anon.id and not map_ex%}
     <h5>Загрузите калибровочное фото</h5>
-    <form action="" method="post" enctype="multipart/form-data">
+    <form id="image_form" action="" method="post" enctype="multipart/form-data">
         <div class="loader">
             <button class="loader__btn" type="button">
                 <span class="loader__txt">Выбрать фото</span>
@@ -72,7 +72,7 @@
 
 {% if map_ex %}
     <hr>
-    <img src="{{url_for('get_multi', pid=room_map)}}" style="width:100%">
+    <img id="map" src="{{url_for('get_multi', pid=room_map)}}" style="width:100%">
 {% endif %}
 
 {% if msg %}

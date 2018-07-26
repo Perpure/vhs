@@ -19,7 +19,43 @@ $('#calibrate_btn').click(function() {
   }
 });
 
-var play=false;
+
+$('#image_form').on('submit', function(e) {
+    $('.error').remove();
+    e.preventDefault();
+    if ($('#image').val() == '') {
+        $('#image_form').after('<p class="error" style="color:red;">Файл не выбран</p>');
+        return '';
+    }
+    if (!(['jpg', 'jpeg'].includes($('#image').val().split('.').pop().toLowerCase()))) {
+        $('#image_form').after('<p class="error" style="color:red;">Неправильное расширение (должно быть jpeg или jpg)</p>');
+        return '';
+    }
+
+    var form_data = new FormData();
+    form_data.append('image', $('#image')[0].files[0]);
+
+    $.ajax("", {
+        data:form_data,
+        processData:false,
+        type:'POST',
+        contentType:false
+    }).done(function(data, textStatus) {
+    var extrc_data = JSON.parse(data);
+        if (extrc_data.status == 'OK') {
+            $('#image_form').hide();
+            $('#image_form').after('<p style="color:green;">Фотография загружена</p>');
+            $('#map').src = extrc_data.map_url;
+        }
+        else {
+             $('#image_form').after('<p class="error" style="color:red;">' + extrc_data.status + '</p>');
+        }
+    }).fail(function(textStatus) {
+        $('#image_form').after('<p class="error" style="color:red;">Ошибка: ' + textStatus.status + ' ' + textStatus.statusText + '</p>');
+
+    });
+});
+
 
 $('#show_res').click(function() {
   if($('#show_res').hasClass('video-control__btn_disabled')==false)
