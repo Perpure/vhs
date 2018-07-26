@@ -54,12 +54,11 @@ jQuery(function($) {
         + 'class="calibration-image fullscreen-switcher"></div>');
   });
   socket.on('multiscreen_show_result', function(response) {
-    var coefficient = $('#ResultVideo').height() / $('#ResultVideo').width();
     $('#ResultVideo').css({
         top: screen.height * (response.top / response.scale) + "px",
         left: screen.width * (response.left / response.scale) + "px",
         width: response.scale + "%",
-        height: coefficient * response.scale + "vw"
+        height: screen.width * response.scale * 0.005625 + "px"
     });
     if(response.noSound) {
       PLAYER.mute();
@@ -88,11 +87,9 @@ jQuery(function($) {
   });
 
   var ratio = window.devicePixelRatio || 1;
-  var width = screen.width * ratio;
-  var height = screen.height * ratio;
   var Data = {
-    "width": width,
-     "height" : height
+    width: screen.width * ratio,
+    height : screen.height * ratio
   };
   $.ajax({
     url: '/tellRes',
