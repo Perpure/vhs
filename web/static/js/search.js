@@ -65,10 +65,7 @@ $('#startSearch').click(function(){
         sort = "empty";
     }
 
-    if(val[0] == '#')
-    {
-        val= '*' + val.substr(1);
-    }
+    val = val.replace('#', '*');
 
     if(val == "")
     {

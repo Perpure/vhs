@@ -82,10 +82,13 @@ class Video(db.Model):
 
     viewers = db.relationship('User', secondary=WatchHistory, backref='watch_history', lazy='joined')
 
+    views = db.Column(db.Integer)
+
     geotags = db.relationship("Geotag", backref="video", lazy="joined")
 
     def __init__(self, title):
         self.title = title
+        self.views = 0
 
     def save(self, hash, user):
         self.date = datetime.now(tz=None)
@@ -105,7 +108,7 @@ class Video(db.Model):
 
     def add_viewer(self, user):
         self.viewers.append(user)
-
+        self.views += 1
         db.session.add(self)
         db.session.commit()
 
@@ -126,19 +129,18 @@ class Video(db.Model):
 
         videos = []
         
-
         if search:
             elements = search.split(' ')
-            print(elements)
+
             if elements[0][0] == '*':
-                videos = Tag.query.filter(Tag.text == elements[0][1:]).first().videos
+                videos = Video.query.filter(Video.tags.contains(Tag.create_unique(elements[0][1:])))
             else:
                 videos = Video.query.filter(Video.title.like('%' + elements[0] + '%'))
             for item in elements[1:]:
                 if item[0] == '*':
-                    videos = videos.filter(Tag.text == search[1:]).first().videos
+                    videos = videos.filter(Video.tags.contains(Tag.create_unique(item[1:])))
                 else:
-                    videos = videos.filter(Video.title.like('%' + search + '%'))
+                    videos = videos.filter(Video.title.like('%' + item + '%'))
         else:
             videos = Video.query.all()
 
@@ -147,7 +149,7 @@ class Video(db.Model):
             if "date" in sort:
                 videos = videos.order_by(Video.date.desc())
             if "views" in sort:
-                videos = videos.order_by(Video.viewers)
+                videos = videos.order_by(Video.views.desc())
 
         return videos
 
