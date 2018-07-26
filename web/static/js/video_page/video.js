@@ -47,39 +47,11 @@ jQuery(function($) {
     calc();
 
     $('.tag').click(function() {
-        var tagName = $(this).text(),
-            vw = 0,
-            dt = 0;
+        var tagName = $(this).text();
         if( tagName == "" ) {
             tagName = " ";
         }
-        $.ajax({
-            url: "/startSearch",
-            type: "GET",
-            dataType: "html",
-            data: {
-                ask: tagName,
-                view: vw,
-                dat: dt
-            },
-            success: function(response)
-            {
-                var placer = "";
-                response = $.parseHTML(response);
-                var tempDom = $('search').append(response);
-                var maine = $('#Main', tempDom);
-                $(tempDom).empty();
-                $("#Main").html($(maine).html());
-            }
-        });
-        if ( pr_page == "" ) {
-            map_needed = $('#show_video_map').prop('checked');
-            $.getScript('/static/videos_map.js');
-        } else {
-            $.getScript("https://api-maps.yandex.ru/2.1/?lang=ru_RU", function() {
-                $.getScript('/static/videos_map.js');
-            });
-        }
-        pr_page = "";
+        tagName = tagName.replace('#', '*');
+        window.location="/search/" + tagName + "/empty";
     });
 });

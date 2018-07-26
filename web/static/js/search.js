@@ -27,14 +27,6 @@ function swit(e){
     elem.val(Math.abs(elem.val() - 1));
 }
 
-function getCurrentPage() {
-    var url = window.location.href;
-    var host = "http://"+window.location.host+"/";
-
-    return url.substr(host.length);
-}
-
-var pr_page=getCurrentPage();
 var map_needed=false;
 
 var date = $("#Date");
@@ -75,15 +67,4 @@ $('#startSearch').click(function(){
     {
         window.location="/search/" + val + "/" + sort;
     }
-
-    /*if (pr_page == "" ) {
-        map_needed = $('#show_video_map').prop('checked');
-    }
-    if (pr_page != "") {
-        $.getScript("https://api-maps.yandex.ru/2.1/?lang=ru_RU", function () {$.getScript('/static/videos_map.js');});
-    }
-    else {
-        $.getScript('/static/videos_map.js');
-    }
-    pr_page="";*/
 });

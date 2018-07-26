@@ -80,6 +80,9 @@
 
 <div id="videos_map" align="center"></div>
 
+<script>
+  var geo_videos = {{ geo_items|safe }};
+</script>
 <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
 <script src="{{ url_for('static', filename='videos_map.js') }}"></script>
 {% if user %}

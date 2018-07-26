@@ -138,7 +138,7 @@ class Video(db.Model):
                 else:
                     videos = videos.filter(Video.title.like('%' + item + '%'))
         else:
-            videos = Video.query.all()
+            videos = Video.query
 
         if sort:
             sort = sort.lower()
