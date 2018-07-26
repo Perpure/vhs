@@ -12,7 +12,45 @@
   </div>
 </div>
 <div id="video_table">
-  <div class="section section_open"  id="all">
+  <div class="slider">
+    <h5 class="fact slider__btn">Сортировка</h5>
+    <div class="slider__content">
+      <div class="inline-block">
+        По дате<br>
+        <label>
+          <input name="byDate" type="radio" value="0" {% if date == 0 %}checked{% endif %}>
+          Не сортировать
+        </label><br>
+        <label>
+          <input name="byDate" type="radio" value="1" {% if date == 1 %}checked{% endif %}>
+          По убыванию
+        </label><br>
+        <label>
+          <input name="byDate" type="radio" value="2" {% if date == 2 %}checked{% endif %}>
+          По возрастанию
+        </label><
+      </div>
+      <div class="inline-block">
+        По названию<br>
+        <label>
+          <input name="byName" type="radio" value="0" {% if name == 0 %}checked{% endif %}>
+          Не сортировать
+        </label><br>
+        <label>
+          <input name="byName" type="radio" value="1" {% if name == 1 %}checked{% endif %}>
+          По возрастанию
+        </label><br>
+        <label>
+          <input name="byName" type="radio" value="2" {% if name == 2 %}checked{% endif %}>
+          По убыванию
+        </label>
+      </div>
+      <br>
+      <button type="button" id="sort">Сортировать</button>
+    </div>
+  </div>
+  <hr>
+  <div class="section section_open" id="all">
   {% for item in items %}
     <div class="video">
       <div class="video__preview">
@@ -44,7 +82,12 @@
 <div id="videos_map" align="center"></div>
 <script>
   var geo_videos = {{ geo_items|safe }};
+  var cur_search = '{{ current }}';
+  var old_date = '{{ date }}';
+  var old_name = '{{ name }}';
 </script>
 <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
 <script src="{{ url_for('static', filename='videos_map.js') }}"></script>
+<script src="{{ url_for('static', filename='js/slide.js') }}"></script>
+<script src="{{ url_for('static', filename='js/search_sort.js') }}"></script>
 {% endblock %}

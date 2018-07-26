@@ -27,8 +27,9 @@ def main():
                 sub_items.append(video)
 
     now = time = datetime.now(tz=None)
-    video_pack = Video.get(sort = "all")
-    return render_template('main.html', user=user, items=video_pack[0], sub_items=sub_items, now=now, geo_items=json.dumps([video.serialize() for video in video_pack[1]]))
+    video_pack = Video.get(sort="all")
+    return render_template('main.html', user=user, items=video_pack[0], sub_items=sub_items,
+                           now=now, geo_items=json.dumps([video.serialize() for video in video_pack[1]]))
 
 
 @app.route('/createroom', methods=['GET', 'POST'])
@@ -132,9 +133,10 @@ def choose_video(room_id):
             for sub in subs:
                 for video in sub.videos:
                     sub_items.append(video)
-        video_pack = Video.get(sort = "all")
-        return render_template('choose_video.html', user=cur_user(), items=video_pack[0], cap=cap, room=room, anon=user,
-                               now=now, sub_items=sub_items, geo_items=json.dumps([video.serialize() for video in video_pack[1]]))
+        video_pack = Video.get(sort="all")
+        return render_template('choose_video.html', user=cur_user(), items=video_pack[0],
+                               cap=cap, room=room, anon=user, now=now, sub_items=sub_items,
+                               geo_items=json.dumps([video.serialize() for video in video_pack[1]]))
     else:
         return redirect(url_for('viewroom'))
 
@@ -345,7 +347,22 @@ def search_results(ask, sort):
     user = cur_user()
     now = time = datetime.now(tz=None)
     video_pack = Video.get(search=ask, sort=sort)
-    return render_template('search_results.html', user=user, items=video_pack[0], now=now, geo_items=json.dumps([video.serialize() for video in video_pack[1]]))
+    Date = 0
+    Name = 0
+    if "date" in sort:
+        if "date_asc" in sort:
+            Date = 2
+        else:
+            Date = 1
+    if "name" in sort:
+        if "name_asc" in sort:
+            Name = 2
+        else:
+            Name = 1
+    return render_template('search_results.html', user=user, items=video_pack[0],
+                           now=now,
+                           geo_items=json.dumps([video.serialize() for video in video_pack[1]]),
+                           current=ask, name=Name, date=Date)
 
 
 @app.errorhandler(403)

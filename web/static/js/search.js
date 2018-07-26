@@ -38,6 +38,20 @@ date.val(0);
 views.click(swit);
 date.click(swit);
 
+function search(word,sort)
+{
+    if(sort == null || sort == "")
+    {
+        sort = "empty";
+    }
+    if(word == "" || word == null)
+    {
+        word = "empty";
+    }
+    word = word.replace('#', '*');
+    window.location="/search/" + word + "/" + sort;
+}
+
 $('#startSearch').click(function(){
     var val = $("#searchKey").val();
     var vw = views.val();
@@ -52,19 +66,6 @@ $('#startSearch').click(function(){
     {
         sort += "views";
     }
-    if(! sort)
-    {
-        sort = "empty";
-    }
 
-    val = val.replace('#', '*');
-
-    if(val == "")
-    {
-        window.location="/";
-    }
-    else
-    {
-        window.location="/search/" + val + "/" + sort;
-    }
+    search(val, sort);
 });

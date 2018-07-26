@@ -157,7 +157,7 @@ def tellRes():
             height = request.json['height']
             user.update_resolution(width=width, height=height)
             return jsonify(width=width, height=height)
-    
+
 
 @app.route('/subscribe/<int:ID>', methods=['GET', 'POST'])
 def subscribe(ID):

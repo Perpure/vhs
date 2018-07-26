@@ -48,10 +48,6 @@ jQuery(function($) {
 
     $('.tag').click(function() {
         var tagName = $(this).text();
-        if( tagName == "" ) {
-            tagName = " ";
-        }
-        tagName = tagName.replace('#', '*');
-        window.location="/search/" + tagName + "/empty";
+        search(tagName);
     });
 });

@@ -124,8 +124,8 @@ class Video(db.Model):
             return Video.query.get(video_id)
 
         videos = []
-        
-        if search:
+
+        if search and search != 'empty':
             elements = search.split(' ')
 
             if elements[0][0] == '*':
@@ -143,20 +143,28 @@ class Video(db.Model):
         if sort:
             sort = sort.lower()
             if "date" in sort:
-                videos = videos.order_by(Video.date.desc())
-            geo_videos = videos.filter(Video.geotags != None)
-            
+                if "date_asc" in sort:
+                    videos = videos.order_by(Video.date)
+                else:
+                    videos = videos.order_by(Video.date.desc())
+            if "name" in sort:
+                if "name_asc" in sort:
+                    videos = videos.order_by(Video.title)
+                else:
+                    videos = videos.order_by(Video.title.desc())
+            geo_videos = videos.filter(Video.geotags not None)
+
             return videos, geo_videos
 
         return videos
-    
+
     def serialize(self):
-       return {
-           'title' : self.title,
-           'link': url_for("play", vid=self.id),
-           'preview' : url_for("get_image", pid=self.id),
-           'geotags' : [(gt.longitude, gt.latitude) for gt in self.geotags]
-       }
+        return {
+            'title': self.title,
+            'link': url_for("play", vid=self.id),
+            'preview': url_for("get_image", pid=self.id),
+            'geotags': [(gt.longitude, gt.latitude) for gt in self.geotags]
+        }
 
     def get_tags(self):
         tags = []
