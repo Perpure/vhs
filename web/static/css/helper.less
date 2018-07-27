@@ -135,3 +135,34 @@ search
     width: 600px;
   }
 }
+
+.radio
+{
+  display: block;
+  color: @color-main;
+  & > .fa-dot-circle:before
+  {
+      content: "\F111";
+  }
+  &__btn
+  {
+    display: none;
+    &:checked ~ span
+    {
+      color: @color-link;
+    }
+    &:checked ~ .fa-dot-circle:before
+    {
+      content: "\F192";
+    }
+  }
+  &__face
+  {
+    margin-right: 10px;
+    color: @color-secondary;
+  }
+  &:hover
+  {
+    cursor: pointer;
+  }
+}

@@ -16,33 +16,39 @@
     <h5 class="fact slider__btn">Сортировка</h5>
     <div class="slider__content">
       <div class="inline-block">
-        По дате<br>
-        <label>
-          <input name="byDate" type="radio" value="0" {% if date == 0 %}checked{% endif %}>
-          Не сортировать
-        </label><br>
-        <label>
-          <input name="byDate" type="radio" value="1" {% if date == 1 %}checked{% endif %}>
-          По убыванию
-        </label><br>
-        <label>
-          <input name="byDate" type="radio" value="2" {% if date == 2 %}checked{% endif %}>
-          По возрастанию
-        </label><
+        <h6>По дате</h6>
+          <label class="radio">
+            <input name="byDate" type="radio" value="1" {% if date == 0 %}checked{% endif %} class="radio__btn">
+            <span class="fa fa-dot-circle fa-circle radio__face"></span>
+            <span>Не сортировать</span>
+          </label>
+        <label class="radio">
+          <input name="byDate" type="radio" value="1" {% if date == 1 %}checked{% endif %} class="radio__btn">
+          <span class="fa fa-dot-circle fa-circle radio__face"></span>
+          <span>По убыванию</span>
+        </label>
+        <label class="radio">
+          <input name="byDate" type="radio" value="2" {% if date == 2 %}checked{% endif %} class="radio__btn">
+          <span class="fa  fa-dot-circle fa-circle radio__face"></span>
+          <span>По возрастанию</span>
+        </label>
       </div>
       <div class="inline-block">
-        По названию<br>
-        <label>
-          <input name="byName" type="radio" value="0" {% if name == 0 %}checked{% endif %}>
-          Не сортировать
-        </label><br>
-        <label>
-          <input name="byName" type="radio" value="1" {% if name == 1 %}checked{% endif %}>
-          По возрастанию
-        </label><br>
-        <label>
-          <input name="byName" type="radio" value="2" {% if name == 2 %}checked{% endif %}>
-          По убыванию
+        <h6>По названию</h6>
+        <label class="radio">
+          <input name="byName" type="radio" value="0" {% if name == 0 %}checked{% endif %} class="radio__btn">
+          <span class="fa fa-dot-circle fa-circle radio__face"></span>
+          <span>Не сортировать</span>
+        </label>
+        <label class="radio">
+          <input name="byName" type="radio" value="1" {% if name == 1 %}checked{% endif %} class="radio__btn">
+          <span class="fa fa-dot-circle fa-circle radio__face"></span>
+          <span>По убыванию</span>
+        </label>
+        <label class="radio">
+          <input name="byName" type="radio" value="2" {% if name == 2 %}checked{% endif %} class="radio__btn">
+          <span class="fa fa-dot-circle fa-circle radio__face"></span>
+          <span>По возрастанию</span>
         </label>
       </div>
       <br>
