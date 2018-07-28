@@ -30,24 +30,25 @@ class ImageObject:
 
     @staticmethod
     def identify(display, mask, img):
-        matrix = ""
-        min_x = display.min_x
-        max_x = display.max_x
-        min_y = display.min_y
-        max_y = display.max_y
-        width = max_x - min_x
-        height = max_y - min_y
-        for y in range(1, 4):
-            h = min_y + (height * (1 + y * 2)) // 10
-            for x in range(1, 4):
-                print(y, min_y, height)
-                w = min_x + (width * (1 + x * 2)) // 10
-                cv2.circle(img, (w, h), 3, 255, -1)
-                if mask[h][w] == 0:
-                    matrix += '1'
-                else:
-                    matrix += '0'
-        return matrix
+        pass
+        # matrix = ""
+        # min_x = display.min_x
+        # max_x = display.max_x
+        # min_y = display.min_y
+        # max_y = display.max_y
+        # width = max_x - min_x
+        # height = max_y - min_y
+        # for y in range(1, 4):
+        #     h = min_y + (height * (1 + y * 2)) // 10
+        #     for x in range(1, 4):
+        #         print(y, min_y, height)
+        #         w = min_x + (width * (1 + x * 2)) // 10
+        #         cv2.circle(img, (w, h), 3, 255, -1)
+        #         if mask[h][w] == 0:
+        #             matrix += '1'
+        #         else:
+        #             matrix += '0'
+        # return matrix
 
 
 class Screen:
@@ -188,15 +189,14 @@ class Parser:
     @classmethod
     def __matrix_identify(cls, devices, displays, img, items, mask):
         for display in displays:
-            matrix = display.identify(display, mask, img)
+            # matrix = display.identify(display, mask, img)
 
-            print('matrix: ', matrix)
+            # print('matrix: ', matrix)
             print('rect: ', display.rect)
 
             for device in devices:
-                if matrix == device.matrix:
-                    items.append([device, display])
-                    break
+                items.append([device, display])
+                break
 
     @classmethod
     def __contour_calculation(cls, contours, image_objects):
