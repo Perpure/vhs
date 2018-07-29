@@ -50,13 +50,26 @@ jQuery(function($) {
         });
     });
 
+function show_message(type, text)
+{
+    if(type == 'error')
+    {
+        $('#formMessage').removeClass('message_correct')
+                      .addClass('message_error')
+                      .html(text);
+    }
+    if(type == 'correct')
+    {
+        $('#formMessage').removeClass('message_error')
+                      .addClass('message_correct')
+                      .html(text);
+    }
+}
 
 $('#image_form').on('submit', function(e) {
-    $('#formMssg').removeClass('message_correct');
-
     e.preventDefault();
     if ($('#image').val() == '') {
-        $('#formMssg').html('Файл не выбран');
+        show_message('error', 'Файл не выбран');
         return;
     }
     var imageExtension =  $('#image').val()
@@ -64,7 +77,7 @@ $('#image_form').on('submit', function(e) {
             .pop()
             .toLowerCase();
     if ( !['jpg', 'jpeg'].includes(imageExtension) ) {
-        $('#formMssg').html('Неправильное расширение (должно быть jpeg или jpg)');
+        show_message('error', 'Неправильное расширение (должно быть jpeg или jpg)');
         return;
     }
 
@@ -79,18 +92,16 @@ $('#image_form').on('submit', function(e) {
         dataType: 'json',
         success: function(data) {
             if (data.status) {
-                $('#formMssg').removeClass('message_error');
-                $('#formMssg').addClass('message_correct');
-                $('#formMssg').html('Фотография загружена');
+                show_message('correct', 'Фотография загружена');
                 $('#map').show();
                 $('#map').attr('src', data.map_url);
             }
             else {
-                $('#formMssg').html('Мы не смогли идентифицировать устройства, попробуйте загрузить другую фотографию.');
+                show_message('error', 'Мы не смогли идентифицировать устройства, попробуйте загрузить другую фотографию.');
             }
         },
         error: function(textStatus) {
-            $('#formMssg').html(textStatus.status + ' ' + textStatus.statusText);
+            show_message('error', textStatus.status + ' ' + textStatus.statusText);
         }
     });
 });
