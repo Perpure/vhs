@@ -20,7 +20,8 @@
     <button class="video-control__btn fullscreen-switcher">Перейти в полноэкранный режим</button>
   {% endif %}
 </div>
-{% if room.capitan_id == anon.id and not map_ex%}
+
+{% if room.capitan_id == anon.id%}
     <h5>Загрузите калибровочное фото</h5>
     <form id="image_form" action="" method="post" enctype="multipart/form-data">
         <div class="loader">
@@ -30,14 +31,16 @@
             </button>
         </div>
         {% if image_form.image.errors %}
-        {% for error in image_form.image.errors %}
-            <div style="color: red;">{{ error }}</div>
-        {% endfor %}
-    {% endif %}
+            {% for error in image_form.image.errors %}
+                <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
         <div id="Calibr"> {{ image_form.submit }} </div>
         {% if map_ex %}
         {% endif %}
     </form>
+    <p id="formMssg" class="error"></p>
+    <img id="map" {% if map_ex %}src="{{url_for('get_multi', pid=room_map)}}"{% endif %} style="width:100%" {% if not map_ex %}class="hidden"{% endif %}>
 {% endif %}
 
 {% if room.capitan_id == anon.id %}
@@ -70,15 +73,6 @@
     <hr>
 {% endif %}
 
-{% if map_ex %}
-    <hr>
-    <img id="map" src="{{url_for('get_multi', pid=room_map)}}" style="width:100%">
-{% endif %}
-
-{% if msg %}
-    <hr>
-    <p>{{msg}}</p>
-{% endif %}
 <div class="slider">
   <span  class="fact slider__btn">Инструкция</span>
   <ol class="slider__content">

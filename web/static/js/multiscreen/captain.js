@@ -21,10 +21,10 @@ $('#calibrate_btn').click(function() {
 
 
 $('#image_form').on('submit', function(e) {
-    $('.error').remove();
+    $('#formMssg').deleteClass('correct');
     e.preventDefault();
     if ($('#image').val() == '') {
-        $('#image_form').after('<p class="error" style="color: red;">Файл не выбран</p>');
+        $('#formMssg').html('Файл не выбран');
         return;
     }
     var imageExtension =  $('#image').val()
@@ -32,7 +32,7 @@ $('#image_form').on('submit', function(e) {
             .pop()
             .toLowerCase();
     if ( !['jpg', 'jpeg'].includes(imageExtension) ) {
-        $('#image_form').after('<p class="error" style="color: red;">Неправильное расширение (должно быть jpeg или jpg)</p>');
+        $('#formMssg').html('Неправильное расширение (должно быть jpeg или jpg)');
         return;
     }
 
@@ -45,18 +45,21 @@ $('#image_form').on('submit', function(e) {
         type: 'POST',
         contentType: false,
         dataType: 'json',
-    }).done(function(data) {
-        if (data.status == 'OK') {
-            $('#image_form').hide();
-            $('#image_form').after('<p style="color: green;">Фотография загружена</p>');
-            $('#map').src = data.map_url;
+        success: function(data) {
+            if (data.status) {
+                $('#formMssg').deleteClass('error');
+                $('#formMssg').addClass('correct');
+                $('#formMssg').html('Фотография загружена');
+                $('#map').show();
+                $('#map').attr('src', data.map_url);
+            }
+            else {
+                 $('#formMssg').html('Мы не смогли идентифицировать устройства, попробуйте загрузить другую фотографию.');
+            }
+        },
+        error: function(textStatus) {
+            $('#formMssg').html(textStatus.status + ' ' + textStatus.statusText);
         }
-        else {
-             $('#image_form').after('<p class="error" style="color: red;">' + data.status + '</p>');
-        }
-    }).fail(function(textStatus) {
-        $('#image_form').after('<p class="error" style="color: red;">Ошибка: ' + textStatus.status + ' ' + textStatus.statusText + '</p>');
-
     });
 });
 
