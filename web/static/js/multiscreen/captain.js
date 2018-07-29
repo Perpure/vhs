@@ -25,30 +25,34 @@ $('#image_form').on('submit', function(e) {
     e.preventDefault();
     if ($('#image').val() == '') {
         $('#image_form').after('<p class="error" style="color: red;">Файл не выбран</p>');
-        return '';
+        return;
     }
-    if (!(['jpg', 'jpeg'].includes($('#image').val().split('.').pop().toLowerCase()))) {
+    var imageExtension =  $('#image').val()
+            .split('.')
+            .pop()
+            .toLowerCase();
+    if ( !['jpg', 'jpeg'].includes(imageExtension) ) {
         $('#image_form').after('<p class="error" style="color: red;">Неправильное расширение (должно быть jpeg или jpg)</p>');
-        return '';
+        return;
     }
 
     var form_data = new FormData();
     form_data.append('image', $('#image')[0].files[0]);
 
-    $.ajax("", {
+    $.ajax({
         data: form_data,
         processData: false,
         type: 'POST',
-        contentType: false
-    }).done(function(data, textStatus) {
-    var extrc_data = JSON.parse(data);
-        if (extrc_data.status == 'OK') {
+        contentType: false,
+        dataType: 'json',
+    }).done(function(data) {
+        if (data.status == 'OK') {
             $('#image_form').hide();
             $('#image_form').after('<p style="color: green;">Фотография загружена</p>');
-            $('#map').src = extrc_data.map_url;
+            $('#map').src = data.map_url;
         }
         else {
-             $('#image_form').after('<p class="error" style="color: red;">' + extrc_data.status + '</p>');
+             $('#image_form').after('<p class="error" style="color: red;">' + data.status + '</p>');
         }
     }).fail(function(textStatus) {
         $('#image_form').after('<p class="error" style="color: red;">Ошибка: ' + textStatus.status + ' ' + textStatus.statusText + '</p>');
