@@ -49,21 +49,27 @@ function init_all() {
 
     map.events.add('wheel', function(e){e.preventDefault();});
 
-    $('#show_video_map').change(function () {
-        $('#video_table').hide();
-        $('#videos_map').css('width', width);
-        $('#videos_map').css('height', height+'px');
-        $('#showMap').hide();
-        $('#showTab').show();
-        map.container.fitToViewport();
-    });
 
-    $('#show_video_table').change(function () {
-        $('#video_table').show();
-        $('#videos_map').css('width', '0px');
-        $('#videos_map').css('height', '0px');
-        $('#showMap').show();
-        $('#showTab').hide();
+    function changeTab(showingMode)
+    {
+        if (showingMode === 'table')
+        {
+            $('#video_table').show();
+            $('#videos_map').hide();
+        }
+        else if (showingMode === 'map')
+        {
+            $('#video_table').hide();
+            $('#videos_map').show();
+        }
+    }
+
+    $('#map_switcher').bind('switch', function(e, showingMode) {
+        changeTab(showingMode);
+        $('#videos_map').css({
+            'width': width,
+            'height': height + 'px'
+        });
         map.container.fitToViewport();
     });
 
@@ -71,6 +77,8 @@ function init_all() {
     {
         add_geotags(geo_videos);
     }
+
+    $.get("/video/data", {search: key.value}).done(add_geotags);
 }
 
 ymaps.ready(init_all);

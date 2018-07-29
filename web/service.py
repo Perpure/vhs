@@ -150,15 +150,15 @@ def dislikeVideo(vid):
                      "dislikes": str(len(video.dislikes))}])
 
 
-@app.route('/tellRes', methods=['GET', 'POST'])
+@app.route('/tellRes', methods=['POST'])
 def tellRes():
     if 'anon_id' in session:
         user = Device.query.get(session['anon_id'])
         if request.method == 'POST':
-            width = request.json['width']
-            height = request.json['height']
+            width = request.form['width']
+            height = request.form['height']
             user.update_resolution(width=width, height=height)
-            return jsonify(width=width, height=height)
+            return '0'
 
 
 @app.route('/subscribe/<int:ID>', methods=['GET', 'POST'])
@@ -244,3 +244,11 @@ def search_for_videos():
     jsoned.append(json.dumps([video.serialize('ext') for video in video_pack[0]]))
     jsoned.append(json.dumps([video.serialize() for video in video_pack[1]]))
     return json.dumps(jsoned)
+
+
+@app.route('/change_youtube_state/<int:ID>', methods=['GET', 'POST'])
+def change_youtube_state(ID):
+    room = Room.query.get(ID)
+    room.is_playing_youtube = not room.is_playing_youtube
+    db.session.commit()
+    return "nice"
