@@ -1,4 +1,5 @@
-var PLAYER;
+var PLAYER,
+    PICTURE_SIZE = 16 / 9;
 
 if(from_youtube) {
   var tag = document.createElement('script');
@@ -9,6 +10,14 @@ if(from_youtube) {
 
   function onYouTubeIframeAPIReady() {
       PLAYER = new YT.Player('ResultVideo',{
+          videoId: "uzoWJ33bJRg",
+          playerVars: {
+              controls: 0,
+              enablejsapi: 1,
+              rel: 0,
+              showinfo: 0,
+              modestbranding: 1
+          },
           events: {
               onStateChange: function(event) {
                   if(event.data == 0) {
@@ -54,16 +63,19 @@ jQuery(function($) {
         + 'class="calibration-image fullscreen-switcher"></div>');
   });
   socket.on('multiscreen_show_result', function(response) {
-    $('#ResultVideo').css({
-        top: screen.height * (response.top / response.scale) + "px",
-        left: screen.width * (response.left / response.scale) + "px",
+    var videoShell = $('#ResultVideoShell')
+        video = $('#ResultVideo');
+    // TODO надо убрать отсюда математику. Все должно вычисляться на сервере и в пикселях
+    video.css({
+        top: screen.height * response.top / response.scale + "px",
+        left: screen.width * response.left / response.scale + "px",
         width: response.scale + "%",
-        height: screen.width * response.scale * 0.005625 + "px"
+        height: screen.width * response.scale / PICTURE_SIZE / 100 + "px"
     });
     if(response.noSound) {
       PLAYER.mute();
     }
-    $('#ResultVideoShell').show();
+    videoShell.show();
     PLAYER.playVideo();
   });
   socket.on('multiscreen_show_pause', function() {
@@ -87,14 +99,13 @@ jQuery(function($) {
   });
 
   var ratio = window.devicePixelRatio || 1;
-  var Data = {
-    width: screen.width * ratio,
-    height : screen.height * ratio
-  };
   $.ajax({
     url: '/tellRes',
     type: "POST",
     dataType:"json",
-    data: Data
+    data: {
+        width: screen.width * ratio,
+        height: screen.height * ratio
+    }
   });
 });
