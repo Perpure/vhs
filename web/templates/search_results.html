@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
+<div class="searcher">
+    <input type="text" class="searcher__input" id="searchKey" title="">
+    <input type="submit" value="Поиск" class="searcher__btn" id="startSearch">
+</div>
 <h5>Поиск</h5>
 <div class="switcher">
   <div class="switcher__arm" id="showMap">
@@ -18,17 +22,17 @@
       <div class="inline-block">
         <h6>По дате</h6>
           <label class="radio">
-            <input name="byDate" type="radio" value="1" {% if date == 0 %}checked{% endif %} class="radio__btn">
+            <input name="byDate" type="radio" value="0" checked class="radio__btn">
             <span class="fa fa-dot-circle fa-circle radio__face"></span>
             <span>Не сортировать</span>
           </label>
         <label class="radio">
-          <input name="byDate" type="radio" value="1" {% if date == 1 %}checked{% endif %} class="radio__btn">
+          <input name="byDate" type="radio" value="1" class="radio__btn">
           <span class="fa fa-dot-circle fa-circle radio__face"></span>
           <span>По убыванию</span>
         </label>
         <label class="radio">
-          <input name="byDate" type="radio" value="2" {% if date == 2 %}checked{% endif %} class="radio__btn">
+          <input name="byDate" type="radio" value="2" class="radio__btn">
           <span class="fa  fa-dot-circle fa-circle radio__face"></span>
           <span>По возрастанию</span>
         </label>
@@ -36,64 +40,34 @@
       <div class="inline-block">
         <h6>По названию</h6>
         <label class="radio">
-          <input name="byName" type="radio" value="0" {% if name == 0 %}checked{% endif %} class="radio__btn">
+          <input name="byName" type="radio" value="0" checked class="radio__btn">
           <span class="fa fa-dot-circle fa-circle radio__face"></span>
           <span>Не сортировать</span>
         </label>
         <label class="radio">
-          <input name="byName" type="radio" value="1" {% if name == 1 %}checked{% endif %} class="radio__btn">
+          <input name="byName" type="radio" value="1" class="radio__btn">
           <span class="fa fa-dot-circle fa-circle radio__face"></span>
           <span>По убыванию</span>
         </label>
         <label class="radio">
-          <input name="byName" type="radio" value="2" {% if name == 2 %}checked{% endif %} class="radio__btn">
+          <input name="byName" type="radio" value="2" class="radio__btn">
           <span class="fa fa-dot-circle fa-circle radio__face"></span>
           <span>По возрастанию</span>
         </label>
       </div>
-      <br>
-      <button type="button" id="sort">Сортировать</button>
     </div>
   </div>
   <hr>
   <div class="section section_open" id="all">
-  {% for item in items %}
-    <div class="video">
-      <div class="video__preview">
-        <a href="{{ url_for('play', vid=item.id) }}">
-          <img src="{{url_for('get_image', pid=item.id)}}" alt="" class="video__preview-img">
-        </a>
-      </div>
-      <div>
-        <a href="{{ url_for('play', vid=item.id) }}">
-          <p class="video__title" title="{{item.title}}">{{item.title}}</p>
-        </a>
-        <a href="/cabinet/{{ item.user.login }}">
-          <p class="italic">
-            {{ item.user.name }} <br>
-            {{ item.viewers | length }} просмотров <br>
-            {% if (now - item.date).days>1 %}
-              {{item.date.date()}}
-            {% elif (now - item.date).days==1 %} вчера
-            {% elif (now - item.date).seconds/60< 60 %} {{((now - item.date).seconds/60)|int}} минут назад
-            {% else %} {{((now - item.date).seconds/3600)|int}} часов назад
-            {%endif%}
-          </p>
-        </a>
-      </div>
-    </div>
-  {% endfor %}
   </div>
 </div>
 <div id="videos_map" align="center"></div>
 <script>
-  var geo_videos = {{ geo_items|safe }};
-  var cur_search = '{{ current }}';
-  var old_date = '{{ date }}';
-  var old_name = '{{ name }}';
+  var now = '{{ now }}';
 </script>
+<script src="{{ url_for('static', filename='js/search.js') }}"></script>
 <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
 <script src="{{ url_for('static', filename='videos_map.js') }}"></script>
 <script src="{{ url_for('static', filename='js/slide.js') }}"></script>
-<script src="{{ url_for('static', filename='js/search_sort.js') }}"></script>
+<script src="{{ url_for('static', filename='js/search_page.js') }}"></script>
 {% endblock %}

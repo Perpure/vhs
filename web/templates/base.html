@@ -31,7 +31,7 @@
             <div class="nav-menu">
                 <div class="nav-menu__menu-holder" id="mHolder">Меню</div>
                 <a href="{{url_for('main')}}"><div class="nav-menu__nav-men">Главная</div></a>
-                <div class="nav-menu__nav-men" id="Search">Поиск</div>
+                <a href="{{url_for('search_results', usr=user.login)}}"><div class="nav-menu__nav-men" id="Search">Поиск</div></a>
                 <div class="nav-menu__nav-men nav-menu__nav-men_nav-clast">
                     Мультискрин
                     <span class="fa fa-caret-down nav-menu__img"></span>
@@ -61,21 +61,11 @@
                 {%endif%}
             </div>
         </div>
-
-        <div class="searcher" id="searcher">
-            <input type="text" class="searcher__input" id="searchKey" title="">
-            <div class="searcher__field" value=0 id="Date">Дата</div>
-            <div class="searcher__field" value=0 id="byViews">Просмотры</div>
-            <input type="submit" value="Поиск" class="searcher__btn" id="startSearch">
-        </div>
     </header>
 
     <main id="Main">
           {% block content %}{% endblock %}
     </main>
-
-    <search></search>
 </body>
 <script src="{{ url_for('static', filename='global.js') }}"></script>
-<script src="{{ url_for('static', filename='js/search.js') }}"></script>
 </html>

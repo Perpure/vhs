@@ -128,59 +128,22 @@ header
 }
 .searcher
 {
-  position: absolute;
   height:50px;
-  top:60px;
-  left:17%;
-  width:60%;
-  background-color:@color-main;
   padding:5px;
-  display:none;
-  z-index:5;
+  margin-bottom: 20px;
   -moz-user-select: none;
   -ms-user-select: none;
   -o-user-select: none;
   -webkit-user-select: none;
-  &__field
-  {
-    display:inline-block;
-    height:100%;
-    color:grey;
-    padding:7px;
-    text-align:center;
-    flex-grow:1;
-    margin-right:5px;
-    &:hover
-    {
-      cursor:pointer;
-      color:white;
-    }
-    &_checked
-    {
-      background-color:@color-secondary;
-      font-weight: bold;
-      color:black;
-      &:hover
-      {
-        color: black;
-      }
-    }
-  }
   &__input
   {
     vertical-align:top;
-    flex-grow:7;
     height:40px;
+    width: 60%;
     margin-right:5px;
   }
   &__btn
   {
     vertical-align:top;
-    flex-grow:1;
-    color: white;
-    &:hover
-    {
-      color: @color-link;
-    }
   }
 }

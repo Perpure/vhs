@@ -119,52 +119,58 @@ class Video(db.Model):
         db.session.commit()
 
     @staticmethod
-    def get(search=None, sort=None, video_id=None):
+    def get(search=None, tags=None, date=None, name=None, need_geo=False, video_id=None):
         if video_id:
             return Video.query.get(video_id)
 
         videos = []
 
-        if search and search != 'empty':
-            elements = search.split(' ')
-
-            if elements[0][0] == '*':
-                videos = Video.query.filter(Video.tags.contains(Tag.create_unique(elements[0][1:])))
-            else:
-                videos = Video.query.filter(Video.title.like('%' + elements[0] + '%'))
-            for item in elements[1:]:
-                if item[0] == '*':
-                    videos = videos.filter(Video.tags.contains(Tag.create_unique(item[1:])))
+        if search and search != '___empty___':
+            videos = Video.query.filter(Video.title.like('%' + search + '%'))
+        if tags:
+            for item in tags:
+                if not search or search == '___empty___':
+                    videos = Video.query.filter(Video.tags.contains(Tag.create_unique(item[1:])))
                 else:
-                    videos = videos.filter(Video.title.like('%' + item + '%'))
-        else:
+                    videos = videos.filter(Video.tags.contains(Tag.create_unique(item[1:])))
+        if not tags and ( not search or search == '___empty___'):
             videos = Video.query
 
-        if sort:
-            sort = sort.lower()
-            if "date" in sort:
-                if "date_asc" in sort:
-                    videos = videos.order_by(Video.date)
-                else:
-                    videos = videos.order_by(Video.date.desc())
-            if "name" in sort:
-                if "name_asc" in sort:
-                    videos = videos.order_by(Video.title)
-                else:
-                    videos = videos.order_by(Video.title.desc())
-            geo_videos = videos.filter(Video.geotags is not None)
-
+        if date:
+            if date == '2':
+                videos = videos.order_by(Video.date)
+            else:
+                videos = videos.order_by(Video.date.desc())
+        if name:
+            if name == '2':
+                videos = videos.order_by(Video.title)
+            else:
+                videos = videos.order_by(Video.title.desc())
+        if need_geo:
+            geo_videos = videos.filter(Video.geotags)
             return videos, geo_videos
 
         return videos
 
-    def serialize(self):
-        return {
-            'title': self.title,
-            'link': url_for("play", vid=self.id),
-            'preview': url_for("get_image", pid=self.id),
-            'geotags': [(gt.longitude, gt.latitude) for gt in self.geotags]
-        }
+    def serialize(self, how="simple"):
+        if how == "ext":
+            return {
+                'title': self.title,
+                'link': url_for("play", vid=self.id),
+                'preview': url_for("get_image", pid=self.id),
+                'geotags': [(gt.longitude, gt.latitude) for gt in self.geotags],
+                'author': self.user.name,
+                'author_login': self.user.login,
+                'views': len(self.viewers),
+                'date': str(self.date.date()),
+            }
+        else:
+            return {
+                'title': self.title,
+                'link': url_for("play", vid=self.id),
+                'preview': url_for("get_image", pid=self.id),
+                'geotags': [(gt.longitude, gt.latitude) for gt in self.geotags]
+            }
 
     def get_tags(self):
         tags = []
