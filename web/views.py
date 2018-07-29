@@ -9,11 +9,10 @@ from config import basedir
 from web import app, db, avatars, backgrounds, socketio
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
     UserProfileForm, AddRoomForm, AccountSettingsForm
-from web.models import User, Video, Room, Calibrate_matrix, Geotag, Tag, AnonUser, RoomDeviceMatrixConnector
+from web.models import User, Video, Room, Geotag, Tag, RoomDeviceConnector
 from web.helper import cur_user, requiresauth, anon_user, image_loaded
 from web.video_handler import save_video
 from datetime import datetime
-from flask_socketio import emit
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -26,7 +25,7 @@ def main():
             for video in sub.videos:
                 sub_items.append(video)
 
-    now = time = datetime.now(tz=None)
+    now = datetime.now(tz=None)
     return render_template('main.html', user=user, items=Video.get(), sub_items=sub_items, now=now)
 
 
@@ -70,18 +69,14 @@ def room(room_id):
     room = Room.query.get(room_id)
     if room:
         room_map_url = str(room_id) + '_map'
-        raw_user_rooms = RoomDeviceMatrixConnector.query.filter_by(anon=user)
+        raw_user_rooms = RoomDeviceConnector.query.filter_by(anon=user)
         user_rooms = [rac.room for rac in raw_user_rooms]
         users = room.get_devices()
 
         if not (room in user_rooms) and (room.captain != user):
-            matrix_id = len(users) + 1
-            if matrix_id > 6:
-                return redirect(url_for('viewroom'))
-            matrix = Calibrate_matrix.query.get(matrix_id)
-            matrix.create_calibrate_matrix_image()
-            rac = RoomDeviceMatrixConnector(anon=user, room=room, calibrate_matrix=matrix)
+            rac = RoomDeviceConnector(anon=user, room=room)
             db.session.add(rac)
+            db.session.commit()
             socketio.emit('update', len(users) + 2, broadcast=True)
 
         users = room.get_devices()
@@ -91,19 +86,10 @@ def room(room_id):
                 member.action = "calibrate"
             db.session.commit()
 
-        for member in users:
-            rac = RoomDeviceMatrixConnector.query.filter_by(room=room,
-                                                            anon=member).first()
-            member.matrix = rac.calibrate_matrix.matrix
-            db.session.commit()
-
-        matrix_path = None
-        if room.captain != user:
-            matrix_path = '/_uploads/calibrate/' + user.matrix + '.png'
         image_form = UploadImageForm()
         if image_form.validate_on_submit():
             return image_loaded(request, room, user, users, image_form, room_form)
-        return render_template('room.html', room=room, user=cur_user(), matrix=matrix_path, users=users,
+        return render_template('room.html', room=room, user=cur_user(), users=users,
                                count=len(users) + 1,
                                image_form=image_form, room_form=room_form, loaded=False, anon=user,
                                room_map=room_map_url,
@@ -132,7 +118,7 @@ def choose_video(room_id):
     room = Room.query.get(room_id)
     cap = room.capitan_id
     if room:
-        now = time = datetime.now(tz=None)
+        now = datetime.now(tz=None)
         sub_items = []
         real_user = cur_user()
         if real_user:
@@ -276,7 +262,7 @@ def cabinet(usr, tab=0):
                 user.save(form_acc.change_password.data)
             return redirect(url_for("cabinet", usr=cabinet_owner.login, tab=tab))
     last = items[-6:]
-    now = time = datetime.now(tz=None)
+    now = datetime.now(tz=None)
     return render_template('cabinet.html', form=form, form_acc=form_acc, user=user, items=items,
                            settings=is_cabinet_settings_available, usr=cabinet_owner, last=last,
                            subscribed=(user in cabinet_owner.subscribers), now=now, tab=tab)

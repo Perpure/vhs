@@ -31,24 +31,6 @@ class ImageObject:
     @staticmethod
     def identify(display, mask, img):
         pass
-        # matrix = ""
-        # min_x = display.min_x
-        # max_x = display.max_x
-        # min_y = display.min_y
-        # max_y = display.max_y
-        # width = max_x - min_x
-        # height = max_y - min_y
-        # for y in range(1, 4):
-        #     h = min_y + (height * (1 + y * 2)) // 10
-        #     for x in range(1, 4):
-        #         print(y, min_y, height)
-        #         w = min_x + (width * (1 + x * 2)) // 10
-        #         cv2.circle(img, (w, h), 3, 255, -1)
-        #         if mask[h][w] == 0:
-        #             matrix += '1'
-        #         else:
-        #             matrix += '0'
-        # return matrix
 
 
 class Screen:
@@ -86,18 +68,54 @@ class Screen:
         return device_screen
 
 
+class CalibrationImage:
+
+    def __init__(self, impath, device_amount):
+        self.impath = impath
+        self.device_amount = device_amount
+
+    def __image_converting(self):
+        self.img = cv2.imread(self.impath)
+        cv2.imwrite('images/calibrate/' + 'img_non_hsv' + '.png', self.img)
+        self.img = cv2.medianBlur(self.img, 5)
+        cv2.imwrite('images/calibrate/' + 'img_medianBlur' + '.png', self.img)
+        self.img = cv2.cvtColor(self.img, cv2.COLOR_BGR2HSV)
+        cv2.imwrite('images/calibrate/' + 'img_hsv' + '.png', self.img)
+
+    def __create_mask(self):
+        lower_red = np.array((0, 150, 150), np.uint8)
+        print('lower_red: ', lower_red)
+        upper_red = np.array((20, 255, 255), np.uint8)
+        print('upper_red: ', upper_red)
+        self.mask = cv2.inRange(self.img, lower_red, upper_red)
+        cv2.imwrite('images/calibrate/' + 'mask' + '.png', self.mask)
+
+    def __find_contours(self):
+        _, contours, hierarchy = cv2.findContours(self.mask, cv2.RETR_TREE,
+                                                  cv2.CHAIN_APPROX_NONE)
+        self.contours = sorted(contours, key=lambda x: len(x))[-self.device_amount * 2:]
+        print('contours: ', self.contours)
+
+    def param_get(self):
+        self.__image_converting()
+        self.__create_mask()
+        self.__find_contours()
+        return self.img, self.mask, self.contours
+
+
 class Parser:
     def __init__(self, room, devices, impath):
         self.room = room
         self.devices = devices
         self.impath = impath
 
+    @property
     def parse(self):
         device_amount, image_objects, items = self.__variables_initialise(self.devices)
 
-        img = self.__image_converting(self.impath)
-        mask = self.create_mask(img)
-        contours = self.find_contours(device_amount, mask)
+        img_class = CalibrationImage(self.impath, device_amount)
+
+        img, mask, contours = img_class.param_get()
 
         maxX, maxY, minX, minY = self.__contour_calculation(contours, image_objects)
 
@@ -133,24 +151,6 @@ class Parser:
 
         self.__save_map(draw, self.room, room_map)
 
-    @staticmethod
-    def find_contours(device_amount, mask):
-        _, contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE,
-                                                  cv2.CHAIN_APPROX_NONE)
-        contours = sorted(contours, key=lambda x: len(x))[-device_amount * 2:]
-        print('contours: ', contours)
-        return contours
-
-    @staticmethod
-    def create_mask(img):
-        lower_red = np.array((0, 150, 150), np.uint8)
-        print('lower_red: ', lower_red)
-        upper_red = np.array((20, 255, 255), np.uint8)
-        print('upper_red: ', upper_red)
-        mask = cv2.inRange(img, lower_red, upper_red)
-        cv2.imwrite('images/calibrate/' + 'mask' + '.png', mask)
-        return mask
-
     @classmethod
     def __draw_map(cls, draw, rect, color):
         draw.polygon(np.int0(cv2.boxPoints(rect)).flatten().tolist(), fill=color)
@@ -175,16 +175,6 @@ class Parser:
         image_objects = []
         items = list()
         return device_amount, image_objects, items
-
-    @classmethod
-    def __image_converting(cls, impath):
-        img = cv2.imread(impath)
-        cv2.imwrite('images/calibrate/' + 'img_non_hsv' + '.png', img)
-        img = cv2.medianBlur(img, 5)
-        cv2.imwrite('images/calibrate/' + 'img_medianBlur' + '.png', img)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        cv2.imwrite('images/calibrate/' + 'img_hsv' + '.png', img)
-        return img
 
     @classmethod
     def __matrix_identify(cls, devices, displays, img, items, mask):

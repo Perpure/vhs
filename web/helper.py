@@ -68,8 +68,7 @@ def image_loaded(request, room, user, users, image_form, room_form):
     image_path = basedir + '/images/' + str(room_id) + '.jpg'
     msg = None
     parser = Parser(room, users, image_path)
-    flag = parser.parse()
-    if not flag:
+    if not parser.parse:
         msg = "Мы не смогли идентифицировать устройства, попробуйте загрузить другую фотографию."
 
     return render_template('room.html', room=room, user=cur_user(), users=users,
