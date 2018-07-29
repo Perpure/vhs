@@ -134,7 +134,7 @@ def choose_video(room_id):
             for sub in subs:
                 for video in sub.videos:
                     sub_items.append(video)
-        video_pack = Video.get(sort="all")
+        video_pack = Video.get(need_geo=True)
         return render_template('choose_video.html', user=cur_user(), items=video_pack[0],
                                cap=cap, room=room, anon=user, now=now, sub_items=sub_items,
                                geo_items=json.dumps([video.serialize() for video in video_pack[1]]))

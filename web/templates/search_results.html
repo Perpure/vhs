@@ -5,16 +5,21 @@
     <input type="submit" value="Поиск" class="searcher__btn" id="startSearch">
 </div>
 <h5>Поиск</h5>
-<div class="switcher">
-  <div class="switcher__arm" id="showMap">
-    <label class="switcher__label" for="show_video_map"><div class="switcher__pill">Обычный</div></label>
-    <input name="selector" id="show_video_map" type="radio" class="switcher__radio">
+<div class="switcher" id="map_switcher">
+  <div class="switcher__arm">
+    <label class="switcher__label" id="showMap">
+      <div class="switcher__pill">Обычный</div>
+      <input name="selector" type="radio" class="switcher__radio" value="map">
+    </label>
   </div>
-  <div class="switcher__arm switcher__arm_inv" id="showTab">
-    <label class="switcher__label" for="show_video_table"><div class="switcher__pill switcher__pill_right">На карте</div></label>
-    <input name="selector" id="show_video_table" type="radio" checked class="switcher__radio">
+  <div class="switcher__arm switcher__arm_inv">
+    <label class="switcher__label">
+      <div class="switcher__pill switcher__pill_right">На карте</div>
+      <input name="selector" type="radio" checked class="switcher__radio" value="table">
+    </label>
   </div>
 </div>
+
 <div id="video_table">
   <div class="slider">
     <h5 class="fact slider__btn">Сортировка</h5>
@@ -62,9 +67,7 @@
   </div>
 </div>
 <div id="videos_map" align="center"></div>
-<script>
-  var now = '{{ now }}';
-</script>
+<script src="{{ url_for('static', filename='js/switcher.js') }}"></script>
 <script src="{{ url_for('static', filename='js/search.js') }}"></script>
 <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
 <script src="{{ url_for('static', filename='videos_map.js') }}"></script>

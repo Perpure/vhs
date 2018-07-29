@@ -77,8 +77,6 @@ function init_all() {
     {
         add_geotags(geo_videos);
     }
-
-    $.get("/video/data", {search: key.value}).done(add_geotags);
 }
 
 ymaps.ready(init_all);

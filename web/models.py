@@ -133,7 +133,7 @@ class Video(db.Model):
                     videos = Video.query.filter(Video.tags.contains(Tag.create_unique(item[1:])))
                 else:
                     videos = videos.filter(Video.tags.contains(Tag.create_unique(item[1:])))
-        if not tags and ( not search or search == '___empty___'):
+        if not tags and (not search or search == '___empty___'):
             videos = Video.query
 
         if date:
