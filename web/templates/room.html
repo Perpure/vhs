@@ -11,8 +11,8 @@
     <hr>
     <button id="calibrate_btn" class="video-control__btn inline-block">Калибровка</button>
     <div class="inline-block inline-block_edge">
-      <button id="show_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id %}video-control__btn_disabled{% endif %}"><span class="fa fa-play video-control__img" id="show_res_img"></span></button>
-      <button id="stop_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id %}video-control__btn_disabled{% endif %}"><span class="fa fa-stop video-control__img" id="stop_res_img"></span></button>
+      <button id="show_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id and not room.is_playing_youtube %}video-control__btn_disabled{% endif %}"><span class="fa fa-play video-control__img" id="show_res_img"></span></button>
+      <button id="stop_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id and not room.is_playing_youtube %}video-control__btn_disabled{% endif %}"><span class="fa fa-stop video-control__img" id="stop_res_img"></span></button>
     </div>
     <button id="refresh_btn" class="video-control__btn inline-block inline-block_edge">Обновить устройства</button>
   {% else %}
@@ -41,8 +41,24 @@
 {% endif %}
 
 {% if room.capitan_id == anon.id %}
-    {% if room.video_id %}
-        <hr>
+<hr>
+<h3>Выбрать видео</h3>
+  <div class="switcher" id="video_switcher">
+    <div class="switcher__arm">
+      <label class="switcher__label" id="go_to_youtube">
+        <div class="switcher__pill">С сайта</div>
+        <input class="switcher__radio" type="radio" name="videoMode" value="youtube">
+      </label>
+    </div>
+    <div class="switcher__arm switcher__arm_inv">
+      <label class="switcher__label">
+        <div class="switcher__pill switcher__pill_right">YouTube</div>
+        <input class="switcher__radio" type="radio" name="videoMode" value="self" checked>
+      </label>
+    </div>
+  </div>
+    <div id="choose_site">
+      {% if room.video_id %}
         <div class="video">
           <div class="video__preview">
             <a href="{{ url_for('play', vid=room.video_id) }}">
@@ -50,23 +66,13 @@
             </a>
           </div>
         </div>
-        <form action="{{url_for('choose_video', room_id=room.id)}}">
-            <button>Выбрать другое видео для демонстрации</button>
-        </form>
-        <br>
-        <form action="{{url_for('choose_youtube_video', room_id=room.id)}}">
-            <button>Выбрать видео с youtube.com</button>
-        </form>
-    {% else %}
-        <hr>
-        <form action="{{url_for('choose_video', room_id=room.id)}}">
-            <button>Выберите видео для демонстрации</button>
-        </form>
-        <br>
-        <form action="{{url_for('choose_youtube_video', room_id=room.id)}}">
-            <button>Выбрать видео с youtube.com</button>
-        </form>
-    {% endif %}
+      {% endif %}
+      <form action="{{url_for('choose_video', room_id=room.id)}}">
+          <button>Выбрать видео для демонстрации</button>
+      </form>
+    </div>
+    <div id="choose_yt">
+    </div>
     <hr>
 {% endif %}
 
@@ -96,19 +102,26 @@
 </div>
 
 {% if room.capitan_id != anon.id %}
-    {% if room.video_id %}
-      <div class="result" id="ReShell">
-        <video class="result__video" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
+  {% if room.is_playing_youtube == True %}
+      <div class="result" id="ResultVideoShell">
+        <div id="ResultVideo" class="result__video"></div>
       </div>
-    {% endif %}
+  {% elif room.video_id %}
+      <div class="result" id="ResultVideoShell">
+        <video class="result__video" id="ResultVideo"
+               src="{{url_for('get_video', vid=room.video_id)}}" preload="auto"></video>
+      </div>
+  {% endif %}
 {% endif %}
 <script src="{{ url_for('static', filename='js/multiscreen/fullscreen.js') }}"></script>
 <script src="{{ url_for('static', filename='js/slide.js') }}"></script>
 <script>
-    var ROOM_ID = {{ room.id }};
     var ROOM_COLOR = '{{ anon.color }}';
+    var ROOM_ID = {{ room.id }};
+    var from_youtube = {{ 'true' if room.is_playing_youtube else 'false' }};
 </script>
 {% if room.capitan_id == anon.id %}
+    <script src="{{ url_for('static', filename='js/switcher.js') }}"></script>
     <script src="{{ url_for('static', filename='js/multiscreen/captain.js') }}"></script>
 {% else %}
     <script src="{{ url_for('static', filename='js/multiscreen/user.js') }}"></script>
