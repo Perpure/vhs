@@ -54,3 +54,10 @@ def multiscreen_show_stop(msg):
 @socketio.on('multiscreen_refresh')
 def multiscreen_refresh(msg):
     socketio.emit('refresh', room=msg)
+
+
+@socketio.on('ended')
+def video_ended(msg):
+    cur_room = Room.query.get(msg)
+    captain = cur_room.captain
+    socketio.emit('video_ended', room=captain.socket_id)
