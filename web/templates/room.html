@@ -38,9 +38,9 @@
         <div id="Calibr"> {{ image_form.submit }} </div>
         {% if map_ex %}
         {% endif %}
+        <p id="formMssg" class="message"></p>
     </form>
-    <p id="formMssg" class="error"></p>
-    <img id="map" {% if map_ex %}src="{{url_for('get_multi', pid=room_map)}}"{% endif %} style="width:100%" {% if not map_ex %}class="hidden"{% endif %}>
+    <img id="map" style="width:100%" {% if map_ex %}src="{{url_for('get_multi', pid=room_map)}}"{% else %} class="hidden"{% endif %}>
 {% endif %}
 
 {% if room.capitan_id == anon.id %}

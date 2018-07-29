@@ -21,7 +21,8 @@ $('#calibrate_btn').click(function() {
 
 
 $('#image_form').on('submit', function(e) {
-    $('#formMssg').deleteClass('correct');
+    $('#formMssg').removeClass('message_correct');
+
     e.preventDefault();
     if ($('#image').val() == '') {
         $('#formMssg').html('Файл не выбран');
@@ -47,14 +48,14 @@ $('#image_form').on('submit', function(e) {
         dataType: 'json',
         success: function(data) {
             if (data.status) {
-                $('#formMssg').deleteClass('error');
-                $('#formMssg').addClass('correct');
+                $('#formMssg').removeClass('message_error');
+                $('#formMssg').addClass('message_correct');
                 $('#formMssg').html('Фотография загружена');
                 $('#map').show();
                 $('#map').attr('src', data.map_url);
             }
             else {
-                 $('#formMssg').html('Мы не смогли идентифицировать устройства, попробуйте загрузить другую фотографию.');
+                $('#formMssg').html('Мы не смогли идентифицировать устройства, попробуйте загрузить другую фотографию.');
             }
         },
         error: function(textStatus) {
