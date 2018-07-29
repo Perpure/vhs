@@ -50,6 +50,61 @@ jQuery(function($) {
         });
     });
 
+function show_message(type, text)
+{
+    if(type == 'error')
+    {
+        $('#formMessage').removeClass('message_correct')
+                      .addClass('message_error')
+                      .html(text);
+    }
+    if(type == 'correct')
+    {
+        $('#formMessage').removeClass('message_error')
+                      .addClass('message_correct')
+                      .html(text);
+    }
+}
+
+$('#image_form').on('submit', function(e) {
+    e.preventDefault();
+    if ($('#image').val() == '') {
+        show_message('error', 'Файл не выбран');
+        return;
+    }
+    var imageExtension =  $('#image').val()
+            .split('.')
+            .pop()
+            .toLowerCase();
+    if ( !['jpg', 'jpeg'].includes(imageExtension) ) {
+        show_message('error', 'Неправильное расширение (должно быть jpeg или jpg)');
+        return;
+    }
+
+    var form_data = new FormData();
+    form_data.append('image', $('#image')[0].files[0]);
+
+    $.ajax({
+        data: form_data,
+        processData: false,
+        type: 'POST',
+        contentType: false,
+        dataType: 'json',
+        success: function(data) {
+            if (data.status) {
+                show_message('correct', 'Фотография загружена');
+                $('#map').show();
+                $('#map').attr('src', data.map_url);
+            }
+            else {
+                show_message('error', 'Мы не смогли идентифицировать устройства, попробуйте загрузить другую фотографию.');
+            }
+        },
+        error: function(textStatus) {
+            show_message('error', textStatus.status + ' ' + textStatus.statusText);
+        }
+    });
+});
 
 var play = false;
 

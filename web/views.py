@@ -94,6 +94,7 @@ def room(room_id):
         image_form = UploadImageForm()
         if image_form.validate_on_submit():
             return image_loaded(request, room, user, users, image_form, room_form)
+
         return render_template('room.html', room=room, user=cur_user(), users=users,
                                count=len(users) + 1,
                                image_form=image_form, room_form=room_form, loaded=False, anon=user,
