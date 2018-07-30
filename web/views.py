@@ -82,7 +82,7 @@ def room(room_id):
         users = room.get_devices()
 
         image_form = UploadImageForm()
-		
+
         if image_form.validate_on_submit():
             return image_loaded(request, room, user, users, image_form, room_form)
 
