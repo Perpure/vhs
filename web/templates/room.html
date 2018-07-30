@@ -11,8 +11,8 @@
     <hr>
     <button id="calibrate_btn" class="video-control__btn inline-block">Калибровка</button>
     <div class="inline-block inline-block_edge">
-      <button id="show_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id %}video-control__btn_disabled{% endif %}"><img src="{{ url_for('static', filename='play.png') }}" id="show_res_img" alt="" class="video-control__img-changing"></button>
-      <button id="stop_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id %}video-control__btn_disabled{% endif %}"><img src="{{ url_for('static', filename='stop.png') }}" id="stop_res_img" alt="" class="video-control__img"></button>
+      <button id="show_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id and not room.is_playing_youtube %}video-control__btn_disabled{% endif %}"><span class="fa fa-play video-control__img" id="show_res_img"></span></button>
+      <button id="stop_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id and not room.is_playing_youtube %}video-control__btn_disabled{% endif %}"><span class="fa fa-stop video-control__img" id="stop_res_img"></span></button>
     </div>
     <button id="refresh_btn" class="video-control__btn inline-block inline-block_edge">Обновить устройства</button>
   {% else %}
@@ -20,28 +20,48 @@
     <button class="video-control__btn fullscreen-switcher">Перейти в полноэкранный режим</button>
   {% endif %}
 </div>
-{% if room.capitan_id == anon.id %}
+
+{% if room.capitan_id == anon.id%}
     <h5>Загрузите калибровочное фото</h5>
-    <form action="" method="post" enctype="multipart/form-data">
+    <form id="image_form" action="" method="post" enctype="multipart/form-data">
         <div class="loader">
-          <div>
-            <input id="image" name="image" type="file" accept="image/*" capture>
-          </div>
+            <button class="loader__btn" type="button">
+                <span class="loader__txt">Выбрать фото</span>
+                <input id="image" name="image" type="file" accept="image/*" capture class="loader__file">
+            </button>
         </div>
         {% if image_form.image.errors %}
-        {% for error in image_form.image.errors %}
-            <div style="color: red;">{{ error }}</div>
-        {% endfor %}
-    {% endif %}
+            {% for error in image_form.image.errors %}
+                <div style="color: red;">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
         <div id="Calibr"> {{ image_form.submit }} </div>
         {% if map_ex %}
         {% endif %}
+        <p id="formMessage" class="message"></p>
     </form>
+    <img id="map" style="width:100%" {% if map_ex %}src="{{url_for('get_multi', pid=room_map)}}"{% else %} class="hidden"{% endif %}>
 {% endif %}
 
 {% if room.capitan_id == anon.id %}
-    {% if room.video_id %}
-        <hr>
+<hr>
+<h3>Выбрать видео</h3>
+  <div class="switcher" id="video_switcher">
+    <div class="switcher__arm">
+      <label class="switcher__label" id="go_to_youtube">
+        <div class="switcher__pill">С сайта</div>
+        <input class="switcher__radio" type="radio" name="videoMode" value="youtube">
+      </label>
+    </div>
+    <div class="switcher__arm switcher__arm_inv">
+      <label class="switcher__label">
+        <div class="switcher__pill switcher__pill_right">YouTube</div>
+        <input class="switcher__radio" type="radio" name="videoMode" value="self" checked>
+      </label>
+    </div>
+  </div>
+    <div id="choose_site">
+      {% if room.video_id %}
         <div class="video">
           <div class="video__preview">
             <a href="{{ url_for('play', vid=room.video_id) }}">
@@ -49,38 +69,19 @@
             </a>
           </div>
         </div>
-        <form action="{{url_for('choose_video', room_id=room.id)}}">
-            <button>Выбрать другое видео для демонстрации</button>
-        </form>
-        <br>
-        <form action="{{url_for('choose_youtube_video', room_id=room.id)}}">
-            <button>Выбрать видео с youtube.com</button>
-        </form>
-    {% else %}
-        <hr>
-        <form action="{{url_for('choose_video', room_id=room.id)}}">
-            <button>Выберите видео для демонстрации</button>
-        </form>
-        <br>
-        <form action="{{url_for('choose_youtube_video', room_id=room.id)}}">
-            <button>Выбрать видео с youtube.com</button>
-        </form>
-    {% endif %}
+      {% endif %}
+      <form action="{{url_for('choose_video', room_id=room.id)}}">
+          <button>Выбрать видео для демонстрации</button>
+      </form>
+    </div>
+    <div id="choose_yt">
+    </div>
     <hr>
 {% endif %}
 
-{% if map_ex %}
-    <hr>
-    <img src="{{url_for('get_multi', pid=room_map)}}" style="width:100%">
-{% endif %}
-
-{% if msg %}
-    <hr>
-    <p>{{msg}}</p>
-{% endif %}
-
-<span id="instructionBtn" class="fact">Инструкция</span>
-<ol id="instruction" class="instr">
+<div class="slider">
+  <span  class="fact slider__btn">Инструкция</span>
+  <ol class="slider__content">
     <li>Пригласите участников.</li>
     <li>Выберите видео для демонстрации.</li>
     <li>Разместите устройства на площади для показа.</li>
@@ -91,22 +92,29 @@
     6.1. Если положение устройств определено неверно повторите действия описанные в п.5</li>
     <li>Капитан нажимает “Начать демонстрацию”</li>
     <li>Начинается показ видео.</li>
-</ol>
+  </ol>
+</div>
 
 {% if room.capitan_id != anon.id %}
-    {% if room.video_id %}
-      <div class="result" id="ReShell">
-        <video class="result__video" preload="auto" src="{{url_for('get_video', vid=room.video_id)}}" id="ReVi"></video>
+  {% if room.is_playing_youtube == True %}
+      <div class="result" id="ResultVideoShell">
+        <div id="ResultVideo" class="result__video"></div>
       </div>
-    {% endif %}
+  {% elif room.video_id %}
+      <div class="result" id="ResultVideoShell">
+        <video class="result__video" id="ResultVideo"
+               src="{{url_for('get_video', vid=room.video_id)}}" preload="auto"></video>
+      </div>
+  {% endif %}
 {% endif %}
 <script src="{{ url_for('static', filename='js/multiscreen/fullscreen.js') }}"></script>
-<script src="{{ url_for('static', filename='js/multiscreen/common.js') }}"></script>
+<script src="{{ url_for('static', filename='js/slide.js') }}"></script>
 <script>
     var ROOM_ID = {{ room.id }};
-    var ROOM_IMAGE = '{{ matrix }}';
+    var from_youtube = {{ 'true' if room.is_playing_youtube else 'false' }};
 </script>
 {% if room.capitan_id == anon.id %}
+    <script src="{{ url_for('static', filename='js/switcher.js') }}"></script>
     <script src="{{ url_for('static', filename='js/multiscreen/captain.js') }}"></script>
 {% else %}
     <script src="{{ url_for('static', filename='js/multiscreen/user.js') }}"></script>

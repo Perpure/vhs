@@ -2,30 +2,36 @@
 {% block content %}
 <title>Upload new File</title>
 <h1>Загрузите видео</h1>
-<p>Введите название видео</p>
+<h4>Введите название видео</h4>
 <form action="" method="post" enctype="multipart/form-data">
+    {{ form.csrf_token }}
     <div> {{ form.title }} </div>
     {% if form.title.errors %}
         {% for error in form.title.errors %}
             <div style="color: red;">{{ error }}</div>
         {% endfor %}
     {% endif %}
-    <div> {{ form.video.label }} </div>
+    <hr>
+    <h4>{{ form.video.label }}</h4>
     <p>(Разрешённые видео форматы:
         {% for format in formats %}
             .{{format}}
         {% endfor %}
     )</p>
     <div class="loader">
-        <div style="margin-bottom:-25px"> {{ form.video }} </div>
-        <p id="fileName"></p>
+        <button class="loader__btn" type="button">
+            <span class="loader__txt">Выбрать файл</span>
+            {{ form.video(class="loader__file") }}
+        </button>
+        <input type="text" id="fileName" readonly class="loader__path">
     </div>
     {% if form.video.errors %}
         {% for error in form.video.errors %}
             <div style="color: red;">{{ error }}</div>
         {% endfor %}
     {% endif %}
-
+    <hr>
+    <h4>Теги</h4>
     <div> <button type='button' id="geotag_is_needed">Прикрепить геотег</button></div>
     <br>
     <div style="display:none;" id="map-info">
@@ -43,7 +49,7 @@
         {% endfor %}
     {% endif %}
     <div style="color: red;"> {{ error }} </div>
-    <div>{{ form.tags.label }}</div>
+    <h5>{{ form.tags.label }}</h5>
     <div style="margin-bottom:15px">
         <input name="tags" placeholder="добавьте теги через enter">
     </div>
@@ -78,13 +84,10 @@
     }
 </script>
 <script type="text/javascript">
-    $( ".loader" )
-      .change(function () {
-        $( ".loader" ).css('background-image', 'url("/static/LoaderChange.png")');
-          var filename = $('#video').val();
-          $('#fileName').html(filename);
-        $('#OuterDiv').append('<div id="innerDiv"></div>');
-      })
+    $(".loader").change(function () {
+        var filename = $('#video').val();
+        $('#fileName').val(filename);
+    });
 </script>
 
 <style>

@@ -7,7 +7,7 @@ from datetime import datetime
 from flask import url_for, redirect, make_response, request, jsonify, session, render_template, Response, abort
 from web import app, db
 from web.helper import read_image, cur_user, read_multi, decode_iso8601_duration
-from web.models import Video, Comment, Room, AnonUser, User
+from web.models import Video, Comment, Room, Device, User
 from config import basedir, BUFF_SIZE, GOOGLE_API_KEY
 import requests
 
@@ -73,7 +73,8 @@ def get_bounds_of_header_range(range):
 
 @app.route('/video/<string:vid>/video.mp4')
 def get_video(vid):
-    path = basedir + '/video/%s/video.mp4' % vid
+    path = app.config['VIDEO_SAVE_PATH'] + '/%s/video.mp4' % vid
+    print(path)
     range = request.headers.get('Range')
     start, end = get_bounds_of_header_range(range)
     return partial_response(path, start, end)
@@ -158,15 +159,15 @@ def dislikeVideo(vid):
                      "dislikes": str(len(video.dislikes))}])
 
 
-@app.route('/tellRes', methods=['GET', 'POST'])
+@app.route('/tellRes', methods=['POST'])
 def tellRes():
     if 'anon_id' in session:
-        user = AnonUser.query.get(session['anon_id'])
+        user = Device.query.get(session['anon_id'])
         if request.method == 'POST':
-            width = request.json['width']
-            height = request.json['height']
+            width = request.form['width']
+            height = request.form['height']
             user.update_resolution(width=width, height=height)
-            return jsonify(width=width, height=height)
+            return '0'
 
 
 @app.route('/startSearch', methods=['GET'])
@@ -248,3 +249,11 @@ def videos_from_youtube():
     response.update({'videos': videos})
 
     return jsonify(response)
+
+
+@app.route('/change_youtube_state/<int:ID>', methods=['GET', 'POST'])
+def change_youtube_state(ID):
+    room = Room.query.get(ID)
+    room.is_playing_youtube = not room.is_playing_youtube
+    db.session.commit()
+    return "nice"

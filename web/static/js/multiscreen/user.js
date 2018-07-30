@@ -1,9 +1,58 @@
-function Result() {
-  $('#ReShell').show();
-  $('#ReVi').get(0).play();
-  $('#ReVi').on('ended',function(){
-    $('#ReShell').hide();
-  });
+var PLAYER,
+    PICTURE_SIZE = 16 / 9;
+
+if(from_youtube) {
+  var tag = document.createElement('script');
+
+  tag.src = "https://www.youtube.com/iframe_api";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+  function onYouTubeIframeAPIReady() {
+      PLAYER = new YT.Player('ResultVideo',{
+          videoId: "uzoWJ33bJRg",
+          playerVars: {
+              controls: 0,
+              enablejsapi: 1,
+              rel: 0,
+              showinfo: 0,
+              modestbranding: 1
+          },
+          events: {
+              onStateChange: function(event) {
+                  if(event.data == 0) {
+                      $('#ResultVideoShell').hide();
+                      if ( !PLAYER.isMuted() ) {
+                          socket.emit('ended', ROOM_ID);
+                      }
+                  }
+              }
+          }
+      });
+  }
+} else {
+  PLAYER = {
+      el: $('#ResultVideo').get(0),
+      elJQ: $('#ResultVideo'),
+      stopVideo: function() {
+          this.el.currentTime = 0;
+      },
+      pauseVideo: function() {
+          this.el.pause();
+      },
+      playVideo: function() {
+          this.el.play();
+          this.elJQ.on('ended',function(){
+              $('#ResultVideoShell').hide();
+              if( !this.muted ) {
+                  socket.emit('ended', ROOM_ID);
+              }
+          });
+      },
+      mute: function() {
+          this.el.muted = true;
+      }
+  }
 }
 
 jQuery(function($) {
@@ -14,23 +63,27 @@ jQuery(function($) {
         + 'class="calibration-image fullscreen-switcher"></div>');
   });
   socket.on('multiscreen_show_result', function(response) {
-    $('#ReVi').css({
-        top: screen.height * (response.top / response.scale) + "px",
-        left: screen.width * (response.left / response.scale) + "px",
-        width: response.scale + "%"
+    var videoShell = $('#ResultVideoShell')
+        video = $('#ResultVideo');
+    // TODO надо убрать отсюда математику. Все должно вычисляться на сервере и в пикселях
+    video.css({
+        top: screen.height * response.top / response.scale + "px",
+        left: screen.width * response.left / response.scale + "px",
+        width: response.scale + "%",
+        height: screen.width * response.scale / PICTURE_SIZE / 100 + "px"
     });
-    if(response.noSound)
-    {
-      $('#ReVi').get(0).muted=true;
+    if(response.noSound) {
+      PLAYER.mute();
     }
-    Result();
+    videoShell.show();
+    PLAYER.playVideo();
   });
   socket.on('multiscreen_show_pause', function() {
-    $('#ReVi').get(0).pause();
+      PLAYER.pauseVideo();
   });
   socket.on('multiscreen_show_stop', function() {
-    $('#ReVi').hide();
-    $('#ReVi').get(0).currentTime=0;
+      $('#ResultVideoShell').hide();
+      PLAYER.stopVideo();
   });
   socket.on('refresh', function() {
     location.reload();
@@ -44,19 +97,15 @@ jQuery(function($) {
   socket.on('disconnect', function() {
     socket.emit('leave', ROOM_ID);
   });
-});
 
-jQuery(function($) {
   var ratio = window.devicePixelRatio || 1;
-  var width = screen.width * ratio;
-  var height = screen.height * ratio;
   $.ajax({
     url: '/tellRes',
-    contentType: "application/json; charset=utf-8",
     type: "POST",
     dataType:"json",
-    data: JSON.stringify({ "width": width, "height" : height }),
-    success: function () {
-      console.log(JSON.stringify({ "width": width, "height" : height }));},
+    data: {
+        width: screen.width * ratio,
+        height: screen.height * ratio
+    }
   });
 });

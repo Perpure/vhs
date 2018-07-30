@@ -3,7 +3,7 @@
 import re
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, BooleanField, FileField, HiddenField
-from wtforms.validators import Length, EqualTo, ValidationError, DataRequired, Optional
+from wtforms.validators import Length, EqualTo, ValidationError, DataRequired, Optional, Email
 from flask.json import JSONDecoder
 from flask_wtf.file import FileAllowed
 from web.models import User, Room
@@ -98,15 +98,13 @@ class LogForm(FlaskForm):
 
 class UploadVideoForm(FlaskForm):
     """Форма загрузки видео"""
-    class Meta:
-        csrf = False
 
     title = StringField("Введите название видео", validators=[Length(3, message='Название слишком короткое')])
     video = FileField("Выберите файл", validators=[FileAllowed(app.config['ALLOWED_EXTENSIONS'],
                                                                message="Некорректное расширение"),
                                                    DataRequired(message='Выберите видео')])
     geotag_data = HiddenField(validators=[have_geodata])
-    tags = TextAreaField("Тэги", validators=[Length(2, message='Тэг слишком короткий'), Optional()])
+    tags = TextAreaField("Текстовые теги", validators=[Length(2, message='Тэг слишком короткий'), Optional()])
     submit = SubmitField("Загрузить")
 
 
@@ -153,3 +151,14 @@ class AddRoomForm(FlaskForm):
                                                         exist_token,
                                                         Length(2, message='Текст слишком короткий')])
     submit = SubmitField("Создать")
+
+
+class FeedbackForm(FlaskForm):
+    feedback_email = StringField('Ваш email', validators=[DataRequired(message='Введите email'),
+                                                          Email(message='Введите корректный email'),
+                                                          Length(max=32, message='Слишком длинный email')])
+    feedback_text = TextAreaField('Ваше сообщение', validators=[DataRequired(message='Сообщение не должно быть пустым'),
+                                                                Length(min=5, max=250,
+                                                                       message='Сообщение должно быть не '
+                                                                               'меньше 5 и не больше 250 символов')])
+    feedback_submit = SubmitField('Отправить')

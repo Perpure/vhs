@@ -13,7 +13,8 @@ db = SQLAlchemy(app)
 avatars = UploadSet('avatars', IMAGES)
 backgrounds = UploadSet('backgrounds', IMAGES)
 calibrate = UploadSet('calibrate', IMAGES)
-configure_uploads(app, (avatars, backgrounds, calibrate))
+videos = UploadSet('videos', {'mp4', 'ogv', 'mpeg', 'avi', 'mov', 'webm', 'flv'})
+configure_uploads(app, (avatars, backgrounds, calibrate, videos))
 
 
 import web.views

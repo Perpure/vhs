@@ -5,11 +5,11 @@ from wtforms.validators import ValidationError
 from flask import redirect, render_template, session, url_for, request
 from flask.json import JSONDecoder, dumps
 from werkzeug.exceptions import Aborter
-from config import basedir
+from config import basedir, CAPTCHA_PUBLIC_KEY
 from web import app, db, avatars, backgrounds, socketio
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
-    UserProfileForm, AddRoomForm, AccountSettingsForm
-from web.models import User, Video, Room, Geotag, Tag, RoomDeviceConnector
+    UserProfileForm, AddRoomForm, AccountSettingsForm, FeedbackForm
+from web.models import User, Video, Room, Geotag, Tag, Device, RoomDeviceConnector, Feedback
 from web.helper import cur_user, requiresauth, anon_user, image_loaded
 from web.video_handler import save_video
 from datetime import datetime
@@ -81,14 +81,11 @@ def room(room_id):
 
         users = room.get_devices()
 
-        if room_form.validate_on_submit():
-            for member in users:
-                member.action = "calibrate"
-            db.session.commit()
-
         image_form = UploadImageForm()
+		
         if image_form.validate_on_submit():
             return image_loaded(request, room, user, users, image_form, room_form)
+
         return render_template('room.html', room=room, user=cur_user(), users=users,
                                count=len(users) + 1,
                                image_form=image_form, room_form=room_form, loaded=False, anon=user,
@@ -144,7 +141,6 @@ def upload():
     Отвечает за вывод страницы загрузки и загрузку файлов
     :return: Страница загрузки
     """
-    user = cur_user()
 
     form = UploadVideoForm()
 
@@ -161,15 +157,15 @@ def upload():
         data = JSONDecoder().decode(form.geotag_data.data)
         if data['needed']:
             for coords in data['coords']:
-                gt = Geotag(*coords)
-                gt.save(video)
+                geo_tag = Geotag(*coords)
+                video.geotags.append(geo_tag)
 
         if form.tags.data:
             tags = form.tags.data.split(',')
-            for tag in tags:
-                tag_data = Tag(tag, video.id, user.id)
-                tag_data.save()
-
+            for tag_name in tags:
+                video_tag = Tag.create_unique(text=tag_name)
+                video.tags.append(video_tag)
+        db.session.commit()
         return redirect(url_for("main"))
 
     if not form.geotag_data.data:
@@ -178,7 +174,7 @@ def upload():
     return render_template('upload_video.html', form=form, user=cur_user(), formats=app.config['ALLOWED_EXTENSIONS'])
 
 
-@app.route('/reg', methods=['GET', 'POST'])
+@app.route('/registration', methods=['GET', 'POST'])
 def reg():
     """
     Отвечает за вывод страницы регистрации и регистрацию
@@ -193,10 +189,10 @@ def reg():
         session["Login"] = user.login
         return redirect(url_for("main"))
 
-    return render_template('reg.html', form=form, user=cur_user())
+    return render_template('user/registration.html', form=form, user=cur_user())
 
 
-@app.route('/auth', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def log():
     """
     Отвечает за вывод страницы входа и вход
@@ -209,7 +205,7 @@ def log():
         session["Login"] = form.login_log.data
         return redirect(url_for("main"))
 
-    return render_template('auth.html', form=form, user=cur_user())
+    return render_template('user/login.html', form=form, user=cur_user())
 
 
 @app.route('/cabinet/<string:usr>', methods=['GET', 'POST'])
@@ -221,7 +217,6 @@ def cabinet(usr, tab=0):
     """
 
     video_list = Video.get()
-    items = []
     user = cur_user()
     cabinet_owner = User.get(login=usr)
     is_cabinet_settings_available = False
@@ -229,19 +224,17 @@ def cabinet(usr, tab=0):
     if user == cabinet_owner:
         is_cabinet_settings_available = True
 
-    for item in video_list:
-        if item.user_id == cabinet_owner.id:
-            items.append(item)
+    items = cabinet_owner.videos
 
     form = UserProfileForm()
     form_acc = AccountSettingsForm()
     if request.method == 'POST':
         form_name = request.form['form-name']
-        tab = 3
+        tab = 2
         if form_name == 'form':
-            tab = 2
+            tab = 1
         if form_name == 'form' and form.validate():
-            tab = 2
+            tab = 1
             user = cur_user()
             folder = str(user.id)
             if form.change_name.data:
@@ -256,15 +249,15 @@ def cabinet(usr, tab=0):
                 user.update_background(json.dumps({"url": background_url}))
             return redirect(url_for("cabinet", usr=cabinet_owner.login, tab=tab))
         elif form_name == 'form_acc' and form_acc.validate():
-            tab = 3
+            tab = 2
             user = cur_user()
             if form_acc.change_password.data:
                 user.save(form_acc.change_password.data)
             return redirect(url_for("cabinet", usr=cabinet_owner.login, tab=tab))
     last = items[-6:]
-    now = datetime.now(tz=None)
-    return render_template('cabinet.html', form=form, form_acc=form_acc, user=user, items=items,
-                           settings=is_cabinet_settings_available, usr=cabinet_owner, last=last,
+    now = time = datetime.now(tz=None)
+    return render_template('user/cabinet.html', form=form, form_acc=form_acc, user=user, items=items,
+                           settings=is_cabinet_settings_available, usr=cabinet_owner,
                            subscribed=(user in cabinet_owner.subscribers), now=now, tab=tab)
 
 
@@ -300,6 +293,24 @@ def videos_map():
             videos_with_coords.append(video)
 
     return render_template('videos_map.html', user=user, videos=videos_with_coords)
+
+
+@app.route('/feedback', methods=["GET", "POST"])
+def feedback():
+    user = cur_user()
+
+    form = FeedbackForm()
+    if form.validate_on_submit():
+        email = form.feedback_email.data
+        form.feedback_email.data = ''
+        text = form.feedback_text.data
+        form.feedback_text.data = ''
+        feedback = Feedback(email, text)
+
+        return render_template('feedback.html', user=user, form=form, CAPTCHA_KEY=CAPTCHA_PUBLIC_KEY,
+                               message='Спасибо за ваше сообщение!')
+
+    return render_template('feedback.html', user=user, form=form, CAPTCHA_KEY=CAPTCHA_PUBLIC_KEY, message='')
 
 
 @app.route('/views_story', methods=['GET', 'POST'])

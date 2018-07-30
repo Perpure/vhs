@@ -1,11 +1,17 @@
 # coding=utf-8
 import unittest
 import os
+from flask import url_for
 from web import app, db
-from web.models import User, Video, Room, AnonUser
+from web.models import User, Video, Room, Device
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 TEST_DB_PATH = os.path.join(BASE_DIR, 'test.sqlite')
+
+
+@app.context_processor
+def override_url_for():
+    return dict(url_for=url_for)
 
 
 class TestPageAvail(unittest.TestCase):
@@ -21,7 +27,7 @@ class TestPageAvail(unittest.TestCase):
         self.video = Video('TestVideo')
         self.video.save(hash='Teststring', user=self.user)
         self.video_id = self.video.id
-        self.anonuser = AnonUser()
+        self.anonuser = Device()
         self.room = Room('roomname', self.anonuser.id)
         self.room.save(self.video.id)
 
@@ -42,7 +48,7 @@ class TestPageAvail(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_should_reg_page_be_exist(self):
-        response = self.client.get("/reg", follow_redirects=True)
+        response = self.client.get("/registration", follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
     def test_should_views_story_page_be_exist(self):
@@ -50,7 +56,7 @@ class TestPageAvail(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_should_auth_page_be_exist(self):
-        response = self.client.get("/auth", follow_redirects=True)
+        response = self.client.get("/login", follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
     def test_should_play_page_be_exist(self):

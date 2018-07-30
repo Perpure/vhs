@@ -1,12 +1,28 @@
-# coding=utf-8
+﻿# coding=utf-8
 import os
 import cv2
 from functools import wraps
 from flask import session, redirect, url_for, render_template
 from web import db, app
-from web.models import User, AnonUser
+from web.models import User, Device
 from config import basedir
 from web.parser import Parser
+from flask.json import dumps
+
+
+@app.context_processor
+def override_url_for():
+    return dict(url_for=dated_url_for)
+
+
+def dated_url_for(endpoint, **values):
+    if endpoint == 'static':
+        filename = values.get('filename', None)
+        if filename:
+            file_path = os.path.join(app.root_path,
+                                     endpoint, filename)
+            values['v'] = int(os.stat(file_path).st_mtime)
+    return url_for(endpoint, **values)
 
 
 def requiresauth(f):
@@ -28,9 +44,9 @@ def cur_user():
 def anon_user():
     user = None
     if 'anon_id' in session:
-        user = AnonUser.query.get(session['anon_id'])
+        user = Device.query.get(session['anon_id'])
     if not user:
-        user = AnonUser()
+        user = Device()
         session['anon_id'] = user.id
     return user
 
@@ -44,15 +60,7 @@ def read_multi(pid):
 
 
 def read_image(pid):
-    path = basedir + '/video/%s/preview.png' % pid
-    with open(path, "rb") as im:
-        f = im.read()
-        b = bytearray(f)
-        return b
-
-
-def read_video(vid):
-    path = basedir + '/video/%s/video.mp4' % vid
+    path = app.config['VIDEO_SAVE_PATH'] + '/%s/preview.png' % pid
     with open(path, "rb") as im:
         f = im.read()
         b = bytearray(f)
