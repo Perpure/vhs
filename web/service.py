@@ -3,12 +3,14 @@ import mimetypes
 import os
 import re
 import textwrap
+import json
 from datetime import datetime
 from flask import url_for, redirect, make_response, request, jsonify, session, render_template, Response, abort
 from web import app, db
 from web.helper import read_image, cur_user, read_multi, decode_iso8601_duration
 from web.models import Video, Comment, Room, Device, User
 from config import basedir, BUFF_SIZE, GOOGLE_API_KEY
+from flask.json import dumps
 import requests
 
 
@@ -78,17 +80,6 @@ def get_video(vid):
     range = request.headers.get('Range')
     start, end = get_bounds_of_header_range(range)
     return partial_response(path, start, end)
-
-
-@app.route('/video/data', methods=['GET'])
-def get_video_data_search():
-    search = request.args.get('search')
-    videos = Video.get(search=search)
-
-    return jsonify([{"title": video.title,
-                     "link": url_for("play", vid=video.id),
-                     "preview": url_for("get_image", pid=video.id),
-                     "geotags": [(gt.longitude, gt.latitude) for gt in video.geotags]} for video in videos])
 
 
 @app.route('/askNewComm/<string:vid>', methods=['GET', 'POST'])
@@ -170,24 +161,6 @@ def tellRes():
             return '0'
 
 
-@app.route('/startSearch', methods=['GET'])
-def startSearch():
-    sort = ""
-    ask = request.args.get('ask')
-    view = request.args.get('view')
-    dat = request.args.get('dat')
-    now = time = datetime.now(tz=None)
-
-    if dat:
-        sort += "date"
-    if view:
-        sort += "views"
-    if ask != " ":
-        return render_template('main.html', user=cur_user(), items=Video.get(search=ask, sort=sort), now=now)
-
-    return render_template('main.html', user=cur_user(), items=Video.get(), now=now)
-
-
 @app.route('/subscribe/<int:ID>', methods=['GET', 'POST'])
 def subscribe(ID):
     user = cur_user()
@@ -249,6 +222,28 @@ def videos_from_youtube():
     response.update({'videos': videos})
 
     return jsonify(response)
+
+
+@app.route('/search_videos', methods=['POST'])
+def search_for_videos():
+    search = request.form['search']
+    date = request.form['date']
+    name = request.form['name']
+    geo = request.form['geo_need']
+
+    tags = []
+    search = search.strip()
+    elements = search.split(' ')
+    for el in elements:
+        if el[0] == '#':
+            search = search.replace(el, "")
+            tags.append(el)
+    search = search.strip()
+    video_pack = Video.get(search, tags, date, name, geo)
+    jsoned = []
+    jsoned.append(json.dumps([video.serialize('ext') for video in video_pack[0]]))
+    jsoned.append(json.dumps([video.serialize() for video in video_pack[1]]))
+    return json.dumps(jsoned)
 
 
 @app.route('/change_youtube_state/<int:ID>', methods=['GET', 'POST'])

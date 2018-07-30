@@ -8,7 +8,6 @@ from uuid import uuid4
 from flask import url_for
 from web import db, app, avatars, backgrounds
 
-
 WatchHistory = db.Table('WatchHistory', db.Model.metadata,
                         db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
                         db.Column('Video_id', db.String(32), db.ForeignKey('Video.id')))
@@ -106,7 +105,6 @@ class Video(db.Model):
 
     def add_viewer(self, user):
         self.viewers.append(user)
-
         db.session.add(self)
         db.session.commit()
 
@@ -121,32 +119,58 @@ class Video(db.Model):
         db.session.commit()
 
     @staticmethod
-    def get(search=None, sort=None, video_id=None):
+    def get(search=None, tags=None, date=None, name=None, need_geo=False, video_id=None):
         if video_id:
             return Video.query.get(video_id)
 
-        videos = Video.query.all()
+        videos = []
 
-        if sort:
-            sort = sort.lower()
-            if "date" in sort:
-                videos.sort(key=lambda video: video.date, reverse=True)
-            if "views" in sort:
-                videos.sort(key=lambda video: len(video.viewers), reverse=True)
+        if search and search != '___empty___':
+            videos = Video.query.filter(Video.title.like('%' + search + '%'))
+        if tags:
+            for item in tags:
+                if not search or search == '___empty___':
+                    videos = Video.query.filter(Video.tags.contains(Tag.create_unique(item[1:])))
+                else:
+                    videos = videos.filter(Video.tags.contains(Tag.create_unique(item[1:])))
+        if not tags and (not search or search == '___empty___'):
+            videos = Video.query
 
-        if search:
-            if '#' in search:
-                temp = [(video, len([word for word in search.split('#')
-                                     if word.lower() in video.get_tags()])) for video in videos]
+        if date:
+            if date == '2':
+                videos = videos.order_by(Video.date)
             else:
-                temp = [(video, len([word for word in search.lower().split()
-                                     if word in video.title.lower()])) for video in videos]
-
-            temp = [item for item in temp if item[1] > 0]
-            temp.sort(key=lambda item: item[1], reverse=True)
-            videos = [item[0] for item in temp]
+                videos = videos.order_by(Video.date.desc())
+        if name:
+            if name == '2':
+                videos = videos.order_by(Video.title)
+            else:
+                videos = videos.order_by(Video.title.desc())
+        if need_geo:
+            geo_videos = videos.filter(Video.geotags)
+            return videos, geo_videos
 
         return videos
+
+    def serialize(self, how="simple"):
+        if how == "ext":
+            return {
+                'title': self.title,
+                'link': url_for("play", vid=self.id),
+                'preview': url_for("get_image", pid=self.id),
+                'geotags': [(gt.longitude, gt.latitude) for gt in self.geotags],
+                'author': self.user.name,
+                'author_login': self.user.login,
+                'views': len(self.viewers),
+                'date': str(self.date.date()),
+            }
+        else:
+            return {
+                'title': self.title,
+                'link': url_for("play", vid=self.id),
+                'preview': url_for("get_image", pid=self.id),
+                'geotags': [(gt.longitude, gt.latitude) for gt in self.geotags]
+            }
 
     def get_tags(self):
         tags = []

@@ -14,7 +14,6 @@ function add_geotags(videos) {
     for (var i in videos) {
         for (var j in videos[i]['geotags']) {
             var gt = videos[i]['geotags'][j];
-
             var geotag = new ymaps.Placemark([gt[0], gt[1]],
             {
                 balloonContentHeader: videos[i]['title'],
@@ -74,11 +73,10 @@ function init_all() {
         map.container.fitToViewport();
     });
 
-    if (map_needed) {
-        $('#showMap').click();
+    if(geo_videos)
+    {
+        add_geotags(geo_videos);
     }
-
-    $.get("/video/data", {search: key.value}).done(add_geotags);
 }
 
 ymaps.ready(init_all);
