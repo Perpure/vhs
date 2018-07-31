@@ -59,7 +59,7 @@ jQuery(function($) {
   socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
   socket.on('multiscreen_show_calibrate', function() {
     $('#Body').append('<div '
-        + 'style="' + 'background:' + '#ff0000' + ';" '
+        + 'style="' + 'background:' + ROOM_COLOR + ';" '
         + 'class="calibration-image fullscreen-switcher"></div>');
   });
   socket.on('multiscreen_show_result', function(response) {

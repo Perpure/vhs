@@ -311,44 +311,11 @@ class Room(db.Model):
         return Room.query.all()
 
 
-# class Calibrate_matrix(db.Model):
-#     __tablename__ = 'Calibrate_matrix'
-#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-#     matrix = db.Column(db.String(64), nullable=False)
-#     anons_rooms = db.relationship('RoomDeviceConnector', backref='calibrate_matrix', lazy=True)
-#
-#     def __init__(self, matrix):
-#         self.matrix = matrix
-#         db.session.add(self)
-#         db.session.commit()
-#
-#     @staticmethod
-#     def get(id=None):
-#         if id:
-#             return Calibrate_matrix.query.get(id)
-#         return Calibrate_matrix.query.all()
-#
-#     def create_calibrate_matrix_image(self):
-#         print('create_calibrate_matrix_image function start')
-#         img = np.zeros((5, 5, 3), np.uint8)
-#         img[:, 0:5] = (0, 0, 255)
-#         matrix = self.matrix
-#         i = 0
-#         for x in range(1, 4):
-#             for y in range(1, 4):
-#                 if matrix[i] == '1':
-#                     img[x][y] = (255, 0, 0)
-#                 i += 1
-#         res = cv2.resize(img, (1000, 1000), interpolation=cv2.INTER_NEAREST)
-#         cv2.imwrite('images/calibrate/' + matrix + '.png', res)
-
-
 class RoomDeviceConnector(db.Model):
     __tablename__ = 'RoomDeviceConnector'
     id = db.Column(db.Integer, primary_key=True)
     room_id = db.Column(db.Integer, db.ForeignKey('Room.id'))
     anon_id = db.Column(db.String(), db.ForeignKey('Device.id'))
-    # color_id = db.Column(db.Integer, db.ForeignKey('Color.id'))
 
 
 class Device(db.Model):
@@ -359,7 +326,6 @@ class Device(db.Model):
     id = db.Column(db.String(), primary_key=True)
     device_width = db.Column(db.Integer)
     device_height = db.Column(db.Integer)
-    # matrix = db.Column(db.String(64))
     socket_id = db.Column(db.String(64))
 
     top = db.Column(db.Float)
