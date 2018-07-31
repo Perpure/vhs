@@ -120,14 +120,8 @@ class Map:
         """
         self.room_map = Image.new('RGB', [final_screen.width, final_screen.height], (255, 255, 255))
         self.draw = ImageDraw.Draw(self.room_map)
-    #
-    # @classmethod
-    # def create_map(cls, final_screen):
-    #
-    #     room_map = Image.new('RGB', [final_screen.width, final_screen.height], (255, 255, 255))
-    #     return ImageDraw.Draw(room_map), room_map
 
-    def draw_map(self, rect, color):
+    def add_device(self, rect, color=(255, 0, 0)):
         """
         Method for draw one of displays on map
         # :param draw: PIL draw variable
@@ -207,7 +201,7 @@ class Parser:
             display.rect = ((display.rect[0][0] - minX, display.rect[0][1] - minY), display.rect[1], display.rect[2])
             device_screen = final_screen.get_device_screen(display.rect)
             device.save_screen_params(device_screen)
-            map.draw_map(display.rect, (255, 0, 0))
+            map.add_device(display.rect)
 
         map.save_map(self.room)
 
