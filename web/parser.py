@@ -90,11 +90,11 @@ class CalibrationImage:
         """
         Method for creating an image mask
         """
-        lower_cyan = np.array((170, 175, 175), np.uint8)
-        print('lower_red: ', lower_cyan)
-        upper_cyan = np.array((190, 255, 255), np.uint8)
-        print('upper_red: ', upper_cyan)
-        self.mask = cv2.inRange(self.img, lower_cyan, upper_cyan)
+        lower_red = np.array((0, 150, 150), np.uint8)
+        print('lower_red: ', lower_red)
+        upper_red = np.array((20, 255, 255), np.uint8)
+        print('upper_red: ', upper_red)
+        self.mask = cv2.inRange(self.img, lower_red, upper_red)
         cv2.imwrite(self.img_save_path + 'mask' + '.png', self.mask)
 
     def find_contours(self):
@@ -112,40 +112,42 @@ class CalibrationImage:
 
 
 class Map:
+    def __init__(self, final_screen):
+        """
+        Method for initializing the device map
+        :param final_screen: Final screen
+        :return: Blank room map image
+        """
+        self.room_map = Image.new('RGB', [final_screen.width, final_screen.height], (255, 255, 255))
+        self.draw = ImageDraw.Draw(self.room_map)
+    #
+    # @classmethod
+    # def create_map(cls, final_screen):
+    #
+    #     room_map = Image.new('RGB', [final_screen.width, final_screen.height], (255, 255, 255))
+    #     return ImageDraw.Draw(room_map), room_map
 
-    @classmethod
-    def draw_map(cls, draw, rect, color):
+    def draw_map(self, rect, color):
         """
         Method for draw one of displays on map
         # :param draw: PIL draw variable
         :param rect: Coordinates of drawing display
         :param color: Display color
         """
-        draw.polygon(np.int0(cv2.boxPoints(rect)).flatten().tolist(), fill=color)
+        self.draw.polygon(np.int0(cv2.boxPoints(rect)).flatten().tolist(), fill=color)
 
-    @classmethod
-    def create_map(cls, final_screen):
-        """
-        Method for initializing the device map
-        :param final_screen: Final screen
-        :return: Blank room map image
-        """
-        room_map = Image.new('RGB', [final_screen.width, final_screen.height], (255, 255, 255))
-        return ImageDraw.Draw(room_map), room_map
-
-    @classmethod
-    def save_map(cls, draw, room, room_map):
+    def save_map(self, room):
         """
         Method for save complete room map
         :param draw: PIL draw variable
         :param room: Id of room
         :param room_map: Complete room map image
         """
-        del draw
+        del self.draw
         filename = basedir + '/images/' + str(room.id) + '_map.jpg'
         if os.path.exists(filename):
             os.remove(filename)
-        room_map.save(filename)
+        self.room_map.save(filename)
 
 
 class Parser:
@@ -199,15 +201,15 @@ class Parser:
         """
         trimmed_screen = Screen(maxX - minX, maxY - minY)
         final_screen = trimmed_screen.get_formatted_screen(16 / 9)
-        draw, room_map = Map.create_map(final_screen)
+        map = Map(final_screen)
         for item in items:
             device, display = item
             display.rect = ((display.rect[0][0] - minX, display.rect[0][1] - minY), display.rect[1], display.rect[2])
             device_screen = final_screen.get_device_screen(display.rect)
             device.save_screen_params(device_screen)
-            Map.draw_map(draw, display.rect, (255, 0, 0))
+            map.draw_map(display.rect, (255, 0, 0))
 
-        Map.save_map(draw, self.room, room_map)
+        map.save_map(self.room)
 
     @classmethod
     def __variables_initialise(cls, devices):

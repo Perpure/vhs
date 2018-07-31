@@ -112,7 +112,6 @@
 <script>
     var ROOM_ID = {{ room.id }};
     var from_youtube = {{ 'true' if room.is_playing_youtube else 'false' }};
-    var ROOM_COLOR = '#FF0000'
 </script>
 {% if room.capitan_id == anon.id %}
     <script src="{{ url_for('static', filename='js/switcher.js') }}"></script>
