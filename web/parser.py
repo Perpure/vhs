@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw
 from config import basedir
 
 
-class ImageObject:
+class ImageObject:  # TODO переименовать в Contour
     is_display = False
     is_number = False
 
@@ -97,18 +97,18 @@ class CalibrationImage:
         self.mask = cv2.inRange(self.img, lower_red, upper_red)
         cv2.imwrite(self.img_save_path + 'mask' + '.png', self.mask)
 
-    def find_contours(self):
+    def find_contours(self):  # TODO понимать, что оно делает
         """
         Method for finding contours on image
         :return: Contours found on image
         """
         self.__image_converting()
         self.__create_mask()
-        _, contours, hierarchy = cv2.findContours(self.mask, cv2.RETR_TREE,
+        _, contours, hierarchy = cv2.findContours(self.mask, cv2.RETR_LIST,
                                                   cv2.CHAIN_APPROX_NONE)
         self.contours = sorted(contours, key=lambda x: len(x))[-self.device_amount * 2:]
         print('contours: ', self.contours)
-        return self.contours
+        return self.contours  # TODO ВОЗВРАЩАТЬ СПИСОК КОНТУРОВ.  экземпляров Imageobject
 
 
 class Map:
@@ -128,7 +128,9 @@ class Map:
         :param rect: Coordinates of drawing display
         :param color: Display color
         """
-        self.draw.polygon(np.int0(cv2.boxPoints(rect)).flatten().tolist(), fill=color)
+        print(rect)
+        print(np.int0(cv2.boxPoints(rect)).flatten().tolist())
+        self.draw.polygon(np.int0(cv2.boxPoints(rect)).flatten().tolist(), outline=1)
 
     def save_map(self, room):
         """
@@ -156,34 +158,33 @@ class Parser:
         Main parser controller method
         :return: Successful / unsuccessful parsing
         """
-        device_amount, image_objects, items = self.__variables_initialise(self.devices)
+        device_amount = len(self.devices)  # TODO take device amount on calibrate pic
+        print('device amount: ', device_amount)
 
         img_class = CalibrationImage(self.impath, device_amount)
 
         contours = img_class.find_contours()
 
-        maxX, maxY, minX, minY = self.__contour_calculation(contours, image_objects)
+        maxX, maxY, minX, minY, image_objects = self.__trimming(contours)  # REN TODO TRIM BY COUNTURS
+
+        print('objects: ', image_objects)
 
         for image_object in image_objects:
             image_object.find_relation(image_objects)
 
             print(image_object.rect)
 
-        displays = sorted(image_objects, key=lambda x: x.is_display)[-device_amount:]
+        displays = sorted(image_objects, key=lambda x: x.is_display)[-device_amount:]  # TODO remove/m'be
 
         print('displays: ', displays)
 
-        self.__displays_append(self.devices, displays, items)
-
-        print('items: ', items)
-
-        self.__handle_parse(items, minX, minY, maxX, maxY)
+        self.__handle_parse(displays, minX, minY, maxX, maxY)
 
         is_parsed = True
 
         return is_parsed
 
-    def __handle_parse(self, items, minX, minY, maxX, maxY):
+    def __handle_parse(self, displays, minX, minY, maxX, maxY):
         """
         A method that processes the search result of devices in the image and
          controls the process of drawing the device map.
@@ -196,51 +197,22 @@ class Parser:
         trimmed_screen = Screen(maxX - minX, maxY - minY)
         final_screen = trimmed_screen.get_formatted_screen(16 / 9)
         map = Map(final_screen)
-        for item in items:
-            device, display = item
+        for display in displays:
+            print('rect: ', display.rect)
             display.rect = ((display.rect[0][0] - minX, display.rect[0][1] - minY), display.rect[1], display.rect[2])
-            device_screen = final_screen.get_device_screen(display.rect)
-            device.save_screen_params(device_screen)
             map.add_device(display.rect)
 
         map.save_map(self.room)
 
     @classmethod
-    def __variables_initialise(cls, devices):
-        """
-        Method for initializing variables
-        :param devices: List of devices in the room
-        :return: Number of member devices, empty list of objects on image, empty items list
-        """
-        device_amount = len(devices)  # TODO take device amount on calibrate pic
-        print('device amount: ', device_amount)
-        image_objects = []
-        items = list()
-        return device_amount, image_objects, items
-
-    @classmethod
-    def __displays_append(cls, devices, displays, items):
-        """
-        Method appends list of items
-        :param devices: List of devices in the room
-        :param displays: Sorted list of devices found on image
-        :param items: empty items list
-        """
-        for display in displays:
-            print('rect: ', display.rect)
-
-            for device in devices:
-                items.append([device, display])
-                break
-
-    @classmethod
-    def __contour_calculation(cls, contours, image_objects):
+    def __trimming(cls, contours):
         """
         Method of controlling calculation contours for forming the final image
         :param contours: Contours found in the image
-        :param image_objects: Objects found in the image
+        # :param image_objects: Objects found in the image
         :return:  minimal & maximum x & y of screen
         """
+        image_objects = []
         i = 0
         maxX = maxY = -math.inf
         minY = minX = math.inf
@@ -253,4 +225,4 @@ class Parser:
             maxY = max(maxY, image_object.max_y)
             i += 1
         print('i = ', i)
-        return maxX, maxY, minX, minY
+        return maxX, maxY, minX, minY, image_objects
