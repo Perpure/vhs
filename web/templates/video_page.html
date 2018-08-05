@@ -52,7 +52,7 @@
 <div class="video-comments">
     <p>Комментарии</p>
     {%if user %}
-        <div class="comment comment__poster">
+        <div class="comment comment_poster">
             <div class="comment__ava"><img src="{{ user.avatar_url() }}" alt="" class="comment__ava-img" id="myAva"></div>
             <div>
                 <p class="comment__author"><a href="{{url_for('cabinet', usr=user.login)}}" id="myProf">{{ user.name }}</a></p>
