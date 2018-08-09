@@ -14,7 +14,7 @@ $('#mHolder').click(function(){
     }
 });
 
-if(screen.width<570)
+if(screen.width < 570)
 {
   $('.nav-menu__nav-men_nav-clast').click(function()
   {
@@ -28,7 +28,7 @@ if(screen.width<570)
           $(this).css('height', height);
       }
   });
-  $('.nav-menu__nav-men_nav-clast').mouseout(function()
+  $('.nav-menu__nav-men_nav-clast').focusout(function()
   {
       $(this).css('height', '50px');
   });
