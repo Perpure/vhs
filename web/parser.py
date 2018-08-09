@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw
 from config import basedir
 
 
-class ImageObject:  # TODO переименовать в Contour
+class Contour:  # TODO переименовать в Contour
     is_display = False
     is_number = False
 
@@ -97,7 +97,7 @@ class CalibrationImage:
         self.mask = cv2.inRange(self.img, lower_red, upper_red)
         cv2.imwrite(self.img_save_path + 'mask' + '.png', self.mask)
 
-    def find_contours(self):  # TODO понимать, что оно делает
+    def find_contours(self):
         """
         Method for finding contours on image
         :return: Contours found on image
@@ -108,7 +108,7 @@ class CalibrationImage:
                                                   cv2.CHAIN_APPROX_NONE)
         self.contours = sorted(contours, key=lambda x: len(x))[-self.device_amount * 2:]
         print('contours: ', self.contours)
-        return self.contours  # TODO ВОЗВРАЩАТЬ СПИСОК КОНТУРОВ.  экземпляров Imageobject
+        return self.contours
 
 
 class Map:
@@ -165,16 +165,16 @@ class Parser:
 
         contours = img_class.find_contours()
 
-        maxX, maxY, minX, minY, image_objects = self.__trimming(contours)  # REN TODO TRIM BY COUNTURS
+        maxX, maxY, minX, minY, image_contours = self.__trimming(contours)
 
-        print('objects: ', image_objects)
+        print('objects: ', image_contours)
 
-        for image_object in image_objects:
-            image_object.find_relation(image_objects)
+        for image_object in image_contours:
+            image_object.find_relation(image_contours)
 
             print(image_object.rect)
 
-        displays = sorted(image_objects, key=lambda x: x.is_display)[-device_amount:]  # TODO remove/m'be
+        displays = sorted(image_contours, key=lambda x: x.is_display)[-device_amount:]  # TODO remove/m'be
 
         print('displays: ', displays)
 
@@ -209,20 +209,20 @@ class Parser:
         """
         Method of controlling calculation contours for forming the final image
         :param contours: Contours found in the image
-        # :param image_objects: Objects found in the image
+        # :param image_contours: Objects found in the image
         :return:  minimal & maximum x & y of screen
         """
-        image_objects = []
+        image_contours = []
         i = 0
         maxX = maxY = -math.inf
         minY = minX = math.inf
         for contour in contours:
-            image_object = ImageObject(contour, i)
-            image_objects.append(image_object)
-            minX = min(minX, image_object.min_x)
-            maxX = max(maxX, image_object.max_x)
-            minY = min(minY, image_object.min_y)
-            maxY = max(maxY, image_object.max_y)
+            image_contour = Contour(contour, i)
+            image_contours.append(image_contour)
+            minX = min(minX, image_contour.min_x)
+            maxX = max(maxX, image_contour.max_x)
+            minY = min(minY, image_contour.min_y)
+            maxY = max(maxY, image_contour.max_y)
             i += 1
         print('i = ', i)
-        return maxX, maxY, minX, minY, image_objects
+        return maxX, maxY, minX, minY, image_contours
