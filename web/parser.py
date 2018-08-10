@@ -86,6 +86,7 @@ class CalibrationImage:
         self.img = cv2.cvtColor(self.img, cv2.COLOR_BGR2HSV)
         cv2.imwrite(self.img_save_path + 'img_hsv' + '.png', self.img)
 
+
     def __create_mask(self):
         """
         Method for creating an image mask
@@ -95,6 +96,11 @@ class CalibrationImage:
         upper_red = np.array((20, 255, 255), np.uint8)
         print('upper_red: ', upper_red)
         self.mask = cv2.inRange(self.img, lower_red, upper_red)
+        cv2.imwrite(self.img_save_path + 'mask_wo_morph' + '.png', self.mask)
+        st1 = cv2.getStructuringElement(cv2.MORPH_RECT, (15, 15), (7, 7))
+        st2 = cv2.getStructuringElement(cv2.MORPH_RECT, (6, 6), (3, 3))
+        self.mask = cv2.morphologyEx(self.mask, cv2.MORPH_CLOSE, st1)
+        self.mask = cv2.morphologyEx(self.mask, cv2.MORPH_OPEN, st2)
         cv2.imwrite(self.img_save_path + 'mask' + '.png', self.mask)
 
     def find_contours(self):
@@ -104,10 +110,17 @@ class CalibrationImage:
         """
         self.__image_converting()
         self.__create_mask()
-        _, contours, hierarchy = cv2.findContours(self.mask, cv2.RETR_LIST,
-                                                  cv2.CHAIN_APPROX_NONE)
+        _, contours, hierarchy = cv2.findContours(self.mask, cv2.RETR_TREE,
+                                                  cv2.CHAIN_APPROX_SIMPLE)
         self.contours = sorted(contours, key=lambda x: len(x))[-self.device_amount * 2:]
+        self.img2 = cv2.imread('images/calibrate/' + 'img_non_hsv' + '.png')
+        for cnt in self.contours:
+            rect = cv2.minAreaRect(cnt)
+            box = cv2.boxPoints(rect)
+            box = np.int0(box)
+            cv2.drawContours(self.img2, [box], 0, (255, 200, 0), 2)
         print('contours: ', self.contours)
+        cv2.imwrite(self.img_save_path + 'img_masked' + '.png', self.img2)
         return self.contours
 
 
@@ -121,7 +134,7 @@ class Map:
         self.room_map = Image.new('RGB', [final_screen.width, final_screen.height], (255, 255, 255))
         self.draw = ImageDraw.Draw(self.room_map)
 
-    def add_device(self, rect, color=(255, 0, 0)):
+    def add_device(self, rect):
         """
         Method for draw one of displays on map
         # :param draw: PIL draw variable
