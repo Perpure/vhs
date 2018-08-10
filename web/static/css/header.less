@@ -9,6 +9,10 @@ header
 .nav-menu
 {
   display:inline-block;
+  &_right
+  {
+    float: right;
+  }
   &__menu-holder
   {
     width:100%;
@@ -30,10 +34,10 @@ header
   }
   &__sub-btn
   {
-    width:100%;
+    width:102%;
     height:50px;
     background-color: @color-main - #000a1e;
-    padding:13px 0 13px 0;
+    padding:13px 1% 13px 1%;
     //border-bottom: 2px solid fade(@color-secondary,50);
     color:white;
     &:hover
@@ -69,6 +73,7 @@ header
     text-align:center;
     color:#e7e7e7;
     position:relative;
+    min-width: 100px;
     &:hover
     {
       cursor:pointer;

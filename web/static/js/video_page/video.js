@@ -9,6 +9,8 @@ for (var i = 0; i < HASH.length; i++) {
 
 HASH = HASH.substring(sl + 1);
 
+var calc;
+
 jQuery(function($) {
     $('#addC').click(function(){
         var txt = $('#txtPlate').val();
@@ -27,7 +29,7 @@ jQuery(function($) {
         $('#CSect').prepend(comment);
     });
 
-    function calc()
+    calc = function()
     {
         var likes = parseInt( $("#lik").html() ),
             dislikes = parseInt( $("#dis").html() ),

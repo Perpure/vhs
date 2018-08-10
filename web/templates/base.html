@@ -11,9 +11,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Video Hosting Service</title>
+    <title>Video Tile</title>
     <link href="https://vjs.zencdn.net/7.0.3/video-js.min.css" rel="stylesheet">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}" type="image/x-icon">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     <link href="{{ url_for('static', filename='tagify.css') }}" rel="stylesheet">
@@ -25,7 +25,6 @@
         <div class="mid-head">
             <div class="logo">
                 <a href="{{url_for('main')}}" class="Link"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="" class="logo__img"></a>
-
             </div>
 
             <div class="nav-menu">
@@ -33,33 +32,38 @@
                 <a href="{{url_for('main')}}"><div class="nav-menu__nav-men">Главная</div></a>
                 <a href="{{url_for('search_results', usr=user.login)}}"><div class="nav-menu__nav-men" id="Search">Поиск</div></a>
                 <div class="nav-menu__nav-men nav-menu__nav-men_nav-clast">
-                    Мультискрин
+                    Сплитскрин
                     <span class="fa fa-caret-down nav-menu__img"></span>
                     <div class="nav-menu__in-btn">
                         <span class="fa fa-caret-up nav-menu__img nav-menu__img_up-down"></span>
                         <a href="{{url_for('viewroom')}}"><div class="nav-menu__sub-btn nav-menu__sub-btn_upst">Все комнаты</div></a>
                         <a href="{{url_for('createroom')}}"><div class="nav-menu__sub-btn">Создать комнату</div></a>
+                        <a href="{{url_for('fact')}}"><div class="nav-menu__sub-btn">Что это?</div></a>
                     </div>
                 </div>
+                <a href="{{ url_for('upload') }}"><div class="nav-menu__nav-men">Загрузить видео</div></a>
                 <a href="{{ url_for('feedback') }}"><div class="nav-menu__nav-men">Обратная связь</div></a>
-                {%if user %}
-                    <div class="nav-menu__nav-men nav-menu__nav-men_nav-clast nav-menu__nav-men_nav-edge">
-                        Кабинет
-                        <span class="fa fa-caret-down nav-menu__img"></span>
-                        <div class="nav-menu__in-btn">
-                            <span class="fa fa-caret-up nav-menu__img nav-menu__img_up-down"></span>
-                            <a href="{{url_for('cabinet', usr=user.login)}}"><div class="nav-menu__sub-btn nav-menu__sub-btn_upst">Мой канал</div></a>
-                            <a href="{{url_for('views_story')}}"><div class="nav-menu__sub-btn">История</div></a>
-                            <a href="{{url_for('subs_s')}}"><div class="nav-menu__sub-btn">Подписки</div></a>
-                            <a href="{{url_for('upload')}}"><div class="nav-menu__sub-btn">Загрузить</div></a>
-                            <a href="{{url_for('logout')}}"><div class="nav-menu__sub-btn">Выйти</div></a>
-                        </div>
-                    </div>
-                {%else%}
-                    <a href="{{url_for('log')}}"><div class="nav-menu__nav-men">Войти</div></a>
-                    <a href="{{url_for('reg')}}"><div class="nav-menu__nav-men nav-menu__nav-men_nav-edge">Регистрация</div></a>
-                {%endif%}
             </div>
+
+            <div class="nav-menu nav-menu_right">
+              {%if user %}
+                <div class="nav-menu__nav-men nav-menu__nav-men_nav-clast nav-menu__nav-men_nav-edge">
+                    <span class="fa fa-user"></span>
+                    {{ user.name }}
+                    <span class="fa fa-caret-down nav-menu__img"></span>
+                    <div class="nav-menu__in-btn">
+                        <span class="fa fa-caret-up nav-menu__img nav-menu__img_up-down"></span>
+                        <a href="{{url_for('cabinet', usr=user.login)}}"><div class="nav-menu__sub-btn nav-menu__sub-btn_upst">Мой канал</div></a>
+                        <a href="{{url_for('views_story')}}"><div class="nav-menu__sub-btn">История</div></a>
+                        <a href="{{url_for('subs_s')}}"><div class="nav-menu__sub-btn">Подписки</div></a>
+                        <a href="{{url_for('logout')}}"><div class="nav-menu__sub-btn">Выйти</div></a>
+                    </div>
+                </div>
+            {%else%}
+                <a href="{{url_for('log')}}"><div class="nav-menu__nav-men">Войти</div></a>
+                <a href="{{url_for('reg')}}"><div class="nav-menu__nav-men nav-menu__nav-men_nav-edge">Регистрация</div></a>
+            {%endif%}
+          </div>
         </div>
     </header>
 
