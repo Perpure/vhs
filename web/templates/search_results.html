@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="searcher">
+    <input type="text" class="searcher__input" id="searchKey" title="">
+    <input type="submit" value="Поиск" class="searcher__btn" id="startSearch">
+</div>
+<h5>Поиск</h5>
+<div class="switcher" id="map_switcher">
+  <div class="switcher__arm">
+    <label class="switcher__label" id="showMap">
+      <div class="switcher__pill">Обычный</div>
+      <input name="selector" type="radio" class="switcher__radio" value="map">
+    </label>
+  </div>
+  <div class="switcher__arm switcher__arm_inv">
+    <label class="switcher__label">
+      <div class="switcher__pill switcher__pill_right">На карте</div>
+      <input name="selector" type="radio" checked class="switcher__radio" value="table">
+    </label>
+  </div>
+</div>
+
+<div id="video_table">
+  <div class="slider">
+    <h5 class="fact slider__btn">Сортировка</h5>
+    <div class="slider__content">
+      <div class="inline-block">
+        <h6>По дате</h6>
+          <label class="radio">
+            <input name="byDate" type="radio" value="0" checked class="radio__btn">
+            <span class="fa fa-dot-circle fa-circle radio__face"></span>
+            <span>Не сортировать</span>
+          </label>
+        <label class="radio">
+          <input name="byDate" type="radio" value="1" class="radio__btn">
+          <span class="fa fa-dot-circle fa-circle radio__face"></span>
+          <span>По убыванию</span>
+        </label>
+        <label class="radio">
+          <input name="byDate" type="radio" value="2" class="radio__btn">
+          <span class="fa  fa-dot-circle fa-circle radio__face"></span>
+          <span>По возрастанию</span>
+        </label>
+      </div>
+      <div class="inline-block">
+        <h6>По названию</h6>
+        <label class="radio">
+          <input name="byName" type="radio" value="0" checked class="radio__btn">
+          <span class="fa fa-dot-circle fa-circle radio__face"></span>
+          <span>Не сортировать</span>
+        </label>
+        <label class="radio">
+          <input name="byName" type="radio" value="1" class="radio__btn">
+          <span class="fa fa-dot-circle fa-circle radio__face"></span>
+          <span>По убыванию</span>
+        </label>
+        <label class="radio">
+          <input name="byName" type="radio" value="2" class="radio__btn">
+          <span class="fa fa-dot-circle fa-circle radio__face"></span>
+          <span>По возрастанию</span>
+        </label>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="section section_open" id="all">
+  </div>
+</div>
+<div id="videos_map" align="center"></div>
+<script src="{{ url_for('static', filename='js/switcher.js') }}"></script>
+<script src="{{ url_for('static', filename='js/search.js') }}"></script>
+<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+<script src="{{ url_for('static', filename='videos_map.js') }}"></script>
+<script src="{{ url_for('static', filename='js/slide.js') }}"></script>
+<script src="{{ url_for('static', filename='js/search_page.js') }}"></script>
+{% endblock %}

@@ -8,10 +8,9 @@ from uuid import uuid4
 from flask import url_for
 from web import db, app, avatars, backgrounds
 
-
-Views = db.Table('Views', db.Model.metadata,
-                 db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
-                 db.Column('Video_id', db.String(32), db.ForeignKey('Video.id')))
+WatchHistory = db.Table('WatchHistory', db.Model.metadata,
+                        db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
+                        db.Column('Video_id', db.String(32), db.ForeignKey('Video.id')))
 
 Likes = db.Table('Likes', db.Model.metadata,
                  db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
@@ -24,6 +23,11 @@ Dislikes = db.Table('Dislikes', db.Model.metadata,
 Subscription = db.Table('Subscription', db.Model.metadata,
                         db.Column('User_id', db.Integer, db.ForeignKey('User.id')),
                         db.Column('UserB_id', db.Integer, db.ForeignKey('User.id')))
+
+VideoTags = db.Table('VideoTags',
+                     db.Model.metadata,
+                     db.Column('video_id', db.String(32), db.ForeignKey('Video.id'), primary_key=True),
+                     db.Column('tag_id', db.Integer, db.ForeignKey('Tag.id'), primary_key=True))
 
 
 class Comment(db.Model):
@@ -46,18 +50,18 @@ class Comment(db.Model):
 class Tag(db.Model):
     __tablename__ = 'Tag'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    text = db.Column(db.Text())
-    video_id = db.Column(db.Text(), db.ForeignKey('Video.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
-
-    def __init__(self, text, video_id, user_id):
-        self.text = text
-        self.user_id = user_id
-        self.video_id = video_id
+    text = db.Column(db.Text(), unique=True)
 
     def save(self):
         db.session.add(self)
         db.session.commit()
+
+    @staticmethod
+    def create_unique(text):
+        tag = Tag.query.filter_by(text=text).first()
+        if tag is None:
+            tag = Tag(text=text)
+        return tag
 
 
 class Video(db.Model):
@@ -65,21 +69,18 @@ class Video(db.Model):
     __tablename__ = 'Video'
     id = db.Column(db.String(32), primary_key=True)
     title = db.Column(db.String(140), nullable=False)
-    path = db.Column(db.String(256), nullable=False)
+    path = db.Column(db.String(256))
     date = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
-
-    longitude = db.Column(db.Float(), nullable=True)
-    latitude = db.Column(db.Float(), nullable=True)
 
     likes = db.relationship('User', secondary=Likes, backref='likes', lazy='joined')
     dislikes = db.relationship('User', secondary=Dislikes, backref='dislikes', lazy='joined')
 
     comments = db.relationship('Comment', backref='video', lazy='joined')
 
-    tags = db.relationship('Tag', backref='video', lazy='joined')
+    tags = db.relationship('Tag', secondary=VideoTags, cascade='all, delete', lazy='joined', backref='videos')
 
-    viewers = db.relationship('User', secondary=Views, backref='views', lazy='joined')
+    viewers = db.relationship('User', secondary=WatchHistory, backref='watch_history', lazy='joined')
 
     geotags = db.relationship("Geotag", backref="video", lazy="joined")
 
@@ -89,18 +90,21 @@ class Video(db.Model):
     def save(self, hash, user):
         self.date = datetime.now(tz=None)
         self.id = hashlib.md5((hash + self.date.isoformat()).encode("utf-8")).hexdigest()
-        self.path = os.path.join(app.config['VIDEO_SAVE_PATH'], self.id)
         self.user_id = user.id
-        self.user_login = user.login
 
         db.session.add(self)
         db.session.commit()
 
         return self.path
 
+    def add_path(self, path):
+        self.path = path
+
+        db.session.add(self)
+        db.session.commit()
+
     def add_viewer(self, user):
         self.viewers.append(user)
-
         db.session.add(self)
         db.session.commit()
 
@@ -115,45 +119,64 @@ class Video(db.Model):
         db.session.commit()
 
     @staticmethod
-    def get(search=None, sort=None, video_id=None):
+    def get(search=None, tags=None, date=None, name=None, need_geo=False, video_id=None):
         if video_id:
             return Video.query.get(video_id)
 
-        videos = Video.query.all()
+        videos = []
 
-        if sort:
-            sort = sort.lower()
-            if "date" in sort:
-                videos.sort(key=lambda video: video.date, reverse=True)
-            if "views" in sort:
-                videos.sort(key=lambda video: len(video.viewers), reverse=True)
+        if search and search != '___empty___':
+            videos = Video.query.filter(Video.title.like('%' + search + '%'))
+        if tags:
+            for item in tags:
+                if not search or search == '___empty___':
+                    videos = Video.query.filter(Video.tags.contains(Tag.create_unique(item[1:])))
+                else:
+                    videos = videos.filter(Video.tags.contains(Tag.create_unique(item[1:])))
+        if not tags and (not search or search == '___empty___'):
+            videos = Video.query
 
-        if search:
-            if '#' in search:
-                temp = [(video, len([word for word in search.split('#')
-                                     if word.lower() in video.get_tags()])) for video in videos]
+        if date:
+            if date == '2':
+                videos = videos.order_by(Video.date)
             else:
-                temp = [(video, len([word for word in search.lower().split()
-                                     if word in video.title.lower()])) for video in videos]
-
-            temp = [item for item in temp if item[1] > 0]
-            temp.sort(key=lambda item: item[1], reverse=True)
-            videos = [item[0] for item in temp]
+                videos = videos.order_by(Video.date.desc())
+        if name:
+            if name == '2':
+                videos = videos.order_by(Video.title)
+            else:
+                videos = videos.order_by(Video.title.desc())
+        if need_geo:
+            geo_videos = videos.filter(Video.geotags)
+            return videos, geo_videos
 
         return videos
+
+    def serialize(self, how="simple"):
+        if how == "ext":
+            return {
+                'title': self.title,
+                'link': url_for("play", vid=self.id),
+                'preview': url_for("get_image", pid=self.id),
+                'geotags': [(gt.longitude, gt.latitude) for gt in self.geotags],
+                'author': self.user.name,
+                'author_login': self.user.login,
+                'views': len(self.viewers),
+                'date': str(self.date.date()),
+            }
+        else:
+            return {
+                'title': self.title,
+                'link': url_for("play", vid=self.id),
+                'preview': url_for("get_image", pid=self.id),
+                'geotags': [(gt.longitude, gt.latitude) for gt in self.geotags]
+            }
 
     def get_tags(self):
         tags = []
         for tag in self.tags:
             tags.append(tag.text.lower())
         return tags
-
-    def add_geotag(self, coords):
-        self.latitude = coords[0]
-        self.longitude = coords[1]
-
-        db.session.add(self)
-        db.session.commit()
 
     def delete_video(self):
         shutil.rmtree(self.path)
@@ -166,19 +189,12 @@ class Geotag(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     longitude = db.Column(db.Float, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
-    date = db.Column(db.DateTime, nullable=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     video_id = db.Column(db.String(32), db.ForeignKey("Video.id"), nullable=False)
 
     def __init__(self, longitude, latitude):
         self.longitude = longitude
         self.latitude = latitude
-
-    def save(self, video):
-        self.date = datetime.now()
-        self.video_id = video.id
-
-        db.session.add(self)
-        db.session.commit()
 
 
 class User(db.Model):
@@ -190,10 +206,6 @@ class User(db.Model):
     channel_info = db.Column(db.String(64))
     avatar = db.Column(db.String(128))
     background = db.Column(db.String(128))
-    color = db.Column(db.String(64))
-    top = db.Column(db.Integer)
-    left = db.Column(db.Integer)
-    scale = db.Column(db.Integer)
 
     videos = db.relationship("Video",
                              backref="user",
@@ -202,10 +214,6 @@ class User(db.Model):
     comments = db.relationship('Comment',
                                backref='user',
                                lazy='joined')
-
-    tags = db.relationship('Tag',
-                           backref='user',
-                           lazy='joined')
 
     subscriptions = db.relationship('User',
                                     secondary=Subscription,
@@ -271,14 +279,14 @@ class User(db.Model):
             avatar_json = json.loads(self.avatar)
             return url_for('_uploads.uploaded_file', setname=avatars.name, filename=avatar_json['url'])
         else:
-            return '../static/avatar.jpg'
+            return '../static/images/avatar.jpg'
 
     def background_url(self):
         if self.background:
             background_json = json.loads(self.background)
             return url_for('_uploads.uploaded_file', setname=backgrounds.name, filename=background_json['url'])
         else:
-            return '../static/background.jpg'
+            return '../static/images/background.jpg'
 
     @staticmethod
     def get(id=None, login=None):
@@ -294,7 +302,8 @@ class Room(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     date = db.Column(db.DateTime, nullable=False)
     video_id = db.Column(db.String(32))
-    capitan_id = db.Column(db.String(), db.ForeignKey('AnonUser.id'))
+    is_playing_youtube = db.Column(db.Boolean)
+    capitan_id = db.Column(db.String(), db.ForeignKey('Device.id'))
     name = db.Column(db.String(64), nullable=False)
     devices_in_room = db.relationship('RoomDeviceColorConnector', backref='room', lazy=True)
 
@@ -341,24 +350,23 @@ class RoomDeviceColorConnector(db.Model):
     __tablename__ = 'RoomDeviceColorConnector'
     id = db.Column(db.Integer, primary_key=True)
     room_id = db.Column(db.Integer, db.ForeignKey('Room.id'))
-    anon_id = db.Column(db.String(), db.ForeignKey('AnonUser.id'))
+    anon_id = db.Column(db.String(), db.ForeignKey('Device.id'))
     color_id = db.Column(db.Integer, db.ForeignKey('Color.id'))
 
 
-class AnonUser(db.Model):
+class Device(db.Model):
     """
-    Таблица для анонимного пользователя.
+    Таблица устройства.
     """
-    __tablename__ = 'AnonUser'
+    __tablename__ = 'Device'
     id = db.Column(db.String(), primary_key=True)
-    time = db.Column(db.Integer)
     device_width = db.Column(db.Integer)
     device_height = db.Column(db.Integer)
     color = db.Column(db.String(64))
     socket_id = db.Column(db.String(64))
-    top = db.Column(db.Integer)
-    left = db.Column(db.Integer)
-    scale = db.Column(db.Integer)
+    top = db.Column(db.Float)
+    left = db.Column(db.Float)
+    scale = db.Column(db.Float)
     rooms_colors = db.relationship('RoomDeviceColorConnector', backref='anon', lazy=True)
     room_capitan = db.relationship("Room", backref='captain')
 
@@ -373,13 +381,13 @@ class AnonUser(db.Model):
     @staticmethod
     def get(id=None):
         if id:
-            return AnonUser.query.get(id)
-        return AnonUser.query.all()
+            return Device.query.get(id)
+        return Device.query.all()
 
     def save_screen_params(self, device_screen):
-        self.scale = int(device_screen.width)
-        self.top = int(device_screen.top)
-        self.left = int(device_screen.left)
+        self.scale = float(device_screen.width)
+        self.top = float(device_screen.top)
+        self.left = float(device_screen.left)
         db.session.commit()
 
     def update_resolution(self, width, height):
@@ -387,5 +395,18 @@ class AnonUser(db.Model):
             return()
         self.device_height = height
         self.device_width = width
+        db.session.add(self)
+        db.session.commit()
+
+
+class Feedback(db.Model):
+    __tablename__ = 'Feedback'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    email = db.Column(db.String(32))
+    text = db.Column(db.String(250))
+
+    def __init__(self, email, text):
+        self.email = email
+        self.text = text
         db.session.add(self)
         db.session.commit()

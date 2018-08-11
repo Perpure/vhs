@@ -1,4 +1,4 @@
-﻿{% extends "base.html" %}
+{% extends "base.html" %}
 {% block content %}
 <video id="my-video" class="video-js" poster="{{url_for('get_image', pid=vid)}}" data-setup='{"controls": true, "autoplay": false, "preload": "auto"}'>
     <source src="{{url_for('get_video', vid=vid)}}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
@@ -31,9 +31,9 @@
     </div>
 
     <div>
-        <div class="video-rating__btn" id="like" name="like"></div>
+        <div class="fa fa-thumbs-up video-rating__btn video-rating__btn_good {%if lkd == 1 %}video-rating__btn_good_active{% endif %}" id="like" name="like"></div>
         <span id="lik">{{ video.likes | length }}</span>
-        <div class="video-rating__btn" id="dislike" name="dislike"></div>
+        <div class="fa fa-thumbs-down video-rating__btn video-rating__btn_bad {%if lkd == -1 %}video-rating__btn_bad_active{% endif %}" id="dislike" name="dislike"></div>
         <span id="dis">{{ video.dislikes | length }}</span>
     </div>
 </div>
@@ -52,7 +52,7 @@
 <div class="video-comments">
     <p>Комментарии</p>
     {%if user %}
-        <div class="comment comment__poster">
+        <div class="comment comment_poster">
             <div class="comment__ava"><img src="{{ user.avatar_url() }}" alt="" class="comment__ava-img" id="myAva"></div>
             <div>
                 <p class="comment__author"><a href="{{url_for('cabinet', usr=user.login)}}" id="myProf">{{ user.name }}</a></p>
@@ -74,36 +74,6 @@
         {% endfor %}
     </div>
 </div>
-
-<style>
-    div[name="like"]
-    {
-        {%if lkd!=1 %}
-            background-image:url({{ url_for('static', filename='images/lik1.png') }});
-        {%else%}
-            background-image:url({{ url_for('static', filename='images/lik1L.png') }});
-        {%endif%}
-    }
-
-    div[name="dislike"]
-    {
-        {%if lkd!=-1 %}
-            background-image:url({{ url_for('static', filename='images/dis1.png') }});
-        {%else%}
-            background-image:url({{ url_for('static', filename='images/dis1D.png') }});
-        {%endif%}
-    }
-
-    div[name="like"]:hover
-    {
-        background-image:url({{ url_for('static', filename='images/lik1H.png') }});
-    }
-
-    div[name="dislike"]:hover
-    {
-        background-image:url({{ url_for('static', filename='images/dis1H.png') }});
-    }
-</style>
 
 <script src="{{ url_for('static', filename='js/video_page/video.js') }}"></script>
 {%if user %}

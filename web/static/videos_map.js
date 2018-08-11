@@ -14,7 +14,6 @@ function add_geotags(videos) {
     for (var i in videos) {
         for (var j in videos[i]['geotags']) {
             var gt = videos[i]['geotags'][j];
-
             var geotag = new ymaps.Placemark([gt[0], gt[1]],
             {
                 balloonContentHeader: videos[i]['title'],
@@ -50,29 +49,33 @@ function init_all() {
 
     map.events.add('wheel', function(e){e.preventDefault();});
 
-    $('#show_video_map').change(function () {
-        $('#video_table').hide();
-        $('#videos_map').css('width', width);
-        $('#videos_map').css('height', height+'px');
-        $('#showMap').hide();
-        $('#showTab').show();
+
+    function changeTab(showingMode)
+    {
+        if (showingMode === 'table')
+        {
+            $('#video_table').show();
+            $('#videos_map').hide();
+        }
+        else if (showingMode === 'map')
+        {
+            $('#video_table').hide();
+            $('#videos_map').show();
+        }
+    }
+
+    $('#map_switcher').bind('switch', function(e, showingMode) {
+        changeTab(showingMode);
+        $('#videos_map').css({
+            'width': width,
+            'height': height + 'px'
+        });
         map.container.fitToViewport();
     });
 
-    $('#show_video_table').change(function () {
-        $('#video_table').show();
-        $('#videos_map').css('width', '0px');
-        $('#videos_map').css('height', '0px');
-        $('#showMap').show();
-        $('#showTab').hide();
-        map.container.fitToViewport();
-    });
-
-    $.get("/video/data", {search: key.value}).done(add_geotags);
-
-    if (map_needed) {
-        $('#show_video_map').trigger('change');
-        $('#show_video_map').prop('checked', true);
+    if(geo_videos)
+    {
+        add_geotags(geo_videos);
     }
 }
 

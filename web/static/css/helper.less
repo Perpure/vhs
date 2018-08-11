@@ -66,12 +66,15 @@ a,.fact
   font-size: 125%;
 }
 
-.instr
+.slider
 {
+  &__content
+  {
     display:none;
     padding-top:10px;
     padding-left:20px;
     text-align:left;
+  }
 }
 
 .italic
@@ -113,17 +116,6 @@ input[type="submit"], button
     }
 }
 
-input[type="file"]
-{
-    opacity:0;
-    width:300px;
-    height:60px;
-    &:hover
-    {
-      cursor:pointer;
-    }
-}
-
 h5
 {
   line-height: 1;
@@ -141,5 +133,55 @@ search
   &_wider
   {
     width: 600px;
+  }
+}
+
+
+.radio
+{
+  display: block;
+  color: @color-main;
+  & > .fa-dot-circle:before
+  {
+      content: "\F111";
+  }
+  &__btn
+  {
+    display: none;
+    &:checked ~ span
+    {
+      color: @color-link;
+    }
+    &:checked ~ .fa-dot-circle:before
+    {
+      content: "\F192";
+    }
+  }
+  &__face
+  {
+    margin-right: 10px;
+    color: @color-secondary;
+  }
+  &:hover
+  {
+    cursor: pointer;
+  }
+}
+
+.hidden
+{
+  display: none;
+}
+
+.message
+{
+  font-size: 90%;
+  &_error
+  {
+    color: red;
+  }
+  &_correct
+  {
+    color: green;
   }
 }

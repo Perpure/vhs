@@ -2,7 +2,7 @@
 import unittest
 import os
 from web import app, db
-from web.models import User, Video, Room, AnonUser, Comment
+from web.models import User, Video, Room, Device, Comment
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 TEST_DB_PATH = os.path.join(BASE_DIR, 'test.sqlite')
@@ -23,8 +23,8 @@ class TestService(unittest.TestCase):
         self.video_id = self.video.id
         self.comment = Comment('Text', self.video.id, self.user.id)
         self.comment.save()
-        self.anonuser = AnonUser()
-        self.anonuser2 = AnonUser()
+        self.anonuser = Device()
+        self.anonuser2 = Device()
         self.room = Room('roomname', self.anonuser.id)
         self.room.save(self.video.id)
 

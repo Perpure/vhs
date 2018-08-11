@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <h5>Обратная связь</h5>
+    <p style="color:green;">{{message}}</p>
+
+    <form method="post" action="/feedback">
+    {{form.hidden_tag()}}
+    <label for="feedback_email">Ваш email:</label>
+    <br>
+    {{ form.feedback_email }}
+
+    {% if form.feedback_email.errors %}
+        {% for error in form.feedback_email.errors %}
+            <br>
+            <span style="color:red;">{{ error }}</span>
+            <br>
+        {% endfor %}
+    {% endif %}
+    <br>
+    <label for="feedback_text">Ваше сообщение:</label>
+    <br>
+    {{ form.feedback_text }}
+
+    {% if form.feedback_text.errors %}
+        {% for error in form.feedback_text.errors %}
+            <br>
+            <span style="color:red;">{{ error }}</span>
+            <br>
+        {% endfor %}
+    {% endif %}
+    <br>
+    <div id="recaptcha" class="g-recaptcha" data-callback="onCaptcha" data-sitekey="{{ CAPTCHA_KEY }}"></div>
+    <br>
+    {{ form.feedback_submit(disabled=True) }}
+
+    </form>
+
+    <script src='https://www.google.com/recaptcha/api.js?hl=ru'></script>
+    <script src="{{ url_for('static', filename='js/feedback.js') }}"></script>
+{% endblock %}
