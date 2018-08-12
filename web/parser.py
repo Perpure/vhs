@@ -110,7 +110,6 @@ class CalibrationImage:
         self.__create_mask()
         _, contours, hierarchy = cv2.findContours(self.mask, cv2.RETR_TREE,
                                                   cv2.CHAIN_APPROX_SIMPLE)
-        contours = contours
         self.__draw_rectangles(contours)
         return contours
 
@@ -180,15 +179,13 @@ class Parser:
         for image_object in image_contours:
             image_object.find_relation(image_contours)
 
-        displays = image_contours
-
-        self.__handle_parse(displays, minX, minY, maxX, maxY)
+        self.__handle_parse(image_contours, minX, minY, maxX, maxY)
 
         is_parsed = True
 
         return is_parsed
 
-    def __handle_parse(self, displays, minX, minY, maxX, maxY):
+    def __handle_parse(self, image_contours, minX, minY, maxX, maxY):
         """
         A method that processes the search result of devices in the image and
          controls the process of drawing the device map.
@@ -201,7 +198,7 @@ class Parser:
         trimmed_screen = Screen(maxX - minX, maxY - minY)
         final_screen = trimmed_screen.get_formatted_screen(16 / 9)
         map = Map(final_screen)
-        for display in displays:
+        for display in image_contours:
             display.rect = ((display.rect[0][0] - minX, display.rect[0][1] - minY), display.rect[1], display.rect[2])
             map.add_device(display.rect)
 
