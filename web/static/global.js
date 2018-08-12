@@ -1,126 +1,35 @@
-var body = document.getElementById("Body");
-var wid = body.offsetWidth;
-
-var searching=false;
-var search=document.getElementById("Search");
-var searcher=document.getElementById("searcher");
-search.addEventListener('click',function(){
-    if(searching)
+var opened=false;
+$('#mHolder').click(function(){
+    if(opened)
     {
-        searcher.style.display="none";
-        searching=false;
+        $('.nav-menu__nav-men').hide();
+        $(this).css('backgroundColor', 'rgba(240, 203, 142,0)');
+        opened=false;
     }
     else
     {
-        if(screen.width>570)
-            searcher.style.display="flex";
-        else
-            searcher.style.display="block";
-        searching=true;
+        $('.nav-menu__nav-men').show();
+        $(this).css('backgroundColor', 'rgb(73, 69, 59)');
+        opened=true;
     }
 });
 
-var holder=document.getElementById("mHolder");
-var opned=false;
-holder.addEventListener('click',function(){
-    var els=document.getElementsByClassName("nav-menu__nav-men");
-    if(opned)
-    {
-        for(var i = 0; i<els.length; i++)
-            els[i].style.display="none";
-        holder.style.backgroundColor="rgba(240, 203, 142,0)";
-        opned=false;
-    }
-    else
-    {
-        for(var i = 0; i<els.length; i++)
-            els[i].style.display="block";
-        holder.style.backgroundColor="rgb(73, 69, 59)";
-        opned=true;
-    }
-});
-
-var clast=document.getElementsByClassName("nav-menu__nav-men_nav-clast");
-for(var j=0;j<clast.length;j++){
-    clast[j].addEventListener('click',function()
-    {
-        if(screen.width<570)
-        {
-            var ins=this.getElementsByClassName("nav-menu__nav-men_sub-btn");
-            this.style.height=ins.length*50+60+"px";
-        }
-    });
-    clast[j].addEventListener('mouseout',function()
-    {
-        if(screen.width<570)
-        {
-            this.style.height=50+"px";
-        }
-    });
-    }
-
-function swit(e){
-        var elem=e.currentTarget;
-        elem.classList.toggle("searcher__field_checked");
-        elem.value=Math.abs(elem.value-1);
+if(screen.width < 570)
+{
+  $('.nav-menu__nav-men_nav-clast').click(function()
+  {
+      if($(this).css('height') != '50px')
+      {
+          $(this).css('height', '50px');
+      }
+      else
+      {
+          var height = $(this).find('.nav-menu__sub-btn').length * 50 + 60 + "px";
+          $(this).css('height', height);
+      }
+  });
+  $('.nav-menu__nav-men_nav-clast').focusout(function()
+  {
+      $(this).css('height', '50px');
+  });
 }
-
-function getCurrentPage() {
-    var url = window.location.href;
-    var host = "http://"+window.location.host+"/";
-
-    return url.substr(host.length);
-}
-
-var start=document.getElementById("startSearch");
-var date=document.getElementById("Date");
-var views=document.getElementById("byViews");
-var key=document.getElementById("searchKey");
-var pr_page=getCurrentPage();
-var map_needed=false;
-
-views.value=0;
-date.value=0;
-views.addEventListener('click',swit);
-date.addEventListener('click',swit);
-
-
-    start.addEventListener('click',function(){
-        var val = key.value;
-        var vw=views.value;
-        var dt=date.value;
-        if (pr_page == "" ) {
-            map_needed=$('#show_video_map').prop('checked');
-        }
-
-        if(val=="") val=" ";
-        $.ajax({
-                       url:"/startSearch",
-                       type:"GET",
-                       dataType:"html",
-                       data: {
-                            ask:val,
-                            view:vw,
-                            dat:dt
-                       },
-                       success:function(response)
-                       {
-                            var placer="";
-                            var plus=false;
-                            response=$.parseHTML(response);
-                            var tempDom = $('search').append(response);
-                            var maine=$('#Main', tempDom);
-                            $(tempDom).empty();
-                            $("#Main").html($(maine).html());
-                       },
-                       error:function(){}
-        });
-        if (pr_page != "") {
-            $.getScript("https://api-maps.yandex.ru/2.1/?lang=ru_RU", function () {$.getScript('/static/videos_map.js');});
-        }
-        else {
-            $.getScript('/static/videos_map.js');
-        }
-        pr_page="";
-
-    });

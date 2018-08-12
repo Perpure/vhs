@@ -9,6 +9,10 @@ header
 .nav-menu
 {
   display:inline-block;
+  &_right
+  {
+    float: right;
+  }
   &__menu-holder
   {
     width:100%;
@@ -30,10 +34,10 @@ header
   }
   &__sub-btn
   {
-    width:100%;
+    width:102%;
     height:50px;
     background-color: @color-main - #000a1e;
-    padding:13px 0 13px 0;
+    padding:13px 1% 13px 1%;
     //border-bottom: 2px solid fade(@color-secondary,50);
     color:white;
     &:hover
@@ -69,6 +73,7 @@ header
     text-align:center;
     color:#e7e7e7;
     position:relative;
+    min-width: 100px;
     &:hover
     {
       cursor:pointer;
@@ -128,59 +133,22 @@ header
 }
 .searcher
 {
-  position: absolute;
   height:50px;
-  top:60px;
-  left:17%;
-  width:60%;
-  background-color:@color-main;
   padding:5px;
-  display:none;
-  z-index:5;
+  margin-bottom: 20px;
   -moz-user-select: none;
   -ms-user-select: none;
   -o-user-select: none;
   -webkit-user-select: none;
-  &__field
-  {
-    display:inline-block;
-    height:100%;
-    color:grey;
-    padding:7px;
-    text-align:center;
-    flex-grow:1;
-    margin-right:5px;
-    &:hover
-    {
-      cursor:pointer;
-      color:white;
-    }
-    &_checked
-    {
-      background-color:@color-secondary;
-      font-weight: bold;
-      color:black;
-      &:hover
-      {
-        color: black;
-      }
-    }
-  }
   &__input
   {
     vertical-align:top;
-    flex-grow:7;
     height:40px;
+    width: 60%;
     margin-right:5px;
   }
   &__btn
   {
     vertical-align:top;
-    flex-grow:1;
-    color: white;
-    &:hover
-    {
-      color: @color-link;
-    }
   }
 }

@@ -13,6 +13,7 @@ from web.models import User, Video, Room, Geotag, Tag, Device, RoomDeviceConnect
 from web.helper import cur_user, requiresauth, anon_user, image_loaded
 from web.video_handler import save_video
 from datetime import datetime
+from flask_socketio import emit
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -26,7 +27,10 @@ def main():
                 sub_items.append(video)
 
     now = datetime.now(tz=None)
-    return render_template('main.html', user=user, items=Video.get(), sub_items=sub_items, now=now)
+
+    video_pack = Video.get(need_geo=True)
+    return render_template('main.html', user=user, items=video_pack[0], sub_items=sub_items,
+                           now=now, geo_items=json.dumps([video.serialize() for video in video_pack[1]]))
 
 
 @app.route('/createroom', methods=['GET', 'POST'])
@@ -123,8 +127,10 @@ def choose_video(room_id):
             for sub in subs:
                 for video in sub.videos:
                     sub_items.append(video)
-        return render_template('choose_video.html', user=cur_user(), items=Video.get(), cap=cap, room=room, anon=user,
-                               now=now, sub_items=sub_items)
+        video_pack = Video.get(need_geo=True)
+        return render_template('choose_video.html', user=cur_user(), items=video_pack[0],
+                               cap=cap, room=room, anon=user, now=now, sub_items=sub_items,
+                               geo_items=json.dumps([video.serialize() for video in video_pack[1]]))
     else:
         return redirect(url_for('viewroom'))
 
@@ -254,7 +260,6 @@ def cabinet(usr, tab=0):
             if form_acc.change_password.data:
                 user.save(form_acc.change_password.data)
             return redirect(url_for("cabinet", usr=cabinet_owner.login, tab=tab))
-    last = items[-6:]
     now = time = datetime.now(tz=None)
     return render_template('user/cabinet.html', form=form, form_acc=form_acc, user=user, items=items,
                            settings=is_cabinet_settings_available, usr=cabinet_owner,
@@ -329,6 +334,19 @@ def subs_s():
     user = cur_user()
     subs = user.subscriptions
     return render_template('subs.html', user=user, subs=subs)
+
+
+@app.route('/search')
+def search_results():
+    user = cur_user()
+    now = time = datetime.now(tz=None)
+    return render_template('search_results.html', user=user, now=now)
+
+
+@app.route('/fact')
+def fact():
+    user = cur_user()
+    return render_template('fact.html', user=user)
 
 
 @app.errorhandler(403)
