@@ -1,13 +1,39 @@
-import numpy as np
 import math
 import os
 import cv2
-from web import db, app
-from config import basedir
+import numpy as np
 from PIL import Image, ImageDraw
+from config import basedir
 
 
-class Screen():
+class Contour:  # TODO переименовать в Contour
+    is_display = False
+    is_number = False
+
+    def __init__(self, contour, id):
+        self.id = id
+        self.contour = contour
+        self.rect = cv2.minAreaRect(contour)
+        self.box = np.int0(cv2.boxPoints(self.rect))
+        self.min_x = np.ndarray.min(self.box[..., 0])
+        self.max_x = np.ndarray.max(self.box[..., 0])
+        self.min_y = np.ndarray.min(self.box[..., 1])
+        self.max_y = np.ndarray.max(self.box[..., 1])
+
+    def find_relation(self, image_objects):
+        for image_object in image_objects:
+            if (self.min_x < image_object.min_x < self.max_x) and (self.min_y < image_object.min_y < self.max_y):
+                self.is_display = True
+                self.relation = image_object.id
+                image_object.is_number = True
+                image_object.relation = self.id
+
+    @staticmethod
+    def identify(display, mask, img):
+        pass
+
+
+class Screen:
     def __init__(self, width, height, left=0, top=0):
         self.width = width
         self.height = height
@@ -17,15 +43,15 @@ class Screen():
     def get_formatted_screen(self, picture_size):
         width = self.width
         height = self.height
-        if (width / height) > (picture_size):
+        if (width / height) > picture_size:
             height = int(1 / picture_size * width)
-        elif (width / height) < (picture_size):
+        elif (width / height) < picture_size:
             width = int(picture_size * height)
         left = (self.width - width) // 2
         top = (self.height - height) // 2
         return Screen(width, height, left, top)
 
-    def get_device_screen(self, device, rect):
+    def get_device_screen(self, rect):
         if -95 < rect[2] < -85:
             firsty = int(rect[0][1] - rect[1][0] / 2) - self.top
             firstx = int(rect[0][0] - rect[1][1] / 2) - self.left
@@ -34,71 +60,168 @@ class Screen():
             firsty = int(rect[0][1] - rect[1][1] / 2) - self.top
             firstx = int(rect[0][0] - rect[1][0] / 2) - self.left
             lastx = int(rect[0][0] + rect[1][0] / 2) - self.left
-        width = (self.width / (lastx - firstx)) * 100
-        left = - (firstx / self.width) * width
-        top = - (firsty / self.height) * width
-        return Screen(width, None, left, top)
+        scale = (self.width / (lastx - firstx)) * 100
+        left = - (firstx / self.width) * scale
+        top = - (firsty / self.height) * scale
+        device_screen = Screen(lastx - firstx, None, left, top)
+        device_screen.scale = scale
+        return device_screen
 
 
-def handle_parse(items, minX, minY, maxX, maxY, room):
-    trimmed_screen = Screen(maxX - minX, maxY - minY)
-    final_screen = trimmed_screen.get_formatted_screen(16 / 9)
-    draw, room_map = create_map(final_screen.width, final_screen.height)
-    for item in items:
-        device, rect, color = item
-        rect = ((rect[0][0] - minX, rect[0][1] - minY), rect[1], rect[2])
-        device_screen = final_screen.get_device_screen(device, rect)
-        device.save_screen_params(device_screen)
-        draw_map(draw, rect, color)
-    save_map(draw, room, room_map)
+class CalibrationImage:
+    img_save_path = 'images/calibrate/'
+
+    lower_range = np.array((77, 77, 53), np.uint8)
+    upper_range = np.array((97, 255, 255), np.uint8)
+
+    def __init__(self, impath, device_amount):
+        self.impath = impath
+        self.device_amount = device_amount
+        self.img = cv2.imread(self.impath)
+
+    def __image_converting(self):
+        """
+        Method of converting and transforming an original image
+        """
+        cv2.imwrite(self.img_save_path + 'img_non_hsv' + '.png', self.img)
+        self.img = cv2.medianBlur(self.img, 5)
+        cv2.imwrite(self.img_save_path + 'img_medianBlur' + '.png', self.img)
+        self.img = cv2.cvtColor(self.img, cv2.COLOR_BGR2HSV)
+        cv2.imwrite(self.img_save_path + 'img_hsv' + '.png', self.img)
+
+    def __create_mask(self):
+        """
+        Method for creating an image mask
+        """
+        self.mask = cv2.inRange(self.img, self.lower_range, self.upper_range)
+        cv2.imwrite(self.img_save_path + 'mask_wo_morph' + '.png', self.mask)
+        st1 = cv2.getStructuringElement(cv2.MORPH_RECT, (15, 15), (7, 7))
+        st2 = cv2.getStructuringElement(cv2.MORPH_RECT, (6, 6), (3, 3))
+        self.mask = cv2.morphologyEx(self.mask, cv2.MORPH_CLOSE, st1)
+        self.mask = cv2.morphologyEx(self.mask, cv2.MORPH_OPEN, st2)
+        cv2.imwrite(self.img_save_path + 'mask' + '.png', self.mask)
+
+    def find_contours(self):
+        """
+        Method for finding contours on image
+        :return: Contours found on image
+        """
+        self.__image_converting()
+        self.__create_mask()
+        _, contours, hierarchy = cv2.findContours(self.mask, cv2.RETR_TREE,
+                                                  cv2.CHAIN_APPROX_SIMPLE)
+        self.__draw_rectangles(contours)
+        return contours
+
+    def __draw_rectangles(self, contours):
+        self.img = cv2.imread('images/calibrate/' + 'img_non_hsv' + '.png')
+        for cnt in contours:
+            rect = cv2.minAreaRect(cnt)
+            box = cv2.boxPoints(rect)
+            box = np.int0(box)
+            cv2.drawContours(self.img, [box], 0, (255, 200, 0), 2)
+        cv2.imwrite(self.img_save_path + 'img_masked' + '.png', self.img)
 
 
-def draw_map(draw, rect, color):
-    draw.polygon(np.int0(cv2.boxPoints(rect)).flatten().tolist(), fill=color)
+class Map:
+    def __init__(self, final_screen):
+        """
+        Method for initializing the device map
+        :param final_screen: Final screen
+        :return: Blank room map image
+        """
+        self.room_map = Image.new('RGB', [final_screen.width, final_screen.height], (255, 255, 255))
+        self.draw = ImageDraw.Draw(self.room_map)
+
+    def add_device(self, rect):
+        """
+        Method for draw one of displays on map
+        # :param draw: PIL draw variable
+        :param rect: Coordinates of drawing display
+        :param color: Display color
+        """
+        self.draw.polygon(np.int0(cv2.boxPoints(rect)).flatten().tolist(), outline=1)
+
+    def save_map(self, room):
+        """
+        Method for save complete room map
+        :param draw: PIL draw variable
+        :param room: Id of room
+        :param room_map: Complete room map image
+        """
+        del self.draw
+        filename = basedir + '/images/' + str(room.id) + '_map.jpg'
+        if os.path.exists(filename):
+            os.remove(filename)
+        self.room_map.save(filename)
 
 
-def create_map(width, height):
-    room_map = Image.new('RGB', [width, height], (255, 255, 255))
-    return ImageDraw.Draw(room_map), room_map
+class Parser:
+    def __init__(self, room, devices, impath):
+        self.room = room
+        self.devices = devices
+        self.impath = impath
 
+    @property
+    def parse(self):
+        """
+        Main parser controller method
+        :return: Successful / unsuccessful parsing
+        """
+        device_amount = len(self.devices)  # TODO take device amount on calibrate pic
 
-def save_map(draw, room, room_map):
-    del draw
-    filename = basedir + '/images/' + str(room.id) + '_map.jpg'
-    if os.path.exists(filename):
-        os.remove(filename)
-    room_map.save(filename)
+        img_class = CalibrationImage(self.impath, device_amount)
 
+        contours = img_class.find_contours()
 
-def parse(room, devices, impath):
-    is_parsed = False
-    img = cv2.imread(impath)
-    hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    items = list()
-    maxX = maxY = -math.inf
-    minY = minX = math.inf
-    for device in devices:
-        R = int(device.color[1:3], 16)
-        G = int(device.color[3:5], 16)
-        B = int(device.color[5:7], 16)
-        color = (B, G, R)
-        hsv_color = np.array(color, dtype=np.uint8, ndmin=3)
-        hue = cv2.cvtColor(hsv_color, cv2.COLOR_BGR2HSV).flatten()[0]
-        hue_min = np.array([max(hue - 10, 0), 100, 100], dtype=np.uint8)
-        hue_max = np.array([min(hue + 10, 179), 255, 255], dtype=np.uint8)
-        thresh = cv2.inRange(hsv_img, hue_min, hue_max)
-        _, contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        try:
-            rect = cv2.minAreaRect(sorted(contours, key=cv2.contourArea, reverse=True)[0])
-            box = np.int0(cv2.boxPoints(rect))
-            minX = min(minX, np.ndarray.min(box[..., 0]))
-            maxX = max(maxX, np.ndarray.max(box[..., 0]))
-            minY = min(minY, np.ndarray.min(box[..., 1]))
-            maxY = max(maxY, np.ndarray.max(box[..., 1]))
-            items.append([device, rect, (color[2], color[1], color[0])])
-            is_parsed = True
-        except IndexError:
-            pass
-    if is_parsed:
-        handle_parse(items, minX, minY, maxX, maxY, room)
-    return is_parsed
+        maxX, maxY, minX, minY, image_contours = self.__trimming(contours)
+
+        for image_object in image_contours:
+            image_object.find_relation(image_contours)
+
+        self.__handle_parse(image_contours, minX, minY, maxX, maxY)
+
+        is_parsed = True
+
+        return is_parsed
+
+    def __handle_parse(self, image_contours, minX, minY, maxX, maxY):
+        """
+        A method that processes the search result of devices in the image and
+         controls the process of drawing the device map.
+        :param items: list of all identified devices
+        :param minX: minimal x of screen
+        :param minY: minimal y of screen
+        :param maxX: maximal x of screen
+        :param maxY: maximal y of screen
+        """
+        trimmed_screen = Screen(maxX - minX, maxY - minY)
+        final_screen = trimmed_screen.get_formatted_screen(16 / 9)
+        map = Map(final_screen)
+        for display in image_contours:
+            display.rect = ((display.rect[0][0] - minX, display.rect[0][1] - minY), display.rect[1], display.rect[2])
+            map.add_device(display.rect)
+
+        map.save_map(self.room)
+
+    @classmethod
+    def __trimming(cls, contours):
+        """
+        Method of controlling calculation contours for forming the final image
+        :param contours: Contours found in the image
+        # :param image_contours: Objects found in the image
+        :return:  minimal & maximum x & y of screen
+        """
+        image_contours = []
+        i = 0
+        maxX = maxY = -math.inf
+        minY = minX = math.inf
+        for contour in contours:
+            image_contour = Contour(contour, i)
+            image_contours.append(image_contour)
+            minX = min(minX, image_contour.min_x)
+            maxX = max(maxX, image_contour.max_x)
+            minY = min(minY, image_contour.min_y)
+            maxY = max(maxY, image_contour.max_y)
+            i += 1
+        return maxX, maxY, minX, minY, image_contours

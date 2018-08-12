@@ -3,6 +3,8 @@ import shutil
 import hashlib
 import os
 import json
+import cv2
+import numpy as np
 from datetime import datetime
 from uuid import uuid4
 from flask import url_for
@@ -305,7 +307,7 @@ class Room(db.Model):
     is_playing_youtube = db.Column(db.Boolean)
     capitan_id = db.Column(db.String(), db.ForeignKey('Device.id'))
     name = db.Column(db.String(64), nullable=False)
-    devices_in_room = db.relationship('RoomDeviceColorConnector', backref='room', lazy=True)
+    devices_in_room = db.relationship('RoomDeviceConnector', backref='room', lazy=True)
 
     def __init__(self, name, capitan_id):
         self.name = name
@@ -321,7 +323,7 @@ class Room(db.Model):
         return self.date.strftime("%H:%M %d.%m.%Y")
 
     def get_devices(self):
-        raw_users = RoomDeviceColorConnector.query.filter_by(room=self)
+        raw_users = RoomDeviceConnector.query.filter_by(room=self)
         return [rac.anon for rac in raw_users]
 
     @staticmethod
@@ -333,25 +335,11 @@ class Room(db.Model):
         return Room.query.all()
 
 
-class Color(db.Model):
-    __tablename__ = 'Color'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    color = db.Column(db.String(64), nullable=False)
-    anons_rooms = db.relationship('RoomDeviceColorConnector', backref='color', lazy=True)
-
-    @staticmethod
-    def get(id=None):
-        if id:
-            return Color.query.get(id)
-        return Color.query.all()
-
-
-class RoomDeviceColorConnector(db.Model):
-    __tablename__ = 'RoomDeviceColorConnector'
+class RoomDeviceConnector(db.Model):
+    __tablename__ = 'RoomDeviceConnector'
     id = db.Column(db.Integer, primary_key=True)
     room_id = db.Column(db.Integer, db.ForeignKey('Room.id'))
     anon_id = db.Column(db.String(), db.ForeignKey('Device.id'))
-    color_id = db.Column(db.Integer, db.ForeignKey('Color.id'))
 
 
 class Device(db.Model):
@@ -362,12 +350,13 @@ class Device(db.Model):
     id = db.Column(db.String(), primary_key=True)
     device_width = db.Column(db.Integer)
     device_height = db.Column(db.Integer)
-    color = db.Column(db.String(64))
     socket_id = db.Column(db.String(64))
+
     top = db.Column(db.Float)
     left = db.Column(db.Float)
     scale = db.Column(db.Float)
-    rooms_colors = db.relationship('RoomDeviceColorConnector', backref='anon', lazy=True)
+
+    rooms_calibrate_matrixes = db.relationship('RoomDeviceConnector', backref='anon', lazy=True)
     room_capitan = db.relationship("Room", backref='captain')
 
     def __init__(self):

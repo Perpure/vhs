@@ -9,7 +9,7 @@ from config import basedir, CAPTCHA_PUBLIC_KEY
 from web import app, db, avatars, backgrounds, socketio
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
     UserProfileForm, AddRoomForm, AccountSettingsForm, FeedbackForm
-from web.models import User, Video, Room, Color, Geotag, Tag, Device, RoomDeviceColorConnector, Feedback
+from web.models import User, Video, Room, Geotag, Tag, Device, RoomDeviceConnector, Feedback
 from web.helper import cur_user, requiresauth, anon_user, image_loaded
 from web.video_handler import save_video
 from datetime import datetime
@@ -26,7 +26,8 @@ def main():
             for video in sub.videos:
                 sub_items.append(video)
 
-    now = time = datetime.now(tz=None)
+    now = datetime.now(tz=None)
+
     video_pack = Video.get(need_geo=True)
     return render_template('main.html', user=user, items=video_pack[0], sub_items=sub_items,
                            now=now, geo_items=json.dumps([video.serialize() for video in video_pack[1]]))
@@ -72,28 +73,20 @@ def room(room_id):
     room = Room.query.get(room_id)
     if room:
         room_map_url = str(room_id) + '_map'
-        raw_user_rooms = RoomDeviceColorConnector.query.filter_by(anon=user)
+        raw_user_rooms = RoomDeviceConnector.query.filter_by(anon=user)
         user_rooms = [rac.room for rac in raw_user_rooms]
         users = room.get_devices()
 
         if not (room in user_rooms) and (room.captain != user):
-            color_id = len(users) + 1
-            if color_id > 6:
-                return redirect(url_for('viewroom'))
-            col = Color.query.get(color_id)
-            rac = RoomDeviceColorConnector(anon=user, room=room, color=col)
+            rac = RoomDeviceConnector(anon=user, room=room)
             db.session.add(rac)
+            db.session.commit()
             socketio.emit('update', len(users) + 2, broadcast=True)
 
         users = room.get_devices()
 
-        for member in users:
-            rac = RoomDeviceColorConnector.query.filter_by(room=room,
-                                                           anon=member).first()
-            member.color = rac.color.color
-            db.session.commit()
-
         image_form = UploadImageForm()
+
         if image_form.validate_on_submit():
             return image_loaded(request, room, user, users, image_form, room_form)
 
@@ -126,7 +119,7 @@ def choose_video(room_id):
     room = Room.query.get(room_id)
     cap = room.capitan_id
     if room:
-        now = time = datetime.now(tz=None)
+        now = datetime.now(tz=None)
         sub_items = []
         real_user = cur_user()
         if real_user:
