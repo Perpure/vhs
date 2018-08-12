@@ -1,6 +1,6 @@
 var PLAYER,
     PICTURE_SIZE = 16 / 9;
-var CALIBRATE_COLOR  = '#FF0000'
+var CALIBRATE_COLOR  = '#008080'
 
 if(from_youtube) {
   var tag = document.createElement('script');

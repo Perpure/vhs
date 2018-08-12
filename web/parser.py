@@ -86,14 +86,13 @@ class CalibrationImage:
         self.img = cv2.cvtColor(self.img, cv2.COLOR_BGR2HSV)
         cv2.imwrite(self.img_save_path + 'img_hsv' + '.png', self.img)
 
-
     def __create_mask(self):
         """
         Method for creating an image mask
         """
-        lower_red = np.array((0, 150, 150), np.uint8)
+        lower_red = np.array((77, 77, 53), np.uint8)
         print('lower_red: ', lower_red)
-        upper_red = np.array((20, 255, 255), np.uint8)
+        upper_red = np.array((97, 255, 255), np.uint8)
         print('upper_red: ', upper_red)
         self.mask = cv2.inRange(self.img, lower_red, upper_red)
         cv2.imwrite(self.img_save_path + 'mask_wo_morph' + '.png', self.mask)
