@@ -71,6 +71,9 @@ class Screen:
 class CalibrationImage:
     img_save_path = 'images/calibrate/'
 
+    lower_range = np.array((77, 77, 53), np.uint8)
+    upper_range = np.array((97, 255, 255), np.uint8)
+
     def __init__(self, impath, device_amount):
         self.impath = impath
         self.device_amount = device_amount
@@ -90,11 +93,7 @@ class CalibrationImage:
         """
         Method for creating an image mask
         """
-        lower_red = np.array((77, 77, 53), np.uint8)
-        print('lower_red: ', lower_red)
-        upper_red = np.array((97, 255, 255), np.uint8)
-        print('upper_red: ', upper_red)
-        self.mask = cv2.inRange(self.img, lower_red, upper_red)
+        self.mask = cv2.inRange(self.img, self.lower_range, self.upper_range)
         cv2.imwrite(self.img_save_path + 'mask_wo_morph' + '.png', self.mask)
         st1 = cv2.getStructuringElement(cv2.MORPH_RECT, (15, 15), (7, 7))
         st2 = cv2.getStructuringElement(cv2.MORPH_RECT, (6, 6), (3, 3))
@@ -111,16 +110,18 @@ class CalibrationImage:
         self.__create_mask()
         _, contours, hierarchy = cv2.findContours(self.mask, cv2.RETR_TREE,
                                                   cv2.CHAIN_APPROX_SIMPLE)
-        self.contours = sorted(contours, key=lambda x: len(x))[-self.device_amount * 2:]
-        self.img2 = cv2.imread('images/calibrate/' + 'img_non_hsv' + '.png')
-        for cnt in self.contours:
+        contours = contours
+        self.__draw_rectangles(contours)
+        return contours
+
+    def __draw_rectangles(self, contours):
+        self.img = cv2.imread('images/calibrate/' + 'img_non_hsv' + '.png')
+        for cnt in contours:
             rect = cv2.minAreaRect(cnt)
             box = cv2.boxPoints(rect)
             box = np.int0(box)
-            cv2.drawContours(self.img2, [box], 0, (255, 200, 0), 2)
-        print('contours: ', self.contours)
-        cv2.imwrite(self.img_save_path + 'img_masked' + '.png', self.img2)
-        return self.contours
+            cv2.drawContours(self.img, [box], 0, (255, 200, 0), 2)
+        cv2.imwrite(self.img_save_path + 'img_masked' + '.png', self.img)
 
 
 class Map:
@@ -140,8 +141,6 @@ class Map:
         :param rect: Coordinates of drawing display
         :param color: Display color
         """
-        print(rect)
-        print(np.int0(cv2.boxPoints(rect)).flatten().tolist())
         self.draw.polygon(np.int0(cv2.boxPoints(rect)).flatten().tolist(), outline=1)
 
     def save_map(self, room):
@@ -171,7 +170,6 @@ class Parser:
         :return: Successful / unsuccessful parsing
         """
         device_amount = len(self.devices)  # TODO take device amount on calibrate pic
-        print('device amount: ', device_amount)
 
         img_class = CalibrationImage(self.impath, device_amount)
 
@@ -179,16 +177,10 @@ class Parser:
 
         maxX, maxY, minX, minY, image_contours = self.__trimming(contours)
 
-        print('objects: ', image_contours)
-
         for image_object in image_contours:
             image_object.find_relation(image_contours)
 
-            print(image_object.rect)
-
-        displays = sorted(image_contours, key=lambda x: x.is_display)[-device_amount:]  # TODO remove/m'be
-
-        print('displays: ', displays)
+        displays = image_contours
 
         self.__handle_parse(displays, minX, minY, maxX, maxY)
 
@@ -210,7 +202,6 @@ class Parser:
         final_screen = trimmed_screen.get_formatted_screen(16 / 9)
         map = Map(final_screen)
         for display in displays:
-            print('rect: ', display.rect)
             display.rect = ((display.rect[0][0] - minX, display.rect[0][1] - minY), display.rect[1], display.rect[2])
             map.add_device(display.rect)
 
@@ -236,5 +227,4 @@ class Parser:
             minY = min(minY, image_contour.min_y)
             maxY = max(maxY, image_contour.max_y)
             i += 1
-        print('i = ', i)
         return maxX, maxY, minX, minY, image_contours
