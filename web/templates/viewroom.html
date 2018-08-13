@@ -1,8 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
+<h5>Создать комнату</h5>
+<form action="" method="post">
+    {{add_room_form.hidden_tag()}}
+    <input type="hidden" name="form-name" value="form_add">
+    <div>{{ add_room_form.token.label}}</div>
+    <div>{{ add_room_form.token(rows=2, cols=30) }}</div>
+    {% if add_room_form.token.errors %}
+      {% for error in add_room_form.token.errors %}
+        <div style="color: red;">{{ error }}</div>
+      {% endfor %}
+    {% endif %}
+    {{ add_room_form.submit }}
+</form>
 <h5>Присоединиться к комнате по названию</h5>
   <form action="" method="post">
     {{join_form.hidden_tag()}}
+    <input type="hidden" name="form-name" value="form_join">
     <div>{{ join_form.token.label}}</div>
       <div>{{ join_form.token }}</div>
       {% if join_form.token.errors %}

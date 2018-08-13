@@ -32,37 +32,29 @@ def main():
                            now=now, geo_items=json.dumps([video.serialize() for video in video_pack[1]]))
 
 
-@app.route('/createroom', methods=['GET', 'POST'])
-def createroom():
-    user = anon_user()
-    user.action = ""
-    db.session.commit()
-
-    add_room_form = AddRoomForm(prefix="Submit_Add")
-
-    if add_room_form.validate_on_submit():
-        name = add_room_form.token.data
-        room = Room(name=name, capitan_id=user.id)
-        db.session.add(room)
-        db.session.commit()
-        return redirect(url_for('room', room_id=room.id))
-    return render_template('create_room.html', user=cur_user(), add_room_form=add_room_form)
-
-
 @app.route('/viewroom', methods=['GET', 'POST'])
 def viewroom():
     user = anon_user()
     join_form = JoinForm(prefix="Submit_Join")
+    add_room_form = AddRoomForm(prefix="Submit_Add")
     user.action = ""
     db.session.commit()
 
-    if join_form.validate_on_submit():
-        room = Room.query.filter_by(name=str(join_form.token.data)).first()
-        if room:
+    if request.method == 'POST':
+        form_name = request.form['form-name']
+        if form_name == 'form_add' and add_room_form.validate():
+            name = add_room_form.token.data
+            room = Room(name=name, capitan_id=user.id)
+            db.session.add(room)
+            db.session.commit()
             return redirect(url_for('room', room_id=room.id))
+        elif form_name == 'form_join' and join_form.validate():
+            room = Room.query.filter_by(name=str(join_form.token.data)).first()
+            if room:
+                return redirect(url_for('room', room_id=room.id))
 
     return render_template('viewroom.html', user=cur_user(), join_form=join_form,
-                           rooms=Room.get()[::-1], anon=user)
+                           rooms=Room.get()[::-1], anon=user, add_room_form=add_room_form)
 
 
 @app.route('/room/<int:room_id>', methods=['GET', 'POST'])
