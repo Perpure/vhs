@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-<h5>Создать комнату</h5>
+<h1>Сплитскрин</h1>
+<div class="inline-block inline-block_big-spacing">
+<h2>Создать комнату</h2>
 <form action="" method="post">
     {{add_room_form.hidden_tag()}}
     <input type="hidden" name="form-name" value="form_add">
@@ -13,7 +15,9 @@
     {% endif %}
     {{ add_room_form.submit }}
 </form>
-<h5>Присоединиться к комнате по названию</h5>
+</div>
+<div class="inline-block inline-block_big-spacing">
+<h2>Зайти в комнату</h2>
   <form action="" method="post">
     {{join_form.hidden_tag()}}
     <input type="hidden" name="form-name" value="form_join">
@@ -26,12 +30,16 @@
       {% endif %}
       {{ join_form.submit }}
   </form>
-  <hr>
+  </div>
   {% if rooms %}
-    <h5>Все комнаты:</h5>
+    <h2>Все комнаты:</h2>
+    <div>
     {% for room in rooms %}
-      <p><a href="{{url_for('room', room_id=room.id)}}">{{room.name}}</a>
-      <p class="italic">Создана: {{ room.get_format_date() }}</p>
+      <div class="room-card">
+        <a href="{{url_for('room', room_id=room.id)}}">{{room.name}}</a>
+        <p class="italic">Создана: {{ room.get_format_date() }}</p>
+      </div>
     {% endfor %}
+    </div>
   {% endif %}
 {% endblock %}
