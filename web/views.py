@@ -347,7 +347,14 @@ def subs_s():
 def search_results():
     user = cur_user()
     now = time = datetime.now(tz=None)
-    return render_template('search_results.html', user=user, now=now)
+    return render_template('search_results.html', user=user, now=now, presearch=0)
+
+
+@app.route('/search/<string:presearch>')
+def search_results_unvoid(presearch=None):
+    user = cur_user()
+    now = time = datetime.now(tz=None)
+    return render_template('search_results.html', user=user, now=now, presearch=presearch)
 
 
 @app.route('/fact')

@@ -50,6 +50,7 @@ jQuery(function($) {
 
     $('.tag').click(function() {
         var tagName = $(this).text();
-        search(tagName);
+        tagName = tagName.replace('#', '*');
+        window.location.replace('/search/' + tagName);
     });
 });

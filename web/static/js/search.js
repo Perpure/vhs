@@ -21,5 +21,5 @@ function search(word, date, name, geo)
             result = response;
         }
     });
-  return result;
+    return result;
 };
