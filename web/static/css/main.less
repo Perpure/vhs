@@ -244,9 +244,12 @@
 }
 .comment
 {
-  height:100px;
   margin-bottom:15px;
-  max-width:50%;
+  &__text
+  {
+    word-break: break-all;
+    max-width: calc(100% - 120px);
+  }
   div
   {
     display: inline-block;

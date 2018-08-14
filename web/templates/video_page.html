@@ -66,7 +66,7 @@
         {% for comment in video.comments|sort(attribute="id")|reverse %}
             <div class="comment">
                 <div class="comment__ava"><img src="{{ comment.user.avatar_url() }}" alt="" class="comment__ava-img"></div>
-                <div>
+                <div class="comment__text">
                     <p class="comment__author"><a href="{{url_for('cabinet', usr=comment.user.login)}}">{{ comment.user.name }}</a></p>
                     <p>{{ comment.text }}</p>
                 </div>
