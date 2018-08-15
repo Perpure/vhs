@@ -45,10 +45,6 @@ class TestPageAvail(unittest.TestCase):
         response = self.client.get("/viewroom", follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
-    def test_should_createroom_page_be_exist(self):
-        response = self.client.get("/createroom", follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
     def test_should_reg_page_be_exist(self):
         response = self.client.get("/registration", follow_redirects=True)
         self.assertEqual(response.status_code, 200)
