@@ -50,7 +50,7 @@ jQuery(function($) {
 
     $('.tag').click(function() {
         var tagName = $(this).text();
-        tagName = tagName.replace('#', '*');
-        window.location.replace('/search/' + tagName);
+        var input = '<input type="hidden" name="presearch" value="'+tagName+'">';
+        $('<form action="/search" method="POST">' + input + '</form>').appendTo('body').submit();
     });
 });
