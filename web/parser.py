@@ -104,14 +104,26 @@ class CalibrationImage:
     def find_contours(self):
         """
         Method for finding contours on image
-        :return: Contours found on image
+        :return: Contours found on image, minimal & maximum x & y of screen
         """
         self.__image_converting()
         self.__create_mask()
         _, contours, hierarchy = cv2.findContours(self.mask, cv2.RETR_TREE,
                                                   cv2.CHAIN_APPROX_SIMPLE)
         self.__draw_rectangles(contours)
-        return contours
+        image_contours = []
+        i = 0
+        max_x = max_y = -math.inf
+        min_y = min_x = math.inf
+        for contour in contours:
+            image_contour = Contour(contour, i)
+            image_contours.append(image_contour)
+            min_x = min(min_x, image_contour.min_x)
+            max_x = max(max_x, image_contour.max_x)
+            min_y = min(min_y, image_contour.min_y)
+            max_y = max(max_y, image_contour.max_y)
+            i += 1
+        return max_x, max_y, min_x, min_y, image_contours
 
     def __draw_rectangles(self, contours):
         self.img = cv2.imread('images/calibrate/' + 'img_non_hsv' + '.png')
@@ -138,7 +150,6 @@ class Map:
         Method for draw one of displays on map
         # :param draw: PIL draw variable
         :param rect: Coordinates of drawing display
-        :param color: Display color
         """
         self.draw.polygon(np.int0(cv2.boxPoints(rect)).flatten().tolist(), outline=1)
 
@@ -172,56 +183,32 @@ class Parser:
 
         img_class = CalibrationImage(self.impath, device_amount)
 
-        contours = img_class.find_contours()
-
-        maxX, maxY, minX, minY, image_contours = self.__trimming(contours)
+        max_x, max_y, min_x, min_y, image_contours = img_class.find_contours()
 
         for image_object in image_contours:
             image_object.find_relation(image_contours)
 
-        self.__handle_parse(image_contours, minX, minY, maxX, maxY)
+        self.__handle_parse(image_contours, min_x, min_y, max_x, max_y)
 
         is_parsed = True
 
         return is_parsed
 
-    def __handle_parse(self, image_contours, minX, minY, maxX, maxY):
+    def __handle_parse(self, image_contours, min_x, min_y, max_x, max_y):
         """
         A method that processes the search result of devices in the image and
          controls the process of drawing the device map.
         :param items: list of all identified devices
-        :param minX: minimal x of screen
-        :param minY: minimal y of screen
-        :param maxX: maximal x of screen
-        :param maxY: maximal y of screen
+        :param min_x: minimal x of screen
+        :param min_y: minimal y of screen
+        :param max_x: maximal x of screen
+        :param max_y: maximal y of screen
         """
-        trimmed_screen = Screen(maxX - minX, maxY - minY)
+        trimmed_screen = Screen(max_x - min_x, max_y - min_y)
         final_screen = trimmed_screen.get_formatted_screen(16 / 9)
         map = Map(final_screen)
         for display in image_contours:
-            display.rect = ((display.rect[0][0] - minX, display.rect[0][1] - minY), display.rect[1], display.rect[2])
+            display.rect = ((display.rect[0][0] - min_x, display.rect[0][1] - min_y), display.rect[1], display.rect[2])
             map.add_device(display.rect)
 
         map.save_map(self.room)
-
-    @classmethod
-    def __trimming(cls, contours):
-        """
-        Method of controlling calculation contours for forming the final image
-        :param contours: Contours found in the image
-        # :param image_contours: Objects found in the image
-        :return:  minimal & maximum x & y of screen
-        """
-        image_contours = []
-        i = 0
-        maxX = maxY = -math.inf
-        minY = minX = math.inf
-        for contour in contours:
-            image_contour = Contour(contour, i)
-            image_contours.append(image_contour)
-            minX = min(minX, image_contour.min_x)
-            maxX = max(maxX, image_contour.max_x)
-            minY = min(minY, image_contour.min_y)
-            maxY = max(maxY, image_contour.max_y)
-            i += 1
-        return maxX, maxY, minX, minY, image_contours
