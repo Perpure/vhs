@@ -35,7 +35,7 @@ jQuery(function($) {
 
       if(presearch)
         {
-            Search(presearch, 0, 0, 1);
+            Search(presearch, 0, 0);
         }
     });
 });
