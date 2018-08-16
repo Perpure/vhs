@@ -78,6 +78,8 @@ class CalibrationImage:
         self.impath = impath
         self.device_amount = device_amount
         self.img = cv2.imread(self.impath)
+        height, width = self.img.shape[:2]
+        self.threshold = (.1 * height) * (.1 * width)
 
     def __image_converting(self):
         """
@@ -116,13 +118,16 @@ class CalibrationImage:
         max_x = max_y = -math.inf
         min_y = min_x = math.inf
         for contour in contours:
-            image_contour = Contour(contour, i)
-            image_contours.append(image_contour)
-            min_x = min(min_x, image_contour.min_x)
-            max_x = max(max_x, image_contour.max_x)
-            min_y = min(min_y, image_contour.min_y)
-            max_y = max(max_y, image_contour.max_y)
-            i += 1
+            rect = cv2.minAreaRect(contour)
+            area = int(rect[1][0] * rect[1][1])
+            if area > self.threshold:
+                image_contour = Contour(contour, i)
+                image_contours.append(image_contour)
+                min_x = min(min_x, image_contour.min_x)
+                max_x = max(max_x, image_contour.max_x)
+                min_y = min(min_y, image_contour.min_y)
+                max_y = max(max_y, image_contour.max_y)
+                i += 1
         return max_x, max_y, min_x, min_y, image_contours
 
     def __draw_rectangles(self, contours):
@@ -131,7 +136,7 @@ class CalibrationImage:
             rect = cv2.minAreaRect(cnt)
             box = cv2.boxPoints(rect)
             box = np.int0(box)
-            cv2.drawContours(self.img, [box], 0, (255, 200, 0), 2)
+            cv2.drawContours(self.img, [box], 0, (0, 0, 255), 2)
         cv2.imwrite(self.img_save_path + 'img_masked' + '.png', self.img)
 
 
