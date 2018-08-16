@@ -5,12 +5,12 @@
   {% if count > 1 %}
     <h5>Количество участников: <span id="countUsers">{{count}}</span></h5>
   {% else %}
-    <p id="countUsers">Пригласите участников в комнату</p>
+    <p id="countUsers" data-tour-index="0" data-tour-description="Пусть ваши друзья зайдут в комнату.">Пригласите участников в комнату</p>
   {% endif %}
   {% if room.capitan_id == anon.id %}
     <hr>
-    <button id="calibrate_btn" class="video-control__btn inline-block">Калибровка</button>
-    <div class="inline-block inline-block_edge">
+    <button id="calibrate_btn" class="video-control__btn inline-block"  data-tour-index="3" data-tour-description="Составьте большой экран из устройств участников. <br> Начните калибровку.">Калибровка</button>
+    <div class="inline-block inline-block_edge" data-tour-index="5" data-tour-description="Если вас устраивает получившаяся карта устройств, нажмите на play для начала демонстрации.">
       <button id="show_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id and not room.is_playing_youtube %}video-control__btn_disabled{% endif %}"><span class="fa fa-play video-control__img" id="show_res_img"></span></button>
       <button id="stop_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id and not room.is_playing_youtube %}video-control__btn_disabled{% endif %}"><span class="fa fa-stop video-control__img" id="stop_res_img"></span></button>
     </div>
@@ -22,6 +22,7 @@
 </div>
 
 {% if room.capitan_id == anon.id%}
+    <div class="fit" data-tour-index="4" data-tour-description="Сфотографируйте устройства и инициализируйте фотографию.">
     <h5>Загрузите калибровочное фото</h5>
     <form id="image_form" action="" method="post" enctype="multipart/form-data">
         <div class="loader">
@@ -41,12 +42,14 @@
         <p id="formMessage" class="message"></p>
     </form>
     <img id="map" style="width:100%" {% if map_ex %}src="{{url_for('get_multi', pid=room_map)}}"{% else %} class="hidden"{% endif %}>
+    </div>
 {% endif %}
 
 {% if room.capitan_id == anon.id %}
 <hr>
+<div class="fit" data-tour-index="1" data-tour-description="Выберите видео.">
 <h3>Выбрать видео</h3>
-  <div class="switcher" id="video_switcher">
+  <div class="switcher" id="video_switcher" data-tour-index="2" data-tour-description="Либо с нашего сайта, либо с YouTube.">
     <div class="switcher__arm">
       <label class="switcher__label" id="go_to_youtube">
         <div class="switcher__pill">С сайта</div>
@@ -76,24 +79,13 @@
     </div>
     <div id="choose_yt">
     </div>
+    </div>
     <hr>
+    <button type="button" id="startTour" class="button button_icon button_icon_eye">
+      <span class="button__text">Инструкция</span>
+    </button>
 {% endif %}
 
-<div class="slider">
-  <span  class="fact slider__btn">Инструкция</span>
-  <ol class="slider__content">
-    <li>Пригласите участников.</li>
-    <li>Выберите видео для демонстрации.</li>
-    <li>Разместите устройства на площади для показа.</li>
-    <li>Капитан нажимает на кнопку “Калибровка”.<br>
-    4.1. На устройствах участников откроется сплошная цветниая заливка.</li>
-    <li>Капитан делает фотографию утсройств и нажимает “Инициализировать”</li>
-    <li>Через некоторое время появится карта устройств.<br>
-    6.1. Если положение устройств определено неверно повторите действия описанные в п.5</li>
-    <li>Капитан нажимает “Начать демонстрацию”</li>
-    <li>Начинается показ видео.</li>
-  </ol>
-</div>
 
 {% if room.capitan_id != anon.id %}
   {% if room.is_playing_youtube == True %}
@@ -116,6 +108,7 @@
 </script>
 {% if room.capitan_id == anon.id %}
     <script src="{{ url_for('static', filename='js/switcher.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/multiscreen/tour.js') }}"></script>
     <script src="{{ url_for('static', filename='js/multiscreen/captain.js') }}"></script>
 {% else %}
     <script src="{{ url_for('static', filename='js/multiscreen/user.js') }}"></script>

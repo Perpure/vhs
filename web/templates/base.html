@@ -31,15 +31,7 @@
                 <div class="nav-menu__menu-holder" id="mHolder">Меню</div>
                 <a href="{{url_for('main')}}"><div class="nav-menu__nav-men">Главная</div></a>
                 <a href="{{url_for('search_results', usr=user.login)}}"><div class="nav-menu__nav-men" id="Search">Поиск</div></a>
-                <div class="nav-menu__nav-men nav-menu__nav-men_nav-clast">
-                    Сплитскрин
-                    <span class="fa fa-caret-down nav-menu__img"></span>
-                    <div class="nav-menu__in-btn">
-                        <span class="fa fa-caret-up nav-menu__img nav-menu__img_up-down"></span>
-                        <a href="{{url_for('viewroom')}}"><div class="nav-menu__sub-btn nav-menu__sub-btn_upst">Комнаты</div></a>
-                        <a href="{{url_for('fact')}}"><div class="nav-menu__sub-btn">Что это?</div></a>
-                    </div>
-                </div>
+                <a href="{{ url_for('viewroom') }}"><div class="nav-menu__nav-men">Сплитскрин</div></a>
                 <a href="{{ url_for('upload') }}"><div class="nav-menu__nav-men">Загрузить видео</div></a>
                 <a href="{{ url_for('feedback') }}"><div class="nav-menu__nav-men">Обратная связь</div></a>
             </div>

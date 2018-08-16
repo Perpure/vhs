@@ -198,6 +198,7 @@
     border-radius: 10px;
     width: fit-content;
     margin-bottom: 10px;
+    background-color: fade(@color-secondary,20);
     &__img
     {
       font-size: 150%;
@@ -207,7 +208,7 @@
     &__btn
     {
       border-radius: 5px;
-      background-color: fade(@color-secondary,40);
+      background-color: @color-secondary*1.08;
       box-shadow: 2px 2px 3px fade(@color-main,50);
       border: none;
       transition: 0.2s;
@@ -232,7 +233,6 @@
         height: 40px;
         padding: 0;
         overflow: hidden;
-        position: relative;
       }
       &_disabled,&_disabled:active,&_disabled:hover
       {

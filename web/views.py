@@ -345,12 +345,6 @@ def search_results():
     return render_template('search_results.html', user=user, now=now, presearch=presearch)
 
 
-@app.route('/fact')
-def fact():
-    user = cur_user()
-    return render_template('fact.html', user=user)
-
-
 @app.errorhandler(403)
 def forbidden(e):
     return render_template('403.html', user=cur_user()), 403
