@@ -335,11 +335,14 @@ def subs_s():
     return render_template('subs.html', user=user, subs=subs)
 
 
-@app.route('/search')
+@app.route('/search', methods=['GET', 'POST'])
 def search_results():
+    presearch = ''
+    if request.method == 'POST':
+        presearch = request.form['presearch']
     user = cur_user()
-    now = time = datetime.now(tz=None)
-    return render_template('search_results.html', user=user, now=now)
+    now = datetime.now(tz=None)
+    return render_template('search_results.html', user=user, now=now, presearch=presearch)
 
 
 @app.route('/fact')

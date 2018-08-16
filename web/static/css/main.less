@@ -244,9 +244,12 @@
 }
 .comment
 {
-  height:100px;
   margin-bottom:15px;
-  max-width:50%;
+  &__text
+  {
+    word-break: break-all;
+    max-width: calc(100% - 120px);
+  }
   div
   {
     display: inline-block;
@@ -310,7 +313,13 @@
 {
     background-repeat:no-repeat;
     margin-bottom:20px;
-    &__btn, &__path
+    &__body
+    {
+      margin-right: 20px;
+      position: relative;
+      width: fit-content;
+    }
+    &__body, &__path
     {
       display: inline-block;
     }
@@ -322,6 +331,7 @@
       position: absolute;
       left: 0;
       top: 0;
+      z-index: 5;
       &:hover
       {
         cursor:pointer;
@@ -329,17 +339,8 @@
     }
     &__btn
     {
-      margin-right: 20px;
       width: 200px;
       padding: 0;
-      position: relative;
-      &:hover
-      {
-        cursor:pointer;
-      }
-    }
-    &__txt
-    {
       &:hover
       {
         cursor:pointer;

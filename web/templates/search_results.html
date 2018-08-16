@@ -67,10 +67,15 @@
   </div>
 </div>
 <div id="videos_map" align="center"></div>
+
+<script>
+  var presearch = '{{ presearch }}';
+</script>
 <script src="{{ url_for('static', filename='js/switcher.js') }}"></script>
 <script src="{{ url_for('static', filename='js/search.js') }}"></script>
 <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+<script src="{{ url_for('static', filename='js/search_page.js') }}"></script>
 <script src="{{ url_for('static', filename='videos_map.js') }}"></script>
 <script src="{{ url_for('static', filename='js/slide.js') }}"></script>
-<script src="{{ url_for('static', filename='js/search_page.js') }}"></script>
+
 {% endblock %}
