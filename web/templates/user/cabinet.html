@@ -89,10 +89,10 @@
         <div class="section__set">
           {{ form.avatar.label }}
           <div class="loader">
-              <button class="loader__btn" type="button">
-                  <span class="loader__txt">Выбрать аватар</span>
+              <div class="loader__body">
                   {{ form.avatar(class="loader__file") }}
-              </button>
+                  <button class="loader__btn" type="button">Выбрать аватар</button>
+              </div>
           </div>
           {% if form.avatar.errors %}
             {% for error in avatar_form.avatar.errors %}
@@ -104,10 +104,10 @@
         <div class="section__set">
 	 	      {{ form.background.label }}
           <div class="loader">
-              <button class="loader__btn" type="button">
-                  <span class="loader__txt">Выбрать фон</span>
+              <div class="loader__body">
                   {{ form.background(class="loader__file") }}
-              </button>
+                  <button class="loader__btn" type="button">Выбрать фон</button>
+              </div>
           </div>
           {% if form.background.errors %}
             {% for error in avatar_form.background.errors %}

@@ -1,5 +1,4 @@
 var geo_videos = false;
-var onMapReady;
 jQuery(function($) {
   $('#videos_map').on('ready', function(){
     function Search(request, date, name)
