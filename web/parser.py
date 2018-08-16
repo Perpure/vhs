@@ -114,10 +114,9 @@ class CalibrationImage:
                                                   cv2.CHAIN_APPROX_SIMPLE)
         self.__draw_rectangles(contours)
         image_contours = []
-        i = 0
         max_x = max_y = -math.inf
         min_y = min_x = math.inf
-        for contour in contours:
+        for i, contour in enumerate(contours):
             rect = cv2.minAreaRect(contour)
             area = int(rect[1][0] * rect[1][1])
             if area > self.threshold:
@@ -127,7 +126,6 @@ class CalibrationImage:
                 max_x = max(max_x, image_contour.max_x)
                 min_y = min(min_y, image_contour.min_y)
                 max_y = max(max_y, image_contour.max_y)
-                i += 1
         return max_x, max_y, min_x, min_y, image_contours
 
     def __draw_rectangles(self, contours):
