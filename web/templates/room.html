@@ -45,7 +45,7 @@
         {% endif %}
         <p id="formMessage" class="message"></p>
     </form>
-    <img id="map" style="width:100%" {% if map_ex %}src="{{url_for('get_multi', pid=room_map)}}"{% else %} class="hidden"{% endif %}>
+    <img id="map" {% if map_ex %}src="{{url_for('get_multi', pid=room_map)}}" class="parsing-map"{% else %} class="hidden"{% endif %}>
     </div>
 {% endif %}
 
