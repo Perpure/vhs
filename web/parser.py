@@ -78,8 +78,8 @@ class CalibrationImage:
         self.impath = impath
         self.device_amount = device_amount
         self.img = cv2.imread(self.impath)
-        height, width = self.img.shape[:2]
-        self.threshold = (.1 * height) * (.1 * width)
+        height, width, _ = self.img.shape
+        self.threshold = .01 * (height * width)
 
     def __image_converting(self):
         """
