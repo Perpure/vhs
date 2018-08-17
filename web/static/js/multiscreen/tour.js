@@ -2,9 +2,9 @@ $.fn.PageTour = function (opts) {
   var
     _o = $.extend({
       prefix : 'tour',
-      horizontalPadding : 20,
-      verticalPadding : 5,
-      generalPadding : 5,
+      horizontalPadding : 0,
+      verticalPadding : 0,
+      generalPadding : 0,
       nextText : 'Дальше',
       prevText : 'Назад',
       exitText : 'Выйти',

@@ -163,6 +163,7 @@
     {
       width:80%;
       margin:0 auto;
+      margin-bottom: 10px;
       display:block;
       height: auto;
       &-titling,&-info
@@ -212,14 +213,22 @@
       text-align: left;
     }
 
-    .inline-block_big-spacing
+    .inline-block
     {
-      margin-right: 0;
+      &_big-spacing, &_phone-oneline
+      {
+        margin-right: 0;
+      }
     }
 
     .room-card
     {
       border-left: none;
+      width: 100%;
+    }
+
+    .phone-full-width
+    {
       width: 100%;
     }
 }

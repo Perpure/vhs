@@ -52,6 +52,7 @@ jQuery(function($) {
 
 function show_message(type, text)
 {
+    $('#formMessage').show();
     if(type == 'error')
     {
         $('#formMessage').removeClass('message_correct')
