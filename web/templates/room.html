@@ -10,9 +10,13 @@
   {% if room.capitan_id == anon.id %}
     <hr>
     <button id="calibrate_btn" class="video-control__btn inline-block"  data-tour-index="3" data-tour-description="Составьте большой экран из устройств участников. <br> Начните калибровку.">Калибровка</button>
-    <div class="inline-block inline-block_edge" data-tour-index="5" data-tour-description="Если вас устраивает получившаяся карта устройств, нажмите на play для начала демонстрации.">
-      <button id="show_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id and not room.is_playing_youtube %}video-control__btn_disabled{% endif %}"><span class="fa fa-play video-control__img" id="show_res_img"></span></button>
-      <button id="stop_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id and not room.is_playing_youtube %}video-control__btn_disabled{% endif %}"><span class="fa fa-stop video-control__img" id="stop_res_img"></span></button>
+    <div class="inline-block inline-block_edge">
+      <button id="show_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id and not room.is_playing_youtube %}video-control__btn_disabled{% endif %}" data-tour-index="5" data-tour-description="Если вас устраивает получившаяся карта устройств, нажмите на play для начала демонстрации.">
+        <span class="fa fa-play video-control__img" id="show_res_img"></span>
+      </button>
+      <button id="stop_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id and not room.is_playing_youtube %}video-control__btn_disabled{% endif %}">
+        <span class="fa fa-stop video-control__img" id="stop_res_img"></span>
+      </button>
     </div>
     <button id="refresh_btn" class="video-control__btn inline-block inline-block_edge">Обновить устройства</button>
   {% else %}
