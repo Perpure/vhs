@@ -24,8 +24,10 @@
     <form id="image_form" action="" method="post" enctype="multipart/form-data">
         <div class="inline-block inline-block_phone-oneline">
         <div class="loader loader_thin">
+          <div class="loader__body">
             <input id="image" name="image" type="file" accept="image/*" capture class="loader__file">
             <button class="loader__btn video-control__btn" type="button">Выбрать фото</button>
+          </div>
         </div>
         {% if image_form.image.errors %}
             {% for error in image_form.image.errors %}
@@ -110,7 +112,7 @@
 </script>
 {% if room.capitan_id == anon.id %}
     <script src="{{ url_for('static', filename='js/switcher.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/multiscreen/tour.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/multiscreen/driver.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/multiscreen/captain.js') }}"></script>
 {% else %}
     <script src="{{ url_for('static', filename='js/multiscreen/user.js') }}"></script>

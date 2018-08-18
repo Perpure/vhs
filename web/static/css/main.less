@@ -208,6 +208,7 @@
     &__btn
     {
       border-radius: 5px;
+      margin-bottom: 0;
       background-color: @color-secondary*1.08 !important;
       box-shadow: 2px 2px 3px fade(@color-main,50);
       border: none;
@@ -318,18 +319,23 @@
     {
       margin-bottom: 0;
     }
-    &__btn, &__path
+    &__body, &__path
     {
       display: inline-block;
+    }
+    &__body
+    {
+      .fit;
+      position: relative;
     }
     &__file
     {
       opacity:0;
-      width: 200px;
-      height: inherit;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
       position: absolute;
-      left: inherit;
-      top: inherit;
       z-index: 5;
       &:hover
       {
@@ -340,7 +346,6 @@
     {
       width: 200px;
       padding: 0;
-      margin-right: 20px;
       &:hover
       {
         cursor:pointer;
@@ -350,6 +355,7 @@
     {
       border: none;
       vertical-align: bottom;
+      margin-left: 20px;
       margin-bottom: 7px;
       &:hover
       {

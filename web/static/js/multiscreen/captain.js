@@ -152,11 +152,5 @@ $('#refresh_btn').click(function() {
   drop_state();
 });
 
-    var PageTour;
-    try {
-        PageTour = $.fn.PageTour();
-    } catch (e) {
-        console.error('Cannot start page tour: ', e);
-    }
-    $('#startTour').click(PageTour.open);
+    const driver = new Driver();
 });
