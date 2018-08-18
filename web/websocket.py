@@ -5,6 +5,7 @@ from flask_socketio import emit, send, join_room, leave_room
 from web import app, socketio, db
 from .models import Device, Room
 from web.helper import cur_user
+from config import CONNECTION_SYMBOLS
 
 
 @socketio.on('join')
@@ -13,6 +14,9 @@ def on_join(room, id):
         cur_room = Room.query.get(room)
         user = Device.query.get(session['anon_id'])
         user.socket_id = id
+        if user != cur_room.captain:
+            user.symbol = CONNECTION_SYMBOLS[len(cur_room.devices_in_room) - 1]
+            socketio.emit('symbol', user.symbol, room=id)
         db.session.commit()
     join_room(room)
 

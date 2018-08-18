@@ -19,3 +19,4 @@ plugins.ffmpeg.download()
 GOOGLE_API_KEY = os.environ['GOOGLE_API_KEY']
 CAPTCHA_PUBLIC_KEY = os.environ['CAPTCHA_PUBLIC_KEY']
 CAPTCHA_PRIVATE_KEY = os.environ['CAPTCHA_PRIVATE_KEY']
+CONNECTION_SYMBOLS = ['$', '%', '&', '*', '(', ')', '#', '@', '<', '>']

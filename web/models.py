@@ -351,6 +351,7 @@ class Device(db.Model):
     device_width = db.Column(db.Integer)
     device_height = db.Column(db.Integer)
     socket_id = db.Column(db.String(64))
+    symbol = db.Column(db.String(1))
 
     top = db.Column(db.Float)
     left = db.Column(db.Float)

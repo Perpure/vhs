@@ -2,7 +2,7 @@ var PLAYER,
     PICTURE_SIZE = 16 / 9;
 var CALIBRATE_COLOR  = '#008080'
 var SYMBOL_COLOR = '#FF7F7F';
-var symbol = '&';
+var SYMBOL;
 
 if(from_youtube) {
   var tag = document.createElement('script');
@@ -64,7 +64,7 @@ jQuery(function($) {
     $('#Body').append('<div '
         + 'style="' + 'background:' + CALIBRATE_COLOR + ';'
         +'color:' + SYMBOL_COLOR + ';" '
-        + 'class="calibration-image fullscreen-switcher">' + symbol + '</div>');
+        + 'class="calibration-image fullscreen-switcher">' + SYMBOL + '</div>');
   });
   socket.on('multiscreen_show_result', function(response) {
     var videoShell = $('#ResultVideoShell')
@@ -82,6 +82,9 @@ jQuery(function($) {
     videoShell.show();
     PLAYER.playVideo();
   });
+  socket.on('symbol', function(response) {
+    SYMBOL = response;
+  });
   socket.on('multiscreen_show_pause', function() {
       PLAYER.pauseVideo();
   });
@@ -97,7 +100,7 @@ jQuery(function($) {
   });
   socket.on('connect', function() {
     socket.emit('join', ROOM_ID, socket.id);
-  });
+  })    ;
   socket.on('disconnect', function() {
     socket.emit('leave', ROOM_ID);
   });
