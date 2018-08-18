@@ -1,3 +1,14 @@
+var device = 0;
+if(screen.width<=1024) device++;
+if(screen.width<=500) device++;
+var X = [[-90, 0, 0, -90, -95, -30, 0, -300],
+         [0, 0, 0, 0, 0, 0, 0, -100],
+         [-90, 0, 0, -70, -95, -20, 0, -110]];
+
+var Y = [[60, 40, -40, 40, 50, 45, -35, -40],
+         [60, 40, -40, 40, 50, 45, -35, -40],
+         [60, 40, -40, -60, 50, 45, -35, -90]];
+
 jQuery(function($) {
   var socketUrl = location.protocol + '//' + location.host;
   socket = io.connect(socketUrl);
@@ -153,49 +164,57 @@ $('#refresh_btn').click(function() {
 });
 
     function guide() {
+        var i = 0;
+        var j = 0;
         var guide = $.guide({
             actions: [
                 {
                     element: $('#startTour'),
                     content: '<p>Добро пожаловать в гид по Сплитскрину,<br> нажмите на экран, чтобы продолжить</p>',
-                    offsetX: -90,
-                    offsetY: 60
+                    offsetX: X[device][i++],
+                    offsetY: Y[device][j++]
                 },
                 {
                     element: $('#tourCount'),
                     content: '<p>Пусть ваши друзья зайдут в комнату</p>',
-                    offsetX: 0,
-                    offsetY: 60
+                    offsetX: X[device][i++],
+                    offsetY: Y[device][j++]
                 },
                 {
                     element: $('#tourChoose'),
                     content: '<p>Выберите видео</p>',
-                    offsetX: 0,
-                    offsetY: -40
+                    offsetX: X[device][i++],
+                    offsetY: Y[device][j++]
                 },
                 {
                     element: $('#video_switcher'),
                     content: '<p>Либо с нашего сайта, либо с YouTube</p>',
-                    offsetX: -90,
-                    offsetY: 40
+                    offsetX: X[device][i++],
+                    offsetY: Y[device][j++]
                 },
                 {
                     element: $('#calibrate_btn'),
-                    content: '<p>Составьте большой экран из устройств участников, <br> Начните калибровку</p>',
-                    offsetX: -90,
-                    offsetY: 40
+                    content: '<p>Составьте большой экран из устройств участников</p>',
+                    offsetX: X[device][i++],
+                    offsetY: Y[device][j++]
+                },
+                {
+                    element: $('#calibrate_btn'),
+                    content: '<p>Начните калибровку</p>',
+                    offsetX: X[device][i++],
+                    offsetY: Y[device][j++]
                 },
                 {
                     element: $('#tourPhoto'),
-                    content: '<p>Сфотографируйте устройства,<br> инициализируйте фотографию</p>',
-                    offsetX: 0,
-                    offsetY: -50
+                    content: '<p>Сфотографируйте устройства, инициализируйте фотографию</p>',
+                    offsetX: X[device][i++],
+                    offsetY: Y[device][j++]
                 },
                 {
                     element: $('#show_res'),
                     content: '<p>Если вас устраивает получившаяся карта устройств, нажмите play для начала демонстрации</p>',
-                    offsetX: -90,
-                    offsetY: 50,
+                    offsetX: X[device][i],
+                    offsetY: Y[device][j],
                     isBeforeFuncExec: true,
                     beforeFunc: function(g) {
                         $('#show_res').slideDown(function() {
