@@ -2,16 +2,18 @@
 {% block content %}
 <h1>Комната {{room.name}}</h1>
 <div class="video-control inline-block inline-block_big-spacing phone-full-width">
+  <div id="tourCount">
   {% if count > 1 %}
-    <h5 data-tour-index="0" data-tour-description="Пусть ваши друзья зайдут в комнату.">Количество участников: <span id="countUsers">{{count}}</span></h5>
+    <h5>Количество участников: <span id="countUsers">{{count}}</span></h5>
   {% else %}
-    <p id="countUsers" data-tour-index="0" data-tour-description="Пусть ваши друзья зайдут в комнату.">Пригласите участников в комнату</p>
+    <p id="countUsers">Пригласите участников в комнату</p>
   {% endif %}
+  </div>
   {% if room.capitan_id == anon.id %}
     <hr>
-    <button id="calibrate_btn" class="video-control__btn inline-block"  data-tour-index="3" data-tour-description="Составьте большой экран из устройств участников. <br> Начните калибровку.">Калибровка</button>
+    <button id="calibrate_btn" class="video-control__btn inline-block">Калибровка</button>
     <div class="inline-block inline-block_edge">
-      <button id="show_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id and not room.is_playing_youtube %}video-control__btn_disabled{% endif %}" data-tour-index="5" data-tour-description="Если вас устраивает получившаяся карта устройств, нажмите на play для начала демонстрации.">
+      <button id="show_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id and not room.is_playing_youtube %}video-control__btn_disabled{% endif %}">
         <span class="fa fa-play video-control__img" id="show_res_img"></span>
       </button>
       <button id="stop_res" class="video-control__btn video-control__btn_round inline-block {% if not room.video_id and not room.is_playing_youtube %}video-control__btn_disabled{% endif %}">
@@ -20,7 +22,7 @@
     </div>
     <button id="refresh_btn" class="video-control__btn inline-block inline-block_edge">Обновить устройства</button>
     <hr>
-    <div data-tour-index="4" data-tour-description="Сфотографируйте устройства и инициализируйте фотографию." class="fit">
+    <div id="tourPhoto" class="fit">
     <form id="image_form" action="" method="post" enctype="multipart/form-data">
         <div class="inline-block inline-block_phone-oneline">
         <div class="loader loader_thin">
@@ -52,9 +54,9 @@
 </div>
 
 {% if room.capitan_id == anon.id%}
-<div data-tour-index="1" data-tour-description="Выберите видео." class="fit inline-block inline-block_edge phone-full-width">
+<div id="tourChoose" class="fit inline-block inline-block_edge phone-full-width">
 <h3>Выбрать видео</h3>
-  <div class="switcher" id="video_switcher" data-tour-index="2" data-tour-description="Либо с нашего сайта, либо с YouTube.">
+  <div class="switcher" id="video_switcher">
     <div class="switcher__arm">
       <label class="switcher__label" id="go_to_youtube">
         <div class="switcher__pill">С сайта</div>
@@ -111,8 +113,8 @@
     var from_youtube = {{ 'true' if room.is_playing_youtube else 'false' }};
 </script>
 {% if room.capitan_id == anon.id %}
+    <script src="{{ url_for('static', filename='js/multiscreen/jquery.guide.js') }}"></script>
     <script src="{{ url_for('static', filename='js/switcher.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/multiscreen/driver.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/multiscreen/captain.js') }}"></script>
 {% else %}
     <script src="{{ url_for('static', filename='js/multiscreen/user.js') }}"></script>

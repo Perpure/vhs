@@ -152,5 +152,59 @@ $('#refresh_btn').click(function() {
   drop_state();
 });
 
-    const driver = new Driver();
+    function guide() {
+        var guide = $.guide({
+            actions: [
+                {
+                    element: $('#startTour'),
+                    content: '<p>Добро пожаловать в гид по Сплитскрину,<br> нажмите на экран, чтобы продолжить</p>',
+                    offsetX: -90,
+                    offsetY: 60
+                },
+                {
+                    element: $('#tourCount'),
+                    content: '<p>Пусть ваши друзья зайдут в комнату</p>',
+                    offsetX: 0,
+                    offsetY: 60
+                },
+                {
+                    element: $('#tourChoose'),
+                    content: '<p>Выберите видео</p>',
+                    offsetX: 0,
+                    offsetY: -40
+                },
+                {
+                    element: $('#video_switcher'),
+                    content: '<p>Либо с нашего сайта, либо с YouTube</p>',
+                    offsetX: -90,
+                    offsetY: 40
+                },
+                {
+                    element: $('#calibrate_btn'),
+                    content: '<p>Составьте большой экран из устройств участников, <br> Начните калибровку</p>',
+                    offsetX: -90,
+                    offsetY: 40
+                },
+                {
+                    element: $('#tourPhoto'),
+                    content: '<p>Сфотографируйте устройства,<br> инициализируйте фотографию</p>',
+                    offsetX: 0,
+                    offsetY: -50
+                },
+                {
+                    element: $('#show_res'),
+                    content: '<p>Если вас устраивает получившаяся карта устройств, нажмите play для начала демонстрации</p>',
+                    offsetX: -90,
+                    offsetY: 50,
+                    isBeforeFuncExec: true,
+                    beforeFunc: function(g) {
+                        $('#show_res').slideDown(function() {
+                            g.execAction();
+                        });
+                    }
+                }
+            ]
+        });
+    }
+    $('#startTour').click(guide);
 });
