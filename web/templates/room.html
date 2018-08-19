@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>Комната {{room.name}}</h1>
-<div class="video-control inline-block inline-block_big-spacing phone-full-width">
+<div class="video-control inline-block inline-block_big-spacing phone-full-width" id="tourFinale">
   <div id="tourCount">
   {% if count > 1 %}
     <h5>Количество участников: <span id="countUsers">{{count}}</span></h5>
