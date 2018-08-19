@@ -166,21 +166,39 @@ $('#refresh_btn').click(function() {
     function guideScroll() {
       setTimeout(function() {
         var duration = 400;
-        var curTop = $('.jquery-guide-content').offset().top;
+
+        var txtUpper = $('.jquery-guide-content').offset().top;
         var height = $('.jquery-guide-content').height();
-        var windLower = $(window).scrollTop();
-        var windUpper = windLower + screen.height;
+        var txtLower = txtUpper + height;
+
+        var rectUpper = currentTop;
+        var rectLower = rectUpper + currentHeight;
+
+        var windUpper = $(window).scrollTop();
+        var windLower = windUpper + screen.height;
+
+        var guideUpper, guideLower;
+        if(txtUpper < rectUpper)
+        {
+            guideUpper = txtUpper;
+            guideLower = rectLower;
+        }
+        else
+        {
+            guideUpper = rectUpper;
+            guideLower = txtLower;
+        }
         var delta = 0;
 
-        if(curTop + height > windUpper)
+        if(guideUpper < windUpper)
         {
-            delta = curTop + height - windUpper + 20;
+            delta = guideUpper - windUpper - 20;
         }
-        else if (curTop < windLower) {
-            var delta = curTop - windUpper - 20;
+        else if (guideLower > windLower) {
+            var delta = guideLower - windLower + 20;
         }
 
-        $('body,html').animate({scrollTop: windLower + delta}, duration);
+        $('body,html').animate({scrollTop: windUpper + delta}, duration);
       }, 420);
     }
 
