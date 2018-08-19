@@ -74,7 +74,10 @@
           <button>Выбрать видео для демонстрации</button>
       </form>
     </div>
-    <div id="choose_yt">
+    <div id="choose_yt" style="display: none;">
+      <form action="{{url_for('choose_youtube_video', room_id=room.id)}}">
+          <button>Выбрать видео с youtube</button>
+      </form>
     </div>
     <hr>
 {% endif %}

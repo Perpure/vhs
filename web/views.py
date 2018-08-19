@@ -63,6 +63,7 @@ def room(room_id):
     room_form = RoomForm()
     room = Room.query.get(room_id)
     if room:
+        youtube_video_id = request.args.get('youtube_video_id')
         room_map_url = str(room_id) + '_map'
         raw_user_rooms = RoomDeviceColorConnector.query.filter_by(anon=user)
         user_rooms = [rac.room for rac in raw_user_rooms]
@@ -136,7 +137,20 @@ def choose_video(room_id):
 
 @app.route('/room/<int:room_id>/choose_youtube')
 def choose_youtube_video(room_id):
-    return render_template('choose_youtube.html')
+    user = anon_user()
+    room = Room.query.get(room_id)
+    cap = room.capitan_id
+    if user.id == cap:
+        video_id = request.args.get('video_id')
+        if video_id is not None:
+            return redirect(url_for('room', room_id=room_id, youtube_video_id=video_id))
+        else:
+            return render_template('choose_youtube.html', room_id=room_id, user=user)
+    else:
+        abort = Aborter()
+        return abort(403)
+
+
 
 
 @app.route('/upload', methods=['GET', 'POST'])

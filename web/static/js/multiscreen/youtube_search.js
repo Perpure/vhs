@@ -55,6 +55,7 @@ jQuery(function($) {
         if (videos.length && YTSearchNextPageToken) {
             $('.yt-search__more').removeClass('yt-search__more_hidden');
         }
+        $('.video').click(select_video);
     }
 
     function output_video(video_item) {
@@ -65,7 +66,7 @@ jQuery(function($) {
                         '<div>' +
                             '<p class="video__title">' + video_item.title + '</p>' +
                             '<p class="italic">' + video_item.author + '<br>' + video_item.duration + '</p>' +
-                            '<span hidden="true">' + video_item.id + '</span>' +
+                            '<span class="video__id" hidden="true">' + video_item.id + '</span>' +
                         '</div>' +
                     '</div>';
         $('.yt-search__result').append(html);
@@ -81,4 +82,9 @@ jQuery(function($) {
     $('.yt-search__more').click(function() {
         get_more_videos(YTSearchQuery, YTSearchNextPageToken);
     });
+
+    function select_video() {
+        video_id = $(this).find('.video__id').text();
+        $(location).attr('href', location.href + '?video_id=' + video_id);
+    };
 });
