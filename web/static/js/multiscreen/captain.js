@@ -178,25 +178,15 @@ $('#refresh_btn').click(function() {
         var windLower = windUpper + screen.height;
 
         var guideUpper, guideLower;
-        if(txtUpper < rectUpper)
-        {
-            guideUpper = txtUpper;
-            guideLower = rectLower;
-        }
-        else
-        {
-            guideUpper = rectUpper;
-            guideLower = txtLower;
-        }
-        var delta = 0;
+        guideUpper = Math.min(txtUpper, rectUpper);
+        guideLower = Math.max(rectLower, txtLower);
 
-        if(guideUpper < windUpper)
-        {
-            delta = guideUpper - windUpper - 20;
-        }
-        else if (guideLower > windLower) {
-            var delta = guideLower - windLower + 20;
-        }
+        var delta, dU, dL;
+
+        dU = guideUpper - windUpper - 20;
+        dL = windLower - guideLower - 20;
+        delta = Math.min(dL, dU) * ((dL < 0) * -1 + (dL > 0) * 1);
+        delta *= dL * dU < 0;
 
         $('body,html').animate({scrollTop: windUpper + delta}, duration);
       }, 420);
