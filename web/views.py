@@ -312,12 +312,7 @@ def feedback():
         form.feedback_text.data = ''
         feedback = Feedback(email, text)
 
-        message = {
-                       "content": '',
-                       "embeds": [{
-                           "title": email,
-                           "description": text
-                       }]}
+        message = {"content": '', "embeds": [{"title": email, "description": text}]}
         message = json.dumps(message)
         headers = {'content-type': 'application/json'}
         req = requests.post(DISCORD_ADRESS, data=message, headers=headers)
