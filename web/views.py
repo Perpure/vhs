@@ -156,7 +156,7 @@ def choose_youtube_video(room_id):
 
         room.yt_video_id = request.form['id']
         db.session.commit()
-        
+
         return redirect(url_for('room', room_id=room_id))
     if user.id == cap:
         return render_template('choose_youtube.html', room_id=room_id, user=cur_user())
