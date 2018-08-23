@@ -66,7 +66,7 @@ jQuery(function($) {
                         '<div>' +
                             '<p class="video__title">' + video_item.title + '</p>' +
                             '<p class="italic">' + video_item.author + '<br>' + video_item.duration + '</p>' +
-                            '<span class="hidden">' + video_item.id + '</span' +
+                            '<span class="hidden">' + video_item.id + '</span>' +
                         '</div>' +
                     '</div>';
         $('.yt-search__result').append(html);
