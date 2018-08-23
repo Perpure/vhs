@@ -7,7 +7,7 @@ jQuery(function($) {
         YTSearchQuery = query;
         $('.yt-search__result').html('');
         $('.yt-video_error').remove();
-        $('.yt-search__more').addClass('yt-search__more_hidden');
+        $('#more').show();
 
         if (query.length > 0) {
             send_video_search(query);
@@ -17,7 +17,7 @@ jQuery(function($) {
     }
 
     function get_more_videos(query, nextPageToken) {
-        $('.yt-search__more').addClass('yt-search__more_hidden');
+        $('#more').hide();
         send_video_search(query, nextPageToken);
     }
 
@@ -53,7 +53,7 @@ jQuery(function($) {
             output_video(videos[i]);
         }
         if (videos.length && YTSearchNextPageToken) {
-            $('.yt-search__more').removeClass('yt-search__more_hidden');
+            $('#more').show();
         }
         $('.video').click(select_video);
     }
@@ -75,14 +75,14 @@ jQuery(function($) {
         $('.yt-search__result').append(html);
     }
 
-    $('.yt-searcher__submit button').click(function() {
-        var ytSearcher = $(this).parents('.yt-searcher'),
-            ytSearcherInput = ytSearcher.find('.yt-searcher__input input'),
+    $('.searcher__btn').click(function() {
+        var ytSearcher = $(this).parents('.searcher'),
+            ytSearcherInput = ytSearcher.find('.searcher__input'),
             query = ytSearcherInput.val();
         find_videos(query);
     });
 
-    $('.yt-search__more').click(function() {
+    $('#more').click(function() {
         get_more_videos(YTSearchQuery, YTSearchNextPageToken);
     });
 
