@@ -3,6 +3,7 @@ var PLAYER,
 
 if(from_youtube) {
   var tag = document.createElement('script');
+  var yt_video_id = $('#ResultVideoShell').data('yt-video-id');
 
   tag.src = "https://www.youtube.com/iframe_api";
   var firstScriptTag = document.getElementsByTagName('script')[0];
