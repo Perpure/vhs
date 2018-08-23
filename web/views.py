@@ -93,11 +93,8 @@ def room(room_id):
         session_key = 'yt_video_' + str(room_id)
         yt_video = session.get(session_key)
 
-        if user.id == room.capitan_id:
-            if yt_video is not None:
-                yt_video = JSONDecoder().decode(yt_video)
-            elif room.is_playing_youtube:
-                change_youtube_state(room_id)
+        if user.id == room.capitan_id and yt_video is not None:
+            yt_video = JSONDecoder().decode(yt_video)
 
         return render_template('room.html', room=room, user=cur_user(), users=users,
                                count=len(users) + 1,
@@ -119,9 +116,6 @@ def choosed_video(room_id, vid_id):
             room.video_id = vid_id
         db.session.commit()
 
-        if room.is_playing_youtube:
-            session.pop('yt_video_' + str(room_id))
-            change_youtube_state(room_id)
         return redirect(url_for('room', room_id=room_id))
     else:
         return redirect(url_for('viewroom'))
@@ -160,10 +154,12 @@ def choose_youtube_video(room_id):
 
         session['yt_video_' + str(room_id)] = video_js
 
-        change_youtube_state(room_id, request.form['id'])
+        room.yt_video_id = request.form['id']
+        db.session.commit()
+        
         return redirect(url_for('room', room_id=room_id))
     if user.id == cap:
-        return render_template('choose_youtube.html', room_id=room_id, user=user)
+        return render_template('choose_youtube.html', room_id=room_id, user=cur_user())
     else:
         abort = Aborter()
         return abort(403)

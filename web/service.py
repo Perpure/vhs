@@ -246,14 +246,9 @@ def search_for_videos():
     return json.dumps(jsoned)
 
 
-@app.route('/change_youtube_state/<int:room_id>/<string:yt_video_id>', methods=['GET', 'POST'])
-def change_youtube_state(room_id, yt_video_id=None):
-    room = Room.query.get(room_id)
-    if yt_video_id is not None:
-        room.is_playing_youtube = True
-    else:
-        room.is_playing_youtube = False
-    room.yt_video_id = yt_video_id
-
+@app.route('/change_youtube_state/<int:ID>', methods=['GET', 'POST'])
+def change_youtube_state(ID):
+    room = Room.query.get(ID)
+    room.is_playing_youtube = not room.is_playing_youtube
     db.session.commit()
     return "nice"
