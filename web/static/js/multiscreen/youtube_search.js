@@ -66,7 +66,10 @@ jQuery(function($) {
                         '<div>' +
                             '<p class="video__title">' + video_item.title + '</p>' +
                             '<p class="italic">' + video_item.author + '<br>' + video_item.duration + '</p>' +
-                            '<span class="video__id" hidden="true">' + video_item.id + '</span>' +
+                            '<form method="POST" class="video__form" hidden="true" action="">' +
+                                '<input name="preview" value="' + video_item.preview + '">' +
+                                '<input name="id" value="' + video_item.id + '">' +
+                            '</form>' +
                         '</div>' +
                     '</div>';
         $('.yt-search__result').append(html);
@@ -84,7 +87,6 @@ jQuery(function($) {
     });
 
     function select_video() {
-        video_id = $(this).find('.video__id').text();
-        $(location).attr('href', location.href + '?video_id=' + video_id);
+        $(this).find('.video__form').submit();
     };
 });

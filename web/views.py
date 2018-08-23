@@ -11,6 +11,7 @@ from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, Upl
     UserProfileForm, AddRoomForm, AccountSettingsForm, FeedbackForm
 from web.models import User, Video, Room, Color, Geotag, Tag, Device, RoomDeviceColorConnector, Feedback
 from web.helper import cur_user, requiresauth, anon_user, image_loaded
+from web.service import change_youtube_state
 from web.video_handler import save_video
 from datetime import datetime
 from flask_socketio import emit
@@ -63,7 +64,6 @@ def room(room_id):
     room_form = RoomForm()
     room = Room.query.get(room_id)
     if room:
-        youtube_video_id = request.args.get('youtube_video_id')
         room_map_url = str(room_id) + '_map'
         raw_user_rooms = RoomDeviceColorConnector.query.filter_by(anon=user)
         user_rooms = [rac.room for rac in raw_user_rooms]
@@ -90,11 +90,21 @@ def room(room_id):
         if image_form.validate_on_submit():
             return image_loaded(request, room, user, users, image_form, room_form)
 
+        session_key = 'yt_video_' + str(room_id)
+        yt_video = session.get(session_key)
+
+        if user.id == room.capitan_id:
+            if yt_video is not None:
+                yt_video = JSONDecoder().decode(yt_video)
+            elif room.is_playing_youtube:
+                change_youtube_state(room_id)
+
         return render_template('room.html', room=room, user=cur_user(), users=users,
                                count=len(users) + 1,
                                image_form=image_form, room_form=room_form, loaded=False, anon=user,
                                room_map=room_map_url,
-                               map_ex=os.path.exists(basedir + '/images/' + str(room.id) + '_map.jpg'))
+                               map_ex=os.path.exists(basedir + '/images/' + str(room.id) + '_map.jpg'),
+                               yt_video=yt_video)
     else:
         return redirect(url_for('viewroom'))
 
@@ -108,6 +118,10 @@ def choosed_video(room_id, vid_id):
         if user.id == room.capitan_id:
             room.video_id = vid_id
         db.session.commit()
+
+        if room.is_playing_youtube:
+            session.pop('yt_video_' + str(room_id))
+            change_youtube_state(room_id)
         return redirect(url_for('room', room_id=room_id))
     else:
         return redirect(url_for('viewroom'))
@@ -135,22 +149,24 @@ def choose_video(room_id):
         return redirect(url_for('viewroom'))
 
 
-@app.route('/room/<int:room_id>/choose_youtube')
+@app.route('/room/<int:room_id>/choose_youtube', methods=['GET', 'POST'])
 def choose_youtube_video(room_id):
     user = anon_user()
     room = Room.query.get(room_id)
     cap = room.capitan_id
+    if request.method == 'POST':
+        video_js = dumps({'preview': request.form['preview'],
+                          'id': request.form['id']})
+
+        session['yt_video_' + str(room_id)] = video_js
+
+        change_youtube_state(room_id, request.form['id'])
+        return redirect(url_for('room', room_id=room_id))
     if user.id == cap:
-        video_id = request.args.get('video_id')
-        if video_id is not None:
-            return redirect(url_for('room', room_id=room_id, youtube_video_id=video_id))
-        else:
-            return render_template('choose_youtube.html', room_id=room_id, user=user)
+        return render_template('choose_youtube.html', room_id=room_id, user=user)
     else:
         abort = Aborter()
         return abort(403)
-
-
 
 
 @app.route('/upload', methods=['GET', 'POST'])

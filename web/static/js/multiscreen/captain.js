@@ -24,13 +24,15 @@ jQuery(function($) {
         if (videoMode === "self") {
             $('#choose_site').show();
             $('#choose_yt').hide();
-            if($('.video__preview').length == 0) {
-                $('#stop_res').addClass('video-control__btn_disabled');
-                $('#show_res').addClass('video-control__btn_disabled');
-            }
         } else if (videoMode === "youtube") {
             $('#choose_site').hide();
             $('#choose_yt').show();
+
+        }
+        if($('.video__preview').length == 0) {
+            $('#stop_res').addClass('video-control__btn_disabled');
+            $('#show_res').addClass('video-control__btn_disabled');
+        } else {
             $('#stop_res').removeClass('video-control__btn_disabled');
             $('#show_res').removeClass('video-control__btn_disabled');
         }

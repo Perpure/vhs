@@ -10,9 +10,11 @@ if(from_youtube) {
 
   function onYouTubeIframeAPIReady() {
       PLAYER = new YT.Player('ResultVideo',{
-          videoId: "uzoWJ33bJRg",
+          videoId: yt_video_id,
           playerVars: {
               controls: 0,
+              disablekb: 1,
+              fs: 0,
               enablejsapi: 1,
               rel: 0,
               showinfo: 0,
