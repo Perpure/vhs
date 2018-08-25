@@ -9,6 +9,7 @@ from config import basedir
 class Contour:  # TODO переименовать в Contour
     is_display = False
     is_number = False
+    img_save_path = 'images/calibrate/'
 
     def __init__(self, contour, id):
         self.id = id
@@ -19,6 +20,8 @@ class Contour:  # TODO переименовать в Contour
         self.max_x = np.ndarray.max(self.box[..., 0])
         self.min_y = np.ndarray.min(self.box[..., 1])
         self.max_y = np.ndarray.max(self.box[..., 1])
+        self.width = self.max_x - self.min_x
+        self.height = self.max_y - self.min_y
 
     def find_relation(self, image_objects):
         for image_object in image_objects:
@@ -27,6 +30,20 @@ class Contour:  # TODO переименовать в Contour
                 self.relation = image_object.id
                 image_object.is_number = True
                 image_object.relation = self.id
+
+    def create_image(self.source_image):
+        self.img = source_image[self.min_y:self.min_y + self.height,
+                                self.min_x:self.min_x + self.width]
+        self.img_path = self.img_save_path + 'cropped_image_' + self.id + '.png', self.img)
+        cv2.imwrite(self.img_path)
+        return self.img
+     
+    def create_mask_image(self.mask):
+        self.mask = mask[self.min_y:self.min_y + self.height,
+                         self.min_x:self.min_x = self.width]
+        self.mask_path = self.img_save_path + 'mask_image_' + self.id + '.png', self.mask)
+        cv2.imwrite(self.mask_path)
+        return self.mask
 
     @staticmethod
     def identify(display, mask, img):
