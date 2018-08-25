@@ -11,7 +11,6 @@ from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, Upl
     UserProfileForm, AddRoomForm, AccountSettingsForm, FeedbackForm
 from web.models import User, Video, Room, Color, Geotag, Tag, Device, RoomDeviceColorConnector, Feedback
 from web.helper import cur_user, requiresauth, anon_user, image_loaded
-from web.service import change_youtube_state
 from web.video_handler import save_video
 from datetime import datetime
 from flask_socketio import emit
