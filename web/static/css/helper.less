@@ -129,6 +129,11 @@ input[type="submit"], button, .button
     {
       outline: none;
     }
+    &:disabled
+    {
+      color: fade(@color-main, 30);
+      box-shadow: 0px 0px 3px fade(@color-main,50);
+    }
 }
 
 .button
