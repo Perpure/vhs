@@ -5,7 +5,7 @@ from wtforms.validators import ValidationError
 from flask import redirect, render_template, session, url_for, request
 from flask.json import JSONDecoder, dumps
 from werkzeug.exceptions import Aborter
-from config import basedir, CAPTCHA_PUBLIC_KEY, DISCORD_ADRESS
+from config import basedir, CAPTCHA_PUBLIC_KEY, DISCORD_ADDRESS
 from web import app, db, avatars, backgrounds, socketio
 from web.forms import RegForm, LogForm, UploadVideoForm, JoinForm, RoomForm, UploadImageForm, \
     UserProfileForm, AddRoomForm, AccountSettingsForm, FeedbackForm
@@ -315,7 +315,7 @@ def feedback():
         message = {"content": '', "embeds": [{"title": email, "description": text}]}
         message = json.dumps(message)
         headers = {'content-type': 'application/json'}
-        req = requests.post(DISCORD_ADRESS, data=message, headers=headers)
+        requests.post(DISCORD_ADDRESS, data=message, headers=headers)
 
         return render_template('feedback.html', user=user, form=form, CAPTCHA_KEY=CAPTCHA_PUBLIC_KEY,
                                message='Спасибо за ваше сообщение!')

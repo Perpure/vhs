@@ -19,4 +19,4 @@ plugins.ffmpeg.download()
 GOOGLE_API_KEY = os.environ['GOOGLE_API_KEY']
 CAPTCHA_PUBLIC_KEY = os.environ['CAPTCHA_PUBLIC_KEY']
 CAPTCHA_PRIVATE_KEY = os.environ['CAPTCHA_PRIVATE_KEY']
-DISCORD_ADRESS = os.environ['DISCORD_ADRESS']
+DISCORD_ADDRESS = 'https://discordapp.com/api/webhooks/' + os.environ['WEBHOOK_ID'] + '/' + os.environ['WEBHOOK_TOKEN']
