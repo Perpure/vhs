@@ -1,6 +1,13 @@
 var device = 0;
-if(screen.width<=1024) device++;
-if(screen.width<=500) device++;
+if(screen.width<=1024)
+{
+    device++;
+}
+if(screen.width<=500)
+{
+    device++;
+}
+
 var X = [[-90, 0, 0, -90, -95, -30, 0, -300, 0],
          [0, 0, 0, 0, 0, 0, 0, -100, 0],
          [-90, 0, 0, -70, -95, -20, 0, -110, 0]];
@@ -35,7 +42,10 @@ jQuery(function($) {
             delta = Math.min(dL, dU) * ((dL < 0) * -1 + (dL > 0) * 1);
             delta *= dL * dU < 0;
 
-            $('body,html').animate({scrollTop: windUpper + delta}, duration);
+            if(delta != 0)
+            {
+                $('body,html').animate({scrollTop: windUpper + delta}, duration);
+            }
         }, 420);
     }
 
