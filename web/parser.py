@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 from PIL import Image, ImageDraw
 from config import basedir
+import uuid
 
 
 class Contour:  # TODO переименовать в Contour
@@ -34,14 +35,14 @@ class Contour:  # TODO переименовать в Contour
     def create_image(self, source_image):
         self.img = source_image[self.min_y:self.min_y + self.height,
                                 self.min_x:self.min_x + self.width]
-        self.img_path = (self.img_save_path + 'cropped_image_' + self.id + '.png', self.img)
+        self.img_path = (self.img_save_path + 'cropped_image_' + str(uuid.uuid1()) + '.png', self.img)
         cv2.imwrite(self.img_path)
         return self.img
 
     def create_mask_image(self, mask):
         self.mask = mask[self.min_y:self.min_y + self.height,
                          self.min_x:self.min_x + self.width]
-        self.mask_path = (self.img_save_path + 'mask_image_' + self.id + '.png', self.mask)
+        self.mask_path = (self.img_save_path + 'mask_image_' + str(uuid.uuid1()) + '.png', self.mask)
         cv2.imwrite(self.mask_path)
         return self.mask
 
