@@ -143,10 +143,6 @@ var currentHeight;
         }, (function(_this) {
           return function() {
             _this.layout.content.html(action.content);
-            return _this.layout.content.css({
-              top: action.element.offset().top + action.offsetY,
-              left: action.element.offset().left + action.offsetX
-            });
           };
         })(this));
       };
@@ -165,10 +161,6 @@ var currentHeight;
           borderRightWidth: $(window).innerWidth() - action.element.offset().left - action.element.innerWidth(),
           borderBottomWidth: bgBottomWidth,
           borderLeftWidth: action.element.offset().left
-        });
-        return this.layout.content.css({
-          top: action.element.offset().top + action.offsetY,
-          left: action.element.offset().left + action.offsetX
         });
       };
 
