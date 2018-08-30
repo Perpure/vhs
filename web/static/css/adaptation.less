@@ -74,6 +74,13 @@
       margin-bottom:10px;
       text-align:center;
     }
+    &-control
+    {
+      &__btn
+      {
+        margin-bottom: 10px;
+      }
+    }
   }
 }
 
@@ -163,6 +170,7 @@
     {
       width:80%;
       margin:0 auto;
+      margin-bottom: 10px;
       display:block;
       height: auto;
       &-titling,&-info
@@ -212,14 +220,25 @@
       text-align: left;
     }
 
-    .inline-block_big-spacing
-    {
-      margin-right: 0;
-    }
-
     .room-card
     {
       border-left: none;
       width: 100%;
     }
+
+    .phone-full-width
+    {
+      width: 100%;
+    }
+}
+
+@media (max-width:500px)
+{
+  .inline-block
+  {
+    &_big-spacing, &_phone-oneline
+    {
+      margin-right: 0;
+    }
+  }
 }
