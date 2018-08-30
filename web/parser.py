@@ -12,7 +12,7 @@ class Contour:  # TODO переименовать в Contour
     is_number = False
     img_save_path = 'images/calibrate/'
     save_id = str(uuid.uuid1())
-    
+
     def __init__(self, contour, id):
         self.id = id
         self.contour = contour
