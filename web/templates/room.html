@@ -116,7 +116,7 @@
   {% elif room.video_id %}
       <div class="result" id="ResultVideoShell">
         <video class="result__video" id="ResultVideo"
-            src="{{url_for('get_video', vid=room.video_id)}}" preload="auto"></video>
+                src="{{url_for('get_video', vid=room.video_id)}}" preload="auto"></video>
       </div>
   {% endif %}
 {% endif %}

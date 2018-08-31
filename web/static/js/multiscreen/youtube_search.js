@@ -84,13 +84,17 @@ jQuery(function($) {
     });
 
     function select_video() {
-        var preview = $(this).find('img').attr('src');
-        var id = $(this).find('span').text();
-        var form = '<form action="" class="video__form hidden" method="POST">' +
-                        '<input name="preview" value="' + preview + '">' +
-                        '<input name="id" value="' + id + '">' +
-                   '</form>';
-        $(this).append(form);
-        $(this).find('.video__form').submit();
+
+        var requestData = {
+            id: $(this).find('span').text(),
+            preview: $(this).find('img').attr('src')
+        }
+
+        $.post({
+            url: location.href,
+            data: requestData
+        }).done(function() {
+            location.href = location.href.split('/choose_youtube')[0];
+        })
     };
 });

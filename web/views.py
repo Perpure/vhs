@@ -2,7 +2,7 @@
 import os
 import json
 from wtforms.validators import ValidationError
-from flask import redirect, render_template, session, url_for, request
+from flask import redirect, render_template, session, url_for, request, abort
 from flask.json import JSONDecoder, dumps
 from werkzeug.exceptions import Aborter
 from config import basedir, CAPTCHA_PUBLIC_KEY
@@ -156,11 +156,10 @@ def choose_youtube_video(room_id):
         room.yt_video_id = request.form['id']
         db.session.commit()
 
-        return redirect(url_for('room', room_id=room_id))
+        return 'OK'
     if user.id == cap:
         return render_template('choose_youtube.html', room_id=room_id, user=cur_user())
     else:
-        abort = Aborter()
         return abort(403)
 
 
