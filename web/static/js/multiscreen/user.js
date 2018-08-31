@@ -61,11 +61,16 @@ if(from_youtube) {
 jQuery(function($) {
   socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
   socket.on('multiscreen_show_calibrate', function() {
-    $('#Body').append('<div '
-        + 'style="' + 'background:' + CALIBRATE_COLOR + ';'
-        +'color:' + SYMBOL_COLOR + ';" '
-        + 'class="calibration-image fullscreen-switcher">' + SYMBOL + '</div>');
+    $('<div/>')
+        .addClass('calibration-image fullscreen-switcher')
+        .css({
+            background: CALIBRATE_COLOR,
+            color: SYMBOL_COLOR
+        })
+        .text(SYMBOL)
+        .appendTo('#Body');
   });
+
   socket.on('multiscreen_show_result', function(response) {
     var videoShell = $('#ResultVideoShell')
         video = $('#ResultVideo');
@@ -100,7 +105,7 @@ jQuery(function($) {
   });
   socket.on('connect', function() {
     socket.emit('join', ROOM_ID, socket.id);
-  })    ;
+  });
   socket.on('disconnect', function() {
     socket.emit('leave', ROOM_ID);
   });
