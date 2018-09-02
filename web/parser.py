@@ -11,7 +11,8 @@ class Contour:  # TODO переименовать в Contour
     is_display = False
     is_number = False
     img_save_path = 'images/calibrate/'
-
+    save_id = str(uuid.uuid1())
+    
     def __init__(self, contour, id):
         self.id = id
         self.contour = contour
@@ -35,14 +36,14 @@ class Contour:  # TODO переименовать в Contour
     def create_image(self, source_image):
         self.img = source_image[self.min_y:self.min_y + self.height,
                                 self.min_x:self.min_x + self.width]
-        self.img_path = (self.img_save_path + 'cropped_image_' + str(uuid.uuid1()) + '.png', self.img)
+        self.img_path = (self.img_save_path + 'cropped_image_' + self.save_id + '.png', self.img)
         cv2.imwrite(self.img_path)
         return self.img
 
     def create_mask_image(self, mask):
         self.mask = mask[self.min_y:self.min_y + self.height,
                          self.min_x:self.min_x + self.width]
-        self.mask_path = (self.img_save_path + 'mask_image_' + str(uuid.uuid1()) + '.png', self.mask)
+        self.mask_path = (self.img_save_path + 'mask_image_' + self.save_id + '.png', self.mask)
         cv2.imwrite(self.mask_path)
         return self.mask
 
