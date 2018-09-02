@@ -360,9 +360,13 @@
 .calibration-image
 {
   position: fixed;
-  width: 110%;
-  height: 110%;
+  width: 100%;
+  height: 100%;
   z-index: 5;
+  line-height:100%;
+  font-size: calc(225px + 1175 * (100vh - 280px) / 1220);
+  /* font-size: calc([minimum size] + ([maximum size] - [minimum size]) * ((100vh - [minimum viewport height]) / ([maximum viewport height] - [minimum viewport height]))); */
+  text-align:center;
 }
 
 .result

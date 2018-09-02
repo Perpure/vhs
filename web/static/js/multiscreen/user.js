@@ -1,6 +1,8 @@
 var PLAYER,
     PICTURE_SIZE = 16 / 9;
 var CALIBRATE_COLOR  = '#008080'
+var SYMBOL_COLOR = '#FF7F7F';
+var SYMBOL;
 
 if(from_youtube) {
   var tag = document.createElement('script');
@@ -59,10 +61,16 @@ if(from_youtube) {
 jQuery(function($) {
   socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
   socket.on('multiscreen_show_calibrate', function() {
-    $('#Body').append('<div '
-        + 'style="' + 'background:' + CALIBRATE_COLOR + ';" '
-        + 'class="calibration-image fullscreen-switcher"></div>');
+    $('<div/>')
+        .addClass('calibration-image fullscreen-switcher')
+        .css({
+            background: CALIBRATE_COLOR,
+            color: SYMBOL_COLOR
+        })
+        .text(SYMBOL)
+        .appendTo('#Body');
   });
+
   socket.on('multiscreen_show_result', function(response) {
     var videoShell = $('#ResultVideoShell')
         video = $('#ResultVideo');
@@ -78,6 +86,9 @@ jQuery(function($) {
     }
     videoShell.show();
     PLAYER.playVideo();
+  });
+  socket.on('symbol', function(response) {
+    SYMBOL = response;
   });
   socket.on('multiscreen_show_pause', function() {
       PLAYER.pauseVideo();
