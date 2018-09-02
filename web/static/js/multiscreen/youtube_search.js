@@ -66,7 +66,7 @@ jQuery(function($) {
                         '<div>' +
                             '<p class="video__title">' + video_item.title + '</p>' +
                             '<p class="italic">' + video_item.author + '<br>' + video_item.duration + '</p>' +
-                            '<span class="hidden">' + video_item.id + '</span>' +
+                            '<span class="video__id hidden">' + video_item.id + '</span>' +
                         '</div>' +
                     '</div>';
         $('.yt-search__result').append(html);
@@ -86,8 +86,8 @@ jQuery(function($) {
     function select_video() {
 
         var requestData = {
-            id: $(this).find('span').text(),
-            preview: $(this).find('img').attr('src')
+            id: $(this).find('.video__id').text(),
+            preview: $(this).find('.video__preview-img').attr('src')
         }
 
         $.post({
