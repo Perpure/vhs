@@ -3,6 +3,7 @@ var PLAYER,
 
 if(from_youtube) {
   var tag = document.createElement('script');
+  var yt_video_id = $('#ResultVideoShell').data('yt-video-id');
 
   tag.src = "https://www.youtube.com/iframe_api";
   var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -10,9 +11,11 @@ if(from_youtube) {
 
   function onYouTubeIframeAPIReady() {
       PLAYER = new YT.Player('ResultVideo',{
-          videoId: "uzoWJ33bJRg",
+          videoId: yt_video_id,
           playerVars: {
               controls: 0,
+              disablekb: 1,
+              fs: 0,
               enablejsapi: 1,
               rel: 0,
               showinfo: 0,

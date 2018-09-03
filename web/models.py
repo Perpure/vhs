@@ -303,6 +303,7 @@ class Room(db.Model):
     date = db.Column(db.DateTime, nullable=False)
     video_id = db.Column(db.String(32))
     is_playing_youtube = db.Column(db.Boolean)
+    yt_video_id = db.Column(db.String(32))
     capitan_id = db.Column(db.String(), db.ForeignKey('Device.id'))
     name = db.Column(db.String(64), nullable=False)
     devices_in_room = db.relationship('RoomDeviceColorConnector', backref='room', lazy=True)

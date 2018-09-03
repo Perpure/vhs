@@ -2,7 +2,7 @@ var map;
 var long, lat;
 var width = '100%';
 var height = 700;
-
+$('#videos_map').bind("ready");
 
 function add_geotags(videos) {
     map.geoObjects.removeAll();
@@ -77,6 +77,8 @@ function init_all() {
     {
         add_geotags(geo_videos);
     }
+
+    $('#videos_map').trigger('ready');
 }
 
 ymaps.ready(init_all);

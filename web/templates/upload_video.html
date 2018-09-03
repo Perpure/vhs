@@ -19,10 +19,10 @@
         {% endfor %}
     )</p>
     <div class="loader">
-        <button class="loader__btn" type="button">
-            <span class="loader__txt">Выбрать файл</span>
+        <div class="loader__body">
             {{ form.video(class="loader__file") }}
-        </button>
+            <button class="loader__btn" type="button">Выбрать файл</button>
+        </div>
         <input type="text" id="fileName" readonly class="loader__path">
     </div>
     {% if form.video.errors %}
