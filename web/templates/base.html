@@ -13,6 +13,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Video Tile</title>
     <link href="https://vjs.zencdn.net/7.0.3/video-js.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tour.css') }}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}" type="image/x-icon">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
@@ -31,16 +32,7 @@
                 <div class="nav-menu__menu-holder" id="mHolder">Меню</div>
                 <a href="{{url_for('main')}}"><div class="nav-menu__nav-men">Главная</div></a>
                 <a href="{{url_for('search_results', usr=user.login)}}"><div class="nav-menu__nav-men" id="Search">Поиск</div></a>
-                <div class="nav-menu__nav-men nav-menu__nav-men_nav-clast">
-                    Сплитскрин
-                    <span class="fa fa-caret-down nav-menu__img"></span>
-                    <div class="nav-menu__in-btn">
-                        <span class="fa fa-caret-up nav-menu__img nav-menu__img_up-down"></span>
-                        <a href="{{url_for('viewroom')}}"><div class="nav-menu__sub-btn nav-menu__sub-btn_upst">Все комнаты</div></a>
-                        <a href="{{url_for('createroom')}}"><div class="nav-menu__sub-btn">Создать комнату</div></a>
-                        <a href="{{url_for('fact')}}"><div class="nav-menu__sub-btn">Что это?</div></a>
-                    </div>
-                </div>
+                <a href="{{ url_for('viewroom') }}"><div class="nav-menu__nav-men">Сплитскрин</div></a>
                 <a href="{{ url_for('upload') }}"><div class="nav-menu__nav-men">Загрузить видео</div></a>
                 <a href="{{ url_for('feedback') }}"><div class="nav-menu__nav-men">Обратная связь</div></a>
             </div>

@@ -17,6 +17,11 @@ html
   {
     margin-right: 0;
   }
+  &_big-spacing
+  {
+    margin-right: 100px;
+    margin-bottom: 40px;
+  }
 }
 
 ul
@@ -97,23 +102,64 @@ input
     }
 }
 
-input[type="submit"], button
+input[type="submit"], button, .button
 {
-    height:40px;
+    height:36px;
     padding:10px;
     padding-top:7px;
+    margin-bottom: 10px;
     background: none;
     transition:0.5s;
     border:none;
-    border:2px solid @color-border;
+    box-shadow: 1px 1px 4px fade(@color-main, 50);
+    color: @color-main;
     font-weight:bold;
     vertical-align: top;
     transition: 0.4s;
     &:hover
     {
-      border:2px solid @color-main;
       cursor: pointer;
+      box-shadow: 0px 0px 1px fade(@color-main, 50);
     }
+    &:active
+    {
+      box-shadow: none;
+    }
+    &:focus
+    {
+      outline: none;
+    }
+    &:disabled
+    {
+      color: fade(@color-main, 30);
+      box-shadow: 0px 0px 3px fade(@color-main,50);
+    }
+}
+
+.button
+{
+  &_on-dark
+  {
+    background-color: fade(@color-secondary, 20);
+  }
+  &_icon
+  {
+    padding:12px;
+    padding-top:7px;
+    padding-right: 6px;
+  }
+  &_icon_eye &__text:after
+  {
+    .fa;
+    content: "\F06E";
+    margin-left: 5px;
+    transition: 0.5s;
+    opacity: 0;
+  }
+  &:hover > &__text:after
+  {
+    opacity: 1;
+  }
 }
 
 h5
@@ -184,4 +230,10 @@ search
   {
     color: green;
   }
+}
+
+.fit
+{
+  width: fit-content;
+  width: -moz-fit-content;
 }

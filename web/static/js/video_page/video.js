@@ -23,7 +23,7 @@ jQuery(function($) {
         $('#txtPlate').val('');
         var comment = $('<div class="comment"></div>');
         var ava = $('<div class="comment__ava"><img src="' + $('#myAva').attr('src') + '" alt="" class="comment__ava-img"></div>');
-        var txt = $('<div><p class="comment__author"><a href="' + $('#myProf').attr('href')+'">' + $('#myProf').html() + '</a></p><p>' + txt + '</p></div></div>');
+        var txt = $('<div class="comment__text"><p class="comment__author"><a href="' + $('#myProf').attr('href')+'">' + $('#myProf').html() + '</a></p><p>' + txt + '</p></div></div>');
         comment.append(ava);
         comment.append(txt);
         $('#CSect').prepend(comment);
@@ -50,6 +50,7 @@ jQuery(function($) {
 
     $('.tag').click(function() {
         var tagName = $(this).text();
-        search(tagName);
+        var input = '<input type="hidden" name="presearch" value="'+tagName+'">';
+        $('<form action="/search" method="POST">' + input + '</form>').appendTo('body').submit();
     });
 });

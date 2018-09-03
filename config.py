@@ -1,4 +1,4 @@
-# coding=utf-8
+﻿# coding=utf-8
 """Файл начальной инициализации приложения"""
 import os
 from imageio import plugins
@@ -19,4 +19,5 @@ plugins.ffmpeg.download()
 GOOGLE_API_KEY = os.environ['GOOGLE_API_KEY']
 CAPTCHA_PUBLIC_KEY = os.environ['CAPTCHA_PUBLIC_KEY']
 CAPTCHA_PRIVATE_KEY = os.environ['CAPTCHA_PRIVATE_KEY']
+DISCORD_ADDRESS = 'https://discordapp.com/api/webhooks/' + os.environ['DISCORD_WEBHOOK_ID'] + '/' + os.environ['DISCORD_WEBHOOK_TOKEN']
 CONNECTION_SYMBOLS = ['$', '%', '&', '*', '(', ')', '#', '@', '<', '>']
