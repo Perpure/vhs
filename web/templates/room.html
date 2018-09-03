@@ -80,11 +80,23 @@
           </div>
         </div>
       {% endif %}
-      <form action="{{url_for('choose_video', room_id=room.id)}}">
+      <a href="{{url_for('choose_video', room_id=room.id)}}">
           <button>Выбрать видео для демонстрации</button>
-      </form>
+      </a>
     </div>
-    <div id="choose_yt">
+    <div id="choose_yt" class="hidden">
+      {% if yt_video is not none %}
+        <div class="video">
+          <div class="video__preview">
+            <a href="https://www.youtube.com/watch?v={{ yt_video.id }}">
+              <img src="{{ yt_video.preview }}" class="video__preview-img">
+            </a>
+          </div>
+        </div>
+      {% endif %}
+        <a href="{{url_for('choose_youtube_video', room_id=room.id)}}">
+          <button>Выбрать видео с youtube</button>
+        </a>
     </div>
     </div>
 
@@ -95,8 +107,9 @@
 
 {% if room.capitan_id != anon.id %}
   {% if room.is_playing_youtube == True %}
-      <div class="result" id="ResultVideoShell">
-        <div id="ResultVideo" class="result__video"></div>
+      <div data-yt-video-id="{{ room.yt_video_id }}" class="result" id="ResultVideoShell">
+        <div class="result__video" id="ResultVideo">
+        </div>
       </div>
   {% elif room.video_id %}
       <div class="result" id="ResultVideoShell">

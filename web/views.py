@@ -2,7 +2,7 @@
 import os
 import json
 from wtforms.validators import ValidationError
-from flask import redirect, render_template, session, url_for, request
+from flask import redirect, render_template, session, url_for, request, abort
 from flask.json import JSONDecoder, dumps
 from werkzeug.exceptions import Aborter
 from config import basedir, CAPTCHA_PUBLIC_KEY, DISCORD_ADDRESS
@@ -90,11 +90,18 @@ def room(room_id):
         if image_form.validate_on_submit():
             return image_loaded(request, room, user, users, image_form, room_form)
 
+        session_key = 'yt_video_' + str(room_id)
+        yt_video = session.get(session_key)
+
+        if user.id == room.capitan_id and yt_video is not None:
+            yt_video = JSONDecoder().decode(yt_video)
+
         return render_template('room.html', room=room, user=cur_user(), users=users,
                                count=len(users) + 1,
                                image_form=image_form, room_form=room_form, loaded=False, anon=user,
                                room_map=room_map_url,
-                               map_ex=os.path.exists(basedir + '/images/' + str(room.id) + '_map.jpg'))
+                               map_ex=os.path.exists(basedir + '/images/' + str(room.id) + '_map.jpg'),
+                               yt_video=yt_video)
     else:
         return redirect(url_for('viewroom'))
 
@@ -108,6 +115,7 @@ def choosed_video(room_id, vid_id):
         if user.id == room.capitan_id:
             room.video_id = vid_id
         db.session.commit()
+
         return redirect(url_for('room', room_id=room_id))
     else:
         return redirect(url_for('viewroom'))
@@ -135,9 +143,25 @@ def choose_video(room_id):
         return redirect(url_for('viewroom'))
 
 
-@app.route('/room/<int:room_id>/choose_youtube')
+@app.route('/room/<int:room_id>/choose_youtube', methods=['GET', 'POST'])
 def choose_youtube_video(room_id):
-    return render_template('choose_youtube.html')
+    user = anon_user()
+    room = Room.query.get(room_id)
+    cap = room.capitan_id
+    if request.method == 'POST':
+        video_js = dumps({'preview': request.form['preview'],
+                          'id': request.form['id']})
+
+        session['yt_video_' + str(room_id)] = video_js
+
+        room.yt_video_id = request.form['id']
+        db.session.commit()
+
+        return 'OK'
+    if user.id == cap:
+        return render_template('choose_youtube.html', room_id=room_id, user=cur_user())
+    else:
+        return abort(403)
 
 
 @app.route('/upload', methods=['GET', 'POST'])
