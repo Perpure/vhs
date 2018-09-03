@@ -4,14 +4,16 @@ import cv2
 import numpy as np
 from PIL import Image, ImageDraw
 from config import basedir
+import uuid
 
 
-class Contour:  # TODO переименовать в Contour
+class Contour:
     is_display = False
     is_number = False
+    img_save_path = 'images/contours/'
 
-    def __init__(self, contour, id):
-        self.id = id
+    def __init__(self, contour):
+        self.id = str(uuid.uuid1())
         self.contour = contour
         self.rect = cv2.minAreaRect(contour)
         self.box = np.int0(cv2.boxPoints(self.rect))
@@ -19,6 +21,8 @@ class Contour:  # TODO переименовать в Contour
         self.max_x = np.ndarray.max(self.box[..., 0])
         self.min_y = np.ndarray.min(self.box[..., 1])
         self.max_y = np.ndarray.max(self.box[..., 1])
+        self.width = self.max_x - self.min_x
+        self.height = self.max_y - self.min_y
 
     def find_relation(self, image_objects):
         for image_object in image_objects:
@@ -27,6 +31,21 @@ class Contour:  # TODO переименовать в Contour
                 self.relation = image_object.id
                 image_object.is_number = True
                 image_object.relation = self.id
+
+    def create_image_from_source(self, source_image):
+        self.img, self.img_path = self.__create_image(source_image, suffix='_from_source')
+        return self.img
+
+    def create_image_from_mask(self, mask_image):
+        self.mask, self.mask_path = self.__create_image(mask_image, suffix='_from_mask')
+        return self.mask
+
+    def __create_image(self, source_image, suffix='_contour'):
+        image = source_image[self.min_y:self.min_y + self.height,
+                             self.min_x:self.min_x + self.width]
+        image_path = self.img_save_path + self.id + suffix + '.png'
+        cv2.imwrite(image_path, image)
+        return image, image_path
 
     @staticmethod
     def identify(display, mask, img):
@@ -120,12 +139,15 @@ class CalibrationImage:
             rect = cv2.minAreaRect(contour)
             area = int(rect[1][0] * rect[1][1])
             if area > self.threshold:
-                image_contour = Contour(contour, i)
+                image_contour = Contour(contour)
                 image_contours.append(image_contour)
                 min_x = min(min_x, image_contour.min_x)
                 max_x = max(max_x, image_contour.max_x)
                 min_y = min(min_y, image_contour.min_y)
                 max_y = max(max_y, image_contour.max_y)
+                # TODO возможно создавать изображения нужно в другом месте
+                image_contour.create_image_from_source(self.img)
+                image_contour.create_image_from_mask(self.mask)
         return max_x, max_y, min_x, min_y, image_contours
 
     def __draw_rectangles(self, contours):
